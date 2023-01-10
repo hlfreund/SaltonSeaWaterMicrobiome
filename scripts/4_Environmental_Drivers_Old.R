@@ -44,9 +44,27 @@ head(metadata)
 rownames(metadata)<-metadata$SampleID
 
 #### Create Centered Log-Ratio Table from ASV table ####
-b.clr<-decostand(bac.ASV_table[,-1],method = "clr", pseudocount = 1) #CLR transformation
+# turning bac.ASV_counts_no.contam into phyloseq object called ASV
+dim(bac.ASV_table)
+ASV<-otu_table(as.matrix(t(bac.ASV_table[,-1])), taxa_are_rows = TRUE)
+## need to have ASVs as rows, sample IDs as columns
+head(ASV)
+class(ASV) # phyloseq otu_table object
+
+# CLR transformation on phyloseq object
+asv_clr<-microbiome::transform(ASV, "clr") # transform function from microbiome package
+head(asv_clr)
+
+#testCLR <- apply(pseudo.ASV[,-1], 2, function(x) log(x) - log(rowMeans(pseudo.ASV[,-1])))
+
+testCLR2<-decostand(bac.ASV_table[,-1],method = "clr", pseudocount = 1)
+testCLR2[1:4,1:4]
+
+# create CLR Sample x Species matrix for input into dist()
+# transform so that rownames are SampleIDs, columns are ASV IDs
+b.clr<-as.matrix(t(asv_clr))
+rownames(b.clr)
 b.clr[1:4,1:4]
-# df must have rownames are SampleIDs, columns are ASV IDs for vegan functions below\
 
 #### Check Count Data Relationship w/ Env Variables ####
 ## remember, CCA assumes that our species have a unimodal relationship with our variables.
