@@ -53,12 +53,15 @@ bac.ASV_table[1:4,1:4]
 
 # Create taxa table
 bac.ASV_taxa<-as.data.frame(unique(subset(bac.ASV_all, select=c(ASV_ID,Kingdom, Phylum, Class, Order, Family, Genus, Species))))
+bac.ASV_taxa[1:4,1:4]
 
 #### Update Metadata ####
 # upload geochem data from Lyons lab
 
-chem_meta<-as.data.frame(read_xlsx("data/SaltonSeawater_Lyons_Aronson_Metadata_All.xlsx", sheet="Variables_of_Interest"))
+chem_meta<-as.data.frame(read_xlsx("data/SaltonSeawater_Lyons_Aronson_Metadata_All.xlsx", sheet="Stratification_Parameters"))
 head(chem_meta)
+chem_meta[1:4,1:4] # sanity check for gsub
+
 # create color variable(s) to identify variables by colors
 ## color for sample type
 meta1<-unique(subset(bac.ASV_all, select=c(SampleID,Sample_Type,SampleMonth,SampleYear,Depth_m,SampleSource)))
@@ -72,13 +75,13 @@ head(metadata)
 # create factor levels for certain groups
 metadata$Depth_m<-factor(metadata$Depth_m, levels=c("0","2","3","4","5","7","9","10","11"))
 
-bac.dat.all$SampDate<-factor(bac.dat.all$SampDate, levels=c("June.2021","August.2021","December.2021","April.2022"))
+metadata$SampDate<-interaction(metadata$SampleMonth,metadata$SampleYear)
+head(metadata)
+metadata$SampDate<-factor(metadata$SampDate, levels=c("June.2021","August.2021","December.2021","April.2022"))
 
 unique(metadata$SampleMonth)
 metadata$SampleMonth<-factor(metadata$SampleMonth, levels=c("June","August","December","April"))
-
-metadata$SampDate<-interaction(metadata$SampleMonth, metadata$SampleYear)
-head(metadata)
+unique(metadata$SampleMonth) # sanity check
 
 # Create color palettes to be used for gradient colors
 
@@ -100,13 +103,22 @@ colorset1
 
 metadata<-merge(metadata, colorset1, by="SampDate")
 head(metadata)
-metadata$Sample_Color <- as.character(metadata$SampDate_Color)
+metadata$SampDate_Color <- as.character(metadata$SampDate_Color)
+
+rownames(metadata)<-metadata$SampleID
 # save.image("data/SSW_analysis.Rdata")
+
+#### Scale Environmental Metadata ####
+head(metadata)
+meta_scaled<-metadata
+meta_scaled[,8:15]<-scale(meta_scaled[,8:15],center=TRUE,scale=TRUE) # only scale chem env data
+head(meta_scaled)
 
 ### Merge Metadata & Count Data Together ####
 bac.dat.all<-merge(bac.ASV_all, metadata, by=c("SampleID","Sample_Type","SampleMonth","SampleYear", "Depth_m", "SampleSource"))
 #rownames(bac.dat.all)<-bac.dat.all$SampleID
-bac.dat.all[1:4,1:4]
+bac.dat.all<-subset(bac.dat.all, select=-c(Exposure_Duration, Exposure_Type, Deployment, ExtractionMethod, LysisType, Sample_Color))
+head(bac.dat.all)
 dim(bac.dat.all)
 
 ### Export Global Env for Other Scripts ####

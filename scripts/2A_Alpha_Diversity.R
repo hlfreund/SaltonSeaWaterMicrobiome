@@ -38,7 +38,7 @@ suppressPackageStartupMessages({ # load packages quietly
 
 #### Load Global Env to Import Count/ASV Tables ####
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
-load("data/SSeawater_AlphaBetaDiv_Data.Rdata")
+load("data/SSeawater_AlphaDiv_Data.Rdata")
 #load("data/ssw_clr.euc.dist_2.21.23.Rdata")
 
 #save.image("data/Env_Seqs_All/env.seq_analysis.Rdata") # save global env to Rdata file
@@ -60,7 +60,7 @@ rowSums(bac.ASV_table[,-1]) # total # ASVs per sample, excluding SampleID from c
 sort(colSums(bac.ASV_table[,-1]))
 
 # Create Rarefaction curve
-png('figures/SSW_16S_rarecurve.png')
+png('figures/AlphaDiversity/SSW_16S_rarecurve.png')
 rarecurve(as.matrix(bac.ASV_table[,-1]),col=metadata$SampDate_Color, step=1000, label=F,ylab="ASVs")
 # to show sampel labels per curve, change label=T
 dev.off()
@@ -108,44 +108,41 @@ unique(bac.div.metadat$Depth_m) # see how many elements there are in the Group v
 # drop the outliers
 bac.div.metadat2<-subset(bac.div.metadat, bac.div.metadat$Bac_Shannon_Diversity<=200)
 
+# save diversity data
+save.image("data/SSeawater_AlphaDiv_Data.Rdata")
+
+#### Visualize Alpha Diversity & Species Richness ####
 ## Shannon Diversity by Sample Month & Depth
 bac.a.div<-ggplot(bac.div.metadat2, aes(x=SampDate, y=Bac_Shannon_Diversity,fill=SampDate)) +geom_boxplot(color="black")+scale_x_discrete()+theme_bw()+scale_fill_manual(values=unique(bac.div.metadat$SampDate_Color[order(bac.div.metadat$SampDate)]), name ="Sample Date")+theme_classic()+
   labs(title = "Bacterial Shannon Diversity by Sample Date", x="Sample Date", y="Shannon Diversity", fill="Sample Month")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,label = "p.format")
 
-ggsave(bac.a.div,filename = "figures/SSW_Bacterial_alpha_diversity_samplemonth_2.1.23.png", width=13, height=10, dpi=600)
+ggsave(bac.a.div,filename = "figures/AlphaDiversity/SSW_Bacterial_alpha_diversity_samplemonth_2.1.23.png", width=13, height=10, dpi=600)
 
 bac.div.metadat2$Depth_m=as.numeric(levels(bac.div.metadat2$Depth_m))[bac.div.metadat2$Depth_m]
 # note: cannot turn numbers that are factors in R into numeric values...
 ## have to convert factor levels into numeric, then use the numeric "levels" to pull out numbers from Depth_m column in df to make sure the Depth_m columns is now numeric, not a factor
 
-bac.a.div2<-ggplot(bac.div.metadat2, aes(x=Depth_m, y=Bac_Shannon_Diversity)) +geom_boxplot(aes(fill=bac.div.metadat2$Depth_m),color="black")+
-  labs(title = "Bacterial Shannon Diversity by Sampling Depth", x="Depth (m)", y="Shannon Diversity", fill="Depth (m)")+
-  scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
-
-ggsave(bac.a.div2,filename = "figures/SSW_Bacterial_alpha_diversity_depth_v1_2.1.23.png", width=13, height=10, dpi=600)
-
-bac.a.div3<-ggplot(bac.div.metadat2, aes(x=as.factor(Depth_m), y=Bac_Shannon_Diversity)) +geom_boxplot(aes(fill=bac.div.metadat2$Depth_m),color="black")+
+bac.a.div2<-ggplot(bac.div.metadat2, aes(x=as.factor(Depth_m), y=Bac_Shannon_Diversity)) +geom_boxplot(aes(fill=bac.div.metadat2$Depth_m),color="black")+
   labs(title = "Bacterial Shannon Diversity by Sampling Depth", x="Depth (m)", y="Shannon Diversity", fill="Depth (m)")+
   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   coord_flip() + scale_x_discrete(limits=rev)
 
-ggsave(bac.a.div3,filename = "figures/SSW_Bacterial_alpha_diversity_depth_v2_2.1.23.png", width=13, height=10, dpi=600)
+ggsave(bac.a.div2,filename = "figures/AlphaDiversity/SSW_Bacterial_alpha_diversity_depth_v2_2.1.23.png", width=13, height=10, dpi=600)
 
 ## Species Richness by Sample Type
 bac.a.sr<-ggplot(bac.div.metadat2, aes(x=SampDate, y=Bac_Species_Richness,fill=SampDate)) +geom_boxplot(color="black")+scale_x_discrete()+theme_bw()+scale_fill_manual(values=unique(bac.div.metadat$SampDate_Color[order(bac.div.metadat$SampDate)]), name ="Sample Date")+theme_classic()+
   labs(title = "Bacterial Species Richness by Sample Date", x="Sample Date", y="Species Richness")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,label = "p.format")
-ggsave(bac.a.sr,filename = "figures/SSW_Bacterial_species_richness_samplemonth_2.1.23.png", width=13, height=10, dpi=600)
+ggsave(bac.a.sr,filename = "figures/AlphaDiversity/SSW_Bacterial_species_richness_samplemonth_2.1.23.png", width=13, height=10, dpi=600)
 
 bac.a.sr2<-ggplot(bac.div.metadat2, aes(x=as.factor(Depth_m), y=Bac_Species_Richness,fill=bac.div.metadat2$Depth_m)) +geom_boxplot(aes(fill=as.numeric(bac.div.metadat2$Depth_m)),color="black")+
   labs(title = "Bacterial Species Richness by Sampling Depth", x="Depth (m)", y="Species Richness", fill="Depth (m)")+
   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
 
-ggsave(bac.a.sr2,filename = "figures/SSW_Bacterial_species_richness_depth_v1_2.1.23.png", width=13, height=10, dpi=600)
+ggsave(bac.a.sr2,filename = "figures/AlphaDiversity/SSW_Bacterial_species_richness_depth_v1_2.1.23.png", width=13, height=10, dpi=600)
 
 bac.a.sr3<-ggplot(bac.div.metadat2, aes(x=as.factor(Depth_m), y=Bac_Species_Richness,fill=bac.div.metadat2$Depth_m)) +geom_boxplot(aes(fill=as.numeric(bac.div.metadat2$Depth_m)),color="black")+
   labs(title = "Bacterial Species Richness by Sampling Depth", x="Depth (m)", y="Species Richness", fill="Depth (m)")+
@@ -153,11 +150,13 @@ bac.a.sr3<-ggplot(bac.div.metadat2, aes(x=as.factor(Depth_m), y=Bac_Species_Rich
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   coord_flip() + scale_x_discrete(limits=rev)
 
-ggsave(bac.a.sr3,filename = "figures/SSW_Bacterial_species_richness_depth_v2_2.1.23.png", width=13, height=10, dpi=600)
+ggsave(bac.a.sr3,filename = "figures/AlphaDiversity/SSW_Bacterial_species_richness_depth_v2_2.1.23.png", width=13, height=10, dpi=600)
 
 #### Using Shapiro-Wilk test for Normality ####
-shapiro.test(bac.div.metadat2$Bac_Shannon_Diversity) # what is the p-value?
-# my p-value was p-value = 2.875e-13
+shapiro.test(bac.div.metadat$Bac_Shannon_Diversity) # what is the p-value?
+# p-value = 2.875e-13 including outliars
+shapiro.test(bac.div.metadat2$Bac_Shannon_Diversity) # what is the p-value? No outliars **
+# p-value = 0.07334; excluding outliars
 # p > 0.05 states distribution of data are not significantly different from normal distribution
 # p < 0.05 means that data is significantly different from a normal distribution
 hist(bac.div.metadat2$Bac_Shannon_Diversity, col="blue")
@@ -166,8 +165,10 @@ hist(bac.div.metadat2$Bac_Shannon_Diversity, col="blue")
 qqnorm(bac.div.metadat2$Bac_Shannon_Diversity, pch = 1, frame = FALSE)
 qqline(bac.div.metadat2$Bac_Shannon_Diversity, col = "steelblue", lwd = 2)
 
-shapiro.test(bac.div.metadat2$Bac_Species_Richness) # what is the p-value?
-# my p-value was p-value =  0.01702
+shapiro.test(bac.div.metadat$Bac_Species_Richness) # what is the p-value?
+# p-value = 0.01702 w/ outliars
+shapiro.test(bac.div.metadat2$Bac_Species_Richness) # what is the p-value? * No outliars
+# p-value =  0.00428; no outliars
 # p > 0.05 states distribution of data are not significantly different from normal distribution
 # p < 0.05 means that data is significantly different from a normal distribution
 hist(bac.div.metadat$Bac_Species_Richness, col="blue")
@@ -176,7 +177,7 @@ hist(bac.div.metadat$Bac_Species_Richness, col="blue")
 qqnorm(bac.div.metadat$Bac_Species_Richness, pch = 1, frame = FALSE)
 qqline(bac.div.metadat$Bac_Species_Richness, col = "steelblue", lwd = 2)
 
-shapiro.test(bac.div.metadat2$DO_Percent_Local) # what is the p-value?
+shapiro.test(bac.div.metadat$DO_Percent_Local) # what is the p-value?
 hist(bac.div.metadat$DO_Percent_Local, col="blue")
 
 shapiro.test(bac.div.metadat2$ORP_mV) # what is the p-value?
@@ -185,7 +186,7 @@ hist(bac.div.metadat$ORP_mV, col="blue")
 shapiro.test(bac.div.metadat2$Temp_DegC) # what is the p-value?
 hist(bac.div.metadat$Temp_DegC, col="blue")
 
-shapiro.test(bac.div.metadat2$Dissolved_OrganicMatter_RFU) # what is the p-value?
+shapiro.test(bac.div.metadat$Dissolved_OrganicMatter_RFU) # what is the p-value?
 hist(bac.div.metadat$Dissolved_OrganicMatter_RFU, col="blue")
 
 shapiro.test(bac.div.metadat2$Turbidity_FNU) # what is the p-value?
@@ -282,42 +283,42 @@ fit.test<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplex
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_manual(values=saturation(fair_cols, 0.9))+stat_compare_means(method = "anova",label.y=1.5) +stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,label = "p.signif")
 
-ggsave(fit.test,filename = "figures/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.test,filename = "figures/AlphaDiversity/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
 
 fit.testa<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
   geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_manual(values=saturation(fair_cols, 0.9))+stat_compare_means(method = "anova",label.y=1.5,mapping=aes(label = format.pval(..p.adj.., digits = 3))) +stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,mapping=aes(label = format.pval(..p.adj.., digits = 3)))
 
-ggsave(fit.testa,filename = "figures/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.testa,filename = "figures/AlphaDiversity/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
 
 fit.test0<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
   geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_manual(values=saturation(fair_cols, 0.9))+stat_compare_means(method = "anova",label.y=1.5) +stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,label = "p.signif")
 
-ggsave(fit.test,filename = "figures/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.test,filename = "figures/AlphaDiversity/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
 
 fit.testa<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
   geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_manual(values=saturation(fair_cols, 0.9))
 
-ggsave(fit.testa,filename = "figures/DustComp_by_Elevation_ALL_no.sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.testa,filename = "figures/AlphaDiversity/DustComp_by_Elevation_ALL_no.sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
 
 fit.testb<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
   geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_grey(start=0.8, end=0.3)
 
-ggsave(fit.testb,filename = "figures/DustComp_by_Elevation_ALL_gray_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.testb,filename = "figures/AlphaDiversity/DustComp_by_Elevation_ALL_gray_5.24.21.pdf", width=10, height=8, dpi=600)
 
 fit.testb.0<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
   geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_grey(start=0.8, end=0.3)+stat_compare_means(method = "anova",label.y=1.5) +stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,label = "p.signif")
 
-ggsave(fit.testb.0,filename = "figures/DustComp_by_Elevation_ALL_gray_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.testb.0,filename = "figures/AlphaDiversity/DustComp_by_Elevation_ALL_gray_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
 
 ### Fungi comparisons first
 # Dust Comp x ITS1 Shannon diversity
@@ -357,7 +358,7 @@ fig.its1.fit1<-ggplot(its1_div_meta, aes(x = ITS1_Shannon_Diversity, y = DustCom
   stat_regline_equation(aes(label=paste(..adj.rr.label..)),label.y = 1.20,label.x=75)
 ## use summary(its1.fit1) to double check that stat_cor gives same p value as linear regression!
 
-ggsave(fig.its1.fit1,filename = "figures/DustComp_by_ITS1_ShanDiv_ALL_1.4.22.pdf", width=10, height=8, dpi=600)
+ggsave(fig.its1.fit1,filename = "figures/AlphaDiversity/DustComp_by_ITS1_ShanDiv_ALL_1.4.22.pdf", width=10, height=8, dpi=600)
 
 fig.its1.fit1<-ggplot(its1_div_meta, aes(x = ITS1_Shannon_Diversity, y = DustComplexity)) +
   geom_point(aes(color=Elev.num),size=3) + theme_classic() + saturation(scale_colour_gradientn(colours=fair_cols,limits=c(400,2700),breaks = c(500,1250,2000,2600),labels=c("400","1100","2000","2700")), 0.9) +
@@ -374,7 +375,7 @@ fig.its1.fit1<-ggplot(its1_div_meta, aes(x = ITS1_Shannon_Diversity, y = DustCom
 #  stat_cor(label.y = 1, label.x=75) +
 #  stat_regline_equation(label.y = 1.05,label.x=75)
 
-#ggsave(fig.its1.fit2,filename = "figures/DustComp_by_ITS1_Shan_Div_ALL_5.19.21.pdf", width=10, height=8, dpi=600)
+#ggsave(fig.its1.fit2,filename = "figures/AlphaDiversity/DustComp_by_ITS1_Shan_Div_ALL_5.19.21.pdf", width=10, height=8, dpi=600)
 
 
 # DustComp x ITS1 Species Richness
@@ -423,7 +424,7 @@ fig.its1.sr.fit1<-ggplot(its1_div_meta, aes(x = ITS1_Species_Richness, y = DustC
 
 ## use summary(its1.sr.fit1) to double check that stat_cor gives same p value as linear regression!
 
-ggsave(fig.its1.sr.fit1,filename = "figures/DustComp_by_ITS1_Spec_Richness_ALL_1.4.22.pdf", width=10, height=8, dpi=600)
+ggsave(fig.its1.sr.fit1,filename = "figures/AlphaDiversity/DustComp_by_ITS1_Spec_Richness_ALL_1.4.22.pdf", width=10, height=8, dpi=600)
 
 
 #### Richness, Diversity vs Env Variables ####
@@ -536,7 +537,7 @@ pcoa1<-ggplot(b.pcoa.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor
   scale_color_manual(name ="Sample Type",values=unique(b.pcoa.meta$SampDate_Color[order(b.pcoa.meta$SampDate)]),labels=c("June.2021"="June 2021","August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("Axis 1 [22.72%]") + ylab("Axis 2 [17.97%]")
 
-ggsave(pcoa1,filename = "figures/SSW_16S_pcoa_CLR_sampdate.png", width=12, height=10, dpi=600)
+ggsave(pcoa1,filename = "figures/AlphaDiversity/SSW_16S_pcoa_CLR_sampdate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
 pcoa2<-ggplot(b.pcoa.meta, aes(x=Axis.1, y=Axis.2)) +
@@ -546,7 +547,7 @@ pcoa2<-ggplot(b.pcoa.meta, aes(x=Axis.1, y=Axis.2)) +
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("Axis 1 [22.72%]") + ylab("Axis 2 [17.97%]")
 
-ggsave(pcoa2,filename = "figures/SSW_16S_pcoa_CLR_depth.png", width=12, height=10, dpi=600)
+ggsave(pcoa2,filename = "figures/AlphaDiversity/SSW_16S_pcoa_CLR_depth.png", width=12, height=10, dpi=600)
 
 ## betadisper to look at within group variance
 rownames(metadata) %in% rownames(b.euc_dist)
@@ -569,7 +570,7 @@ anova(b.disper1) # p = 0.1998 --> accept the Null H, spatial medians are NOT sig
 TukeyHSD(b.disper1) # tells us which Sample Dates/category's dispersion MEANS are significantly different than each other
 
 # Visualize dispersions
-png('figures/pcoa_betadispersion_sampledate.png',width = 700, height = 600, res=100)
+png('figures/AlphaDiversity/pcoa_betadispersion_sampledate.png',width = 700, height = 600, res=100)
 plot(b.disper,main = "Centroids and Dispersion based on Aitchison Distance", col=colorset1$SampDate_Color)
 dev.off()
 
@@ -591,11 +592,11 @@ colfunc <- colorRampPalette(c("red", "blue"))
 colfunc(9)
 
 # Visualize dispersions
-png('figures/pcoa_betadispersion_depth.png',width = 700, height = 600, res=100)
+png('figures/AlphaDiversity/pcoa_betadispersion_depth.png',width = 700, height = 600, res=100)
 plot(b.disper2,main = "Centroids and Dispersion based on Aitchison Distance", col=colfunc(9))
 dev.off()
 
-png('figures/boxplot_centroid_distance_depth.png',width = 700, height = 600, res=100)
+png('figures/AlphaDiversity/boxplot_centroid_distance_depth.png',width = 700, height = 600, res=100)
 boxplot(b.disper2,xlab="Sample Collection Depth", main = "Distance to Centroid by Category", sub="Based on Aitchison Distance", col=colfunc(9))
 dev.off()
 

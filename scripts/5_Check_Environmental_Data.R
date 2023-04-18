@@ -142,7 +142,7 @@ pca1<-ggplot(env.pca.meta, aes(x=PC1, y=PC2)) +geom_point(aes(color=factor(SampD
   scale_color_manual(name ="Sample Type",values=unique(env.pca.meta$SampDate_Color[order(env.pca.meta$SampDate)]),labels=c("June.2021"="June 2021","August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("Axis 1 [62.91%]") + ylab("Axis 2 [24.10%]")
 
-ggsave(pca1,filename = "figures/SSW_env_pca_log_sampdate.png", width=12, height=10, dpi=600)
+ggsave(pca1,filename = "figures/EnvVariablesOnly/SSW_env_pca_log_sampdate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
 pca2<-ggplot(env.pca.meta, aes(x=Axis.1, y=Axis.2)) +
@@ -152,7 +152,7 @@ pca2<-ggplot(env.pca.meta, aes(x=Axis.1, y=Axis.2)) +
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("Axis 1 [22.72%]") + ylab("Axis 2 [17.97%]")
 
-ggsave(pca2,filename = "figures/SSW_env_pca_log_depth.png", width=12, height=10, dpi=600)
+ggsave(pca2,filename = "figures/EnvVariablesOnly/SSW_env_pca_log_depth.png", width=12, height=10, dpi=600)
 
 #### Compare Env Samples Variance by Sample Date ####
 kruskal.test(DO_Percent_Local ~ SampleMonth, data = meta_scaled)
@@ -378,42 +378,42 @@ fit.test<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplex
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_manual(values=saturation(fair_cols, 0.9))+stat_compare_means(method = "anova",label.y=1.5) +stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,label = "p.signif")
 
-ggsave(fit.test,filename = "figures/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.test,filename = "figures/EnvVariablesOnly/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
 
 fit.testa<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
   geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_manual(values=saturation(fair_cols, 0.9))+stat_compare_means(method = "anova",label.y=1.5,mapping=aes(label = format.pval(..p.adj.., digits = 3))) +stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,mapping=aes(label = format.pval(..p.adj.., digits = 3)))
 
-ggsave(fit.testa,filename = "figures/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.testa,filename = "figures/EnvVariablesOnly/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
 
 fit.test0<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
   geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_manual(values=saturation(fair_cols, 0.9))+stat_compare_means(method = "anova",label.y=1.5) +stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,label = "p.signif")
 
-ggsave(fit.test,filename = "figures/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.test,filename = "figures/EnvVariablesOnly/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
 
 fit.testa<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
   geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_manual(values=saturation(fair_cols, 0.9))
 
-ggsave(fit.testa,filename = "figures/DustComp_by_Elevation_ALL_no.sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.testa,filename = "figures/EnvVariablesOnly/DustComp_by_Elevation_ALL_no.sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
 
 fit.testb<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
   geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_grey(start=0.8, end=0.3)
 
-ggsave(fit.testb,filename = "figures/DustComp_by_Elevation_ALL_gray_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.testb,filename = "figures/EnvVariablesOnly/DustComp_by_Elevation_ALL_gray_5.24.21.pdf", width=10, height=8, dpi=600)
 
 fit.testb.0<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
   geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_grey(start=0.8, end=0.3)+stat_compare_means(method = "anova",label.y=1.5) +stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,label = "p.signif")
 
-ggsave(fit.testb.0,filename = "figures/DustComp_by_Elevation_ALL_gray_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.testb.0,filename = "figures/EnvVariablesOnly/DustComp_by_Elevation_ALL_gray_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
 
 ### Fungi comparisons first
 # Dust Comp x ITS1 Shannon diversity
@@ -453,7 +453,7 @@ fig.its1.fit1<-ggplot(its1_div_meta, aes(x = ITS1_Shannon_Diversity, y = DustCom
   stat_regline_equation(aes(label=paste(..adj.rr.label..)),label.y = 1.20,label.x=75)
 ## use summary(its1.fit1) to double check that stat_cor gives same p value as linear regression!
 
-ggsave(fig.its1.fit1,filename = "figures/DustComp_by_ITS1_ShanDiv_ALL_1.4.22.pdf", width=10, height=8, dpi=600)
+ggsave(fig.its1.fit1,filename = "figures/EnvVariablesOnly/DustComp_by_ITS1_ShanDiv_ALL_1.4.22.pdf", width=10, height=8, dpi=600)
 
 fig.its1.fit1<-ggplot(its1_div_meta, aes(x = ITS1_Shannon_Diversity, y = DustComplexity)) +
   geom_point(aes(color=Elev.num),size=3) + theme_classic() + saturation(scale_colour_gradientn(colours=fair_cols,limits=c(400,2700),breaks = c(500,1250,2000,2600),labels=c("400","1100","2000","2700")), 0.9) +
@@ -470,7 +470,7 @@ fig.its1.fit1<-ggplot(its1_div_meta, aes(x = ITS1_Shannon_Diversity, y = DustCom
 #  stat_cor(label.y = 1, label.x=75) +
 #  stat_regline_equation(label.y = 1.05,label.x=75)
 
-#ggsave(fig.its1.fit2,filename = "figures/DustComp_by_ITS1_Shan_Div_ALL_5.19.21.pdf", width=10, height=8, dpi=600)
+#ggsave(fig.its1.fit2,filename = "figures/EnvVariablesOnly/DustComp_by_ITS1_Shan_Div_ALL_5.19.21.pdf", width=10, height=8, dpi=600)
 
 
 # DustComp x ITS1 Species Richness
@@ -519,6 +519,6 @@ fig.its1.sr.fit1<-ggplot(its1_div_meta, aes(x = ITS1_Species_Richness, y = DustC
 
 ## use summary(its1.sr.fit1) to double check that stat_cor gives same p value as linear regression!
 
-ggsave(fig.its1.sr.fit1,filename = "figures/DustComp_by_ITS1_Spec_Richness_ALL_1.4.22.pdf", width=10, height=8, dpi=600)
+ggsave(fig.its1.sr.fit1,filename = "figures/EnvVariablesOnly/DustComp_by_ITS1_Spec_Richness_ALL_1.4.22.pdf", width=10, height=8, dpi=600)
 
 

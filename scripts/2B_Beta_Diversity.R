@@ -38,8 +38,8 @@ suppressPackageStartupMessages({ # load packages quietly
 
 #### Load Global Env to Import Count/ASV Tables ####
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
-#load("data/SSeawater_AlphaBetaDiv_Data.Rdata")
-#load("data/ssw_clr.euc.dist_2.21.23.Rdata")
+#load("data/ssw_clr.euc.dist_4.5.23.Rdata")
+#save.image("data/SSW_env.seq_analysis.Rdata")
 
 #save.image("data/Env_Seqs_All/env.seq_analysis.Rdata") # save global env to Rdata file
 bac.dat.all[1:6,1:6]
@@ -50,7 +50,8 @@ head(meta_scaled)
 #### Beta Diversity ####
 rownames(bac.ASV_table)
 
-# df must have rownames are SampleIDs, columns are ASV IDs for vegan functions below\
+# CLR transformation of ASV table
+# df must have rownames are SampleIDs, columns are ASV IDs for vegan functions below
 b.clr<-decostand(bac.ASV_table[,-1],method = "clr", pseudocount = 1) #CLR transformation
 b.clr[1:4,1:4]
 
@@ -69,13 +70,14 @@ b.euc_dend <- as.dendrogram(b.euc_clust, hang=0.2)
 b.dend_cols <- as.character(meta_scaled$SampDate_Color[order.dendrogram(b.euc_dend)])
 labels_colors(b.euc_dend) <- b.dend_cols
 
-# June.2021="#36ab57",August.2021="#ff6f00",December.2021="#26547c",April.2022="#32cbff"))
-plot(b.euc_dend, ylab="CLR Euclidean Distance",cex = 0.5) + title(main = "Bacteria/Archaea Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 3)
+## DO NOT RUN THIS LINE, THIS IS YOUR COLOR REFERENCE!!!!
+(June.2021="#36ab57",August.2021="#ff6f00",December.2021="#26547c",April.2022="#32cbff")
+plot(b.euc_dend, ylab="CLR Euclidean Distance",cex = 0.5) + title(main = "Bacteria/Archaea Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 2)
 #legend("topright",legend = c("June 2021","August 2021","December 2021","April 2022"),cex=.8,col = c( "#26547c","#36ab57","#32cbff","#ff6f00"),pch = 15, bty = "n")
 # Control is dark blue ("#218380"), #Alternaria is light blue ("#73d2de")
 dev.off()
 
-# let's use our Euclidean distance matrix from before
+# PCOA w/ Euclidean distance matrix
 b.pcoa <- pcoa(b.euc_dist) # pcoa of euclidean distance matrix = PCA of euclidean distance matrix
 save.image("data/ssw_clr.euc.dist_4.5.23.Rdata")
 
@@ -102,68 +104,135 @@ pcoa1<-ggplot(b.pcoa.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor
   scale_color_manual(name ="Sample Type",values=unique(b.pcoa.meta$SampDate_Color[order(b.pcoa.meta$SampDate)]),labels=c("June.2021"="June 2021","August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("Axis 1 [22.72%]") + ylab("Axis 2 [17.97%]")
 
-ggsave(pcoa1,filename = "figures/SSW_16S_pcoa_CLR_sampdate.png", width=12, height=10, dpi=600)
+ggsave(pcoa1,filename = "figures/BetaDiversity/SSW_16S_pcoa_CLR_sampdate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
 pcoa2<-ggplot(b.pcoa.meta, aes(x=Axis.1, y=Axis.2)) +
-  geom_point(aes(color=as.numeric(Depth_m),shape=SampleMonth), size=5)+theme_bw()+
+  geom_point(aes(color=as.numeric(as.character(Depth_m)),shape=SampleMonth), size=5)+theme_bw()+
   labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using Centered-Log Ratio Data",xlab="Axis 1", ylab="Axis 2",color="Depth (m)")+
   theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("Axis 1 [22.72%]") + ylab("Axis 2 [17.97%]")
 
-ggsave(pcoa2,filename = "figures/SSW_16S_pcoa_CLR_depth_sampdate_4.5.23.png", width=12, height=10, dpi=600)
+ggsave(pcoa2,filename = "figures/BetaDiversity/SSW_16S_pcoa_CLR_depth_sampdate_4.5.23.png", width=12, height=10, dpi=600)
 
-## betadisper to look at within group variance
-rownames(metadata) %in% rownames(b.euc_dist)
+#### Homogeneity of Variance & PERMANOVA tests - Composition by Groups ####
+## betadisper to look at homogeneity of group dispersions (aka variance) when considering multiple variables
+# multivariate analogue to Levene's test of homogeneity of variances
+# program finds spatial median or centroid of the group, & compare distances of group to centroid/spatial median via ANOVA
 
-# first by sampling date
-b.disper1<-betadisper(b.euc_dist, meta_scaled$SampDate)
+rownames(metadata) %in% rownames(b.clr) #b.clr was used to make the distance matrix b.euc_dist
+
+# first by compare dispersions by sampling date
+b.disper1<-betadisper((vegdist(b.clr,method="euclidean")), meta_scaled$SampDate)
 b.disper1
 
 permutest(b.disper1, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
 #Pairwise comparisons:
 #  (Observed p-value below diagonal, permuted p-value above diagonal)
-#               June.2021  August.2021 December.2021 April.2022
-#June.2021                 0.5840000     0.0140000      0.602
-#August.2021   0.5614347                 0.0060000      0.418
-#December.2021 0.0187594   0.0089359                    0.399
-#April.2022    0.5814591   0.3744861     0.3655430
+#              June.2021 August.2021 December.2021 April.2022
+#June.2021                   0.69900       0.77000      0.088
+#August.2021     0.58386                   0.65300      0.186
+#December.2021   0.72364     0.57263                    0.139
+#April.2022      0.10978     0.19628       0.14345
 
-anova(b.disper1) # p = 0.1998 --> accept the Null H, spatial medians are NOT significantly difference across sample dates
+anova(b.disper1) # p = 0.3783 --> accept the Null H, spatial medians (a measure of dispersion) are NOT significantly difference across sample dates
 
 TukeyHSD(b.disper1) # tells us which Sample Dates/category's dispersion MEANS are significantly different than each other
+# timepoints are not significantly different from each other considering ALL ASVs
+
+# If PERMANOVA is significant but betadisper() IS NOT, then you can infer that there is only a location effect.
+# If both tests are significant, then there is a dispersion effect for sure and there might also be (not always) a location effect.
+# Dispersion effect means the actual spread of the data points is influencing the significant differences, not the actual data itself
+
+pnova1<-adonis2(b.clr ~ SampDate,data=meta_scaled,method = "euclidean",by="terms",permutations=1000)
+pnova1 # p-value = 0.000999
+
+b.clr.dist = (vegdist(b.clr, "euclidean", na.rm = TRUE)) #distance matrix using Bray's dissimilarity index for trait distribution (traits of interest only)
+pair.mod1<-pairwise.adonis(b.clr.dist,meta_scaled$SampDate, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
+pair.mod1
+#                          pairs Df SumsOfSqs   F.Model        R2 p.value p.adjusted sig
+#1  December.2021 vs April.2022  1  9509.828 12.157859 0.2883889   0.001      0.006   *
+#2   December.2021 vs June.2021  1  9149.188  9.359465 0.3082882   0.001      0.006   *
+#3 December.2021 vs August.2021  1  8570.071  9.105954 0.2927399   0.001      0.006   *
+#4      April.2022 vs June.2021  1  9368.727 16.416579 0.4387515   0.001      0.006   *
+#5    April.2022 vs August.2021  1 10320.778 18.670106 0.4590621   0.001      0.006   *
+#6     June.2021 vs August.2021  1  7204.857 10.154448 0.4385528   0.001      0.006   *
 
 # Visualize dispersions
-png('figures/pcoa_betadispersion_sampledate.png',width = 700, height = 600, res=100)
+png('figures/BetaDiversity/pcoa_betadispersion_sampledate.png',width = 700, height = 600, res=100)
 plot(b.disper1,main = "Centroids and Dispersion based on Aitchison Distance", col=colorset1$SampDate_Color)
 dev.off()
 
 png('boxplot_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
-boxplot(b.disper1,xlab="Sample Collection Date", main = "Distance to Centroid by Category", sub="Based on Aitchison Distance", col=colorset1$Sample_Color)
+boxplot(b.disper1,xlab="Sample Collection Date", main = "Distance to Centroid by Category", sub="Based on Aitchison Distance", col=colorset1$SampDate_Color)
 dev.off()
 
-# What about between sampling depths?
-b.disper2<-betadisper(b.euc_dist, meta_scaled$Depth_m)
+# Next compare dispersions by depth
+b.disper2<-betadisper((vegdist(b.clr,method="euclidean")), meta_scaled$Depth_m)
 b.disper2
 
 permutest(b.disper2, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
 
-anova(b.disper2) # p = 0.7251 --> accept the Null H, spatial medians are NOT significantly difference across sample dates
+anova(b.disper2) # p = 0.1376 --> accept the Null H, spatial medians are NOT significantly difference across sample dates
 
 TukeyHSD(b.disper2) # tells us which Sample Dates/category's dispersion MEANS are significantly different than each other
+# only one near-ish significant result
+#         diff        lwr       upr     p adj
+#2-0   -22.9017922 -47.645447  1.841862 0.0885231
 
-colfunc <- colorRampPalette(c("red", "blue"))
-colfunc(9)
+# If PERMANOVA is significant but betadisper() IS NOT, then you can infer that there is only a location effect.
+# If both tests are significant, then there is a dispersion effect for sure and there might also be (not always) a location effect.
+# Dispersion effect means the actual spread of the data points is influencing the significant differences, not the actual data itself
+
+pnova2<-adonis2(b.clr ~ Depth_m,data=meta_scaled,method = "euclidean",by="terms",permutations=1000)
+pnova2 # p-value = 0.6683
+
+#b.clr.dist = (vegdist(b.clr, "euclidean", na.rm = TRUE)) #distance matrix using Bray's dissimilarity index for trait distribution (traits of interest only)
+pair.mod2<-pairwise.adonis(b.clr.dist,meta_scaled$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
+pair.mod2
+# included nearly significant comparisons below
+#       pairs Df SumsOfSqs   F.Model         R2 p.value p.adjusted sig
+#21  11 vs 2  1 2498.3661 2.1627662 0.30194567   0.053          1
+#26   3 vs 2  1 2508.6017 2.3121102 0.31620286   0.042          1
+#30   4 vs 2  1 2509.6464 2.4224064 0.32636402   0.042          1
+#33   5 vs 2  1 1884.1934 1.5943859 0.18551481   0.079          1
+#35   7 vs 2  1 2499.2221 2.6252797 0.34428635   0.051          1
+#36   9 vs 2  1 2517.8068 2.9592135 0.37179722   0.052          1
+
+col.depth <- colorRampPalette(c("red", "blue"))
+col.depth(9)
 
 # Visualize dispersions
-png('figures/pcoa_betadispersion_depth.png',width = 700, height = 600, res=100)
-plot(b.disper2,main = "Centroids and Dispersion based on Aitchison Distance", col=colfunc(9))
+png('figures/BetaDiversity/pcoa_betadispersion_depth.png',width = 700, height = 600, res=100)
+plot(b.disper2,main = "Centroids and Dispersion based on Aitchison Distance", col=col.depth(9))
 dev.off()
 
-png('figures/boxplot_centroid_distance_depth.png',width = 700, height = 600, res=100)
-boxplot(b.disper2,xlab="Sample Collection Depth", main = "Distance to Centroid by Category", sub="Based on Aitchison Distance", col=colfunc(9))
+png('figures/BetaDiversity/boxplot_centroid_distance_depth.png',width = 700, height = 600, res=100)
+boxplot(b.disper2,xlab="Sample Collection Depth", main = "Distance to Centroid by Category", sub="Based on Aitchison Distance", col=col.depth(9))
 dev.off()
+
+## next compare dispersions by depth & sampling date
+b.disper3<-betadisper((vegdist(b.clr,method="euclidean")), group=interaction(meta_scaled$Depth_m,meta_scaled$SampDate))
+b.disper3
+
+permutest(b.disper3, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
+
+anova(b.disper3) # p < 2.2e-16 --> reject the Null H, spatial medians are significantly different across sampling depths & dates
+# data point dispersion effect --> dispersion of data points are too dissimilar
+
+TukeyHSD(b.disper3) # tells us which Sample Dates/category's dispersion MEANS are significantly different than each other
+
+# If PERMANOVA is significant but betadisper() IS NOT, then you can infer that there is only a location effect.
+# If both tests are significant, then there is a dispersion effect for sure and there might also be (not always) a location effect.
+# Dispersion effect means the actual spread of the data points is influencing the significant differences, not the actual data itself
+
+pnova3<-adonis2(b.clr ~ Depth_m,data=meta_scaled,method = "euclidean",by="terms",permutations=1000)
+pnova3 # p-value = 0.6683
+
+#b.clr.dist = (vegdist(b.clr, "euclidean", na.rm = TRUE)) #distance matrix using Bray's dissimilarity index for trait distribution (traits of interest only)
+pair.mod3<-pairwise.adonis(b.clr.dist,interaction(meta_scaled$Depth_m,meta_scaled$SampDate), p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
+pair.mod3
 
 #### PERMANOVAs to Env Variables Across Groups ####
 
@@ -182,17 +251,42 @@ help(adonis)
 ## w/ distance matrices - The adonis2 tests are identical to anova.cca of dbrda. With Euclidean distances, the tests are also identical to anova.cca of rda.
 
 # First make sure your data frames you're comparing are in the same exact order!!
+rownames(b.clr) %in% rownames(meta_scaled)
 meta_scaled=meta_scaled[rownames(b.clr),] ## reorder metadata to match order of CLR data
 perm <- with(meta_scaled, how(nperm = 1000, blocks = SampDate))
 
-adonis2(b.clr ~ SampDate,data=meta_scaled,method = "euclidean",by="terms")
-adonis2(b.clr ~ Depth_m,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-
-adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Chlorophyll_RFU*Dissolved_OrganicMatter_RFU*Depth_m,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-pairwise.adonis2(b.clr.dist ~ Temp_DegC,data=meta_scaled,nperm=perm)
+pnova1<-adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+## Only significant variables included below
+#                                             Df SumOfSqs      R2       F   Pr(>F)
+#DO_Percent_Local                              1     2269 0.03771  3.0390 0.04995 *
+#ORP_mV                                        1     7763 0.12901 10.3953 0.008991 **
+#ORP_mV:Temp_DegC                              1     2094 0.03481  2.8048 0.093906 .
+#ORP_mV:Depth_m                                1      896 0.01489  1.1997 0.099900 .
+#Residual                                     20    14935 0.24820
+#Total                                        46    60172 1.00000
+adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+#         Df SumOfSqs     R2    F Pr(>F)
+#Model    26    45237 0.7518 2.33 0.1828
+#Residual 20    14935 0.2482
 
 # only using significant variables from previous model comparison
-adonis2(b.clr ~ ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova2<-adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+#                                   Df SumOfSqs      R2       F   Pr(>F)
+#DO_Percent_Local                   1     2269 0.03771  2.9545 0.036963 *
+#ORP_mV                             1     7763 0.12901 10.1061 0.000999 ***
+#Temp_DegC                          1     6991 0.11618  9.1010 0.075924 .
+#DO_Percent_Local:ORP_mV            1     1023 0.01701  1.3321 0.739261
+#DO_Percent_Local:Temp_DegC         1     8964 0.14897 11.6699 0.442557
+#ORP_mV:Temp_DegC                   1     2379 0.03954  3.0972 0.007992 **
+#DO_Percent_Local:ORP_mV:Temp_DegC  1      827 0.01375  1.0768 0.819181
+#Residual                          39    29956 0.49784
+#Total                             46    60172 1.00000
+adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+#         Df SumOfSqs      R2      F   Pr(>F)
+#Model     7    30216 0.50216 5.6197 0.003996 **
+#Residual 39    29956 0.49784
+#Total    46    60172 1.00000
+
 adonis2(b.clr ~ Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by="terms",permutations=perm) # Dissolved Organic Matter not significant
 # maybe Dissolved organic matter correlates with ORP or temp, which is driving this model significance
 adonis2(b.clr ~ ORP_mV,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
@@ -331,42 +425,42 @@ fit.test<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplex
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_manual(values=saturation(fair_cols, 0.9))+stat_compare_means(method = "anova",label.y=1.5) +stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,label = "p.signif")
 
-ggsave(fit.test,filename = "figures/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.test,filename = "figures/BetaDiversity/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
 
 fit.testa<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
   geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_manual(values=saturation(fair_cols, 0.9))+stat_compare_means(method = "anova",label.y=1.5,mapping=aes(label = format.pval(..p.adj.., digits = 3))) +stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,mapping=aes(label = format.pval(..p.adj.., digits = 3)))
 
-ggsave(fit.testa,filename = "figures/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.testa,filename = "figures/BetaDiversity/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
 
 fit.test0<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
   geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_manual(values=saturation(fair_cols, 0.9))+stat_compare_means(method = "anova",label.y=1.5) +stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,label = "p.signif")
 
-ggsave(fit.test,filename = "figures/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.test,filename = "figures/BetaDiversity/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
 
 fit.testa<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
   geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_manual(values=saturation(fair_cols, 0.9))
 
-ggsave(fit.testa,filename = "figures/DustComp_by_Elevation_ALL_no.sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.testa,filename = "figures/BetaDiversity/DustComp_by_Elevation_ALL_no.sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
 
 fit.testb<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
   geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_grey(start=0.8, end=0.3)
 
-ggsave(fit.testb,filename = "figures/DustComp_by_Elevation_ALL_gray_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.testb,filename = "figures/BetaDiversity/DustComp_by_Elevation_ALL_gray_5.24.21.pdf", width=10, height=8, dpi=600)
 
 fit.testb.0<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
   geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_grey(start=0.8, end=0.3)+stat_compare_means(method = "anova",label.y=1.5) +stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,label = "p.signif")
 
-ggsave(fit.testb.0,filename = "figures/DustComp_by_Elevation_ALL_gray_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
+ggsave(fit.testb.0,filename = "figures/BetaDiversity/DustComp_by_Elevation_ALL_gray_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
 
 ### Fungi comparisons first
 # Dust Comp x ITS1 Shannon diversity
@@ -406,7 +500,7 @@ fig.its1.fit1<-ggplot(its1_div_meta, aes(x = ITS1_Shannon_Diversity, y = DustCom
   stat_regline_equation(aes(label=paste(..adj.rr.label..)),label.y = 1.20,label.x=75)
 ## use summary(its1.fit1) to double check that stat_cor gives same p value as linear regression!
 
-ggsave(fig.its1.fit1,filename = "figures/DustComp_by_ITS1_ShanDiv_ALL_1.4.22.pdf", width=10, height=8, dpi=600)
+ggsave(fig.its1.fit1,filename = "figures/BetaDiversity/DustComp_by_ITS1_ShanDiv_ALL_1.4.22.pdf", width=10, height=8, dpi=600)
 
 fig.its1.fit1<-ggplot(its1_div_meta, aes(x = ITS1_Shannon_Diversity, y = DustComplexity)) +
   geom_point(aes(color=Elev.num),size=3) + theme_classic() + saturation(scale_colour_gradientn(colours=fair_cols,limits=c(400,2700),breaks = c(500,1250,2000,2600),labels=c("400","1100","2000","2700")), 0.9) +
@@ -423,7 +517,7 @@ fig.its1.fit1<-ggplot(its1_div_meta, aes(x = ITS1_Shannon_Diversity, y = DustCom
 #  stat_cor(label.y = 1, label.x=75) +
 #  stat_regline_equation(label.y = 1.05,label.x=75)
 
-#ggsave(fig.its1.fit2,filename = "figures/DustComp_by_ITS1_Shan_Div_ALL_5.19.21.pdf", width=10, height=8, dpi=600)
+#ggsave(fig.its1.fit2,filename = "figures/BetaDiversity/DustComp_by_ITS1_Shan_Div_ALL_5.19.21.pdf", width=10, height=8, dpi=600)
 
 
 # DustComp x ITS1 Species Richness
@@ -472,6 +566,6 @@ fig.its1.sr.fit1<-ggplot(its1_div_meta, aes(x = ITS1_Species_Richness, y = DustC
 
 ## use summary(its1.sr.fit1) to double check that stat_cor gives same p value as linear regression!
 
-ggsave(fig.its1.sr.fit1,filename = "figures/DustComp_by_ITS1_Spec_Richness_ALL_1.4.22.pdf", width=10, height=8, dpi=600)
+ggsave(fig.its1.sr.fit1,filename = "figures/BetaDiversity/DustComp_by_ITS1_Spec_Richness_ALL_1.4.22.pdf", width=10, height=8, dpi=600)
 
 
