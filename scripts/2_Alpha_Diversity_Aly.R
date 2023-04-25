@@ -38,7 +38,7 @@ suppressPackageStartupMessages({ # load packages quietly
 
 #### Load Global Env to Import Count/ASV Tables ####
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
-load("data/SSeawater_AlphaBetaDiv_Data.Rdata")
+load("data/SSeawater_AlphaDiv_Data.Rdata")
 #load("data/ssw_clr.euc.dist_2.21.23.Rdata")
 
 #save.image("data/Env_Seqs_All/env.seq_analysis.Rdata") # save global env to Rdata file
@@ -398,8 +398,15 @@ ggplot(bac.div.metadat2, aes(x = DO_Percent_Local, y = Bac_Shannon_Diversity)) +
   scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
   scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
-  stat_cor(label.y = 3, label.x=1) +
-  stat_regline_equation(aes(label=paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),label.y = 3.1,label.x=1)
+  stat_cor(label.y = 150, label.x=3) +
+  stat_regline_equation(aes(label=paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),label.y = 160,label.x=3)
+
+ggplot(bac.div.metadat2, aes(x = DO_Percent_Local, y = Bac_Shannon_Diversity)) +
+  geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() +
+  labs(title="Dissolved Oxygen x 16S Shannon Diversity", color="Depth (m)")+ylab("Shannon Diversity")+xlab("Dissolved Oxygen (%)")+
+  scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
+  scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))
 
 ggplot(bac.div.metadat2, aes(x = ORP_mV, y = Bac_Shannon_Diversity)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() +

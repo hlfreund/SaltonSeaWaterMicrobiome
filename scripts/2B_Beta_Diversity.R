@@ -287,6 +287,7 @@ adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC,data=meta_scaled,method = "euc
 #Residual 39    29956 0.49784
 #Total    46    60172 1.00000
 
+
 adonis2(b.clr ~ Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by="terms",permutations=perm) # Dissolved Organic Matter not significant
 # maybe Dissolved organic matter correlates with ORP or temp, which is driving this model significance
 adonis2(b.clr ~ ORP_mV,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
@@ -334,8 +335,6 @@ pair.mod1
 ### Pseudo F stat for PERMANOVA
 ### pseudo F-ratio: It compares the total sum of squared dissimilarities (or ranked dissimilarities) among objects belonging to different groups to that of objects belonging to the same group.
 ### Larger F-ratios indicate more pronounced group separation, however, the significance of this ratio is usually of more interest than its magnitude.
-
-
 
 #### Linear Regression Comparisons ####
 ## here the focus is comparing dust complexity to alpha diversity, species richness, & elevation
