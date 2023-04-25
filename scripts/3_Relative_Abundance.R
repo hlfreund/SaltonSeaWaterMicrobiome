@@ -778,16 +778,15 @@ g.sd.d.h2<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.05,], aes(SampDate
 
 ggsave(g.sd.d.h2,filename = "figures/RelativeAbundance/16S_Genera.RA_heatmap_date_depth_5perc.png", width=20, height=15, dpi=600)
 
-tp1<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.05,], aes(Genus, Count)) +
+g.sd.d.hm.1<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.05,], aes(Genus, Count)) +
   geom_jitter(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate), size=3, width=0.15, height=0) +
   scale_colour_gradient2(low="darkred",high="blue",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() + scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera at Depth by Sample Date",color="Depth (m)", shape="Sample Date")
 
-ggsave(tp1,filename = "figures/RelativeAbundance/SSW_16S_Phyla.RA_date_depth_taxasum.png", width=15, height=10, dpi=600)
+ggsave(g.sd.d.hm.1,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_depth_taxasum.png", width=15, height=10, dpi=600)
 ## ^ this figure includes the relative abundance of each organism by depth & date!!!
-
 
 #### Shared Genus Relative Abundance ####
 head(bac.dat.all)
