@@ -177,6 +177,8 @@ hist(bac.div.metadat$Bac_Species_Richness, col="blue")
 qqnorm(bac.div.metadat$Bac_Species_Richness, pch = 1, frame = FALSE)
 qqline(bac.div.metadat$Bac_Species_Richness, col = "steelblue", lwd = 2)
 
+### NOTE: bac.div.metadat2 has dropped outliers based on Shannon Diversity!
+
 shapiro.test(bac.div.metadat$DO_Percent_Local) # what is the p-value?
 hist(bac.div.metadat$DO_Percent_Local, col="blue")
 

@@ -33,7 +33,7 @@ suppressPackageStartupMessages({ # load packages quietly
 })
 
 #### Load Global Env to Import Count/ASV Tables ####
-load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
+load("data/MiSeq_16S.V3V4_W23_Data_Ready.Rdata") # save global env to Rdata file
 #save.image("data/Env_Seqs_All/env.seq_analysis.Rdata") # save global env to Rdata file
 bac.dat.all[1:4,1:4]
 bac.dat.all$Depth_m

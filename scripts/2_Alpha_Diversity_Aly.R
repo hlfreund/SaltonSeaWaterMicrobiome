@@ -38,7 +38,7 @@ suppressPackageStartupMessages({ # load packages quietly
 
 #### Load Global Env to Import Count/ASV Tables ####
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
-load("data/SSeawater_AlphaDiv_Data.Rdata")
+#load("data/SSeawater_AlphaDiv_Data.Rdata")
 #load("data/ssw_clr.euc.dist_2.21.23.Rdata")
 
 #save.image("data/Env_Seqs_All/env.seq_analysis.Rdata") # save global env to Rdata file
@@ -176,6 +176,8 @@ hist(bac.div.metadat$Bac_Species_Richness, col="blue")
 # visualize Q-Q plot for species richness
 qqnorm(bac.div.metadat$Bac_Species_Richness, pch = 1, frame = FALSE)
 qqline(bac.div.metadat$Bac_Species_Richness, col = "steelblue", lwd = 2)
+
+### NOTE: bac.div.metadat2 has dropped outliers based on Shannon Diversity!
 
 shapiro.test(bac.div.metadat2$DO_Percent_Local) # what is the p-value?
 hist(bac.div.metadat$DO_Percent_Local, col="blue")
