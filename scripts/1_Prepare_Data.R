@@ -55,7 +55,7 @@ bac.ASV_table[1:4,1:4]
 bac.ASV_taxa<-as.data.frame(unique(subset(bac.ASV_all, select=c(ASV_ID,Kingdom, Phylum, Class, Order, Family, Genus, Species))))
 bac.ASV_taxa[1:4,1:4]
 
-#### Update Metadata ####
+#### Import & Update Metadata ####
 # upload geochem data from Lyons lab
 
 chem_meta<-as.data.frame(read_xlsx("data/SaltonSeawater_Lyons_Aronson_Metadata_All.xlsx", sheet="Stratification_Parameters"))
@@ -108,11 +108,72 @@ metadata$SampDate_Color <- as.character(metadata$SampDate_Color)
 rownames(metadata)<-metadata$SampleID
 # save.image("data/SSW_analysis.Rdata")
 
+#### Import & Update Metadata - S data ####
+# upload geochem data from Lyons lab
+
+chem_S_meta<-as.data.frame(read_xlsx("data/SaltonSeawater_Lyons_Aronson_Metadata_All.xlsx", sheet="Stratification_Parameters_S"))
+head(chem_S_meta)
+chem_S_meta[1:4,1:4] # sanity check for gsub
+
+# create color variable(s) to identify variables by colors
+## color for sample type
+meta1<-unique(subset(bac.ASV_all, select=c(SampleID,Sample_Type,SampleMonth,SampleYear,Depth_m,SampleSource)))
+head(meta1)
+dim(meta1)
+rownames(meta1)<-meta1$SampleID
+
+metadata_S<-merge(meta1, chem_S_meta, by=c("SampleID","Sample_Type","SampleMonth","SampleYear", "Depth_m", "SampleSource"))
+head(metadata_S)
+
+# create factor levels for certain groups
+metadata_S$Depth_m<-factor(metadata_S$Depth_m, levels=c("0","2","3","4","5","7","9","10","11"))
+
+metadata_S$SampDate<-interaction(metadata_S$SampleMonth,metadata_S$SampleYear)
+head(metadata_S)
+metadata_S$SampDate<-factor(metadata_S$SampDate, levels=c("June.2021","August.2021","December.2021","April.2022"))
+
+unique(metadata_S$SampleMonth)
+metadata_S$SampleMonth<-factor(metadata_S$SampleMonth, levels=c("June","August","December","April"))
+unique(metadata_S$SampleMonth) # sanity check
+
+# Create color palettes to be used for gradient colors
+
+cold2warm1<-get_palette(paste0("#",c("252A52", "66ADE5", "FFC465","BF1B0B")),k=10)
+names(cold2warm1) <- levels(metadata_S$Depth_m)
+
+fair_cols <- paste0("#",c("252A52", "66ADE5", "FFC465","BF1B0B"))
+names(fair_cols) <- letters[1:4]
+fair_ramp <- scales::colour_ramp(fair_cols)
+fair_sat <- saturation(fair_ramp, 1)
+
+# Add colors for specific variables
+
+colorset1 = melt(c(June.2021="#36ab57",August.2021="#ff6f00",December.2021="#26547c",April.2022="#32cbff"))
+
+colorset1$SampDate<-rownames(colorset1)
+colnames(colorset1)[which(names(colorset1) == "value")] <- "SampDate_Color"
+colorset1
+
+metadata_S<-merge(metadata_S, colorset1, by="SampDate")
+head(metadata_S)
+metadata_S$SampDate_Color <- as.character(metadata_S$SampDate_Color)
+
+rownames(metadata_S)<-metadata_S$SampleID
+# save.image("data/SSW_analysis.Rdata")
+
+
 #### Scale Environmental Metadata ####
 head(metadata)
 meta_scaled<-metadata
 meta_scaled[,8:15]<-scale(meta_scaled[,8:15],center=TRUE,scale=TRUE) # only scale chem env data
 head(meta_scaled)
+
+## scale [S] metadata
+
+head(metadata_S)
+meta_scaled_S<-metadata_S
+meta_scaled_S[,8:17]<-scale(meta_scaled_S[,8:17],center=TRUE,scale=TRUE) # only scale chem env data
+head(meta_scaled_S)
 
 ### Merge Metadata & Count Data Together ####
 bac.dat.all<-merge(bac.ASV_all, metadata, by=c("SampleID","Sample_Type","SampleMonth","SampleYear", "Depth_m", "SampleSource"))
@@ -120,6 +181,14 @@ bac.dat.all<-merge(bac.ASV_all, metadata, by=c("SampleID","Sample_Type","SampleM
 bac.dat.all<-subset(bac.dat.all, select=-c(Exposure_Duration, Exposure_Type, Deployment, ExtractionMethod, LysisType, Sample_Color))
 head(bac.dat.all)
 dim(bac.dat.all)
+
+# now for metadata w/ [S]
+
+bac.dat.all.S<-merge(bac.ASV_all, metadata, by=c("SampleID","Sample_Type","SampleMonth","SampleYear", "Depth_m", "SampleSource"))
+#rownames(bac.dat.all.S)<-bac.dat.all.S$SampleID
+bac.dat.all.S<-subset(bac.dat.all.S, select=-c(Exposure_Duration, Exposure_Type, Deployment, ExtractionMethod, LysisType, Sample_Color))
+head(bac.dat.all.S)
+dim(bac.dat.all.S)
 
 ### Export Global Env for Other Scripts ####
 save.image("data/SSeawater_Data_Ready.Rdata")

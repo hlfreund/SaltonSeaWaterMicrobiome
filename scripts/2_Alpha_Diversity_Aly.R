@@ -356,6 +356,8 @@ summary(s.sr.lm.fit5)
 
 fit2<-aov(Bac_Species_Richness ~ Depth_m, data=bac.div.metadat2)
 pairwise.adonis(bac.div.metadat2$Bac_Species_Richness, bac.div.metadat2$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
+#adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+#test<-adonis2(bac.div.metadat2$Bac_Species_Richness ~ Depth_m, data=bac.div.metadat2)
 
 summary(fit2)
 #Df           Sum Sq Mean Sq    F value   Pr(>F)
