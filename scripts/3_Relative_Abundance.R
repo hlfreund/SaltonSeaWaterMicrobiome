@@ -33,7 +33,7 @@ suppressPackageStartupMessages({ # load packages quietly
 })
 
 #### Load Global Env to Import Count/ASV Tables ####
-load("data/MiSeq_16S.V3V4_W23_Data_Ready.Rdata") # save global env to Rdata file
+load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
 #save.image("data/Env_Seqs_All/env.seq_analysis.Rdata") # save global env to Rdata file
 bac.dat.all[1:4,1:4]
 bac.dat.all$Depth_m
@@ -531,7 +531,7 @@ ggsave(fsd3,filename = "figures/RelativeAbundance/SSW_16S_fam.RA_date_taxasum_5p
 
 #### Genus Relative Abundance ####
 # use dcast to count up ASVs within each Genus across all of the samples
-bac.dat.all.g<-subset(bac.dat.all, bac.dat.all$Genus!="Unknown")
+bac.dat.all.g<-subset(bac.dat.all, bac.dat.all$Genus!="Unknown") # drop unknown genera so they don't skew analyses
 "Unknown" %in% bac.dat.all.g$Genus
 
 b.genus_counts <- as.data.frame(dcast(bac.dat.all.g, SampleID~Genus+Species, value.var="Count", fun.aggregate=sum)) ###
@@ -768,13 +768,13 @@ b.gen.date.dep_m2$SampDate_Depth = factor(b.gen.date.dep_m2$SampDate_Depth, leve
 
 g.sd.d.h1<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.01,], aes(SampDate_Depth, Genus, fill= Count)) +geom_tile()+scale_fill_gradient2(low="lightblue",mid="white",high="orange",midpoint=0.3)+
   theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  labs(x="Sample ID", y="Microbial Genera", title="Microbial Genera & Sample Type",subtitle="Includes taxa with Relative Abundance > 1%",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
+  labs(x="Sampling Date & Depth (m)", y="Microbial Genera", title="Microbial Genera by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 1%",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
 
 ggsave(g.sd.d.h1,filename = "figures/RelativeAbundance/16S_Genera.RA_heatmap_date_depth_1perc.png", width=20, height=15, dpi=600)
 
 g.sd.d.h2<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.05,], aes(SampDate_Depth, Genus, fill= Count)) +geom_tile()+scale_fill_gradient2(low="lightblue",mid="white",high="orange",midpoint=0.3)+
   theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  labs(x="Sample ID", y="Microbial Genera", title="Microbial Genera & Sample Type",subtitle="Includes taxa with Relative Abundance > 1%",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
+  labs(x="Sampling Date & Depth (m)", y="Microbial Genera", title="Microbial Genera by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 1%",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
 
 ggsave(g.sd.d.h2,filename = "figures/RelativeAbundance/16S_Genera.RA_heatmap_date_depth_5perc.png", width=20, height=15, dpi=600)
 
@@ -783,9 +783,9 @@ g.sd.d.hm.1<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.05,], aes(Genus,
   scale_colour_gradient2(low="darkred",high="blue",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() + scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera at Depth by Sample Date",color="Depth (m)", shape="Sample Date")
+  labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera at Depth by Sample Date",subtitle="Includes taxa with Relative Abundance > 5%",color="Depth (m)", shape="Sample Date")
 
-ggsave(g.sd.d.hm.1,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_depth_taxasum.png", width=15, height=10, dpi=600)
+ggsave(g.sd.d.hm.1,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_depth_taxasum_5perc.png", width=15, height=10, dpi=600)
 ## ^ this figure includes the relative abundance of each organism by depth & date!!!
 
 #### Shared Genus Relative Abundance ####
