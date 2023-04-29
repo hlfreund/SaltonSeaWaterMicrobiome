@@ -636,6 +636,8 @@ head(b.gen.dep_m) ## relative abundance based on sum of counts by Genus!
 b.gen.dep_m$Genus<-gsub("^X.","",b.gen.dep_m$Genus) # get rid of leading X. in Genus names
 b.gen.dep_m$Genus<-gsub("\\.\\."," ",b.gen.dep_m$Genus) # get rid of .. in species name --> . is regex
 head(b.gen.dep_m) ## relative abundance based on sum of counts by genus!
+unique(b.gen.dep_m$Depth_m)
+b.gen.dep_m$Depth_m<-factor(b.gen.dep_m, levels=c("0","2","3","4","5","7","9","10","11"))
 
 # Barplot by Depth
 
@@ -769,12 +771,14 @@ b.gen.date.dep_m2$SampDate_Depth = factor(b.gen.date.dep_m2$SampDate_Depth, leve
 g.sd.d.h1<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.01,], aes(SampDate_Depth, Genus, fill= Count)) +geom_tile()+scale_fill_gradient2(low="lightblue",mid="white",high="orange",midpoint=0.3)+
   theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Sampling Date & Depth (m)", y="Microbial Genera", title="Microbial Genera by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 1%",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
+#+ scale_x_discrete(labels=c("June.2021"="June 2021","August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
 ggsave(g.sd.d.h1,filename = "figures/RelativeAbundance/16S_Genera.RA_heatmap_date_depth_1perc.png", width=20, height=15, dpi=600)
 
 g.sd.d.h2<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.05,], aes(SampDate_Depth, Genus, fill= Count)) +geom_tile()+scale_fill_gradient2(low="lightblue",mid="white",high="orange",midpoint=0.3)+
   theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Sampling Date & Depth (m)", y="Microbial Genera", title="Microbial Genera by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 1%",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
+#+ scale_x_discrete(labels=c("June.2021"="June 2021","August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
 ggsave(g.sd.d.h2,filename = "figures/RelativeAbundance/16S_Genera.RA_heatmap_date_depth_5perc.png", width=20, height=15, dpi=600)
 
