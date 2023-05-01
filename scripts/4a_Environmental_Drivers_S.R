@@ -35,7 +35,8 @@ suppressPackageStartupMessages({ # load packages quietly
 
 #### Load Global Env to Import Count/ASV Tables ####
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
-#load("data/SSW_env.seq_analysis.Rdata") # save global env to Rdata file
+load("data/SSW_Environ.Var_with_S.Rdata") # save global env to Rdata file
+
 bac.dat.all.S[1:4,1:4]
 bac.ASV_table[1:4,1:4]
 bac.ASV_table[(nrow(bac.ASV_table)-4):(nrow(bac.ASV_table)),(ncol(bac.ASV_table)-4):(ncol(bac.ASV_table))] # last 4 rows & cols
@@ -523,39 +524,112 @@ rda.aug2021.b1 = ordistep(rda(b.clr_AUG21 ~ 1, data = August.2021[,c(8,10:11,14:
 rda.aug2021.b2 = ordiR2step(rda(b.clr_AUG21 ~ 1, data = August.2021[,c(8,10:11,14:16)]),
                             scope=formula(rda.aug2021.1),
                             permutations = how(nperm=999))
-# b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU + ORP_mV = best model
+# no sig variables
 
 # check best fit model based on above results
 anova(rda.aug2021.b1, permutations = how(nperm=999)) # p =  0.001, significant
 
-anova(rda.aug2021.0, rda.aug2021.1) # p =  0.001, significant
+anova(rda.aug2021.0, rda.aug2021.1) # NA
 
-rda.aug2021.2<-rda(b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU+ORP_mV,data=August.2021)
+# picking sig variables from above and variables w/ low VIF and/or high R^2
+rda.aug2021.2<-rda(b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU+ORP_mV+Sulfide_microM+Sulfate_milliM,data=August.2021)
 summary(rda.aug2021.2)
-RsquareAdj(rda.aug2021.2) # how much variation is explained by our model? 14.31%
+RsquareAdj(rda.aug2021.2) # how much variation is explained by our model? 14.27%
 anova(rda.aug2021.2, by = "terms", permutations = how(nperm=999)) ### by variables
+#                             Df Variance      F Pr(>F)
+#Dissolved_OrganicMatter_RFU  1   157.93 1.9205  0.002 **
+#ORP_mV                       1   102.54 1.2470  0.140
+#Sulfate_milliM               1    82.07 0.9980  0.464
+#Residual                     4   328.95
+
 ## this will help us interpret our RDA and we can see some variable are not significant
 vif.cca(rda.aug2021.2)
-# Dissolved_OrganicMatter_RFU  ORP_mV
-# 2.834376                    2.834376
+#Dissolved_OrganicMatter_RFU         ORP_mV              Sulfide_microM              Sulfate_milliM
+#4.143109                         18.147482                   23.798872                    1.653647
 
 head(August.2021)
 ## we can use model selection instead of picking variables we think are important -- based on p values
-rda.aug2021.c1 = ordistep(rda(b.clr_AUG21 ~ 1, data = August.2021[,c(10,14)]),
+rda.aug2021.c1 = ordistep(rda(b.clr_AUG21 ~ 1, data = August.2021[,c(10,14:16)]),
                           scope=formula(rda.aug2021.2),
                           direction = "forward",
                           permutations = how(nperm=999))
 # b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU = best model
 # Can also use model selection to pick variables by which ones increase variation (R^2)
-rda.aug2021.c2 = ordiR2step(rda(b.clr_AUG21 ~ 1, data = August.2021[,c(10,14)]),
+rda.aug2021.c2 = ordiR2step(rda(b.clr_AUG21 ~ 1, data = August.2021[,c(10,14:16)]),
                             scope=formula(rda.aug2021.2),
                             permutations = how(nperm=999))
-# b.clr_AUG21 ~ ORP_mV = best model
+# nothing significant, ORP_mV & Sulfide_microM have highest R^2
 
 # check best fit model based on above results
 anova(rda.aug2021.c1, permutations = how(nperm=999)) # p =  0.001, significant
 
 anova(rda.aug2021.0, rda.aug2021.2) # p =  0.001, significant
+
+# picking sig variables from above and variables w/ low VIF and/or high R^2
+rda.aug2021.3<-rda(b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU+ORP_mV+Sulfate_milliM,data=August.2021)
+summary(rda.aug2021.3)
+RsquareAdj(rda.aug2021.3) # how much variation is explained by our model? 14.27%
+anova(rda.aug2021.3, by = "terms", permutations = how(nperm=999)) ### by variables
+#                             Df Variance      F Pr(>F)
+#Dissolved_OrganicMatter_RFU  1   157.93 1.9205  0.002 **
+#ORP_mV                       1   102.54 1.2470  0.140
+#Sulfate_milliM               1    82.07 0.9980  0.464
+#Residual                     4   328.95
+
+## this will help us interpret our RDA and we can see some variable are not significant
+vif.cca(rda.aug2021.3)
+#Dissolved_OrganicMatter_RFU    ORP_mV              Sulfate_milliM
+#3.261288                       2.863766                    1.636527
+
+head(August.2021)
+## we can use model selection instead of picking variables we think are important -- based on p values
+rda.aug2021.d1 = ordistep(rda(b.clr_AUG21 ~ 1, data = August.2021[,c(10,14:15)]),
+                          scope=formula(rda.aug2021.3),
+                          direction = "forward",
+                          permutations = how(nperm=999))
+# b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU = best model
+# Can also use model selection to pick variables by which ones increase variation (R^2)
+rda.aug2021.d2 = ordiR2step(rda(b.clr_AUG21 ~ 1, data = August.2021[,c(10,14:15)]),
+                            scope=formula(rda.aug2021.3),
+                            permutations = how(nperm=999))
+# nothing significant, ORP_mV  R^2
+
+# check best fit model based on above results
+anova(rda.aug2021.d1, permutations = how(nperm=999)) # p =  0.001, significant
+
+anova(rda.aug2021.0, rda.aug2021.3) # p =  0.001, significant
+
+rda.aug2021.4<-rda(b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU+ORP_mV,data=August.2021)
+summary(rda.aug2021.4)
+RsquareAdj(rda.aug2021.4) # how much variation is explained by our model? 14.3%
+anova(rda.aug2021.4, by = "terms", permutations = how(nperm=999)) ### by variables
+#                             Df Variance      F Pr(>F)
+#Dissolved_OrganicMatter_RFU  1   157.93 1.9213  0.001 ***
+#ORP_mV                       1   102.54 1.2475  0.108
+#Residual                     5   411.02
+
+## this will help us interpret our RDA and we can see some variable are not significant
+vif.cca(rda.aug2021.4)
+#Dissolved_OrganicMatter_RFU    ORP_mV
+#2.834376                    2.834376
+
+head(August.2021)
+## we can use model selection instead of picking variables we think are important -- based on p values
+rda.aug2021.e1 = ordistep(rda(b.clr_AUG21 ~ 1, data = August.2021[,c(10,14)]),
+                          scope=formula(rda.aug2021.4),
+                          direction = "forward",
+                          permutations = how(nperm=999))
+# b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU = best model
+# Can also use model selection to pick variables by which ones increase variation (R^2)
+rda.aug2021.e2 = ordiR2step(rda(b.clr_AUG21 ~ 1, data = August.2021[,c(10,14)]),
+                            scope=formula(rda.aug2021.4),
+                            permutations = how(nperm=999))
+# nothing significant, ORP_mV  R^2
+
+# check best fit model based on above results
+anova(rda.aug2021.e1, permutations = how(nperm=999)) # p =  0.001, significant
+
+anova(rda.aug2021.0, rda.aug2021.4) # p =  0.001, significant
 
 #### RDA - December 2021 ####
 
@@ -582,6 +656,7 @@ anova(rda.dec2021.0, by = "axis", permutations = how(nperm=999)) ### by RDA axis
 ## or by terms (aka variables)
 anova(rda.dec2021.0, by = "terms", permutations = how(nperm=999)) ### by variables
 ## this will help us interpret our RDA and we can see some variable are not significant
+# DO% local is nearish significant
 
 # Calculating variance inflation factor (VIF) for each predictor variable to check multicolinearity of predictor variables
 ## VIF helps determien which predictors are too strongly correlated with other predictor variables to explain variation observed
@@ -612,65 +687,94 @@ anova(rda.dec2021.a, permutations = how(nperm=999)) # p =  0.001, significant
 anova(rda.dec2021.a2, permutations = how(nperm=999)) # p =  0.001, significant
 
 # Let's double check by removing the variables with high VIF
-rda.dec2021.1<-rda(b.clr_DEC21 ~ Dissolved_OrganicMatter_RFU + Temp_DegC + DO_Percent_Local,data=December.2021)
+rda.dec2021.1<-rda(b.clr_DEC21 ~ Dissolved_OrganicMatter_RFU + Temp_DegC + DO_Percent_Local+Sulfate_milliM+Sulfide_microM,data=December.2021)
 summary(rda.dec2021.1)
-RsquareAdj(rda.dec2021.1) # how much variation is explained by our model? 12.77%
+RsquareAdj(rda.dec2021.1) # how much variation is explained by our model? 4.78%
 anova(rda.dec2021.1, by = "terms", permutations = how(nperm=999)) ### by variables
 #                            Df Variance      F Pr(>F)
-#Dissolved_OrganicMatter_RFU  1   112.13 1.8070  0.044 *
-#Temp_DegC                    1   178.48 2.8763  0.064 .
-#DO_Percent_Local             1    31.77 0.5120  0.901
-#Residual                    12   744.62
+#Dissolved_OrganicMatter_RFU  1   112.13 1.6554  0.059 .
+#Temp_DegC                    1   178.48 2.6351  0.076 .
+#DO_Percent_Local             1    31.77 0.4690  0.958
+#Sulfate_milliM               1    31.99 0.4722  0.916
+#Sulfide_microM               1    35.31 0.5214  0.835
+#Residual                    10   677.32
 
 ## this will help us interpret our RDA and we can see some variable are not significant
 vif.cca(rda.dec2021.1)
-# Dissolved_OrganicMatter_RFU  Temp_DegC            DO_Percent_Local
-# 33.92260                    56.33309                    45.36584
+# Dissolved_OrganicMatter_RFU  Temp_DegC            DO_Percent_Local              Sulfate_milliM              Sulfide_microM
+#49.163020                   95.283457                   72.082722                    1.135295                    2.529752
 
 head(December.2021)
 ## we can use model selection instead of picking variables we think are important -- based on p values
-rda.dec2021.b1 = ordistep(rda(b.clr_DEC21 ~ 1, data = December.2021[,c(8,11,14)]),
+rda.dec2021.b1 = ordistep(rda(b.clr_DEC21 ~ 1, data = December.2021[,c(8,11,14:16)]),
                           scope=formula(rda.dec2021.1),
                           direction = "forward",
                           permutations = how(nperm=999))
-# b.clr_DEC21 ~ 1 -- nothing significant but all near it
+# b.clr_DEC21 ~ Dissolved_OrganicMatter_RFU+Temp_DegC+DO% -- nothing significant but all near it
 # Can also use model selection to pick variables by which ones increase variation (R^2)
-rda.dec2021.b2 = ordiR2step(rda(b.clr_DEC21 ~ 1, data = December.2021[,c(8,11,14)]),
+rda.dec2021.b2 = ordiR2step(rda(b.clr_DEC21 ~ 1, data = December.2021[,c(8,11,14:16)]),
                             scope=formula(rda.dec2021.1),
                             permutations = how(nperm=999))
 # b.clr_DEC21 ~ DO% = not significant but most variation
 
 # check best fit model based on above results
-anova(rda.dec2021.b1, permutations = how(nperm=999)) # p =  0.001, significant
+anova(rda.dec2021.b1, permutations = how(nperm=999)) # not sig
 
 anova(rda.dec2021.0, rda.dec2021.1) # no significant difference
 
-rda.dec2021.2<-rda(b.clr_DEC21 ~ Dissolved_OrganicMatter_RFU+DO_Percent_Local,data=December.2021)
+rda.dec2021.2<-rda(b.clr_DEC21 ~ Dissolved_OrganicMatter_RFU+DO_Percent_Local+Sulfate_milliM+Sulfide_microM,data=December.2021)
 summary(rda.dec2021.2)
-RsquareAdj(rda.dec2021.2) # how much variation is explained by our model? 16.34%
+RsquareAdj(rda.dec2021.2) # how much variation is explained by our model? 9.40%
 anova(rda.dec2021.2, by = "terms", permutations = how(nperm=999)) ### by variables
 ## this will help us interpret our RDA and we can see some variable are not significant
 vif.cca(rda.dec2021.2)
-# Dissolved_OrganicMatter_RFU            DO_Percent_Local
-# 1.0888                      1.0888
+# Dissolved_OrganicMatter_RFU            DO_Percent_Local              Sulfate_milliM              Sulfide_microM
+# 1.570823                    1.183040                    1.050491                    1.509960
 
 head(December.2021)
 ## we can use model selection instead of picking variables we think are important -- based on p values
-rda.dec2021.c1 = ordistep(rda(b.clr_DEC21 ~ 1, data = December.2021[,c(8,14)]),
+rda.dec2021.c1 = ordistep(rda(b.clr_DEC21 ~ 1, data = December.2021[,c(8,14:16)]),
                           scope=formula(rda.dec2021.2),
                           direction = "forward",
                           permutations = how(nperm=999))
-# b.clr_DEC21 ~ 1 = nothing significant but close
+# b.clr_DEC21 ~ Dissolved_OrganicMatter_RFU + DO_Percent_Local
 # Can also use model selection to pick variables by which ones increase variation (R^2)
-rda.dec2021.c2 = ordiR2step(rda(b.clr_DEC21 ~ 1, data = December.2021[,c(8,14)]),
+rda.dec2021.c2 = ordiR2step(rda(b.clr_DEC21 ~ 1, data = December.2021[,c(8,14:16)]),
                             scope=formula(rda.dec2021.2),
                             permutations = how(nperm=999))
-# b.clr_DEC21 ~ DO_Percent_Local = best model
+# b.clr_DEC21 ~ DO_Percent_Local = not significant but highest variation
 
 # check best fit model based on above results
 anova(rda.dec2021.c1, permutations = how(nperm=999)) # p =  0.001, significant
 
 anova(rda.dec2021.0, rda.dec2021.2) # no significant difference
+
+rda.dec2021.3<-rda(b.clr_DEC21 ~ Dissolved_OrganicMatter_RFU+DO_Percent_Local,data=December.2021)
+summary(rda.dec2021.3)
+RsquareAdj(rda.dec2021.3) # how much variation is explained by our model? 16.34%
+anova(rda.dec2021.3, by = "terms", permutations = how(nperm=999)) ### by variables
+## this will help us interpret our RDA and we can see some variable are not significant
+vif.cca(rda.dec2021.3)
+# Dissolved_OrganicMatter_RFU   DO_Percent_Local
+# 1.0888                      1.0888
+
+head(December.2021)
+## we can use model selection instead of picking variables we think are important -- based on p values
+rda.dec2021.d1 = ordistep(rda(b.clr_DEC21 ~ 1, data = December.2021[,c(8,14)]),
+                          scope=formula(rda.dec2021.3),
+                          direction = "forward",
+                          permutations = how(nperm=999))
+# b.clr_DEC21 ~ Dissolved_OrganicMatter_RFU + DO_Percent_Local, near significant
+# Can also use model selection to pick variables by which ones increase variation (R^2)
+rda.dec2021.d2 = ordiR2step(rda(b.clr_DEC21 ~ 1, data = December.2021[,c(8,14)]),
+                            scope=formula(rda.dec2021.3),
+                            permutations = how(nperm=999))
+# b.clr_DEC21 ~ DO_Percent_Local = not significant but highest variation
+
+# check best fit model based on above results
+anova(rda.dec2021.d1, permutations = how(nperm=999)) # p =  0.001, significant
+
+anova(rda.dec2021.0, rda.dec2021.3) # no significant difference
 
 #### RDA - April 2022 ####
 
@@ -705,8 +809,8 @@ vif.cca(rda.apr2022.0)
 #8386.86617                    42.61986                  5587.71718                 24533.66496                   737.36967
 #Depth_m4                    Depth_m5                    Depth_m7                    Depth_m9                   Depth_m10
 #78.16160                          NA                          NA                          NA                     1.75000
-#Depth_m11
-#NA
+#Depth_m11 Sulfate_milliM              Sulfide_microM
+#NA           NA                          NA
 
 ## Understanding VIF results...
 # A value of 1 indicates there is no correlation between a given predictor variable and any other predictor variables in the model.
@@ -729,63 +833,91 @@ rda.apr2022.a2 = ordiR2step(rda(b.clr_APR22 ~ 1, data = April.2022[,c(6,8,10:11,
 # Depth_m - not significant
 
 # check best fit model based on above results
-anova(rda.apr2022.a, permutations = how(nperm=999)) # p =  0.001, significant
+anova(rda.apr2022.a, permutations = how(nperm=999)) # not sig
 
-# Let's double check by removing the variables with high VIF
-rda.apr2022.1<-rda(b.clr_APR22 ~ ORP_mV + Dissolved_OrganicMatter_RFU + Temp_DegC + DO_Percent_Local,data=April.2022)
+# Let's double check by removing the categorical variables
+rda.apr2022.1<-rda(b.clr_APR22 ~ ORP_mV + Dissolved_OrganicMatter_RFU + Temp_DegC + DO_Percent_Local + Sulfate_milliM + Sulfide_microM,data=April.2022)
 summary(rda.apr2022.1)
-RsquareAdj(rda.apr2022.1) # how much variation is explained by our model? -0.02986758%
+RsquareAdj(rda.apr2022.1) # how much variation is explained by our model? -0.08195594
 anova(rda.apr2022.1, by = "terms", permutations = how(nperm=999)) ### by variables
 #  nothing significant
 
 ## this will help us interpret our RDA and we can see some variable are not significant
 vif.cca(rda.apr2022.1)
-# ORP_mV Dissolved_OrganicMatter_RFU                   Temp_DegC            DO_Percent_Local
-# 10.69370                   528.50030                   347.09750                    23.99276
+# ORP_mV Dissolved_OrganicMatter_RFU                   Temp_DegC            DO_Percent_Local              Sulfate_milliM
+# 23.876341                  701.889379                  538.074947                   40.617818                    2.255798
+# Sulfide_microM
+# 4.294896
 
 head(April.2022)
 ## we can use model selection instead of picking variables we think are important -- based on p values
-rda.apr2022.b1 = ordistep(rda(b.clr_APR22 ~ 1, data = April.2022[,c(8,10:11,14)]),
+rda.apr2022.b1 = ordistep(rda(b.clr_APR22 ~ 1, data = April.2022[,c(8,10:11,14:16)]),
                           scope=formula(rda.apr2022.1),
                           direction = "forward",
                           permutations = how(nperm=999))
 # b.clr_APR22 ~ 1 -- nothing significant but all near it
 # Can also use model selection to pick variables by which ones increase variation (R^2)
-rda.apr2022.b2 = ordiR2step(rda(b.clr_APR22 ~ 1, data = April.2022[,c(8,10:11,14)]),
+rda.apr2022.b2 = ordiR2step(rda(b.clr_APR22 ~ 1, data = April.2022[,c(8,10:11,14:16)]),
                             scope=formula(rda.apr2022.1),
                             permutations = how(nperm=999))
 # b.clr_APR22 - nothing significant
 
 # check best fit model based on above results
-anova(rda.apr2022.b1, permutations = how(nperm=999)) # p =  0.001, significant
+anova(rda.apr2022.b1, permutations = how(nperm=999)) # not sig
 
 anova(rda.apr2022.0, rda.apr2022.1) # no significant difference
 
-rda.apr2022.2<-rda(b.clr_APR22 ~ ORP_mV+DO_Percent_Local,data=April.2022)
+rda.apr2022.2<-rda(b.clr_APR22 ~ ORP_mV+Sulfate_milliM+Sulfide_microM,data=April.2022)
 summary(rda.apr2022.2)
-RsquareAdj(rda.apr2022.2) # how much variation is explained by our model? -0.00959%
+RsquareAdj(rda.apr2022.2) # how much variation is explained by our model? -0.04%
 anova(rda.apr2022.2, by = "terms", permutations = how(nperm=999)) ### by variables
 ## this will help us interpret our RDA and we can see some variable are not significant
 vif.cca(rda.apr2022.2)
-# ORP_mV DO_Percent_Local
-# 3.490997         3.490997
+# ORP_mV Sulfate_milliM Sulfide_microM
+# 1.214250       1.392552       1.166129
 
 head(April.2022)
 ## we can use model selection instead of picking variables we think are important -- based on p values
-rda.apr2022.c1 = ordistep(rda(b.clr_APR22 ~ 1, data = April.2022[,c(8,10)]),
+rda.apr2022.c1 = ordistep(rda(b.clr_APR22 ~ 1, data = April.2022[,c(10,15:16)]),
                           scope=formula(rda.apr2022.2),
                           direction = "forward",
                           permutations = how(nperm=999))
 # b.clr_APR22 ~ 1 = nothing significant but close
 # Can also use model selection to pick variables by which ones increase variation (R^2)
-rda.apr2022.c2 = ordiR2step(rda(b.clr_APR22 ~ 1, data = April.2022[,c(8,10)]),
+rda.apr2022.c2 = ordiR2step(rda(b.clr_APR22 ~ 1, data = April.2022[,c(10,15:16)]),
                             scope=formula(rda.apr2022.2),
                             permutations = how(nperm=999))
 
 # check best fit model based on above results
-anova(rda.apr2022.c1, permutations = how(nperm=999)) # p =  0.001, significant
+anova(rda.apr2022.c1, permutations = how(nperm=999)) # not sig
 
 anova(rda.apr2022.0, rda.apr2022.2) # no significant difference
+
+rda.apr2022.3<-rda(b.clr_APR22 ~ ORP_mV+Sulfide_microM,data=April.2022)
+summary(rda.apr2022.3)
+RsquareAdj(rda.apr2022.3) # how much variation is explained by our model? -0.04%
+anova(rda.apr2022.3, by = "terms", permutations = how(nperm=999)) ### by variables, nothing significant
+## this will help us interpret our RDA and we can see some variable are not significant
+vif.cca(rda.apr2022.3)
+# ORP_mV Sulfide_microM
+#1.001771       1.001771
+
+head(April.2022)
+## we can use model selection instead of picking variables we think are important -- based on p values
+rda.apr2022.d1 = ordistep(rda(b.clr_APR22 ~ 1, data = April.2022[,c(10,16)]),
+                          scope=formula(rda.apr2022.3),
+                          direction = "forward",
+                          permutations = how(nperm=999))
+# b.clr_APR22 ~ 1 = nothing significant but close
+# Can also use model selection to pick variables by which ones increase variation (R^2)
+rda.apr2022.d2 = ordiR2step(rda(b.clr_APR22 ~ 1, data = April.2022[,c(10,16)]),
+                            scope=formula(rda.apr2022.3),
+                            permutations = how(nperm=999))
+
+# check best fit model based on above results
+anova(rda.apr2022.d1, permutations = how(nperm=999)) # not sig
+
+anova(rda.apr2022.0, rda.apr2022.3) # no significant difference
 
 #### Final RDAs ####
 # RDA by sampling timepoint
@@ -795,60 +927,62 @@ rownames(b.clr) %in% rownames(meta_scaled_S) # sanity check 1
 rownames(b.clr_JUN21) %in% rownames(June.2021) # sanity check 2
 
 # all data
-rda.all<-rda(b.clr ~ ORP_mV + Dissolved_OrganicMatter_RFU + DO_Percent_Local,data=meta_scaled_S)
+rda.all<-rda(b.clr ~ Dissolved_OrganicMatter_RFU + Sulfate_milliM + Temp_DegC,data=meta_scaled_S)
 rda.all
 summary(rda.all)
-RsquareAdj(rda.all) # how much variation is explained by our model? 18.8 variation
+RsquareAdj(rda.all) # how much variation is explained by our model? 19.13 variation
 anova(rda.all, permutations = how(nperm=999)) # p-value = 0.001
 anova(rda.all, by = "terms", permutations = how(nperm=999))
 #                               Df Variance      F Pr(>F)
-#ORP_mV                       1    85.86 3.7186  0.002 **
-#Dissolved_OrganicMatter_RFU  1    88.11 3.8160  0.001 ***
-#DO_Percent_Local             1   141.30 6.1199  0.001 ***
-#Residual                    43   992.83
+#Dissolved_OrganicMatter_RFU  1   132.30 5.2823  0.001 ***
+#Sulfate_milliM               1   109.66 4.3785  0.001 ***
+#Temp_DegC                    1    64.31 2.5675  0.024 *
+#Residual                    36   901.65
 
 # June 2021
-rda.jun2021<-rda(b.clr_JUN21 ~ ORP_mV+Temp_DegC,data=June.2021)
-rda.jun2021
-summary(rda.jun2021)
-RsquareAdj(rda.jun2021) # how much variation is explained by our model? 24.88%
-anova(rda.jun2021, permutations = how(nperm=999)) # p-value = 0.02
-anova(rda.jun2021, by = "terms", permutations = how(nperm=999))
+#rda.jun2021<-rda(b.clr_JUN21 ~ ORP_mV+Temp_DegC,data=June.2021)
+#rda.jun2021
+#summary(rda.jun2021)
+#RsquareAdj(rda.jun2021) # how much variation is explained by our model? 24.88%
+#anova(rda.jun2021, permutations = how(nperm=999)) # p-value = 0.02
+#anova(rda.jun2021, by = "terms", permutations = how(nperm=999))
 #          Df Variance      F Pr(>F)
 #ORP_mV     1   229.94 2.4363  0.008 **
 #Temp_DegC  1   146.42 1.5514  0.118
 #Residual   4   377.53
 
 # August 2021
-rda.aug2021<-rda(b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU+ORP_mV,data=August.2021)
+rda.aug2021<-rda(b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU+ORP_mV+Sulfate_milliM,data=August.2021)
 summary(rda.aug2021)
-RsquareAdj(rda.aug2021) # how much variation is explained by our model? 14.31%
-anova(rda.aug2021, permutations = how(nperm=999)) # p-value = 0.009 **
+RsquareAdj(rda.aug2021) # how much variation is explained by our model? 14.27%
+anova(rda.aug2021, permutations = how(nperm=999)) # p-value = 0.013 *
 anova(rda.aug2021, by = "terms", permutations = how(nperm=999))
 #                           Df Variance      F Pr(>F)
-#Dissolved_OrganicMatter_RFU  1   157.93 1.9213  0.002 **
-#ORP_mV                       1   102.54 1.2475  0.133
-#Residual                     5   411.02
+#Dissolved_OrganicMatter_RFU  1   157.93 1.9205  0.001 ***
+#ORP_mV                       1   102.54 1.2470  0.136
+#Sulfate_milliM               1    82.07 0.9980  0.434
+#Residual                     4   328.95
 
 # December 2021
 rda.dec2021<-rda(b.clr_DEC21 ~ Dissolved_OrganicMatter_RFU+DO_Percent_Local,data=December.2021)
 summary(rda.dec2021)
 RsquareAdj(rda.dec2021) # how much variation is explained by our model? 16.34%
-anova(rda.dec2021, permutations = how(nperm=999)) # p-value = 0.026
+anova(rda.dec2021, permutations = how(nperm=999)) # p-value = 0.031
 anova(rda.dec2021, by = "terms", permutations = how(nperm=999))
 #                             Df Variance      F Pr(>F)
-#Dissolved_OrganicMatter_RFU  1   112.13 1.8841  0.025 *
-#DO_Percent_Local             1   181.23 3.0453  0.062 .
+#Dissolved_OrganicMatter_RFU  1   112.13 1.8841  0.032 *
+#DO_Percent_Local             1   181.23 3.0453  0.058 .
 #Residual                    13   773.64
 
 # April 2022 [no significant env variables]
-rda.apr2022<-rda(b.clr_APR22 ~ ORP_mV+DO_Percent_Local,data=April.2022)
+rda.apr2022<-rda(b.clr_APR22 ~ ORP_mV+Sulfate_milliM,data=April.2022)
 summary(rda.apr2022)
-RsquareAdj(rda.apr2022) # how much variation is explained by our model? -0.959%
+RsquareAdj(rda.apr2022) # how much variation is explained by our model? -2.47%
 anova(rda.apr2022, permutations = how(nperm=999)) # p-value = 0.383
 anova(rda.apr2022, by = "terms", permutations = how(nperm=999))
 
 #### Plot RDA - ALL data ####
+rda.all
 #plot(rda.jun2021) # depending on how many species you have, this step may take a while
 plot(rda.all, scaling = 1)
 ## scaling = 1 -> emphasizes relationships among sites
@@ -860,7 +994,7 @@ summary(rda.all)
 
 # how much variation does our model explain?
 ## reminder: R^2 = % of variation in dependent variable explained by model
-RsquareAdj(rda.all) # 18.81%
+RsquareAdj(rda.all) # 19.13
 ## ^^ use this b/c chance correlations can inflate R^2
 
 # we can then test for significance of the model by permutation
@@ -883,10 +1017,11 @@ rda.axes.all<-data.frame(RDA1=rda.sum.all$sites[,1], RDA2=rda.sum.all$sites[,2],
 
 # create data frame w/ RDA axes for variables
 arrows.all<-data.frame(RDA1=rda.sum.all$biplot[,1], RDA2=rda.sum.all$biplot[,2], Label=rownames(rda.sum.all$biplot))
-arrows.all$Label[(arrows.all$Label) == "ORP_mV"] <- "ORP (mV)"
+#arrows.all$Label[(arrows.all$Label) == "ORP_mV"] <- "ORP (mV)"
 arrows.all$Label[(arrows.all$Label) == "Dissolved_OrganicMatter_RFU"] <- "DOM (RFU)"
-arrows.all$Label[(arrows.all$Label) == "DO_Percent_Local"] <- "DO%"
-#arrows.all$Label[(arrows.all$Label) == "Temp_DegC"] <- "Temp (C)"
+#arrows.all$Label[(arrows.all$Label) == "DO_Percent_Local"] <- "DO%"
+arrows.all$Label[(arrows.all$Label) == "Temp_DegC"] <- "Temp (C)"
+arrows.all$Label[(arrows.all$Label) == "Sulfate_milliM"] <- "Sulfate (mM)"
 
 rda.plot1<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(size=2) +
   geom_segment(data = arrows.all,mapping = aes(x = 0, y = 0, xend = RDA1, yend = RDA2),lineend = "round", # See available arrow types in example above
@@ -905,13 +1040,13 @@ rda.plot2<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=
                arrow = arrow(length = unit(0.15, "inches")),
                colour = "black") +
   geom_label(data = arrows.all,aes(label = Label, x = RDA1*13, y = RDA2*13, fontface="bold"), size=4)+
-  coord_fixed(ratio = 1, xlim = c(-10,10), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
-  scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
+  coord_fixed(ratio = 1, xlim = c(-12,12), ylim = c(-13,13)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
+  scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
   labs(title="RDA: Bacteria/Archaea in Salton Seawater",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
-  xlab("RDA1 [13.04%]") + ylab("RDA2 [9.88%]")
+  xlab("RDA1 [15.19%]") + ylab("RDA2 [5.55%]")
 
-ggsave(rda.plot2,filename = "figures/EnvDrivers/SSW_16S_RDA_AllData.png", width=15, height=15, dpi=600)
+ggsave(rda.plot2,filename = "figures/EnvDrivers/SSW_16S_RDA_AllData_with_S.png", width=15, height=15, dpi=600)
 
 
 rda.plot3<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate),size=5) +
@@ -921,13 +1056,13 @@ rda.plot3<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=
                arrow = arrow(length = unit(0.15, "inches")),
                colour = "black") +
   geom_label(data = arrows.all,aes(label = Label, x = RDA1*13, y = RDA2*13, fontface="bold"), size=5)+
-  coord_fixed(ratio = 1, xlim = c(-10,10), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
+  coord_fixed(ratio = 1, xlim = c(-12,12), ylim = c(-13,13)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
   scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
   labs(title="RDA: Bacteria/Archaea in Salton Seawater",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
-  xlab("RDA1 [13.04%]") + ylab("RDA2 [9.88%]")
+  xlab("RDA1 [15.19%]") + ylab("RDA2 [5.55%]")
 
-ggsave(rda.plot3,filename = "figures/EnvDrivers/SSW_16S_RDA_AllData_bigger.png", width=15, height=15, dpi=600)
+ggsave(rda.plot3,filename = "figures/EnvDrivers/SSW_16S_RDA_AllData_with_S_bigger.png", width=15, height=15, dpi=600)
 
 #### Plot RDA - June 2021 ####
 #plot(rda.jun2021) # depending on how many species you have, this step may take a while
@@ -992,6 +1127,7 @@ rda.plot4<-ggplot(rda.axes.j21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=
 ggsave(rda.plot4,filename = "figures/EnvDrivers/SSW_16S_RDA_Jun2021.png", width=15, height=12, dpi=600)
 
 #### Plot RDA - Aug 2021 ####
+rda.aug2021
 #plot(rda.aug2021) # depending on how many species you have, this step may take a while
 plot(rda.aug2021, scaling = 1)
 ## scaling = 1 -> emphasizes relationships among sites
@@ -1003,7 +1139,7 @@ summary(rda.aug2021)
 
 # how much variation does our model explain?
 ## reminder: R^2 = % of variation in dependent variable explained by model
-RsquareAdj(rda.aug2021) # 14.31%
+RsquareAdj(rda.aug2021) # 14.27%
 ## ^^ use this b/c chance correlations can inflate R^2
 
 png('autoplot_rda_example.png',width = 700, height = 600, res=100)
@@ -1014,7 +1150,7 @@ dev.off()
 rda.sum.a21<-summary(rda.aug2021)
 rda.sum.a21$sites[,1:2]
 rda.sum.a21$cont #cumulative proportion of variance per axis
-# RDA1=27%, RDA2=11.79%
+# RDA1=27.24%, RDA2=12.57%
 
 # create data frame w/ RDA axes for sites
 rda.axes.a21<-data.frame(RDA1=rda.sum.a21$sites[,1], RDA2=rda.sum.a21$sites[,2], SampleID=rownames(rda.sum.a21$sites), Depth_m=August.2021$Depth_m)
@@ -1025,6 +1161,7 @@ arrows.a21$Label[(arrows.a21$Label) == "ORP_mV"] <- "ORP (mV)"
 arrows.a21$Label[(arrows.a21$Label) == "Dissolved_OrganicMatter_RFU"] <- "DOM (RFU)"
 #arrows.a21$Label[(arrows.a21$Label) == "DO_Percent_Local"] <- "DO%"
 #arrows.a21$Label[(arrows.a21$Label) == "Temp_DegC"] <- "Temp (C)"
+arrows.a21$Label[(arrows.a21$Label) == "Sulfate_milliM"] <- "Sulfate (mM)"
 
 rda.plot5<-ggplot(rda.axes.a21, aes(x = RDA1, y = RDA2)) + geom_point(size=2) +
   geom_segment(data = arrows.a21,mapping = aes(x = 0, y = 0, xend = RDA1, yend = RDA2),lineend = "round", # See available arrow types in example above
@@ -1036,7 +1173,7 @@ rda.plot5<-ggplot(rda.axes.a21, aes(x = RDA1, y = RDA2)) + geom_point(size=2) +
   coord_fixed() + theme_classic() +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1))
 
-rda.plot6<-ggplot(rda.axes.a21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m))),size=4) +
+rda.plot6a<-ggplot(rda.axes.a21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m))),size=4) +
   geom_segment(data = arrows.a21,mapping = aes(x = 0, y = 0, xend = RDA1*8, yend = RDA2*8),lineend = "round", # See available arrow types in example above
                linejoin = "round",
                size = 0.8,
@@ -1046,11 +1183,26 @@ rda.plot6<-ggplot(rda.axes.a21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=
   coord_fixed(ratio = 1, xlim = c(-10,10), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
   labs(title="RDA: Bacteria/Archaea in Salton Seawater, August 2021",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
-  xlab("RDA1 [27.00%]") + ylab("RDA2 [11.79%]")
+  xlab("RDA1 [27.24%]") + ylab("RDA2 [12.57%]")
 
-ggsave(rda.plot6,filename = "figures/EnvDrivers/SSW_16S_RDA_Aug2021.png", width=16, height=12, dpi=600)
+ggsave(rda.plot6a,filename = "figures/EnvDrivers/SSW_16S_RDA_Aug2021_with_S.png", width=16, height=12, dpi=600)
+
+rda.plot6b<-ggplot(rda.axes.a21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m))),size=5) +
+  geom_segment(data = arrows.a21,mapping = aes(x = 0, y = 0, xend = RDA1*8, yend = RDA2*8),lineend = "round", # See available arrow types in example above
+               linejoin = "round",
+               size = 1,
+               arrow = arrow(length = unit(0.15, "inches")),
+               colour = "black") +
+  geom_label(data = arrows.a21,aes(label = Label, x = RDA1*9, y = RDA2*9, fontface="bold"), size=5)+
+  coord_fixed(ratio = 1, xlim = c(-12,12), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
+  labs(title="RDA: Bacteria/Archaea in Salton Seawater, August 2021",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
+  xlab("RDA1 [27.24%]") + ylab("RDA2 [12.57%]")
+
+ggsave(rda.plot6b,filename = "figures/EnvDrivers/SSW_16S_RDA_Aug2021_with_S_bigger.png", width=16, height=12, dpi=600)
 
 #### Plot RDA - Dec 2021 ####
+rda.dec2021
 #plot(rda.dec2021) # depending on how many species you have, this step may take a while
 plot(rda.dec2021, scaling = 1)
 ## scaling = 1 -> emphasizes relationships among sites
@@ -1095,7 +1247,7 @@ rda.plot7<-ggplot(rda.axes.d21, aes(x = RDA1, y = RDA2)) + geom_point(size=2) +
   coord_fixed() + theme_classic() +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1))
 
-rda.plot8<-ggplot(rda.axes.d21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m))),size=3) +
+rda.plot8a<-ggplot(rda.axes.d21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m))),size=3) +
   geom_segment(data = arrows.d21,mapping = aes(x = 0, y = 0, xend = RDA1*9, yend = RDA2*9),lineend = "round", # See available arrow types in example above
                linejoin = "round",
                size = 0.8,
@@ -1107,11 +1259,23 @@ rda.plot8<-ggplot(rda.axes.d21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=
   labs(title="RDA: Bacteria/Archaea in Salton Seawater",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
   xlab("RDA1 [20.35%]") + ylab("RDA2 [7.14%]")
 
-ggsave(rda.plot8,filename = "figures/EnvDrivers/SSW_16S_RDA_Dec2021.png", width=15, height=12, dpi=600)
+ggsave(rda.plot8a,filename = "figures/EnvDrivers/SSW_16S_RDA_Dec2021.png", width=15, height=12, dpi=600)
 
+rda.plot8b<-ggplot(rda.axes.d21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m))),size=5) +
+  geom_segment(data = arrows.d21,mapping = aes(x = 0, y = 0, xend = RDA1*9, yend = RDA2*9),lineend = "round", # See available arrow types in example above
+               linejoin = "round",
+               size = 1,
+               arrow = arrow(length = unit(0.15, "inches")),
+               colour = "black") +
+  geom_label(data = arrows.d21,aes(label = Label, x = RDA1*10, y = RDA2*10, fontface="bold"), size=5)+
+  coord_fixed(ratio = 1, xlim = c(-12,12), ylim = c(-13,13)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
+  labs(title="RDA: Bacteria/Archaea in Salton Seawater",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
+  xlab("RDA1 [20.35%]") + ylab("RDA2 [7.14%]")
+
+ggsave(rda.plot8b,filename = "figures/EnvDrivers/SSW_16S_RDA_Dec2021_bigger.png", width=15, height=12, dpi=600)
 
 #### Plot RDA - Apr 2022 ####
-#plot(rda.dec2021) # depending on how many species you have, this step may take a while
 plot(rda.apr2022, scaling = 1)
 ## scaling = 1 -> emphasizes relationships among sites
 plot(rda.apr2022, scaling = 2)
