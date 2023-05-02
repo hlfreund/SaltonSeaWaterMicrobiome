@@ -14,6 +14,7 @@ suppressPackageStartupMessages({ # load packages quietly
   library(viridis)
   library(readxl)
   library(metagenomeSeq)
+  library(AER)
   library(DESeq2)
   library(dplyr)
   library(magrittr)
@@ -37,7 +38,8 @@ load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
 #save.image("data/Env_Seqs_All/env.seq_analysis.Rdata") # save global env to Rdata file
 bac.dat.all[1:4,1:4]
 bac.dat.all$Depth_m
-head(meta_scaled)
+head(meta_scaled_S)
+
 #### Phyla Relative Abundance ####
 
 # use dcast to count up ASVs within each Phylum across all of the samples
@@ -637,15 +639,15 @@ b.gen.dep_m$Genus<-gsub("^X.","",b.gen.dep_m$Genus) # get rid of leading X. in G
 b.gen.dep_m$Genus<-gsub("\\.\\."," ",b.gen.dep_m$Genus) # get rid of .. in species name --> . is regex
 head(b.gen.dep_m) ## relative abundance based on sum of counts by genus!
 unique(b.gen.dep_m$Depth_m)
-b.gen.dep_m$Depth_m<-factor(b.gen.dep_m, levels=c("0","2","3","4","5","7","9","10","11"))
+b.gen.dep_m$Depth_m<-factor(b.gen.dep_m$Depth_m, levels=c("0","2","3","4","5","7","9","10","11"))
 
 # Barplot by Depth
 
-gd1<-ggplot(b.gen.dep_m, aes(x=Depth_m, y=Count, fill=Genus))+geom_bar(stat="identity",colour="black")+theme_classic()+
-  labs(title = "Relative Abundance of Microbial Classes", x="Depth (m)", y="Relative Abundance", fill="Class")+
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
-  guides(fill=guide_legend(ncol=3))+
-  scale_y_continuous(expand = c(0,0),limits = c(0,1))
+#gd1<-ggplot(b.gen.dep_m, aes(x=Depth_m, y=Count, fill=Genus))+geom_bar(stat="identity",colour="black")+theme_classic()+
+#  labs(title = "Relative Abundance of Microbial Classes", x="Depth (m)", y="Relative Abundance", fill="Class")+
+#  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
+#  guides(fill=guide_legend(ncol=3))+
+#  scale_y_continuous(expand = c(0,0),limits = c(0,1))
 #+ scale_x_discrete(labels=c("June.2021"="June 2021","August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
 ggsave(gd1,filename = "figures/RelativeAbundance/SSW_16S_Genus.RA_barplot_depth.png", width=12, height=10, dpi=600)
@@ -656,7 +658,14 @@ gd1a<-ggplot(b.gen.dep_m[b.gen.dep_m$Count>0.05,], aes(x=Depth_m, y=Count, fill=
   scale_y_continuous(expand = c(0,0),limits = c(0,1))
 #+ scale_x_discrete(labels=c("June.2021"="June 2021","August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(gd1a,filename = "figures/RelativeAbundance/SSW_16S_Genus.RA_barplot_depth_5percent.png", width=12, height=10, dpi=600)
+ggsave(gd1a,filename = "figures/RelativeAbundance/SSW_16S_Genus.RA_barplot_depth_5percent_A.png", width=12, height=10, dpi=600)
+
+gd1b<-ggplot(b.gen.dep_m[b.gen.dep_m$Count>0.05,], aes(x=Depth_m, y=Count, fill=Genus))+geom_bar(stat="identity",colour="black")+theme_classic()+
+  labs(title = "Relative Abundance of Microbial Classes", x="Depth (m)", y="Relative Abundance", fill="Class",subtitle="Only Relative Abundance > 5%")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
+  scale_y_continuous(expand = c(0,0),limits = c(0,1))+coord_flip() + scale_x_discrete(limits = rev(levels(b.gen.dep_m$Depth_m)))
+
+ggsave(gd1b,filename = "figures/RelativeAbundance/SSW_16S_Genus.RA_barplot_depth_5percent_B.png", width=12, height=10, dpi=600)
 
 # Taxonomic Summary by Depth
 
@@ -700,7 +709,7 @@ colnames(b.gen.date_m)[which(names(b.gen.date_m) == "value")] <- "Count"
 head(b.gen.date_m) ## relative abundance based on sum of counts by Genus!
 b.gen.date_m$Genus<-gsub("^X.","",b.gen.date_m$Genus) # get rid of leading X. in Genus_species names
 b.gen.date_m$Genus<-gsub("\\.\\."," ",b.gen.date_m$Genus) # get rid of .. in species name --> . is regex
-head(b.genus_m) ## relative abundance based on sum of counts by genus!
+head(b.gen.date_m) ## relative abundance based on sum of counts by genus!
 
 b.gen.date_m$SampDate<-factor(b.gen.date_m$SampDate, levels=c("June.2021","August.2021","December.2021","April.2022"))
 
@@ -791,6 +800,281 @@ g.sd.d.hm.1<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.05,], aes(Genus,
 
 ggsave(g.sd.d.hm.1,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_depth_taxasum_5perc.png", width=15, height=10, dpi=600)
 ## ^ this figure includes the relative abundance of each organism by depth & date!!!
+
+#### Looking at Most Abundant Genus Only - DS001 ####
+
+# by Genus + Sampling Date + Depth
+bac.gen.date.dep <- as.data.frame(dcast(bac.dat.all.g,SampDate+Depth_m~Genus, value.var="Count", fun.aggregate=sum)) ###
+bac.gen.date.dep[1:5,1:5] # counts by Genus + sample date & depth
+rownames(bac.gen.date.dep)<-interaction(bac.gen.date.dep$SampDate,bac.gen.date.dep$Depth_m,sep="_")
+bac.gen.date.dep[1:5,1:5]
+
+b.RA_gen.date.dep<-data.frame(decostand(bac.gen.date.dep[,-c(1:2)], method="total", MARGIN=1, na.rm=TRUE))
+# relative abundance of taxa data where everything is divided by margin total (default MARGIN = 1 = rows) -- rows = samples
+rowSums(b.RA_gen.date.dep) # sanity check
+b.RA_gen.date.dep$SampDate_Depth<-rownames(b.RA_gen.date.dep)
+b.RA_gen.date.dep[1:5,ncol(b.RA_gen.date.dep):5-ncol(b.RA_gen.date.dep)] # first 5 rows, last 5 columns
+
+ds001.date.dep<-subset(b.RA_gen.date.dep, select=c(DS001, SampDate_Depth))
+
+ds001.date.dep.2<-as.data.frame(separate_wider_delim(data = ds001.date.dep, col=SampDate_Depth, "_", names = c("SampDate", "Depth_m"))) # Separate SampDate & Depth column for Heatmap later
+ds001.date.dep.2$SampDate_Depth<-interaction(ds001.date.dep.2$SampDate,ds001.date.dep.2$Depth_m)
+
+ds001.date.dep.2$Depth_m<-factor(ds001.date.dep.2$Depth_m, levels=c("0","2","3","4","5","7","9","10","11"))
+ds001.date.dep.2$SampDate<-factor(ds001.date.dep.2$SampDate,levels=c("June.2021","August.2021","December.2021","April.2022"))
+ds001.date.dep.2$SampDate_Depth = factor(ds001.date.dep.2$SampDate_Depth, levels=unique(ds001.date.dep.2$SampDate_Depth[order(ds001.date.dep.2$Depth_m,ds001.date.dep.2$SampDate)]), ordered=TRUE)
+
+ds001.date.dep.2
+
+ds001_meta<-merge(ds001.date.dep.2,meta_scaled_S, by=c("SampDate","Depth_m"))
+rownames(ds001_meta)<-ds001_meta$SampleID
+head(ds001_meta)
+
+# is this genus normally distributed?
+shapiro.test(ds001_meta$DS001) # what is the p-value?
+# p-value = 0.0004313
+# p > 0.05 states distribution of data are not significantly different from normal distribution
+# p < 0.05 means that data is significantly different from a normal distribution
+hist(ds001_meta$DS001, col="blue")
+
+# visualize Q-Q plot for species richness
+qqnorm(ds001_meta$DS001, pch = 1, frame = FALSE)
+qqline(ds001_meta$DS001, col = "steelblue", lwd = 2)
+
+# do env variables & RelAb of DS001 correlate?
+cor.test(ds001_meta$DS001, ds001_meta$ORP_mV, method="pearson")
+cor.test(ds001_meta$DS001, ds001_meta$Dissolved_OrganicMatter_RFU, method="pearson") # p-value = 0.02281
+cor.test(ds001_meta$DS001, ds001_meta$DO_Percent_Local, method="pearson")
+cor.test(ds001_meta$DS001, ds001_meta$Temp_DegC, method="pearson")
+
+# drop June.2021 to look at HS/SO4
+ds001_meta2<-na.omit(ds001_meta) # drop June timepoints for SO4/HS comparisons
+cor.test(ds001_meta2$DS001, ds001_meta2$Sulfate_milliM, method="pearson") # p-value = 0.004031
+cor.test(ds001_meta2$DS001, ds001_meta2$Sulfide_microM, method="pearson")
+
+# can we use env variables to predict RelAb of DS001?!
+## correlation gives us the status of their relationship, but linear regression will tell us if these env variables predict DS001 relative abundance
+## more on that here https://www.researchgate.net/post/Two_variables_are_correlated_but_regression_is_not_significant#:~:text=The%20simple%20answer%20is%20yes,opposite%20direction%20(negative%20correlation).
+
+## first ORP
+ds001.orp.fit1<-lm(DS001 ~ ORP_mV, data=ds001_meta) %>%
+  adjust_pvalue(method="bonferroni")
+summary(ds001.orp.fit1)
+
+coef(summary(ds001.orp.fit1))
+p.adjust(coef(summary(ds001.orp.fit1))[,4], method="bonferroni") # pvalue
+
+ds001.orp.fit2<-glm(DS001 ~ ORP_mV, data=ds001_meta, family=poisson)
+summary(ds001.orp.fit2)
+
+ds001.orp.fit3<-glm.nb(DS001 ~ ORP_mV, data=ds001_meta)
+summary(ds001.orp.fit3)
+
+# next is DOM
+ds001.dom.fit1<-lm(DS001 ~ Dissolved_OrganicMatter_RFU, data=ds001_meta) %>%
+  adjust_pvalue(method="bonferroni")
+summary(ds001.dom.fit1) # not significant
+#Coefficients:
+#  Estimate Std. Error t value Pr(>|t|)
+#(Intercept)                  0.26961    0.01705  15.815   <2e-16 ***
+#  Dissolved_OrganicMatter_RFU  0.04062    0.01723   2.357   0.0228 *
+
+coef(summary(ds001.dom.fit1))
+p.adjust(coef(summary(ds001.dom.fit1))[,4], method="bonferroni") # pvalue
+
+ds001.dom.fit2<-glm(DS001 ~ Dissolved_OrganicMatter_RFU, data=ds001_meta, family=poisson)
+summary(ds001.dom.fit2)
+
+ds001.dom.fit3<-glm.nb(DS001 ~ Dissolved_OrganicMatter_RFU, data=ds001_meta)
+summary(ds001.dom.fit3)
+
+dispersiontest(ds001.dom.fit2)
+# null hypothesis is that equidispersion exists; alternative hypothesis is overdispersion
+# if overdispersion, use negative binomial not Poisson
+## Poisson distribution implies that the mean and variance are equal --> little dispersion
+# negative binomial means # of observations is not fixed, whereas binomial means observations are a fixed #
+
+# z = -16.609, p-value = 1 (cannot reject null)
+# alternative hypothesis: true dispersion is greater than 1
+# sample estimates:
+#   dispersion
+# 0.0495281 -- equidispersion exists
+
+plot(DS001 ~ Dissolved_OrganicMatter_RFU, data=ds001_meta,col=SampDate_Color)
+# June 2021 = green, orange = August 2021, dark blue = December 2021, light blue = April 2022
+abline(ds001.dom.fit1)
+
+fig.ds001.dom.fit1<-ggplot(ds001_meta, aes(x = Dissolved_OrganicMatter_RFU, y = DS001)) +
+  geom_point(aes(color=SampDate), size=3) + theme_classic() +
+  scale_color_manual(name ="Sample Date", values=c("#36ab57","#ff6f00","#26547c","#32cbff"), labels=c("June 2021","August 2021","December 2021","April 2022")) +
+  stat_smooth(method = "lm", col = "black", se=FALSE, size=1)+ labs(title="Relative Abundance of Genus DS001 vs. Dissolved Organic Matter", color="Sampling Date")+ylab("Relative Abundance")+xlab("Dissolved Organic Matter (RFU)")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
+  stat_cor(label.y = 0.5, label.x=0.98) +
+  stat_regline_equation(aes(label=paste(..adj.rr.label..)),label.y = 0.53,label.x=0.98)
+
+## use summary(ds001.so4.fit1) to double check that stat_cor gives same p value as linear regression! it does here :)
+ggsave(fig.ds001.dom.fit1,filename = "figures/DS001_Genus_RelAb_vs_DOM_scatterplot.pdf", width=10, height=8, dpi=600)
+
+# what if we exclude June 2021?
+ds001.dom.fit1a<-lm(DS001 ~ Dissolved_OrganicMatter_RFU, data=ds001_meta2) %>%
+  adjust_pvalue(method="bonferroni")
+summary(ds001.dom.fit1a) # not significant
+#Coefficients:
+#  Estimate Std. Error t value Pr(>|t|)
+#(Intercept)                  0.25736    0.01591  16.177  < 2e-16 ***
+#Dissolved_OrganicMatter_RFU  0.14512    0.02606   5.568 2.23e-06 ***
+
+coef(summary(ds001.dom.fit1a))
+p.adjust(coef(summary(ds001.dom.fit1a))[,4], method="bonferroni") # pvalue
+
+fig.ds001.dom.fit1a<-ggplot(ds001_meta2, aes(x = Dissolved_OrganicMatter_RFU, y = DS001)) +
+  geom_point(aes(color=SampDate), size=3) + theme_classic() +
+  scale_color_manual(name ="Sample Date", values=c("#ff6f00","#26547c","#32cbff"), labels=c("August 2021","December 2021","April 2022")) +
+  stat_smooth(method = "lm", col = "black", se=FALSE, size=1)+ labs(title="Relative Abundance of Genus DS001 vs. Dissolved Organic Matter", color="Sampling Date")+ylab("Relative Abundance")+xlab("Dissolved Organic Matter (RFU)")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
+  stat_cor(label.y = 0.5, label.x=0.98) +
+  stat_regline_equation(aes(label=paste(..adj.rr.label..)),label.y = 0.53,label.x=0.98)
+
+## use summary(ds001.so4.fit1) to double check that stat_cor gives same p value as linear regression! it does here :)
+ggsave(fig.ds001.dom.fit1a,filename = "figures/DS001_Genus_RelAb_vs_DOM_scatterplot_noJ21.pdf", width=10, height=8, dpi=600)
+
+# next is DO%
+ds001.do.fit1<-lm(DS001 ~ DO_Percent_Local, data=ds001_meta) %>%
+  adjust_pvalue(method="bonferroni")
+summary(ds001.do.fit1) # not significant
+
+coef(summary(ds001.do.fit1))
+p.adjust(coef(summary(ds001.do.fit1))[,4], method="bonferroni") # pvalue
+
+ds001.do.fit2<-glm(DS001 ~ DO_Percent_Local, data=ds001_meta, family=poisson)
+summary(ds001.do.fit2)
+
+ds001.do.fit3<-glm.nb(DS001 ~ DO_Percent_Local, data=ds001_meta)
+summary(ds001.do.fit3)
+
+dispersiontest(ds001.do.fit2)
+# null hypothesis is that equidispersion exists; alternative hypothesis is overdispersion
+# if overdispersion, use negative binomial not Poisson
+## Poisson distribution implies that the mean and variance are equal --> little dispersion
+# negative binomial means # of observations is not fixed, whereas binomial means observations are a fixed #
+
+# z = -14.091, p-value = 1 (cannot reject null)
+# alternative hypothesis: true dispersion is greater than 1
+# sample estimates:
+#   dispersion
+# 0.0495281 -- equidispersion exists
+
+plot(DS001 ~ DO_Percent_Local, data=ds001_meta,col=SampDate_Color)
+# orange = August 2021, dark blue = December 2021, light blue = April 2022
+abline(ds001.do.fit1)
+
+# next is Temp (C)
+ds001.temp.fit1<-lm(DS001 ~ Temp_DegC, data=ds001_meta) %>%
+  adjust_pvalue(method="bonferroni")
+summary(ds001.temp.fit1) # not significant
+
+coef(summary(ds001.temp.fit1))
+p.adjust(coef(summary(ds001.temp.fit1))[,4], method="bonferroni") # pvalue
+
+ds001.temp.fit2<-glm(DS001 ~ Temp_DegC, data=ds001_meta, family=poisson)
+summary(ds001.temp.fit2)
+
+ds001.temp.fit3<-glm.nb(DS001 ~ Temp_DegC, data=ds001_meta)
+summary(ds001.temp.fit3)
+
+dispersiontest(ds001.temp.fit2)
+# null hypothesis is that equidispersion exists; alternative hypothesis is overdispersion
+# if overdispersion, use negative binomial not Poisson
+## Poisson distribution implies that the mean and variance are equal --> little dispersion
+# negative binomial means # of observations is not fixed, whereas binomial means observations are a fixed #
+
+# z = -14.127, p-value = 1 (cannot reject null)
+# alternative hypothesis: true dispersion is greater than 1
+# sample estimates:
+#   dispersion
+# 0.05379991 -- equidispersion exists
+
+plot(DS001 ~ Temp_DegC, data=ds001_meta,col=SampDate_Color)
+# gren = June 2021, orange = August 2021, dark blue = December 2021, light blue = April 2022
+abline(ds001.temp.fit1)
+
+## next Sulfate
+
+ds001.so4.fit1<-lm(DS001 ~ Sulfate_milliM, data=ds001_meta2) %>%
+  adjust_pvalue(method="bonferroni")
+summary(ds001.so4.fit1)
+#Coefficients:
+#                 Estimate Std. Error t value Pr(>|t|)
+#(Intercept)     0.26851    0.01905  14.097  < 2e-16 ***
+#  Sulfate_milliM  0.05906    0.01929   3.061  0.00403 **
+
+coef(summary(ds001.so4.fit1))
+p.adjust(coef(summary(ds001.so4.fit1))[,4], method="bonferroni") # pvalue
+
+ds001.so4.fit2<-glm(DS001 ~ Sulfate_milliM, data=ds001_meta2, family=poisson)
+summary(ds001.so4.fit2)
+
+ds001.so4.fit3<-glm.nb(DS001 ~ Sulfate_milliM, data=ds001_meta2)
+summary(ds001.so4.fit3)
+
+dispersiontest(ds001.so4.fit2)
+# dispersiontest: Tests the null hypothesis of equidispersion in Poisson GLMs against the alternative of overdispersion and/or underdispersion
+# null hypothesis is that equidispersion exists; alternative hypothesis is overdispersion
+# if overdispersion, use negative binomial not Poisson
+## Poisson distribution implies that the mean and variance are equal --> little dispersion
+## negative binomial means # of observations is not fixed, whereas binomial means observations are a fixed #
+
+# z = --12.929, p-value = 1 (cannot reject null)
+# alternative hypothesis: true dispersion is greater than 1
+# sample estimates:
+#   dispersion
+# 0.05495549 -- equidispersion exists
+
+plot(DS001 ~ Sulfate_milliM, data=ds001_meta2,col=SampDate_Color)
+# orange = August 2021, dark blue = December 2021, light blue = April 2022
+abline(ds001.so4.fit1)
+
+fig.ds001.so4.fit1<-ggplot(ds001_meta2, aes(x = Sulfate_milliM, y = DS001)) +
+  geom_point(aes(color=SampDate), size=3) + theme_classic() +
+  scale_color_manual(name ="Sample Date", values=c("#ff6f00","#26547c","#32cbff"), labels=c("August 2021","December 2021","April 2022")) +
+  stat_smooth(method = "lm", col = "black", se=FALSE, size=1)+ labs(title="Relative Abundance of Genus DS001 vs. Sulfate (milliM)", color="Sampling Date")+ylab("Relative Abundance")+xlab("Sulfate (milliM)")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
+  stat_cor(label.y = 0.5, label.x=0.98) +
+  stat_regline_equation(aes(label=paste(..adj.rr.label..)),label.y = 0.53,label.x=0.98)
+
+## use summary(ds001.so4.fit1) to double check that stat_cor gives same p value as linear regression! it does here :)
+ggsave(fig.ds001.so4.fit1,filename = "figures/DS001_Genus_RelAb_vs_Sulfate_scatterplot.pdf", width=10, height=8, dpi=600)
+
+## last is Sulfide
+ds001.hs.fit1<-lm(DS001 ~ Sulfide_microM, data=ds001_meta2) %>%
+  adjust_pvalue(method="bonferroni")
+summary(ds001.hs.fit1) # not significant
+
+coef(summary(ds001.hs.fit1))
+p.adjust(coef(summary(ds001.hs.fit1))[,4], method="bonferroni") # pvalue
+
+ds001.hs.fit2<-glm(DS001 ~ Sulfide_microM, data=ds001_meta2, family=poisson)
+summary(ds001.hs.fit2)
+
+ds001.hs.fit3<-glm.nb(DS001 ~ Sulfide_microM, data=ds001_meta2)
+summary(ds001.hs.fit3)
+
+dispersiontest(ds001.hs.fit2)
+# dispersiontest: Tests the null hypothesis of equidispersion in Poisson GLMs against the alternative of overdispersion and/or underdispersion
+# null hypothesis is that equidispersion exists; alternative hypothesis is overdispersion
+# if overdispersion, use negative binomial not Poisson
+## Poisson distribution implies that the mean and variance are equal --> little dispersion
+# negative binomial means # of observations is not fixed, whereas binomial means observations are a fixed #
+
+# z = -12.076, p-value = 1 (cannot reject null)
+# alternative hypothesis: true dispersion is greater than 1
+# sample estimates:
+# dispersion
+# 0.06262369 -- equidispersion exists
+
+plot(DS001 ~ Sulfide_microM, data=ds001_meta2,col=SampDate_Color)
+# orange = August 2021, dark blue = December 2021, light blue = April 2022
+abline(ds001.hs.fit1)
 
 #### Shared Genus Relative Abundance ####
 head(bac.dat.all)
