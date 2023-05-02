@@ -31,6 +31,7 @@ suppressPackageStartupMessages({ # load packages quietly
   library(rstatix)
   library(devtools)
   library(decontam)
+  library(pairwiseAdonis)
 })
 
 #### Load Global Env to Import Count/ASV Tables ####
@@ -802,6 +803,7 @@ ggsave(g.sd.d.hm.1,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_
 ## ^ this figure includes the relative abundance of each organism by depth & date!!!
 
 #### Looking at Most Abundant Genus Only - DS001 ####
+#bac.dat.all.g<-subset(bac.dat.all, bac.dat.all$Genus!="Unknown") # drop unknown genera so they don't skew analyses
 
 # by Genus + Sampling Date + Depth
 bac.gen.date.dep <- as.data.frame(dcast(bac.dat.all.g,SampDate+Depth_m~Genus, value.var="Count", fun.aggregate=sum)) ###
@@ -847,7 +849,64 @@ cor.test(ds001_meta$DS001, ds001_meta$Dissolved_OrganicMatter_RFU, method="pears
 cor.test(ds001_meta$DS001, ds001_meta$DO_Percent_Local, method="pearson")
 cor.test(ds001_meta$DS001, ds001_meta$Temp_DegC, method="pearson")
 
-# drop June.2021 to look at HS/SO4
+# does RelAb of DS001 change with depth and/or sampling date?
+ds001.depth.1<-aov(DS001 ~ Depth_m, data=ds001_meta)
+pairwise.adonis(ds001_meta$DS001, ds001_meta$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
+#adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+#test<-adonis2(bac.div.metadat2$Bac_Species_Richness ~ Depth_m, data=bac.div.metadat2)
+
+summary(ds001.depth.1)
+#Df           Sum Sq Mean Sq    F value   Pr(>F)
+#Depth_m      8 0.0790 0.009871   0.613  0.761
+#Residuals   38 0.6116 0.016095
+Tuk1<-TukeyHSD(ds001.depth.1)
+Tuk1$Depth_m
+# Levene's test with one independent variable
+## Levene's tests whether variances of 2 samples are equal
+## we want variances to be the same -- want NON SIGNIFICANCE!
+## t test assumes that variances are the same, so Levene's test needs to be non significant
+fligner.test(DS001 ~ Depth_m, data = ds001_meta)
+# Levenes Test for Homogeneity of Variance
+#  Fligner-Killeen:med chi-squared = 5.1712, df = 8, p-value = 0.7391
+# Which shows that the data do not deviate significantly from homogeneity.
+compare_means(DS001 ~ Depth_m, data=ds001_meta, method="anova",p.adjust.method = "bonferroni") # not significant
+
+plot(DS001 ~ Depth_m, data=ds001_meta)
+
+ds001.samp.1<-aov(DS001 ~ SampDate, data=ds001_meta)
+pairwise.adonis(ds001_meta$DS001, ds001_meta$SampDate, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
+#adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*SampDate,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+#test<-adonis2(bac.div.metadat2$Bac_Species_Richness ~ SampDate, data=bac.div.metadat2)
+
+summary(ds001.samp.1)
+#Df Sum Sq Mean Sq F value   Pr(>F)
+#SampDate     3 0.5554 0.18514    58.9 2.83e-15 ***
+#Residuals   43 0.1352 0.00314
+
+Tuk2<-TukeyHSD(ds001.samp.1)
+Tuk2$SampDate
+#                             diff          lwr         upr        p adj
+#August.2021-June.2021      0.11852562  0.040981898  0.19606934 1.047449e-03
+#December.2021-June.2021    0.07249457  0.004597672  0.14039147 3.233960e-02
+#April.2022-June.2021      -0.15016660 -0.218063496 -0.08226970 2.891841e-06
+#December.2021-August.2021 -0.04603105 -0.110908781  0.01884668 2.448373e-01
+#April.2022-August.2021    -0.26869222 -0.333569949 -0.20381449 1.336820e-12
+#April.2022-December.2021  -0.22266117 -0.275633614 -0.16968872 1.252665e-12
+
+# Levene's test with one independent variable
+## Levene's tests whether variances of 2 samples are equal
+## we want variances to be the same -- want NON SIGNIFICANCE!
+## t test assumes that variances are the same, so Levene's test needs to be non significant
+fligner.test(DS001 ~ SampDate, data = ds001_meta)
+# Fligner-Killeen aka median test: tests null H that variances in each groups (samples) are the same
+# non-parametric version of Levene's test (aka for non-normally distributed data)
+# Fligner-Killeen:med chi-squared = 11.47, df = 3, p-value = 0.00944
+# Which shows that the data DOES deviate significantly from homogeneity.
+compare_means(DS001 ~ SampDate, data=ds001_meta, method="anova",p.adjust.method = "bonferroni") # significant
+
+plot(DS001 ~ SampDate, data=ds001_meta)
+
+# drop June.2021 to look at HS/SO4 & DS001
 ds001_meta2<-na.omit(ds001_meta) # drop June timepoints for SO4/HS comparisons
 cor.test(ds001_meta2$DS001, ds001_meta2$Sulfate_milliM, method="pearson") # p-value = 0.004031
 cor.test(ds001_meta2$DS001, ds001_meta2$Sulfide_microM, method="pearson")
