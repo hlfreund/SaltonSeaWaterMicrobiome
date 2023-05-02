@@ -45,6 +45,9 @@ bac.dat.all[1:6,1:6]
 bac.ASV_table[1:4,1:4]
 head(metadata) # not scaled metadata
 head(meta_scaled) # centered & scaled metadata
+head(meta_scaled_S)
+
+meta_scaled_S<-na.omit(meta_scaled_S)
 
 #### Using Shapiro-Wilk test for Normality ####
 
@@ -75,6 +78,26 @@ hist(meta_scaled$Dissolved_OrganicMatter_RFU, col="blue")
 # visualize Q-Q plot for species richness
 qqnorm(meta_scaled$Dissolved_OrganicMatter_RFU, pch = 1, frame = FALSE)
 qqline(meta_scaled$Dissolved_OrganicMatter_RFU, col = "steelblue", lwd = 2)
+
+shapiro.test(meta_scaled_S$Sulfate_milliM) # what is the p-value?
+# my p-value was p-value =  0.006965
+# p > 0.05 states distribution of data are not significantly different from normal distribution
+# p < 0.05 means that data is significantly different from a normal distribution
+hist(meta_scaled_S$Sulfate_milliM, col="blue")
+
+# visualize Q-Q plot for species richness
+qqnorm(meta_scaled_S$Sulfate_milliM, pch = 1, frame = FALSE)
+qqline(meta_scaled_S$Sulfate_milliM, col = "steelblue", lwd = 2)
+
+shapiro.test(meta_scaled_S$Sulfide_microM) # what is the p-value?
+# my p-value was p-value =  5.934e-12
+# p > 0.05 states distribution of data are not significantly different from normal distribution
+# p < 0.05 means that data is significantly different from a normal distribution
+hist(meta_scaled_S$Sulfide_microM, col="blue")
+
+# visualize Q-Q plot for species richness
+qqnorm(meta_scaled_S$Sulfide_microM, pch = 1, frame = FALSE)
+qqline(meta_scaled_S$Sulfide_microM, col = "steelblue", lwd = 2)
 
 shapiro.test(meta_scaled$Turbidity_FNU) # what is the p-value?  p-value = 0.0005629
 hist(meta_scaled$Turbidity_FNU, col="blue")
@@ -154,6 +177,75 @@ pca2<-ggplot(env.pca.meta, aes(x=Axis.1, y=Axis.2)) +
 
 ggsave(pca2,filename = "figures/EnvVariablesOnly/SSW_env_pca_log_depth.png", width=12, height=10, dpi=600)
 
+### what if we include HS/SO4 data?
+metadata_S[,c(8,10:11,15:17)] # what env data are we considering?
+env.dat.S<-metadata_S[,c(8,10:11,15:17)]
+env.dat.S<-na.omit(env.dat.S)
+
+# NOTE: PCA requires normally distributed data, so we are log transforming env data before scaling
+# this is because scaled env data alone is not normally distributed
+env.log.S<-decostand(env.dat.S,method = "log", pseudocount = 1) # log transformation of env data before scaling
+env.log.S[1:4,1:4]
+
+# check rownames of log transformed environmental data & metadata
+rownames(env.log.S) %in% rownames(meta_scaled_S)
+meta_scaled_S=meta_scaled_S[rownames(env.log.S),] ## reorder metadata to match order of log data
+
+# calculate our Euclidean distance matrix using log data
+env.S.euc_dist <- dist(env.log.S, method = "euclidean")
+
+# creating our hierarcical clustering dendrogram
+env.S.euc_clust <- hclust(env.S.euc_dist, method="ward.D2")
+
+# let's make it a little nicer...
+env.S.euc_dend <- as.dendrogram(env.S.euc_clust, hang=0.2)
+env.S.dend_cols <- as.character(metadata_S$SampDate_Color[order.dendrogram(env.S.euc_dend)])
+labels_colors(env.S.euc_dend) <- env.S.dend_cols
+
+plot(env.S.euc_dend, ylab="Log Euclidean Distance",cex = 0.5) + title(main = "Environmental Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 3)
+#legend("topright",legend = c("June 2021","August 2021","December 2021","April 2022"),cex=.8,col = c( "#26547c","#36ab57","#32cbff","#ff6f00"),pch = 15, bty = "n")
+# Control is dark blue ("#218380"), #Alternaria is light blue ("#73d2de")
+dev.off()
+
+# let's use our Euclidean distance matrix from before
+env.S.pca <- prcomp(env.log.S, center=TRUE, scale=TRUE) # pca of euclidean distance matrix = PCA of euclidean distance matrix
+env.S.pca$x # where sites fall on PC axes
+env.S.pca$rotation # variables on PC axes
+summary(env.S.pca)$importance
+# The proportion of variances
+
+# extract principal coordinates
+env.S.pca.vectors<-data.frame(env.S.pca$x)
+env.S.pca.vectors$SampleID<-rownames(env.S.pca$x)
+
+# merge pca coordinates w/ metadata
+env.S.pca.meta<-merge(env.S.pca.vectors, meta_scaled_S, by.x="SampleID", by.y="SampleID")
+env.S.pca.meta$SampleMonth
+env.S.pca.meta$SampDate
+
+head(env.S.pca.meta)
+summary(env.S.pca)$importance # percentage of variation explained for pca below
+
+# create pca ggplot fig
+s.pca1<-ggplot(env.S.pca.meta, aes(x=PC1, y=PC2)) +geom_point(aes(color=factor(SampDate)), size=2)+theme_bw()+
+  labs(title="PCA:DO%, DOM, ORP, HS, SO4, & Temp in Salton Seawater",subtitle="Using Log Transformed, Scaled Data",color="Sample Type")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Type",values=unique(env.S.pca.meta$SampDate_Color[order(env.S.pca.meta$SampDate)]),labels=c("June.2021"="June 2021","August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Axis 1 [62.87%]") + ylab("Axis 2 [20.64%]")
+
+ggsave(s.pca1,filename = "figures/EnvVariablesOnly/SSW_env_w.S_pca_log_sampdate.png", width=12, height=10, dpi=600)
+
+# sample month shape, depth color
+s.pca2<-ggplot(env.S.pca.meta, aes(x=PC1, y=PC2)) +
+  geom_point(aes(color=as.numeric(Depth_m),shape=SampleMonth), size=5)+theme_bw()+
+  labs(title="PCA:DO%, DOM, ORP, HS, SO4, & Temp in Salton Seawater",subtitle="Using Log Transformed, Scaled Data",xlab="PC1", ylab="PC2",color="Depth (m)")+
+  theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
+  scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
+  xlab("Axis 1 [62.87%]") + ylab("Axis 2 [20.64%]")
+
+ggsave(s.pca2,filename = "figures/EnvVariablesOnly/SSW_env_w.S_pca_log_depth.png", width=12, height=10, dpi=600)
+
+
 #### Compare Env Samples Variance by Sample Date ####
 kruskal.test(DO_Percent_Local ~ SampleMonth, data = meta_scaled)
 pairwise.wilcox.test(meta_scaled$DO_Percent_Local, meta_scaled$SampleMonth, p.adjust.method = "bonf") # returns p values
@@ -210,12 +302,23 @@ legend("topleft",
        fill = rev(heat.colors(6)))
 dev.off()
 
-cor_mat.env <- cor(meta_scaled[,c(8,10:14)], method='pearson')
-cor_mat.env
+# excluding HS & SO4
+cor_mat.env1 <- cor(meta_scaled[,c(8,10:15)], method='pearson')
+cor_mat.env1
 
-symnum(cor_mat.env)
+symnum(cor_mat.env1)
 
-corrplot.mixed(cor_mat.env, tl.pos='lt', tl.cex=0.6, number.cex=0.5, addCoefasPercent=T)
+corrplot.mixed(cor_mat.env1, tl.pos='lt', tl.cex=0.6, number.cex=0.5, addCoefasPercent=T)
+# env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
+
+# including HS & SO4 (and not June 2021 data)
+
+cor_mat.env2 <- cor(meta_scaled_S[,c(8,10:17)], method='pearson')
+cor_mat.env2
+
+symnum(cor_mat.env2)
+
+corrplot.mixed(cor_mat.env2, tl.pos='lt', tl.cex=0.6, number.cex=0.5, addCoefasPercent=T)
 # env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
 
 # DO %
@@ -246,6 +349,27 @@ cor.test(meta_scaled$Chlorophyll_RFU, meta_scaled$Temp_DegC, method="pearson")
 # Dissolved Organic Matter
 cor.test(meta_scaled$Dissolved_OrganicMatter_RFU, meta_scaled$Temp_DegC, method="pearson")
 
+# Sulfate (milliM)
+cor.test(meta_scaled_S$Sulfate_milliM, meta_scaled_S$ORP_mV, method="pearson")
+# r = 0.1102182, p = 0.4984 --> not a strong correlation & it's significant
+cor.test(meta_scaled_S$Sulfate_milliM, meta_scaled_S$Temp_DegC, method="pearson") # ***
+# r = -0.5614189, p = 0.0001639 --> strong negative correlation, significant
+cor.test(meta_scaled_S$Sulfate_milliM, meta_scaled_S$DO_Percent_Local, method="pearson") # ****
+# r = 0.6452846, p = 6.944e-06 --> strong correlation & significant
+cor.test(meta_scaled_S$Sulfate_milliM, meta_scaled_S$Dissolved_OrganicMatter_RFU, method="pearson")
+# r = -0.03455734 , p = 0.8323 --> no corr, not sig
+cor.test(meta_scaled_S$Sulfate_milliM, meta_scaled_S$Sulfide_microM, method="pearson")
+# r = -0.1571489 , p = 0.3328 --> no corr, not sig
+
+# Sulfide (microM)
+cor.test(meta_scaled_S$Sulfide_microM, meta_scaled_S$ORP_mV, method="pearson") # ******
+# r = -0.979198, p < 2.2e-16 --> STRONG & significant negative correlation
+cor.test(meta_scaled_S$Sulfide_microM, meta_scaled_S$Temp_DegC, method="pearson") # ***
+# r = 0.5532523 , p = 0.0002134 --> medium correlation, significant
+cor.test(meta_scaled_S$Sulfide_microM, meta_scaled_S$DO_Percent_Local, method="pearson") # ****
+# r = -0.6286855, p = 1.398e-05 --> medium-strong negative correlation & significant
+cor.test(meta_scaled_S$Sulfide_microM, meta_scaled_S$Dissolved_OrganicMatter_RFU, method="pearson") # ****
+# r = 0.621356 , p = 1.88e-05 --> medium to strong correlation, significant
 
 #### Do Env Data Vary Significantly By Group?#####
 
