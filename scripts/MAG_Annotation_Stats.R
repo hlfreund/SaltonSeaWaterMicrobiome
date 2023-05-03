@@ -515,7 +515,7 @@ pcoa3<-ggplot(mgm.pcoa.mr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=f
   labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using Median-Ratio Transformed Feature Data",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Type")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Type",values=unique(mgm.pcoa.mr.meta$SampDate_Color[order(mgm.pcoa.mr.meta$SampDate)]),labels=c("June.2021"="June 2021","August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("PC1 [25.06%]") + ylab("PC2 [21.98%]")
+  xlab("PC1 [33.04%]") + ylab("PC2 [29.24%]")
 
 ggsave(pcoa3,filename = "figures/MGM_Figs/SSW_MGM_pcoa_MR_sampdate.png", width=12, height=10, dpi=600)
 
@@ -525,7 +525,7 @@ pcoa4<-ggplot(mgm.pcoa.mr.meta, aes(x=Axis.1, y=Axis.2)) +
   labs(title="PCoA: Metagenome Functions in Salton Seawater",subtitle="Using Median-Ratio Transformed Feature Data",xlab="PC1", ylab="PC2",color="Depth (m)")+
   theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
-  xlab("PC1 [25.06%]") + ylab("PC2 [21.98%]")
+  xlab("PC1 [33.04%]") + ylab("PC2 [29.24%]")
 
 ggsave(pcoa4,filename = "figures/MGM_Figs/SSW_MGM_pcoa_MR.traits_depth.png", width=12, height=10, dpi=600)
 
@@ -587,7 +587,7 @@ png('figures/MGM_Figs/ssw_mgm_pcoa_MR_betadispersion_depth.png',width = 700, hei
 plot(mgm.disper2,main = "Centroids and Dispersion (Median-Ratio Data)", col=colfunc(3))
 dev.off()
 
-png('figures/MGM_Figs/ssw_mgm_boxplot_mr_centroid_distance_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/ssw_mgm_boxplot_MR_centroid_distance_depth.png',width = 700, height = 600, res=100)
 boxplot(mgm.disper2,xlab="Sample Collection Depth", main = "Distance to Centroid by Category (Median-Ratio Data)", sub="Euclidean Distance of Median-Ratio Transformed Data", col=colfunc(3))
 dev.off()
 
@@ -634,7 +634,7 @@ mgm.pcoa.vst.meta$SampDate
 
 head(mgm.pcoa.vst.meta)
 
-head(mgm.pcoa.vst$values) # pull out Relative (Relative_eig) variation % to add to axes labels
+mgm.pcoa.vst$values # pull out Relative (Relative_eig) variation % to add to axes labels
 
 # create PCoA ggplot fig
 pcoa3<-ggplot(mgm.pcoa.vst.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
