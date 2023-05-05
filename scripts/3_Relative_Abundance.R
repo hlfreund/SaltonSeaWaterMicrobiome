@@ -803,7 +803,7 @@ ggsave(g.sd.d.hm.1,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_
 ## ^ this figure includes the relative abundance of each organism by depth & date!!!
 
 #### Looking at Most Abundant Genus Only - DS001 ####
-#bac.dat.all.g<-subset(bac.dat.all, bac.dat.all$Genus!="Unknown") # drop unknown genera so they don't skew analyses
+bac.dat.all.g<-subset(bac.dat.all, bac.dat.all$Genus!="Unknown") # drop unknown genera so they don't skew analyses
 
 # by Genus + Sampling Date + Depth
 bac.gen.date.dep <- as.data.frame(dcast(bac.dat.all.g,SampDate+Depth_m~Genus, value.var="Count", fun.aggregate=sum)) ###
@@ -851,7 +851,7 @@ cor.test(ds001_meta$DS001, ds001_meta$Temp_DegC, method="pearson")
 
 # does RelAb of DS001 change with depth and/or sampling date?
 ds001.depth.1<-aov(DS001 ~ Depth_m, data=ds001_meta)
-pairwise.adonis(ds001_meta$DS001, ds001_meta$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
+#pairwise.adonis(ds001_meta$DS001, ds001_meta$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 #adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 #test<-adonis2(bac.div.metadat2$Bac_Species_Richness ~ Depth_m, data=bac.div.metadat2)
 
@@ -874,7 +874,7 @@ compare_means(DS001 ~ Depth_m, data=ds001_meta, method="anova",p.adjust.method =
 plot(DS001 ~ Depth_m, data=ds001_meta)
 
 ds001.samp.1<-aov(DS001 ~ SampDate, data=ds001_meta)
-pairwise.adonis(ds001_meta$DS001, ds001_meta$SampDate, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
+#pairwise.adonis(ds001_meta$DS001, ds001_meta$SampDate, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 #adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*SampDate,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 #test<-adonis2(bac.div.metadat2$Bac_Species_Richness ~ SampDate, data=bac.div.metadat2)
 
@@ -963,16 +963,18 @@ plot(DS001 ~ Dissolved_OrganicMatter_RFU, data=ds001_meta,col=SampDate_Color)
 # June 2021 = green, orange = August 2021, dark blue = December 2021, light blue = April 2022
 abline(ds001.dom.fit1)
 
+# Plot DS001 RelAb x DOM - w/ June 2021
+
 fig.ds001.dom.fit1<-ggplot(ds001_meta, aes(x = Dissolved_OrganicMatter_RFU, y = DS001)) +
   geom_point(aes(color=SampDate), size=3) + theme_classic() +
   scale_color_manual(name ="Sample Date", values=c("#36ab57","#ff6f00","#26547c","#32cbff"), labels=c("June 2021","August 2021","December 2021","April 2022")) +
-  stat_smooth(method = "lm", col = "black", se=FALSE, size=1)+ labs(title="Relative Abundance of Genus DS001 vs. Dissolved Organic Matter", color="Sampling Date")+ylab("Relative Abundance")+xlab("Dissolved Organic Matter (RFU)")+
+  stat_smooth(method = "lm", col = "black", se=FALSE, linewidth=1)+ labs(title="Relative Abundance of Genus DS001 vs. Dissolved Organic Matter", color="Sampling Date")+ylab("Relative Abundance")+xlab("Dissolved Organic Matter (RFU)")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
-  stat_cor(label.y = 0.5, label.x=0.98) +
-  stat_regline_equation(aes(label=paste(..adj.rr.label..)),label.y = 0.53,label.x=0.98)
+  stat_cor(label.y = 0.5, label.x=0.6) +
+  stat_regline_equation(aes(label=paste(after_stat(adj.rr.label))),label.y = 0.53,label.x=0.6)
 
 ## use summary(ds001.so4.fit1) to double check that stat_cor gives same p value as linear regression! it does here :)
-ggsave(fig.ds001.dom.fit1,filename = "figures/DS001_Genus_RelAb_vs_DOM_scatterplot.pdf", width=10, height=8, dpi=600)
+ggsave(fig.ds001.dom.fit1,filename = "figures/RelativeAbundance/DS001_Genus_RelAb_vs_DOM_scatterplot.pdf", width=10, height=8, dpi=600)
 
 # what if we exclude June 2021?
 ds001.dom.fit1a<-lm(DS001 ~ Dissolved_OrganicMatter_RFU, data=ds001_meta2) %>%
@@ -986,16 +988,18 @@ summary(ds001.dom.fit1a) # not significant
 coef(summary(ds001.dom.fit1a))
 p.adjust(coef(summary(ds001.dom.fit1a))[,4], method="bonferroni") # pvalue
 
+# Plot DS001 RelAb x DOM - w/o June 2021
+
 fig.ds001.dom.fit1a<-ggplot(ds001_meta2, aes(x = Dissolved_OrganicMatter_RFU, y = DS001)) +
   geom_point(aes(color=SampDate), size=3) + theme_classic() +
   scale_color_manual(name ="Sample Date", values=c("#ff6f00","#26547c","#32cbff"), labels=c("August 2021","December 2021","April 2022")) +
-  stat_smooth(method = "lm", col = "black", se=FALSE, size=1)+ labs(title="Relative Abundance of Genus DS001 vs. Dissolved Organic Matter", color="Sampling Date")+ylab("Relative Abundance")+xlab("Dissolved Organic Matter (RFU)")+
+  stat_smooth(method = "lm", col = "black", se=FALSE, linewidth=1)+ labs(title="Relative Abundance of Genus DS001 vs. Dissolved Organic Matter", color="Sampling Date")+ylab("Relative Abundance")+xlab("Dissolved Organic Matter (RFU)")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
-  stat_cor(label.y = 0.5, label.x=0.98) +
-  stat_regline_equation(aes(label=paste(..adj.rr.label..)),label.y = 0.53,label.x=0.98)
+  stat_cor(label.y = 0.5, label.x=0.6) +
+  stat_regline_equation(aes(label=paste(after_stat(adj.rr.label))),label.y = 0.53,label.x=0.6)
 
 ## use summary(ds001.so4.fit1) to double check that stat_cor gives same p value as linear regression! it does here :)
-ggsave(fig.ds001.dom.fit1a,filename = "figures/DS001_Genus_RelAb_vs_DOM_scatterplot_noJ21.pdf", width=10, height=8, dpi=600)
+ggsave(fig.ds001.dom.fit1a,filename = "figures/RelativeAbundance/DS001_Genus_RelAb_vs_DOM_scatterplot_noJ21.pdf", width=10, height=8, dpi=600)
 
 # next is DO%
 ds001.do.fit1<-lm(DS001 ~ DO_Percent_Local, data=ds001_meta) %>%
@@ -1093,16 +1097,18 @@ plot(DS001 ~ Sulfate_milliM, data=ds001_meta2,col=SampDate_Color)
 # orange = August 2021, dark blue = December 2021, light blue = April 2022
 abline(ds001.so4.fit1)
 
+# Plot RelAb of DS001 x Sulfate
+
 fig.ds001.so4.fit1<-ggplot(ds001_meta2, aes(x = Sulfate_milliM, y = DS001)) +
   geom_point(aes(color=SampDate), size=3) + theme_classic() +
   scale_color_manual(name ="Sample Date", values=c("#ff6f00","#26547c","#32cbff"), labels=c("August 2021","December 2021","April 2022")) +
   stat_smooth(method = "lm", col = "black", se=FALSE, size=1)+ labs(title="Relative Abundance of Genus DS001 vs. Sulfate (milliM)", color="Sampling Date")+ylab("Relative Abundance")+xlab("Sulfate (milliM)")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
-  stat_cor(label.y = 0.5, label.x=0.98) +
-  stat_regline_equation(aes(label=paste(..adj.rr.label..)),label.y = 0.53,label.x=0.98)
+  stat_cor(label.y = 0.5, label.x=0.6) +
+  stat_regline_equation(aes(label=paste(after_stat(adj.rr.label))),label.y = 0.53,label.x=0.6)
 
 ## use summary(ds001.so4.fit1) to double check that stat_cor gives same p value as linear regression! it does here :)
-ggsave(fig.ds001.so4.fit1,filename = "figures/DS001_Genus_RelAb_vs_Sulfate_scatterplot.pdf", width=10, height=8, dpi=600)
+ggsave(fig.ds001.so4.fit1,filename = "figures/RelativeAbundance/DS001_Genus_RelAb_vs_Sulfate_scatterplot.pdf", width=10, height=8, dpi=600)
 
 ## last is Sulfide
 ds001.hs.fit1<-lm(DS001 ~ Sulfide_microM, data=ds001_meta2) %>%

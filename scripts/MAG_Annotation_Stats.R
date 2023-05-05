@@ -95,13 +95,19 @@ mgm_fxns.cov$SampleID<-gsub("m\\..*","m",mgm_fxns.cov$SampleID)
 mgm_fxns.cov$PlotID<-gsub("^SSW.","",mgm_fxns.cov$SampleID)
 head(mgm_fxns.cov)
 
-# create Sample ID x KO ID count table
-mgm_fxn.counts_table<-dcast(mgm_fxns.cov, SampleID~KO_ID, value.var="ReadsPerGene")
+# Divide gene counts by gene length to account for sample differences in assembly
+## we do this because we did not co-assemble contigs, so each KO assignments across samples may not come from genes with the same length
+## need to account for gene length here first (since KO assignments can come from genes of different lengths)
+mgm_fxns.cov$CovPerGene<-mgm_fxns.cov$ReadsPerGene/mgm_fxns.cov$GeneLength
+head(mgm_fxns.cov)
+
+# create Sample ID x KO ID count table, using reads per gene that were divided by gene length
+mgm_fxn.counts_table<-dcast(mgm_fxns.cov, SampleID~KO_ID, value.var="CovPerGene")
 mgm_fxn.counts_table[,1:4] # sanity check
 rownames(mgm_fxn.counts_table)<-mgm_fxn.counts_table$SampleID
 
 mgm_fxn.counts_table[1:4,1:4] # sanity check
-mgm.fxn.nolows<-mgm_fxn.counts_table[,which(colSums(mgm_fxn.counts_table[,-1])>=15)] # remove functions with less than 15 total counts across mgms
+mgm.fxn.nolows<-mgm_fxn.counts_table[,which(colSums(mgm_fxn.counts_table[,-1])>=5)] # remove functions with less than 15 total counts across mgms
 mgm_fxn.binary<-counts_to_binary(mgm_fxn.counts_table[,-1]) # custom function to convert all counts to binary (presence/absence)
 
 bin_fxns.cov<-fread(file = 'data/Metagenomes/Analysis/SSW_Bins_Gene_Fxns_ReadCounts_2.19.23.txt', sep='\t',header = TRUE)
@@ -120,7 +126,13 @@ bin_fxns.cov$PlotID<-gsub("^SSW.","",bin_fxns.cov$SampleID)
 
 head(bin_fxns.cov)
 
-bin_fxn.counts_table<-dcast(bin_fxns.cov, SampleID+Bin_ID~KO_ID, value.var="ReadsPerGene")
+# Divide gene counts by gene length to account for sample differences in assembly
+## we do this because we did not co-assemble contigs, so each KO assignments across samples may not come from genes with the same length
+## need to account for gene length here first (since KO assignments can come from genes of different lengths)
+bin_fxns.cov$CovPerGene<-bin_fxns.cov$ReadsPerGene/bin_fxns.cov$GeneLength
+head(bin_fxns.cov)
+
+bin_fxn.counts_table<-dcast(bin_fxns.cov, SampleID+Bin_ID~KO_ID, value.var="CovPerGene")
 bin_fxn.counts_table[1:4,1:4] # sanity check
 rownames(bin_fxn.counts_table)<-bin_fxn.counts_table$Bin_ID
 bin_fxn.counts_table[1:4,1:4] # sanity check
@@ -535,7 +547,7 @@ ggsave(pcoa4,filename = "figures/MGM_Figs/SSW_MGM_pcoa_MR.traits_depth.png", wid
 mgm.disper1<-betadisper(mgm.euc_dist.mr, mgm_meta$SampDate)
 mgm.disper1
 
-permutest(mgm.disper3, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
+permutest(mgm.disper1, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
 #Pairwise comparisons:
 #  (Observed p-value below diagonal, permuted p-value above diagonal)
 #               June.2021 August.2021 December.2021 April.2022
