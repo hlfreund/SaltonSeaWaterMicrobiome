@@ -235,6 +235,7 @@ meta_scaled
 
 sulf.kegg<-read.table("data/Metagenomes/Analysis/Sulfur_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 arsen.kegg<-read.table("data/Metagenomes/Analysis/Arsenic_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
+heatshock.kegg<-read.table("data/Metagenomes/Analysis/HeatShock_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 
 #### Check Gene Distribution in MGMs ####
 mgm_fxn.counts_table[,1:4] # sanity check
@@ -341,7 +342,7 @@ dev.off()
 
 #save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
 
-#### Median-Ratio Normalized Gene Counts ####
+#### Median-Ratio Normalized - Gene Counts ####
 sizeFactors(mgm_dds) # will be used to normalize counts
 ## to normalize counts, we divide each raw count value in a given sample by that sample’s normalization factor (aka size factor) to generate normalized count values.
 ### This is performed for all count values (every gene in every sample)
@@ -352,7 +353,7 @@ mgm.mr<-as.data.frame(t(mgm_fxn_mr))
 mgm.mr$SampleID<-rownames(mgm.mr)
 mgm.mr[1:4,1:4]
 
-#### Variance Stabilizing Transformation ####
+#### Variance Stabilizing Transformation - Gene Counts ####
 head(counts(mgm_dds))
 mgm_dds2<-DESeqDataSetFromMatrix(countData=mgm_counts_matrix2, colData = mgm_meta, design = ~ 1)
 
@@ -362,7 +363,7 @@ assay(mgm_fxn_vst)
 mgm.vst<-assay(mgm_fxn_vst)
 #total_fxn_vst<-colSums(mgm_fxn_vst)
 
-#### Centered Log Ratio Transformation ####
+#### Centered Log Ratio Transformation - Gene Counts ####
 mgm_fxn.counts_table[1:4,1:4] # sanity check
 
 # df must have rownames are SampleIDs, columns are ASV IDs for vegan functions below\
@@ -372,7 +373,7 @@ mgm.clr[1:4,1:4]
 # check rownames of CLR transformed ASV data & metadata
 rownames(mgm.clr) %in% rownames(meta_scaled)
 
-#### Copies Per Million Transformation ####
+#### Copies Per Million Transformation - Gene Counts ####
 mgm_fxn.counts_table[1:4,1:4] # sanity check
 mgm_fxn.counts_t.table<-as.data.frame(t(as.data.frame(mgm_fxn.counts_table[,-1])))
 mgm_fxn.counts_t.table[1:4,1:4]
@@ -498,7 +499,7 @@ mgm.dend_cols <- as.character(mgm_meta$SampDate_Color[order.dendrogram(mgm.euc.m
 labels_colors(mgm.euc.mr_dend) <- mgm.dend_cols
 
 plot(mgm.euc.mr_dend, ylab="Median-Ratio, Euclidean Distance",cex = 0.5) + title(main = "Bacteria/Archaea Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 3)
-legend("topright",legend = c("June 2021","August 2021","December 2021","April 2022"),cex=.8,col = c( "#26547c","#36ab57","#32cbff","#ff6f00"),pch = 15, bty = "n")
+legend("topright",legend = c("June 2021","August 2021","December 2021","April 2022"),cex=.8,col = c( "#36ab57","#ff6f00","#26547c","#32cbff"),pch = 15, bty = "n")
 # Control is dark blue ("#218380"), #Alternaria is light blue ("#73d2de")
 dev.off()
 
