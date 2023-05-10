@@ -66,6 +66,31 @@ counts_to_binary <- function(dataFrame){
   return(new_df2) # ensures only output is the new dataframe
 }
 
+# function below is to convert large data.table NA to 0; https://stackoverflow.com/questions/7235657/fastest-way-to-replace-nas-in-a-large-data-table
+
+dt.to.na <- function(dataFrame){
+  new_m <- matrix(nrow=dim(dataFrame)[1],ncol = dim(dataFrame)[2]) # create new matrix w/ same rows and cols as input dataframe
+  ## dim(df)[1] gives you first dimensions (x aka rows), dim(df)[2] gives you second dimensions (y aka columns)
+
+  for( currentRow in 1:nrow(dataFrame)){ # for every row
+    for( currentCol in 1:ncol(dataFrame)){ # for every column
+
+      if ( is.na(dataFrame[currentRow, currentCol]) & is.numeric(dataFrame[currentRow, currentCol])){ # if both row and col (specifies each cell) are NA, change val to 0
+        new_m[currentRow, currentCol] = 0
+        # is.numeric(df[currentRow,currentCol]) is to confirm each cell contains a numeric element
+      } else if( is.numeric(dataFrame[currentRow, currentCol]) & dataFrame[currentRow, currentCol] > 0){ # if both row and col (specifies each cell) are > 0, change val to 1
+        next
+      }
+    }
+  }
+  new_df <- as.data.frame(new_m) #turns matrix into dataframe
+  names(new_df) <- names(dataFrame) #names rows & cols of new dataframe to be same as row names and col names from input dataframe
+  rownames(new_df) <- rownames(dataFrame)
+  #  new_df2=new_df[,order(ncol(new_df):1)]
+  new_df2=new_df[rownames(dataFrame),colnames(dataFrame)]
+  return(new_df2) # ensures only output is the new dataframe
+}
+
 ##save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata") # save global env to Rdata file
 
 ## Notes:
@@ -76,13 +101,9 @@ counts_to_binary <- function(dataFrame){
 ## https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html
 
 #### Import MGM Read Counts & Taxonomic Annotation Data ####
-mgm_fxns.cov1<-fread(file = 'data/Metagenomes/Analysis/SSW_Samples_NoBins_Gene_Coverages_5.3.23.txt', sep='\t',header = TRUE)
-dim(mgm_fxns.cov1)
-head(mgm_fxns.cov1)
-
-mgm_fxns.cov<-na.omit(mgm_fxns.cov1)
+mgm_fxns.cov<-fread(file = 'data/Metagenomes/Analysis/SSW_Samples_NoBins_Gene_Coverages_5.3.23.txt', sep='\t',header = TRUE)
+dim(mgm_fxns.cov)
 head(mgm_fxns.cov)
-#mgm_fxns.cov<-mgm_fxns.cov1[which(mgm_fxns.cov1$KO_ID!="NA"),]
 
 # count occurrences of all traits across all mgms
 n_occur <- data.frame(table(mgm_fxns.cov$KO_Function))
@@ -101,14 +122,22 @@ head(mgm_fxns.cov)
 mgm_fxns.cov$CovPerGene<-mgm_fxns.cov$ReadsPerGene/mgm_fxns.cov$GeneLength
 head(mgm_fxns.cov)
 
-# create Sample ID x KO ID count table, using reads per gene that were divided by gene length
-mgm_fxn.counts_table<-dcast(mgm_fxns.cov, SampleID~KO_ID, value.var="CovPerGene")
-mgm_fxn.counts_table[,1:4] # sanity check
-rownames(mgm_fxn.counts_table)<-mgm_fxn.counts_table$SampleID
+# create list of GeneIDs & KO IDs
+gene_KOs<-unique(data.frame(Gene_ID=mgm_fxns.cov$Gene_ID, KO_ID=mgm_fxns.cov$KO_ID))
+dim(gene_KOs)
 
-mgm_fxn.counts_table[1:4,1:4] # sanity check
-mgm.fxn.nolows<-mgm_fxn.counts_table[,which(colSums(mgm_fxn.counts_table[,-1])>=5)] # remove functions with less than 15 total counts across mgms
-mgm_fxn.binary<-counts_to_binary(mgm_fxn.counts_table[,-1]) # custom function to convert all counts to binary (presence/absence)
+# create Sample ID x Gene ID count table, using reads per gene that were divided by gene length
+mgm_fxn.cov_table<-dcast(mgm_fxns.cov, SampleID~Gene_ID, value.var="CovPerGene")
+mgm_fxn.cov_table[,1:4] # sanity check
+rownames(mgm_fxn.cov_table)<-mgm_fxn.cov_table$SampleID
+
+# convert all NAs to 0; will take a while
+mgm_fxn.cov_table[,-1][is.na(mgm_fxn.cov_table[,-1])] <- 0
+mgm_fxn.cov_table[1:6,1:6] # sanity check
+
+mgm.fxn.nolows<-mgm_fxn.cov_table[,which(colSums(mgm_fxn.cov_table[,-1])>=5)] # remove functions with less than 15 total counts across mgms
+#mgm_fxn.binary<-counts_to_binary(mgm_fxn.cov_table[,-1]) # custom function to convert all counts to binary (presence/absence)
+mgm.fxn.nolows[1:4,1:4] # sanity check
 
 bin_fxns.cov<-fread(file = 'data/Metagenomes/Analysis/SSW_Bins_Gene_Fxns_ReadCounts_2.19.23.txt', sep='\t',header = TRUE)
 dim(bin_fxns.cov)
@@ -132,7 +161,11 @@ head(bin_fxns.cov)
 bin_fxns.cov$CovPerGene<-bin_fxns.cov$ReadsPerGene/bin_fxns.cov$GeneLength
 head(bin_fxns.cov)
 
-bin_fxn.counts_table<-dcast(bin_fxns.cov, SampleID+Bin_ID~KO_ID, value.var="CovPerGene")
+# create list of GeneIDs & KO IDs
+bin.gene_KOs<-unique(data.frame(Gene_ID=bin_fxns.cov$Gene_ID, KO_ID=bin_fxns.cov$KO_ID))
+dim(bin.gene_KOs)
+
+bin_fxn.counts_table<-dcast(bin_fxns.cov, SampleID+Bin_ID~Gene_ID, value.var="CovPerGene")
 bin_fxn.counts_table[1:4,1:4] # sanity check
 rownames(bin_fxn.counts_table)<-bin_fxn.counts_table$Bin_ID
 bin_fxn.counts_table[1:4,1:4] # sanity check
@@ -168,7 +201,6 @@ mapped_all<-merge(mapped_reads,mag_tax,by=c("PlotBin","Bin_ID"))
 head(mapped_all)
 mapped_all$RelAb_Map<-mapped_all$Bin_Mapped_Reads/mapped_all$Total_Mapped_Reads
 head(mapped_all)
-
 
 #save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
 
@@ -238,15 +270,15 @@ arsen.kegg<-read.table("data/Metagenomes/Analysis/Arsenic_KOs_KEGG.txt", header 
 heatshock.kegg<-read.table("data/Metagenomes/Analysis/HeatShock_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 
 #### Check Gene Distribution in MGMs ####
-mgm_fxn.counts_table[,1:4] # sanity check
-mgm_counts_t<-as.data.frame(t(mgm_fxn.counts_table[,-1]))
+mgm_fxn.cov_table[,1:4] # sanity check
+mgm_counts_t<-as.data.frame(t(mgm_fxn.cov_table[,-1]))
 class(mgm_counts_t$SSW.12.22.21.5m)
 mgm_counts_t <- as.data.frame(sapply(mgm_counts_t, as.numeric)) # convert integer to numeric across df
 class(mgm_counts_t$SSW.12.22.21.5m) # sanity check
 
-descdist(mgm_counts_t$SSW.4.13.22.5m, discrete = TRUE)
-descdist(mgm_counts_t$SSW.12.22.21.5m, discrete = TRUE)
-descdist(mgm_counts_t$SSW.8.24.21.0m, discrete = TRUE)
+#descdist(mgm_counts_t$SSW.4.13.22.5m, discrete = TRUE)
+#descdist(mgm_counts_t$SSW.12.22.21.5m, discrete = TRUE)
+#descdist(mgm_counts_t$SSW.8.24.21.0m, discrete = TRUE)
 
 # check distribution of gene # x gene counts with two samples
 ggplot(mgm_counts_t) +
@@ -285,23 +317,42 @@ ggplot(df) +
 
 #save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
 
-#### Prepare Feature Count Data for Normalization ####
+#### Prepare Feature Count Data for Normalization w/ DESeq2 ####
 # make sure count data & mgm_meta are in the same order
-rownames(mgm_fxn.counts_table)
+head(mgm_fxns.cov)
+
+# scale function coverage by 10 so that you can round to create DESeq2 object
+## DESeq2 requires whole integers
+mgm_fxns.cov$ScaleCov<-mgm_fxns.cov$CovPerGene*10 # scale coverages by 10
+
+mgm_scale.cov_table<-dcast(mgm_fxns.cov, SampleID~Gene_ID, value.var="ScaleCov")
+
+rownames(mgm_scale.cov_table)<-mgm_scale.cov_table$SampleID
+rownames(mgm_scale.cov_table) # sanity check
 rownames(mgm_meta)
 
-mgm_meta=mgm_meta[rownames(mgm_fxn.counts_table),] ## reorder mgm_meta to have same rows as original OTU table
+mgm_meta=mgm_meta[rownames(mgm_scale.cov_table),] ## reorder mgm_meta to have same rows as original OTU table
 
-mgm_counts_matrix<-as.matrix(mgm_fxn.counts_table[,-1]) # convert count table into matrix
-mgm_counts_matrix2<-t(mgm_counts_matrix) # transpose matrix so KO_IDs are rows, samples are columns
+# convert all NAs to 0; will take a while
+mgm_scale.cov_table[1:6,1:6]
+mgm_scale.cov_table[,-1][is.na(mgm_scale.cov_table[,-1])] <- 0
+mgm_scale.cov_table[1:6,1:6]
+
+#convert data frame to numeric
+#mgm_scale.cov_table[,-1] <- as.data.frame(sapply(mgm_scale.cov_table[,-1], as.numeric))
+
+scale_cov_matrix<-as.matrix(mgm_scale.cov_table[,-1]) # convert count table into matrix
+scale_cov_matrix2<-t(scale_cov_matrix) # transpose matrix so KO_IDs are rows, samples are columns
 # ^ will be used in DESeq2 functions
-rownames(mgm_meta) %in% colnames(mgm_counts_matrix2) # check if rownames in metadata (SampleID) match column names in count data
+rownames(mgm_meta) %in% colnames(scale_cov_matrix2) # check if rownames in metadata (SampleID) match column names in count data
 dim(mgm_meta)
-dim(mgm_counts_matrix2)
+dim(scale_cov_matrix2)
 
 # create the DESeq DataSet object for DGE analysis
+# DESeq2 needs whole # data, so need raw read counts, NOT coverage for these tables...questionable
 # mgm_dds has the counts of reads that mapped to annotated genes (aka output from featureCounts)
-mgm_dds<-DESeqDataSetFromMatrix(countData=mgm_counts_matrix2, colData = mgm_meta, design = ~ 1)
+mgm_dds<-DESeqDataSetFromMatrix(countData=round(scale_cov_matrix2), colData = mgm_meta, design = ~ 1)
+
 # design = ~ 1 means no design
 head(counts(mgm_dds))
 colSums(counts(mgm_dds)) %>% barplot
@@ -343,6 +394,7 @@ dev.off()
 #save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
 
 #### Median-Ratio Normalized - Gene Counts ####
+#
 sizeFactors(mgm_dds) # will be used to normalize counts
 ## to normalize counts, we divide each raw count value in a given sample by that sample’s normalization factor (aka size factor) to generate normalized count values.
 ### This is performed for all count values (every gene in every sample)
@@ -354,31 +406,41 @@ mgm.mr$SampleID<-rownames(mgm.mr)
 mgm.mr[1:4,1:4]
 
 #### Variance Stabilizing Transformation - Gene Counts ####
-head(counts(mgm_dds))
-mgm_dds2<-DESeqDataSetFromMatrix(countData=mgm_counts_matrix2, colData = mgm_meta, design = ~ 1)
 
-mgm_fxn_vst <- varianceStabilizingTransformation(mgm_dds2, blind = TRUE, fitType = "parametric")
-assay(mgm_fxn_vst)
+# code below is also in previous section - if you ran previous section, skip to VST step
+mgm_scale.cov_table[1:6,1:6]
+
+scale_cov_matrix<-as.matrix(mgm_scale.cov_table[,-1]) # convert count table into matrix
+scale_cov_matrix2<-t(scale_cov_matrix) # transpose matrix so KO_IDs are rows, samples are columns
+# ^ will be used in DESeq2 functions
+rownames(mgm_meta) %in% colnames(scale_cov_matrix2) # check if rownames in metadata (SampleID) match column names in count data
+dim(mgm_meta)
+dim(scale_cov_matrix2)
+
+# variance stabilizing transformation
+mgm_fxn_vst <- varianceStabilizingTransformation(mgm_dds, blind = TRUE, fitType = "parametric")
+assay(mgm_fxn_vst) #see output of VST
 
 mgm.vst<-assay(mgm_fxn_vst)
 #total_fxn_vst<-colSums(mgm_fxn_vst)
 
 #### Centered Log Ratio Transformation - Gene Counts ####
-mgm_fxn.counts_table[1:4,1:4] # sanity check
+mgm_fxn.cov_table[,1:4] # sanity check
+# ^ table contains gene coverage, Sample IDs as rows & genes as columns
 
 # df must have rownames are SampleIDs, columns are ASV IDs for vegan functions below\
-mgm.clr<-decostand(mgm_fxn.counts_table[,-1],method = "clr", pseudocount = 1) #CLR transformation
+mgm.clr<-decostand(mgm_fxn.cov_table[,-1],method = "clr", pseudocount = 1) #CLR transformation
 mgm.clr[1:4,1:4]
 
 # check rownames of CLR transformed ASV data & metadata
 rownames(mgm.clr) %in% rownames(meta_scaled)
 
 #### Copies Per Million Transformation - Gene Counts ####
-mgm_fxn.counts_table[1:4,1:4] # sanity check
-mgm_fxn.counts_t.table<-as.data.frame(t(as.data.frame(mgm_fxn.counts_table[,-1])))
-mgm_fxn.counts_t.table[1:4,1:4]
+mgm_fxn.cov_table[1:4,1:4] # sanity check
+mgm_fxn.cov_t.table<-as.data.frame(t(as.data.frame(mgm_fxn.cov_table[,-1])))
+mgm_fxn.cov_t.table[1:4,1:4]
 
-mgm_fxn_cpm<-(mgm_fxn.counts_t.table/colSums(mgm_fxn.counts_t.table))*10^6
+mgm_fxn_cpm<-(mgm_fxn.cov_t.table/colSums(mgm_fxn.cov_t.table))*10^6
 mgm_fxn_cpm[1:4,1:4]
 colSums(mgm_fxn_cpm)
 
@@ -412,8 +474,11 @@ dev.off()
 ### Pull out traits of interest ####
 # create unique list of KO ID and functions
 # check for duplicates to make sure each KO_ID has a unique function assignment
+head(mgm_fxns.cov)
+"NA" %in% mgm_fxns.cov$CovPerGene # just to ensure there are no NAs for genes in this df
+
 ko_fxns1<-mgm_fxns.cov[which(mgm_fxns.cov$KO_Function %in% unique(mgm_fxns.cov$KO_Function)),] # first subset out data based on unique KO functions
-ko_fxns2<-subset(ko_fxns1, select=c("KO_ID","KO_Function"))
+ko_fxns2<-subset(ko_fxns1, select=c("Gene_ID","KO_ID","KO_Function"))
 
 n_occur <- data.frame(table(ko_fxns2$KO_ID)) # see how many duplicates there are of KO IDs, compare duplicates
 n_occur[n_occur$Freq > 1,] # what traits appear more than once?
@@ -421,6 +486,7 @@ n_occur[n_occur$Freq > 1,] # what traits appear more than once?
 ko_ID<-unique(data.frame(KO_ID=ko_fxns2$KO_ID)) # get a list of unique KO IDs in data
 
 ko_fxns<-unique(ko_fxns2[which(ko_fxns2$KO_ID %in% ko_ID$KO_ID),]) # use unique KO ID list to subset out KO function data
+head(ko_fxns)
 
 ## pull out functions of interest
 #sulfur.fxns<-as.data.frame(ko_fxns[grep("sulf|thio", ko_fxns$KO_Function), ]) # pull out sulfur functions
@@ -432,29 +498,34 @@ UV.res.fxns<-as.data.frame(ko_fxns[grep("^UV ", ko_fxns$KO_Function), ]) # pull 
 endospore.fxns<-as.data.frame(ko_fxns[grep("^spore ", ko_fxns$KO_Function), ]) # pull out endospore related functions
 
 ### Merge Metadata & Count Data & Taxa Data Together ####
-mgm.mr[1:4,1:4]
+mgm.clr[1:4,1:4]
 head(mgm_meta)
 head(ko_fxns)
 head(mapped_all)
 
 # melt data with normalized feature counts to merge with all traits & traits of interest
-mgm_mr_melt<-melt(mgm.mr, by="SampleID")
-head(mgm_mr_melt)
-colnames(mgm_mr_melt)[which(names(mgm_mr_melt) == "variable")] <- "KO_ID"
-colnames(mgm_mr_melt)[which(names(mgm_mr_melt) == "value")] <- "mrCount"
+mgm.clr$SampleID<-rownames(mgm.clr)
+mgm_clr_melt<-melt(mgm.clr, by="SampleID")
+head(mgm_clr_melt)
+colnames(mgm_clr_melt)[which(names(mgm_clr_melt) == "variable")] <- "Gene_ID"
+colnames(mgm_clr_melt)[which(names(mgm_clr_melt) == "value")] <- "CovPerGene"
 
-mgm.mr.all<-merge(ko_fxns, mgm_mr_melt, by=c("KO_ID"))
-head(mgm.mr.all)
+mgm.clr.all<-merge(ko_fxns, mgm_clr_melt, by=c("Gene_ID"),allow.cartesian = TRUE)
+head(mgm.clr.all)
+mgm.clr.all<-subset(mgm.clr.all, KO_Function!="NA") # only looking at functions we have KO IDs for
+head(mgm.clr.all)
 
-mgm.mr.sulf<-merge(sulfur.fxns, mgm_mr_melt, by=c("KO_ID"))
-head(mgm.mr.sulf)
+mgm.clr.sulf<-merge(sulfur.fxns, mgm_clr_melt, by=c("Gene_ID"),allow.cartesian = TRUE)
+head(mgm.clr.sulf)
 
-mgm.mr.ars<-merge(arsenic.fxns, mgm_mr_melt, by=c("KO_ID"))
-head(mgm.mr.ars)
+mgm.clr.ars<-merge(arsenic.fxns, mgm_clr_melt, by=c("Gene_ID"),allow.cartesian = TRUE)
+head(mgm.clr.ars)
 
 # merge mapped read counts & mgm taxonomy data to metadata
 mapped_meta<-merge(mapped_all, mgm_meta, by=c("SampleID"))
 head(mapped_meta)
+
+#save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
 
 #### Clustering by Features Across Samples ####
 
