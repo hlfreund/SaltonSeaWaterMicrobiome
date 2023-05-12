@@ -38,8 +38,8 @@ suppressPackageStartupMessages({ # load packages quietly
 
 #### Load Global Env to Import Count/ASV Tables ####
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
-#load("data/ssw_clr.euc.dist.Rdata")
-#save.image("data/SSW_env.seq_analysis.Rdata")
+#load("data/SSeawater_BetaDiv_Data.Rdata")
+
 
 #save.image("data/Env_Seqs_All/env.seq_analysis.Rdata") # save global env to Rdata file
 bac.dat.all[1:6,1:6]
@@ -123,11 +123,19 @@ ggsave(pcoa2,filename = "figures/BetaDiversity/SSW_16S_pcoa_CLR_depth_sampdate.p
 # multivariate analogue to Levene's test of homogeneity of variances
 # program finds spatial median or centroid of the group, & compare distances of group to centroid/spatial median via ANOVA
 
+#While PERMANOVA tests differences in group means (analogous to MANOVA),
+## a related test called PERMDISP can be used to evaluate homogeneity of group dispersion
+#(analogous to Levene's test for equal variances). The vegan function for this test is “betadisper”:
+## * need a distance matrix!
+
 rownames(metadata) %in% rownames(b.clr) #b.clr was used to make the distance matrix b.euc_dist
 
 # first by compare dispersions by sampling date
 b.disper1<-betadisper((vegdist(b.clr,method="euclidean")), meta_scaled$SampDate)
 b.disper1
+
+## Significant differences in homogeneities can be tested using either parametric or permutational tests,
+##and parametric post hoc contrasts can also be investigated:
 
 permutest(b.disper1, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
 #Pairwise comparisons:
@@ -148,6 +156,13 @@ TukeyHSD(b.disper1) # tells us which Sample Dates/category's dispersion MEANS ar
 
 pnova1<-adonis2(b.clr ~ SampDate,data=meta_scaled,method = "euclidean",by="terms",permutations=1000)
 pnova1 # p-value = 0.000999
+
+##one issue with adonis is that it doesn't do multiple comparisons *******
+# tells us that something is different, but what is different? Which sample/plot/location?
+## our four provinces differ, but do all of them differ,or just one?
+
+##random person on the internet to the rescue!
+#install_github("pmartinezarbizu/pairwiseAdonis/pairwiseAdonis")
 
 b.clr.dist = (vegdist(b.clr, "euclidean", na.rm = TRUE)) #distance matrix using Bray's dissimilarity index for trait distribution (traits of interest only)
 pair.mod1<-pairwise.adonis(b.clr.dist,meta_scaled$SampDate, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
@@ -223,6 +238,7 @@ meta_scaled=meta_scaled[rownames(b.clr),] ## reorder metadata to match order of 
 perm <- with(meta_scaled, how(nperm = 1000, blocks = SampDate))
 
 pnova1<-adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova1
 ## none are significant
 
 adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
@@ -233,110 +249,111 @@ adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*De
 
 # remove categorical variables
 pnova2<-adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-#                                   Df SumOfSqs      R2       F   Pr(>F)
-#DO_Percent_Local                   1     2269 0.03771  2.9545 0.036963 *
-#ORP_mV                             1     7763 0.12901 10.1061 0.000999 ***
-#Temp_DegC                          1     6991 0.11618  9.1010 0.075924 .
-#DO_Percent_Local:ORP_mV            1     1023 0.01701  1.3321 0.739261
-#DO_Percent_Local:Temp_DegC         1     8964 0.14897 11.6699 0.442557
-#ORP_mV:Temp_DegC                   1     2379 0.03954  3.0972 0.007992 **
-#DO_Percent_Local:ORP_mV:Temp_DegC  1      827 0.01375  1.0768 0.819181
-#Residual                          39    29956 0.49784
-#Total                             46    60172 1.00000
+pnova2
+# nothing significant
+
 adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 #         Df SumOfSqs      R2      F   Pr(>F)
-#Model     7    30216 0.50216 5.6197 0.003996 **
-#Residual 39    29956 0.49784
-#Total    46    60172 1.00000
-
-pnova3<-adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-#                                   Df SumOfSqs      R2       F   Pr(>F)
-#ORP_mV                                                         1     2473 0.05255  3.4075 0.02997 *
-#Dissolved_OrganicMatter_RFU                                    1     8035 0.17073 11.0705 0.06394 .
-#DO_Percent_Local:Dissolved_OrganicMatter_RFU                   1     2471 0.05251  3.4046 0.09191 .
-#DO_Percent_Local:ORP_mV:Temp_DegC                              1     1169 0.02483  1.6101 0.02897 *
-
-adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
-#         Df SumOfSqs      R2      F   Pr(>F)
-#Model     15    29646 0.62988 2.7229 0.1518
-#Residual 24    17420 0.37012
+#Model    23    34412 0.73114 1.8918 0.4615
+#Residual 16    12654 0.26886
 #Total    39    47066 1.00000
 
-pnova4<-adonis2(b.clr ~ Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova3<-adonis2(b.clr ~ DO_Percent_Local*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova3
 #                                   Df SumOfSqs      R2       F   Pr(>F)
-#Sulfate_milliM                 1     6242 0.13262 6.2631 0.37363
-#Sulfide_microM                 1     4193 0.08908 4.2069 0.05495 .
-#Sulfate_milliM:Sulfide_microM  1      753 0.01600 0.7554 0.61738
-#Residual                      36    35878 0.76230
-#Total                         39    47066 1.00000
+#Sulfide_microM                                               1     1165 0.02474  1.4725 0.006993 **
+#Temp_DegC:Dissolved_OrganicMatter_RFU                        1     1349 0.02865  1.7052 0.045954 *
+#DO_Percent_Local:Sulfide_microM                              1      944 0.02006  1.1935 0.061938 .
 
-adonis2(b.clr ~ Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+adonis2(b.clr ~ DO_Percent_Local*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 #         Df SumOfSqs      R2      F   Pr(>F)
-#Model    3    11187 0.2377 3.7418 0.1678
-#Residual 36    35878 0.7623
-#Total    39    47066 1.0000
+#Model    23    34412 0.73114 1.8918 0.4775
+#Residual 16    12654 0.26886
+#Total    39    47066 1.00000
 
-pnova5<-adonis2(b.clr ~ ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova4<-adonis2(b.clr ~ DO_Percent_Local*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova4
+#                                         Df SumOfSqs      R2       F   Pr(>F)
+#Sulfide_microM                           1     1122 0.02383  1.5127 0.004995 **
+#Temp_DegC:Dissolved_OrganicMatter_RFU    1     1256 0.02669  1.6944 0.052947 .
+
+adonis2(b.clr ~ DO_Percent_Local*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+#         Df SumOfSqs      R2      F   Pr(>F)
+#Model   15    29270 0.62189 2.6316 0.1339
+#Residual 24    17796 0.37811
+#Total    39    47066 1.00000
+
+pnova4b<-adonis2(b.clr ~ Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova4b
 #                                   Df SumOfSqs      R2       F   Pr(>F)
-#ORP_mV                                        1     4239 0.09006 5.7372 0.004995 **
-#Temp_DegC                                     1     6087 0.12933 8.2389 0.106893
-#Dissolved_OrganicMatter_RFU                   1     5450 0.11579 7.3765 0.063936 .
-#ORP_mV:Temp_DegC                              1     3492 0.07419 4.7263 0.180819
-#ORP_mV:Dissolved_OrganicMatter_RFU            1     1226 0.02605 1.6596 0.299700
-#Temp_DegC:Dissolved_OrganicMatter_RFU         1     1521 0.03231 2.0584 0.039960 *
-#  ORP_mV:Temp_DegC:Dissolved_OrganicMatter_RFU  1     1409 0.02994 1.9075 0.057942 .
-#Residual                                     32    23642 0.50232
-#Total                                        39    47066 1.00000
+#Sulfide_microM                                        1     1355 0.02880 1.7221 0.003996 **
+#Dissolved_OrganicMatter_RFU:Temp_DegC                 1     3882 0.08249 4.9329 0.055944 .
 
-adonis2(b.clr ~ ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+pnova4c<-adonis2(b.clr ~ Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova4c
+#                                   Df SumOfSqs      R2       F   Pr(>F)
+#Sulfide_microM                                        1     1355 0.02880 1.7221 0.003996 **
+#Dissolved_OrganicMatter_RFU:Temp_DegC                 1     3882 0.08249 4.9329 0.047952 *
+
+pnova5<-adonis2(b.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova5
+#                                               Df SumOfSqs      R2       F   Pr(>F)
+#ORP_mV                                         1     4239 0.09006 5.5903 0.03397 *
+#Dissolved_OrganicMatter_RFU:Temp_DegC          1     1545 0.03283 2.0378 0.05295 .
+#ORP_mV:Dissolved_OrganicMatter_RFU:Temp_DegC   1     1519 0.03227 2.0033 0.06993 .
+
+adonis2(b.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 #         Df SumOfSqs      R2      F   Pr(>F)
-#Model    7    23424 0.49768 4.5292 0.02597 *
+#Model    15    28868 0.61336 2.5383 0.1748
+#Residual 24    18197 0.38664
+#Total    39    47066 1.00000
+
+pnova6a<-adonis2(b.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova6a
+#                                             Df SumOfSqs      R2      F   Pr(>F)
+#ORP_mV                                        1     4239 0.09006 5.7372 0.003996 **
+#Dissolved_OrganicMatter_RFU                   1     5542 0.11776 7.5017 0.044955 *
+#Temp_DegC                                     1     5995 0.12736 8.1137 0.093906 .
+#ORP_mV:Dissolved_OrganicMatter_RFU            1     1261 0.02679 1.7069 0.267732
+#ORP_mV:Temp_DegC                              1     3457 0.07345 4.6791 0.167832
+#Dissolved_OrganicMatter_RFU:Temp_DegC         1     1521 0.03231 2.0584 0.040959 *
+#ORP_mV:Dissolved_OrganicMatter_RFU:Temp_DegC  1     1409 0.02994 1.9075 0.059940 .
+
+adonis2(b.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm) #significant
+#         Df SumOfSqs      R2      F  Pr(>F)
+#Model     7    23424 0.49768 4.5292 0.01698 *
 #Residual 32    23642 0.50232
 #Total    39    47066 1.00000
 
-pnova6a<-adonis2(b.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-adonis2(b.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm) #significant
+pnova6b<-adonis2(b.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova6b # only ORP is significant
+adonis2(b.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm) # significant
+# ^ model explains 23.15% of R^2 aka variation
 
-pnova6b<-adonis2(b.clr ~ ORP_mV*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova6c<-adonis2(b.clr ~ ORP_mV*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova6c  # only ORP is significant
 adonis2(b.clr ~ ORP_mV*Temp_DegC,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm) # insignificant
+# ^ model explains 37.8% of R^2 aka variation
 
-## BEST MODEL as of 5/11/23:
+pnova6d<-adonis2(b.clr ~ ORP_mV*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova6d # only ORP is significant
+adonis2(b.clr ~ ORP_mV*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm) #insignificant
+# ^ model explains 16.14% of R^2 aka variation
+
+## BEST MODEL as of 5/11/23: explains 49.77% of variation in composition, p=0.023
 adonis2(b.clr ~ ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
-
-#While PERMANOVA tests differences in group means (analogous to MANOVA),
-## a related test called PERMDISP can be used to evaluate homogeneity of group dispersion
-#(analogous to Levene's test for equal variances). The vegan function for this test is “betadisper”:
-## * need a distance matrix!
-b.clr.dist = (vegdist(b.clr, "euclidean", na.rm = TRUE)) #distance matrix using Bray's dissimilarity index for trait distribution (traits of interest only)
-bac.disper <- betadisper(b.clr.dist, meta_scaled$SampDate)
-bac.disper
-
-## Significant differences in homogeneities can be tested using either parametric or permutational tests,
-##and parametric post hoc contrasts can also be investigated:
-anova(bac.disper)
-permutest(bac.disper)
-TukeyHSD(bac.disper)
-
-##one issue with adonis is that it doesn't do multiple comparisons *******
-# tells us that something is different, but what is different? Which sample/plot/location?
-## our four provinces differ, but do all of them differ,or just one?
-
-##random person on the internet to the rescue!
-#install_github("pmartinezarbizu/pairwiseAdonis/pairwiseAdonis")
-meta_scaled=meta_scaled[rownames(b.clr),] ## reorder metadata to match order of CLR data
-
-pair.mod<-pairwise.adonis(b.clr.dist,meta_scaled$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
-pair.mod
-pairwise.adonis2(b.clr.dist~Depth_m, data=meta_scaled,strata='SampDate')
-
-pair.mod1<-pairwise.adonis(b.clr.dist,meta_scaled$SampDate, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
-pair.mod1
+#         Df SumOfSqs      R2      F  Pr(>F)
+#Model    7    23424 0.49768 4.5292 0.02298 *
+#Residual 32    23642 0.50232
+#Total    39    47066 1.00000
 
 ### SELF REMINDER FOR R^2
-### Coefficient of Determination, denoted R2 or r2 and pronounced "R squared"
+### Coefficient of Determination, denoted R2 or r2
 ### is the proportion of the variance in the dependent variable that is predictable from the independent variable(s)
 
 ### Pseudo F stat for PERMANOVA
 ### pseudo F-ratio: It compares the total sum of squared dissimilarities (or ranked dissimilarities) among objects belonging to different groups to that of objects belonging to the same group.
 ### Larger F-ratios indicate more pronounced group separation, however, the significance of this ratio is usually of more interest than its magnitude.
 
+#### Save Everything ####
+save.image("data/SSeawater_BetaDiv_Data.Rdata")
