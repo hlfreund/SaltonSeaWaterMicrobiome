@@ -47,6 +47,9 @@ bac.ASV_table[1:4,1:4]
 bac.ASV_table[(nrow(bac.ASV_table)-4):(nrow(bac.ASV_table)),(ncol(bac.ASV_table)-4):(ncol(bac.ASV_table))] # last 4 rows & cols
 head(meta_scaled)
 
+## DO NOT RUN THIS LINE, THIS IS YOUR COLOR REFERENCE!!!!
+(August.2021="#ef781c",December.2021="#03045e",April.2022="#059c3f")
+
 #### Rarefaction & Species Accumulation Curves ####
 # bacteria/archaea
 
