@@ -224,6 +224,8 @@ summary(s.div.lm.fit1)
 #(Intercept)        89.279      3.587  24.893   <2e-16 ***
 #DO_Percent_Local    7.088      3.683   1.925    0.062 .
 
+glm(formula = y ~ 1, family = Gamma)
+
 s.div.lm.fit2<-lm(Bac_Shannon_Diversity ~ ORP_mV, data=bac.div.metadat2) %>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
