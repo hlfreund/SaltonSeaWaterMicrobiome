@@ -104,7 +104,7 @@ class(bac.div.metadat) # want data frame
 
 unique(bac.div.metadat$SampleMonth) # see how many elements there are in the Group variable
 unique(bac.div.metadat$Depth_m) # see how many elements there are in the Group variable
-bac.div.metadat$Depth_m<-factor(bac.div.metadat$Depth_m, levels=c("0","2","3","4","5","7","9","10","11"))
+bac.div.metadat$Depth_m<-factor(bac.div.metadat$Depth_m, levels=c("0","3","4","5","7","9","10","11"))
 
 # drop the outliers
 bac.div.metadat2<-subset(bac.div.metadat, bac.div.metadat$Bac_Shannon_Diversity<=200)
@@ -131,7 +131,14 @@ bac.a.div2<-ggplot(bac.div.metadat2, aes(x=as.factor(Depth_m), y=Bac_Shannon_Div
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   coord_flip() + scale_x_discrete(limits=rev)
 
-ggsave(bac.a.div2,filename = "figures/AlphaDiversity/SSW_Bacterial_alpha_diversity_depth_v2.png", width=13, height=10, dpi=600)
+ggsave(bac.a.div2,filename = "figures/AlphaDiversity/SSW_Bacterial_alpha_diversity_depth_v1.png", width=13, height=10, dpi=600)
+
+bac.a.div3<-ggplot(bac.div.metadat2, aes(x=as.factor(Depth_m), y=Bac_Shannon_Diversity)) +geom_boxplot(aes(fill=bac.div.metadat2$Depth_m),color="black")+
+  labs(title = "Bacterial Shannon Diversity by Sampling Depth", x="Depth (m)", y="Shannon Diversity", fill="Depth (m)")+
+  scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
+
+ggsave(bac.a.div3,filename = "figures/AlphaDiversity/SSW_Bacterial_alpha_diversity_depth_v2.png", width=13, height=10, dpi=600)
 
 ## Species Richness by Sample Type
 bac.a.sr<-ggplot(bac.div.metadat2, aes(x=SampDate, y=Bac_Species_Richness,fill=SampDate)) +geom_boxplot(color="black")+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+
@@ -144,15 +151,15 @@ ggsave(bac.a.sr,filename = "figures/AlphaDiversity/SSW_Bacterial_species_richnes
 bac.a.sr2<-ggplot(bac.div.metadat2, aes(x=as.factor(Depth_m), y=Bac_Species_Richness,fill=bac.div.metadat2$Depth_m)) +geom_boxplot(aes(fill=as.numeric(bac.div.metadat2$Depth_m)),color="black")+
   labs(title = "Bacterial Species Richness by Sampling Depth", x="Depth (m)", y="Species Richness", fill="Depth (m)")+
   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  coord_flip() + scale_x_discrete(limits=rev)
 
 ggsave(bac.a.sr2,filename = "figures/AlphaDiversity/SSW_Bacterial_species_richness_depth_v1.png", width=13, height=10, dpi=600)
 
 bac.a.sr3<-ggplot(bac.div.metadat2, aes(x=as.factor(Depth_m), y=Bac_Species_Richness,fill=bac.div.metadat2$Depth_m)) +geom_boxplot(aes(fill=as.numeric(bac.div.metadat2$Depth_m)),color="black")+
   labs(title = "Bacterial Species Richness by Sampling Depth", x="Depth (m)", y="Species Richness", fill="Depth (m)")+
   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  coord_flip() + scale_x_discrete(limits=rev)
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
 
 ggsave(bac.a.sr3,filename = "figures/AlphaDiversity/SSW_Bacterial_species_richness_depth_v2.png", width=13, height=10, dpi=600)
 
@@ -265,8 +272,8 @@ summary(s.div.lm.fit7)
 #(Intercept)      89.039      3.743   23.79   <2e-16 ***
 #  Sulfide_microM   -2.137      3.748   -0.57    0.572
 
-fit1<-aov(Bac_Shannon_Diversity ~ Depth_m, data=bac.div.metadat2)
-pairwise.adonis(bac.div.metadat2$Bac_Shannon_Diversity, bac.div.metadat2$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
+fit1<-aov(Bac_Shannon_Diversity ~ as.factor(Depth_m), data=bac.div.metadat2)
+#pairwise.adonis(bac.div.metadat2$Bac_Shannon_Diversity, bac.div.metadat2$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 
 summary(fit1)
 #Df           Sum Sq Mean Sq    F value   Pr(>F)
@@ -355,8 +362,8 @@ summary(s.r.lm.fit7)
 #(Intercept)      917.85      38.09  24.094   <2e-16 ***
 #Sulfide_microM    77.15      38.15   2.023   0.0504 .
 
-fit2<-aov(Bac_Species_Richness ~ Depth_m, data=bac.div.metadat2)
-pairwise.adonis(bac.div.metadat2$Bac_Species_Richness, bac.div.metadat2$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
+fit2<-aov(Bac_Species_Richness ~ as.factor(Depth_m), data=bac.div.metadat2)
+#pairwise.adonis(bac.div.metadat2$Bac_Species_Richness, bac.div.metadat2$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 
 summary(fit2)
 #Df           Sum Sq Mean Sq    F value   Pr(>F)
@@ -378,3 +385,6 @@ fligner.test(Bac_Species_Richness ~ Depth_m, data = bac.div.metadat2)
 # Fligner-Killeen:med chi-squared = 3.2235, df = 7, p-value = 0.8636
 # Which shows that the data do not deviate significantly from homogeneity.
 compare_means(Bac_Species_Richness ~ Depth_m, data=bac.div.metadat2, method="anova",p.adjust.method = "bonferroni")
+
+#### Save Everything ####
+save.image("data/SSeawater_AlphaDiv_Data.Rdata")

@@ -81,7 +81,7 @@ metadata<-merge(meta1, chem_meta, by=c("SampleID","Sample_Type","SampleMonth","S
 head(metadata)
 
 # create factor levels for certain groups
-metadata$Depth_m<-factor(metadata$Depth_m, levels=c("0","2","3","4","5","7","9","10","11"))
+metadata$Depth_m<-factor(metadata$Depth_m, levels=c("0","3","4","5","7","9","10","11"))
 
 metadata$SampDate<-interaction(metadata$SampleMonth,metadata$SampleYear)
 head(metadata)
