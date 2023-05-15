@@ -200,21 +200,21 @@ hist(bac.div.metadat$Chlorophyll_RFU, col="blue")
 #### Linear Regression Comparisons ####
 ## here the focus is comparing dust complexity to alpha diversity, species richness, depth, & sample date
 head(bac.div.metadat2)
-s.div.lm.fit1<-lm(Bac_Shannon_Diversity ~ DO_Percent_Local, data=bac.div.metadat2) %>%
+s.div.glm.fit1<-glm(Bac_Shannon_Diversity ~ DO_Percent_Local, family=Gamma, data=bac.div.metadat2) %>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.div.lm.fit1)
+summary(s.div.glm.fit1)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
 #(Intercept)        97.679      6.548  14.916   <2e-16 ***
 #  DO_Percent_Local   -1.922      6.647  -0.289    0.774
 
-s.div.lm.fit2<-lm(Bac_Shannon_Diversity ~ ORP_mV, data=bac.div.metadat2) %>%
+s.div.glm.fit2<-glm(Bac_Shannon_Diversity ~ ORP_mV, family=Gamma, data=bac.div.metadat2) %>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.div.lm.fit2)
+summary(s.div.glm.fit2)
 
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
@@ -224,31 +224,31 @@ summary(s.div.lm.fit2)
 
 not_summer_months<-subset(bac.div.metadat2, SampDate=="December.2021" | SampDate=="April.2022" )
 
-s.div.lm.fit2a<-lm(Bac_Shannon_Diversity ~ ORP_mV, data=not_summer_months) %>%
+s.div.glm.fit2a<-glm(Bac_Shannon_Diversity ~ ORP_mV, family=Gamma, data=not_summer_months) %>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.div.lm.fit2a)
+summary(s.div.glm.fit2a)
 
 summer_months<-subset(bac.div.metadat2, SampDate=="June.2021" | SampDate=="August.2021" )
 
-s.div.lm.fit2b<-lm(Bac_Shannon_Diversity ~ ORP_mV, data=summer_months) %>%
+s.div.glm.fit2b<-glm(Bac_Shannon_Diversity ~ ORP_mV, family=Gamma, data=summer_months) %>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.div.lm.fit2b)
+summary(s.div.glm.fit2b)
 
-s.div.lm.fit3<-lm(Bac_Shannon_Diversity ~ Temp_DegC, data=bac.div.metadat2) %>%
+s.div.glm.fit3<-glm(Bac_Shannon_Diversity ~ Temp_DegC, family=Gamma, data=bac.div.metadat2) %>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.div.lm.fit3)
+summary(s.div.glm.fit3)
 
-s.div.lm.fit5<-lm(Bac_Shannon_Diversity ~ Dissolved_OrganicMatter_RFU, data=bac.div.metadat2) %>%
+s.div.glm.fit5<-glm(Bac_Shannon_Diversity ~ Dissolved_OrganicMatter_RFU, family=Gamma, data=bac.div.metadat2) %>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.div.lm.fit5)
+summary(s.div.glm.fit5)
 
 fit1<-aov(Bac_Shannon_Diversity ~ Depth_m, data=bac.div.metadat2)
 pairwise.adonis(bac.div.metadat2$Bac_Shannon_Diversity, bac.div.metadat2$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
@@ -289,21 +289,21 @@ fit.test<-ggplot(bac.div.metadat2, aes(x = Depth_m, y = Bac_Shannon_Diversity, f
 
 head(bac.div.metadat2)
 
-s.sr.lm.fit1<-lm(Bac_Species_Richness ~ DO_Percent_Local, data=bac.div.metadat2) %>%
+s.sr.glm.fit1<-glm(Bac_Species_Richness ~ DO_Percent_Local, family=Gamma, data=bac.div.metadat2) %>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Species richness are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.sr.lm.fit1)
+summary(s.sr.glm.fit1)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
 #(Intercept)        950.80      54.40  17.479   <2e-16 ***
 #  DO_Percent_Local   -10.44      55.22  -0.189    0.851
 
-s.sr.lm.fit2<-lm(Bac_Species_Richness ~ ORP_mV, data=bac.div.metadat2) %>%
+s.sr.glm.fit2<-glm(Bac_Species_Richness ~ ORP_mV, family=Gamma, data=bac.div.metadat2) %>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because SSpecies richness are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.sr.lm.fit2)
+summary(s.sr.glm.fit2)
 
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
@@ -313,11 +313,11 @@ summary(s.sr.lm.fit2)
 
 not_summer_months<-subset(bac.div.metadat2, SampDate=="December.2021" | SampDate=="April.2022" )
 
-s.sr.lm.fit2a<-lm(Bac_Species_Richness ~ ORP_mV, data=not_summer_months) %>%
+s.sr.glm.fit2a<-glm(Bac_Species_Richness ~ ORP_mV, family=Gamma, data=not_summer_months) %>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon srersity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.sr.lm.fit2a)
+summary(s.sr.glm.fit2a)
 
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
@@ -326,33 +326,33 @@ summary(s.sr.lm.fit2a)
 
 summer_months<-subset(bac.div.metadat2, SampDate=="June.2021" | SampDate=="August.2021" )
 
-s.sr.lm.fit2b<-lm(Bac_Species_Richness ~ ORP_mV, data=summer_months) %>%
+s.sr.glm.fit2b<-glm(Bac_Species_Richness ~ ORP_mV, family=Gamma, data=summer_months) %>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Species richness are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.sr.lm.fit2b)
+summary(s.sr.glm.fit2b)
 
 # Coefficients:
 #            Estimate Std. Error t value Pr(>|t|)
 #(Intercept)  1088.19      70.88  15.353 1.04e-09 ***
 #  ORP_mV        -27.43      45.38  -0.605    0.556
 
-s.sr.lm.fit3<-lm(Bac_Species_Richness ~ Temp_DegC, data=bac.div.metadat2) %>%
+s.sr.glm.fit3<-glm(Bac_Species_Richness ~ Temp_DegC, family=Gamma, data=bac.div.metadat2) %>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Species richness are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.sr.lm.fit3)
+summary(s.sr.glm.fit3)
 
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
 #(Intercept)    639.8      141.3   4.529 4.49e-05 ***
 #  Temp_DegC      314.6      142.1   2.214    0.032 *
 
-s.sr.lm.fit5<-lm(Bac_Species_Richness ~ Dissolved_OrganicMatter_RFU, data=bac.div.metadat2) %>%
+s.sr.glm.fit5<-glm(Bac_Species_Richness ~ Dissolved_OrganicMatter_RFU, family=Gamma, data=bac.div.metadat2) %>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Species richness are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.sr.lm.fit5)
+summary(s.sr.glm.fit5)
 
 fit2<-aov(Bac_Species_Richness ~ Depth_m, data=bac.div.metadat2)
 pairwise.adonis(bac.div.metadat2$Bac_Species_Richness, bac.div.metadat2$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
