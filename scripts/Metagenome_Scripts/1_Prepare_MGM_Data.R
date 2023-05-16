@@ -504,7 +504,7 @@ total_cpm_counts<-colSums(mgm_fxn_cpm)
 mgm.clr[1:4,1:4]
 total_clr_counts<-rowSums(mgm.clr)
 
-total_counts<-rowSums(mgm_fxn.counts_table[,-1])
+total_counts<-rowSums(mgm_fxn.cov_table1[,-1])
 total_counts %>% barplot
 
 total_vst_counts<-colSums(mgm.vst)
