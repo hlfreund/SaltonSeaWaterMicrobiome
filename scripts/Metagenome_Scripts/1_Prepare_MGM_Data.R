@@ -193,7 +193,7 @@ bin.gene_KOs<-unique(data.frame(Gene_ID=bin_fxns.cov$Gene_ID, KO_ID=bin_fxns.cov
 dim(bin.gene_KOs)
 
 bin_fxn.counts_table1<-as.data.frame(dcast(bin_fxns.cov, SampleID+Bin_ID~Gene_ID, value.var="CovPerGene"))
-bin_fxn.counts_table<-remove_na_bins(bin_fxn.counts_table1) # need to check if this works later - 5/16/23
+#bin_fxn.counts_table<-remove_na_bins(bin_fxn.counts_table1) # need to check if this works later - 5/16/23
 bin_fxn.counts_table[1:10,1:10] # sanity check
 rownames(bin_fxn.counts_table)<-bin_fxn.counts_table$Bin_ID
 bin_fxn.counts_table[1:200,1:20] # sanity check
@@ -525,15 +525,14 @@ dev.off()
 head(mgm_fxns.cov)
 NA %in% mgm_fxns.cov$CovPerGene # just to ensure there are no NAs for genes in this df
 
-ko_fxns1<-mgm_fxns.cov[which(mgm_fxns.cov$KO_Function %in% unique(mgm_fxns.cov$KO_Function)),] # first subset out data based on unique KO functions
-ko_fxns2<-subset(ko_fxns1, select=c("Gene_ID","KO_ID","KO_Function"))
+ko_fxns1<-unique(mgm_fxns.cov[,1:3]) # first subset out data based on unique KO functions
 
-n_occur <- data.frame(table(ko_fxns2$KO_ID)) # see how many duplicates there are of KO IDs, compare duplicates
+n_occur <- data.frame(table(ko_fxns1$KO_ID)) # see how many duplicates there are of KO IDs, compare duplicates
 n_occur[n_occur$Freq > 1,] # what traits appear more than once?
 
-ko_ID<-unique(data.frame(KO_ID=ko_fxns2$KO_ID)) # get a list of unique KO IDs in data
+ko_ID<-unique(data.frame(KO_ID=ko_fxns1$KO_ID)) # get a list of unique KO IDs in data
 
-ko_fxns<-as.data.frame(unique(ko_fxns2[which(ko_fxns2$KO_ID %in% ko_ID$KO_ID),])) # use unique KO ID list to subset out KO function data
+ko_fxns<-as.data.frame(ko_fxns1[!is.na(ko_fxns1$KO_ID),])  # use unique KO ID list to subset out KO function data
 head(ko_fxns)
 
 ## pull out functions of interest
@@ -583,7 +582,7 @@ head(mapped_meta)
 #save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
 
 ### Export Global Env for Other Scripts ####
-#save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
+save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
 # ^ includes all data combined in object bac.dat.all, ASV table (samples are rows, ASVs are columns), mgm_meta, and an ASV count table (where ASVs are rows, not columns)
 # Version Information
 sessionInfo()
