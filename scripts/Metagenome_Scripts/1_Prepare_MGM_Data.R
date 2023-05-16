@@ -282,7 +282,7 @@ fair_sat <- saturation(fair_ramp, 1)
 
 # Add colors for specific variables
 
-colorset1 = melt(c(August.2021="#ff6f00",December.2021="#26547c",April.2022="#32cbff"))
+colorset1 = melt(c(August.2021="#ef781c",December.2021="#03045e",April.2022="#059c3f"))
 
 colorset1$SampDate<-rownames(colorset1)
 colorset1
