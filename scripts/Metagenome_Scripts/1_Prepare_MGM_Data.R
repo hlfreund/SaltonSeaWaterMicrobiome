@@ -156,7 +156,7 @@ rownames(mgm_fxn.cov_table1)<-mgm_fxn.cov_table1$SampleID
 mgm_fxn.cov_table<-remove_na(mgm_fxn.cov_table1)
 mgm_fxn.cov_table[,1:6] # sanity check
 
-mgm.fxn.nolows<-mgm_fxn.cov_table[,which(colSums(mgm_fxn.cov_table[,-1])>=5)] # remove functions with less than 15 total counts across mgms
+mgm.fxn.nolows<-mgm_fxn.cov_table[,which(colSums(mgm_fxn.cov_table[,-1])>=5)] # remove functions with less than 5 total counts across mgms
 #mgm_fxn.binary<-counts_to_binary(mgm_fxn.cov_table[,-1]) # custom function to convert all counts to binary (presence/absence)
 mgm.fxn.nolows[1:4,1:4] # sanity check
 
