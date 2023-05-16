@@ -363,42 +363,56 @@ ggplot(df) +
 
 #save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
 
+#### Sum Coverage by KO ID Before Transformations ####
+mgm_fxns.cov[1:4,]
+mgm_fxns.cov_noNA<-as.data.frame(mgm_fxns.cov[!is.na(mgm_fxns.cov$KO_ID),])
+
+ko.cov.sum_table<-as.data.frame(dcast(mgm_fxns.cov_noNA, SampleID~KO_ID, value.var="CovPerGene", fun.aggregate=sum)) ###
+ko.cov.sum_table[1:4,1:4]
+rownames(ko.cov.sum_table)<-ko.cov.sum_table$SampleID
+ko.cov.sum_table[1:4,1:4]
+
+# check rownames of summed CLR transformed feature coverage data & metadata
+rownames(ko.cov.sum_table) %in% rownames(meta_scaled)
+
+ko.cov.sum_table[1:4,1:4] # contains the sum of CLR-transformed coverages per gene (summed up for each unique KO_ID)
+
 #### Prepare Feature Count Data for Normalization w/ DESeq2 ####
 # make sure count data & mgm_meta are in the same order
-head(mgm_fxns.cov)
+head(ko.cov.sum_table)
 
 # scale function coverage by 100 so that you can round to create DESeq2 object
 ## DESeq2 requires whole integers
-mgm_scale.cov_table<-mgm_fxn.cov_table
+mgm_scale.sum.cov_table<-ko.cov.sum_table
 mgm_fxn.cov_table[,2:6]*100 # sanity check that this method will work
-mgm_scale.cov_table<-mgm_fxn.cov_table[,-1]*100
+mgm_scale.sum.cov_table<-mgm_scale.sum.cov_table[,-1]*100
 
-mgm_scale.cov_table[,1:10]
+mgm_scale.sum.cov_table[,1:10]
 
-mgm_scale.cov_table$SampleID<-rownames(mgm_scale.cov_table)
+mgm_scale.sum.cov_table$SampleID<-rownames(mgm_scale.sum.cov_table)
 
-rownames(mgm_scale.cov_table) # sanity check
+rownames(mgm_scale.sum.cov_table) # sanity check
 rownames(mgm_meta)
 
-mgm_meta=mgm_meta[rownames(mgm_scale.cov_table),] ## reorder mgm_meta to have same rows as original OTU table
+mgm_meta=mgm_meta[rownames(mgm_scale.sum.cov_table),] ## reorder mgm_meta to have same rows as original OTU table
 
 # convert all NAs to 0; will take a while
-mgm_scale.cov_table[1:6,1:6]
+mgm_scale.sum.cov_table[1:6,1:6]
 
 #convert data frame to numeric
-#mgm_scale.cov_table[,-1] <- as.data.frame(sapply(mgm_scale.cov_table[,-1], as.numeric))
+#mgm_scale.sum.cov_table[,-1] <- as.data.frame(sapply(mgm_scale.sum.cov_table[,-1], as.numeric))
 
-scale_cov_matrix<-as.matrix(mgm_scale.cov_table[,!names(mgm_scale.cov_table) %in% c("SampleID")]) # convert count table into matrix
-scale_cov_matrix2<-t(scale_cov_matrix) # transpose matrix so KO_IDs are rows, samples are columns
+scale.sum.cov_matrix<-as.matrix(mgm_scale.sum.cov_table[,!names(mgm_scale.sum.cov_table) %in% c("SampleID")]) # convert count table into matrix
+scale.sum.cov_matrix2<-t(scale.sum.cov_matrix) # transpose matrix so KO_IDs are rows, samples are columns
 # ^ will be used in DESeq2 functions
-rownames(mgm_meta) %in% colnames(scale_cov_matrix2) # check if rownames in metadata (SampleID) match column names in count data
+rownames(mgm_meta) %in% colnames(scale.sum.cov_matrix2) # check if rownames in metadata (SampleID) match column names in count data
 dim(mgm_meta)
-dim(scale_cov_matrix2)
+dim(scale.sum.cov_matrix2)
 
 # create the DESeq DataSet object for DGE analysis
 # DESeq2 needs whole # data, so need raw read counts, NOT coverage for these tables...questionable
 # mgm_dds has the counts of reads that mapped to annotated genes (aka output from featureCounts)
-mgm_dds<-DESeqDataSetFromMatrix(countData=round(scale_cov_matrix2), colData = mgm_meta, design = ~ 1)
+mgm_dds<-DESeqDataSetFromMatrix(countData=round(scale.sum.cov_matrix2), colData = mgm_meta, design = ~ 1)
 
 # design = ~ 1 means no design
 head(counts(mgm_dds))
@@ -455,16 +469,17 @@ mgm.mr[1:4,1:4]
 #### Variance Stabilizing Transformation - Gene Counts ####
 
 # code below is also in previous section - if you ran previous section, skip to VST step
-mgm_scale.cov_table[1:6,1:6]
+ko.cov.sum_table[1:4,1:4]
 
-scale_cov_matrix<-as.matrix(mgm_scale.cov_table[,!names(mgm_scale.cov_table) %in% c("SampleID")]) # convert count table into matrix
-scale_cov_matrix2<-t(scale_cov_matrix) # transpose matrix so KO_IDs are rows, samples are columns
+scale.sum.cov_matrix<-as.matrix(ko.cov.sum_table[,!names(ko.cov.sum_table) %in% c("SampleID")]) # convert count table into matrix
+scale.sum.cov_matrix2<-t(scale.sum.cov_matrix) # transpose matrix so KO_IDs are rows, samples are columns
 # ^ will be used in DESeq2 functions
-rownames(mgm_meta) %in% colnames(scale_cov_matrix2) # check if rownames in metadata (SampleID) match column names in count data
+rownames(mgm_meta) %in% colnames(scale.sum.cov_matrix2) # check if rownames in metadata (SampleID) match column names in count data
 # sanity check
 dim(mgm_meta)
-dim(scale_cov_matrix2)
+dim(scale.sum.cov_matrix2)
 
+# you should be able to use matrix or DESeq2 object for this next function, but matrix was not working?
 # variance stabilizing transformation
 mgm_fxn_vst <- varianceStabilizingTransformation(mgm_dds, blind = TRUE, fitType = "parametric")
 assay(mgm_fxn_vst) #see output of VST
@@ -473,22 +488,22 @@ mgm.vst<-assay(mgm_fxn_vst)
 #total_fxn_vst<-colSums(mgm_fxn_vst)
 
 #### Centered Log Ratio Transformation - Gene Counts ####
-mgm_fxn.cov_table[,1:4] # sanity check
+ko.cov.sum_table[1:4,1:4]
 # ^ table contains gene coverage, Sample IDs as rows & genes as columns
 
 # df must have rownames are SampleIDs, columns are ASV IDs for vegan functions below\
-mgm.clr<-decostand(mgm_fxn.cov_table[,-1],method = "clr", pseudocount = 1) #CLR transformation
+mgm.clr<-decostand(ko.cov.sum_table[,-1],method = "clr", pseudocount = 1) #CLR transformation
 mgm.clr[1:4,1:4]
 
 # check rownames of CLR transformed ASV data & metadata
 rownames(mgm.clr) %in% rownames(meta_scaled)
 
 #### Copies Per Million Transformation - Gene Counts ####
-mgm_fxn.cov_table[1:4,1:4] # sanity check
-mgm_fxn.cov_t.table<-as.data.frame(t(as.data.frame(mgm_fxn.cov_table[,-1])))
-mgm_fxn.cov_t.table[1:4,1:4]
+ko.cov.sum_table[1:4,1:4] # sanity check
+mgm_fxn.sum.cov_t.table<-as.data.frame(t(as.data.frame(ko.cov.sum_table[,-1])))
+mgm_fxn.sum.cov_t.table[1:4,1:4]
 
-mgm_fxn_cpm<-(mgm_fxn.cov_t.table/colSums(mgm_fxn.cov_t.table))*10^6
+mgm_fxn_cpm<-(mgm_fxn.sum.cov_t.table/colSums(mgm_fxn.sum.cov_t.table))*10^6
 mgm_fxn_cpm[1:4,1:4]
 colSums(mgm_fxn_cpm)
 
@@ -554,10 +569,11 @@ head(mapped_all)
 mgm.clr$SampleID<-rownames(mgm.clr)
 mgm_clr_melt<-melt(mgm.clr, by="SampleID")
 head(mgm_clr_melt)
-colnames(mgm_clr_melt)[which(names(mgm_clr_melt) == "variable")] <- "Gene_ID"
-colnames(mgm_clr_melt)[which(names(mgm_clr_melt) == "value")] <- "CovPerGene"
+colnames(mgm_clr_melt)[which(names(mgm_clr_melt) == "variable")] <- "KO_ID"
+colnames(mgm_clr_melt)[which(names(mgm_clr_melt) == "value")] <- "SumCovPerKO"
+mgm_clr_melt[1:4,]
 
-mgm.clr.all<-as.data.frame(merge(ko_fxns, mgm_clr_melt, by=c("Gene_ID"),allow.cartesian = TRUE))
+mgm.clr.all<-as.data.frame(merge(ko_fxns, mgm_clr_melt, by=c("KO_ID"),allow.cartesian = TRUE))
 head(mgm.clr.all)
 
 NA %in% mgm.clr.all$KO_ID
@@ -566,13 +582,15 @@ mgm.clr.all<-mgm.clr.all[!is.na(mgm.clr.all$KO_ID),] # only looking at functions
 head(mgm.clr.all)
 #NA %in% mgm.clr.all
 
-mgm.clr.sulf<-merge(sulfur.fxns, mgm_clr_melt, by=c("Gene_ID"),allow.cartesian = TRUE)
+mgm_clr_melt[1:4,] #sanity check
+
+mgm.clr.sulf<-merge(sulfur.fxns, mgm_clr_melt, by=c("KO_ID"),allow.cartesian = TRUE)
 head(mgm.clr.sulf)
 
-mgm.clr.ars<-merge(arsenic.fxns, mgm_clr_melt, by=c("Gene_ID"),allow.cartesian = TRUE)
+mgm.clr.ars<-merge(arsenic.fxns, mgm_clr_melt, by=c("KO_ID"),allow.cartesian = TRUE)
 head(mgm.clr.ars)
 
-mgm.clr.osmo<-merge(osmo.fxns, mgm_clr_melt, by=c("Gene_ID"),allow.cartesian = TRUE)
+mgm.clr.osmo<-merge(osmo.fxns, mgm_clr_melt, by=c("KO_ID"),allow.cartesian = TRUE)
 head(mgm.clr.osmo)
 
 # merge mapped read counts & mgm taxonomy data to metadata
