@@ -68,27 +68,42 @@ counts_to_binary <- function(dataFrame){
 
 # function below is to convert large data.table NA to 0; https://stackoverflow.com/questions/7235657/fastest-way-to-replace-nas-in-a-large-data-table
 
-dt.to.na <- function(dataFrame){
-  new_m <- matrix(nrow=dim(dataFrame)[1],ncol = dim(dataFrame)[2]) # create new matrix w/ same rows and cols as input dataframe
-  ## dim(df)[1] gives you first dimensions (x aka rows), dim(df)[2] gives you second dimensions (y aka columns)
-
-  for( currentRow in 1:nrow(dataFrame)){ # for every row
-    for( currentCol in 1:ncol(dataFrame)){ # for every column
-
-      if ( is.na(dataFrame[currentRow, currentCol]) & is.numeric(dataFrame[currentRow, currentCol])){ # if both row and col (specifies each cell) are NA, change val to 0
-        new_m[currentRow, currentCol] = 0
-        # is.numeric(df[currentRow,currentCol]) is to confirm each cell contains a numeric element
-      } else if( is.numeric(dataFrame[currentRow, currentCol]) & dataFrame[currentRow, currentCol] > 0){ # if both row and col (specifies each cell) are > 0, change val to 1
-        next
-      }
-    }
+remove_na <- function(x){
+  dm <- as.matrix(x)
+  dm[is.na(dm)] <- 0
+  #dm<-as.matrix(sapply(dm[,-1], as.numeric))
+  new_df <- as.data.frame(dm) #turns matrix into dataframe
+  if ("SampleID" %in% colnames(new_df)){
+    new_df[,!names(new_df) %in% c("SampleID")]<-as.data.frame(lapply(new_df[,!names(new_df) %in% c("SampleID")],as.numeric))
+  } else{
+    new_df<-as.data.frame(lapply(new_df,as.numeric))
   }
-  new_df <- as.data.frame(new_m) #turns matrix into dataframe
-  names(new_df) <- names(dataFrame) #names rows & cols of new dataframe to be same as row names and col names from input dataframe
-  rownames(new_df) <- rownames(dataFrame)
+  #new_df[,-1]<-lapply(new_df[,-1],as.numeric)
+  names(new_df) <- names(x) #names rows & cols of new dataframe to be same as row names and col names from input dataframe
+  rownames(new_df) <- rownames(x)
+  colnames(new_df) <- colnames(x)
   #  new_df2=new_df[,order(ncol(new_df):1)]
-  new_df2=new_df[rownames(dataFrame),colnames(dataFrame)]
-  return(new_df2) # ensures only output is the new dataframe
+  return(new_df) # ensures only output is the new dataframe
+  #data.table(dm)
+}
+
+remove_na_bins <- function(x){
+  dm <- as.matrix(x)
+  dm[is.na(dm)] <- 0
+  #dm<-as.matrix(sapply(dm[,-1], as.numeric))
+  new_df <- as.data.frame(dm) #turns matrix into dataframe
+  if ("SampleID" %in% colnames(new_df) && "Bin_ID" %in% colnames(new_df)){
+    new_df[,!names(new_df) %in% c("SampleID","Bin_ID")]<-as.data.frame(lapply(new_df[,!names(new_df) %in% c("SampleID","Bin_ID")],as.numeric))
+  } else{
+    new_df<-as.data.frame(lapply(new_df,as.numeric))
+  }
+  #new_df[,-1]<-lapply(new_df[,-1],as.numeric)
+  names(new_df) <- names(x) #names rows & cols of new dataframe to be same as row names and col names from input dataframe
+  rownames(new_df) <- rownames(x)
+  colnames(new_df) <- colnames(x)
+  #  new_df2=new_df[,order(ncol(new_df):1)]
+  return(new_df) # ensures only output is the new dataframe
+  #data.table(dm)
 }
 
 ##save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata") # save global env to Rdata file
@@ -100,14 +115,10 @@ dt.to.na <- function(dataFrame){
 ## https://www.reneshbedre.com/blog/deseq2.html
 ## https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html
 
-#### Import MGM Read Counts & Taxonomic Annotation Data ####
+#### Import Contig Coverage Data ####
 mgm_fxns.cov<-fread(file = 'data/Metagenomes/Analysis/SSW_Samples_NoBins_Gene_Coverages_5.3.23.txt', sep='\t',header = TRUE)
 dim(mgm_fxns.cov)
 head(mgm_fxns.cov)
-
-# count occurrences of all traits across all mgms
-n_occur <- data.frame(table(mgm_fxns.cov$KO_Function))
-n_occur[n_occur$Freq > 1,]
 
 # update SampleID names so they match w/ metadata
 mgm_fxns.cov$SampleID<-gsub("_",".", mgm_fxns.cov$SampleID)
@@ -116,29 +127,40 @@ mgm_fxns.cov$SampleID<-gsub("m\\..*","m",mgm_fxns.cov$SampleID)
 mgm_fxns.cov$PlotID<-gsub("^SSW.","",mgm_fxns.cov$SampleID)
 head(mgm_fxns.cov)
 
+# Drop June 2021 samples
+unique(mgm_fxns.cov$SampleID)
+mgm_fxns.cov<-mgm_fxns.cov[!grepl("6.15.21", mgm_fxns.cov$SampleID),]
+unique(mgm_fxns.cov$SampleID) #sanity check
+
+# count occurrences of all traits across all mgms
+n_occur <- data.frame(table(mgm_fxns.cov$KO_Function))
+n_occur[n_occur$Freq > 1,]
+
 # Divide gene counts by gene length to account for sample differences in assembly
 ## we do this because we did not co-assemble contigs, so each KO assignments across samples may not come from genes with the same length
 ## need to account for gene length here first (since KO assignments can come from genes of different lengths)
 mgm_fxns.cov$CovPerGene<-mgm_fxns.cov$ReadsPerGene/mgm_fxns.cov$GeneLength
 head(mgm_fxns.cov)
 
+
 # create list of GeneIDs & KO IDs
 gene_KOs<-unique(data.frame(Gene_ID=mgm_fxns.cov$Gene_ID, KO_ID=mgm_fxns.cov$KO_ID))
 dim(gene_KOs)
 
 # create Sample ID x Gene ID count table, using reads per gene that were divided by gene length
-mgm_fxn.cov_table<-dcast(mgm_fxns.cov, SampleID~Gene_ID, value.var="CovPerGene")
-mgm_fxn.cov_table[,1:4] # sanity check
-rownames(mgm_fxn.cov_table)<-mgm_fxn.cov_table$SampleID
+mgm_fxn.cov_table1<-as.data.frame(dcast(mgm_fxns.cov, SampleID~Gene_ID, value.var="CovPerGene"))
+mgm_fxn.cov_table1[,1:4] # sanity check
+rownames(mgm_fxn.cov_table1)<-mgm_fxn.cov_table1$SampleID
 
 # convert all NAs to 0; will take a while
-mgm_fxn.cov_table[,-1][is.na(mgm_fxn.cov_table[,-1])] <- 0
-mgm_fxn.cov_table[1:6,1:6] # sanity check
+mgm_fxn.cov_table<-remove_na(mgm_fxn.cov_table1)
+mgm_fxn.cov_table[,1:6] # sanity check
 
 mgm.fxn.nolows<-mgm_fxn.cov_table[,which(colSums(mgm_fxn.cov_table[,-1])>=5)] # remove functions with less than 15 total counts across mgms
 #mgm_fxn.binary<-counts_to_binary(mgm_fxn.cov_table[,-1]) # custom function to convert all counts to binary (presence/absence)
 mgm.fxn.nolows[1:4,1:4] # sanity check
 
+#### Import Bin Coverage Data ####
 bin_fxns.cov<-fread(file = 'data/Metagenomes/Analysis/SSW_Bins_Gene_Fxns_ReadCounts_2.19.23.txt', sep='\t',header = TRUE)
 dim(bin_fxns.cov)
 head(bin_fxns.cov)
@@ -155,6 +177,11 @@ bin_fxns.cov$PlotID<-gsub("^SSW.","",bin_fxns.cov$SampleID)
 
 head(bin_fxns.cov)
 
+# Drop June 2021 samples
+unique(bin_fxns.cov$SampleID)
+bin_fxns.cov<-bin_fxns.cov[!grepl("6.15.21", bin_fxns.cov$SampleID),]
+unique(bin_fxns.cov$SampleID) #sanity check
+
 # Divide gene counts by gene length to account for sample differences in assembly
 ## we do this because we did not co-assemble contigs, so each KO assignments across samples may not come from genes with the same length
 ## need to account for gene length here first (since KO assignments can come from genes of different lengths)
@@ -165,10 +192,11 @@ head(bin_fxns.cov)
 bin.gene_KOs<-unique(data.frame(Gene_ID=bin_fxns.cov$Gene_ID, KO_ID=bin_fxns.cov$KO_ID))
 dim(bin.gene_KOs)
 
-bin_fxn.counts_table<-dcast(bin_fxns.cov, SampleID+Bin_ID~Gene_ID, value.var="CovPerGene")
-bin_fxn.counts_table[1:4,1:4] # sanity check
+bin_fxn.counts_table1<-as.data.frame(dcast(bin_fxns.cov, SampleID+Bin_ID~Gene_ID, value.var="CovPerGene"))
+bin_fxn.counts_table<-remove_na_bins(bin_fxn.counts_table1) # need to check if this works later - 5/16/23
+bin_fxn.counts_table[1:10,1:10] # sanity check
 rownames(bin_fxn.counts_table)<-bin_fxn.counts_table$Bin_ID
-bin_fxn.counts_table[1:4,1:4] # sanity check
+bin_fxn.counts_table[1:200,1:20] # sanity check
 
 # Remove unwanted samples
 #remove_samples<-c("SS.OV.10m.seawater.0621", "SS.OV.2m.seawater.0621", "SS.OV.5m.seawater.0621")
@@ -176,7 +204,7 @@ bin_fxn.counts_table[1:4,1:4] # sanity check
 #colnames(bac.ASV_counts)
 #dim(bac.ASV_counts)
 
-## Import MGM taxonomic data
+#### Import Taxonomic Annotation Data ####
 mag_tax<-fread(file = 'data/Metagenomes/Analysis/SSW_MAGs_TaxoAnnotation_2.7.23.tsv', sep='\t',header = TRUE,fill=TRUE)
 head(mag_tax)
 mag_tax$Bin_ID<-gsub("_",".", mag_tax$Bin_ID)
@@ -185,12 +213,17 @@ mag_tax$PlotBin<-gsub("^SSW.","",mag_tax$Bin_ID)
 
 head(mag_tax)
 
+# Drop June 2021 samples
+unique(mag_tax$Bin_ID)
+mag_tax<-mag_tax[!grepl("6.15.21", mag_tax$Bin_ID),]
+unique(mag_tax$Bin_ID) #sanity check
+
 mag_tax[mag_tax==""]<-"Unknown" # replace blank cells with Unknown label
 mag_tax[is.na(mag_tax)]<- "Unknown" # turn all NAs into "Unkowns"
 mag_tax$Species<-gsub("Unknown", "unknown", mag_tax$Species) # change uppercase Unknown to lowercase unknown for unknown species classification
 head(mag_tax)
 
-## Import Contig & Bin Mapped Read Counts
+#### Import Contig & Bin Mapped Read Counts ####
 mapped_reads<-as.data.frame(read_xlsx("data/Metagenomes/Analysis/Total_Contig_Bin_Reads.xlsx", sheet="Total_Bin_Reads"))
 head(mapped_reads)
 mapped_reads$PlotBin<-gsub("^SSW.","",mapped_reads$Bin_ID)
@@ -201,6 +234,11 @@ mapped_all<-merge(mapped_reads,mag_tax,by=c("PlotBin","Bin_ID"))
 head(mapped_all)
 mapped_all$RelAb_Map<-mapped_all$Bin_Mapped_Reads/mapped_all$Total_Mapped_Reads
 head(mapped_all)
+
+# Drop June 2021 samples
+unique(mapped_all$SampleID)
+mapped_all<-mapped_all[!grepl("6.15.21", mapped_all$SampleID),]
+unique(mapped_all$SampleID) #sanity check
 
 #save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
 
@@ -214,16 +252,21 @@ mgm_meta$SampleID<-gsub("m\\..*","m",mgm_meta$SampleID) # remove rep # after m
 mgm_meta$PlotID<-gsub("^SSW.","",mgm_meta$SampleID)
 head(mgm_meta)
 
+# drop data from June 2021
+mgm_meta<-mgm_meta[mgm_meta$SampleMonth!="June",]
+"June" %in% mgm_meta$SampleMonth # confirm there are no Junes left
+unique(mgm_meta$SampleMonth) # another sanity check to be safe
+
 # create factor levels for certain groups
 unique(mgm_meta$Depth_m)
 mgm_meta$Depth_m<-factor(mgm_meta$Depth_m, levels=c("0","5","10"))
 
 unique(mgm_meta$SampleMonth)
-mgm_meta$SampleMonth<-factor(mgm_meta$SampleMonth, levels=c("June","August","December","April"))
+mgm_meta$SampleMonth<-factor(mgm_meta$SampleMonth, levels=c("August","December","April"))
 
 mgm_meta$SampDate<-interaction(mgm_meta$SampleMonth, mgm_meta$SampleYear)
 head(mgm_meta)
-mgm_meta$SampDate<-factor(mgm_meta$SampDate, levels=c("June.2021", "August.2021", "December.2021", "April.2022"))
+mgm_meta$SampDate<-factor(mgm_meta$SampDate, levels=c("August.2021", "December.2021", "April.2022"))
 head(mgm_meta)
 
 # Create color palettes to be used for gradient colors
@@ -239,7 +282,7 @@ fair_sat <- saturation(fair_ramp, 1)
 
 # Add colors for specific variables
 
-colorset1 = melt(c(June.2021="#36ab57",August.2021="#ff6f00",December.2021="#26547c",April.2022="#32cbff"))
+colorset1 = melt(c(August.2021="#ff6f00",December.2021="#26547c",April.2022="#32cbff"))
 
 colorset1$SampDate<-rownames(colorset1)
 colorset1
@@ -260,6 +303,9 @@ meta_scaled<-mgm_meta
 head(meta_scaled)
 meta_scaled[,8:17]<-as.data.frame(scale(meta_scaled[,8:17], center=TRUE, scale=TRUE)) #centering before scaling
 meta_scaled
+
+# create numeric version of depth column for later analyses
+meta_scaled$Depth.num<-as.numeric(as.character(meta_scaled$Depth_m))
 
 #save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
 
@@ -321,13 +367,16 @@ ggplot(df) +
 # make sure count data & mgm_meta are in the same order
 head(mgm_fxns.cov)
 
-# scale function coverage by 10 so that you can round to create DESeq2 object
+# scale function coverage by 100 so that you can round to create DESeq2 object
 ## DESeq2 requires whole integers
-mgm_fxns.cov$ScaleCov<-mgm_fxns.cov$CovPerGene*10 # scale coverages by 10
+mgm_scale.cov_table<-mgm_fxn.cov_table
+mgm_fxn.cov_table[,2:6]*100 # sanity check that this method will work
+mgm_scale.cov_table<-mgm_fxn.cov_table[,-1]*100
 
-mgm_scale.cov_table<-dcast(mgm_fxns.cov, SampleID~Gene_ID, value.var="ScaleCov")
+mgm_scale.cov_table[,1:10]
 
-rownames(mgm_scale.cov_table)<-mgm_scale.cov_table$SampleID
+mgm_scale.cov_table$SampleID<-rownames(mgm_scale.cov_table)
+
 rownames(mgm_scale.cov_table) # sanity check
 rownames(mgm_meta)
 
@@ -335,13 +384,11 @@ mgm_meta=mgm_meta[rownames(mgm_scale.cov_table),] ## reorder mgm_meta to have sa
 
 # convert all NAs to 0; will take a while
 mgm_scale.cov_table[1:6,1:6]
-mgm_scale.cov_table[,-1][is.na(mgm_scale.cov_table[,-1])] <- 0
-mgm_scale.cov_table[1:6,1:6]
 
 #convert data frame to numeric
 #mgm_scale.cov_table[,-1] <- as.data.frame(sapply(mgm_scale.cov_table[,-1], as.numeric))
 
-scale_cov_matrix<-as.matrix(mgm_scale.cov_table[,-1]) # convert count table into matrix
+scale_cov_matrix<-as.matrix(mgm_scale.cov_table[,!names(mgm_scale.cov_table) %in% c("SampleID")]) # convert count table into matrix
 scale_cov_matrix2<-t(scale_cov_matrix) # transpose matrix so KO_IDs are rows, samples are columns
 # ^ will be used in DESeq2 functions
 rownames(mgm_meta) %in% colnames(scale_cov_matrix2) # check if rownames in metadata (SampleID) match column names in count data
@@ -410,10 +457,11 @@ mgm.mr[1:4,1:4]
 # code below is also in previous section - if you ran previous section, skip to VST step
 mgm_scale.cov_table[1:6,1:6]
 
-scale_cov_matrix<-as.matrix(mgm_scale.cov_table[,-1]) # convert count table into matrix
+scale_cov_matrix<-as.matrix(mgm_scale.cov_table[,!names(mgm_scale.cov_table) %in% c("SampleID")]) # convert count table into matrix
 scale_cov_matrix2<-t(scale_cov_matrix) # transpose matrix so KO_IDs are rows, samples are columns
 # ^ will be used in DESeq2 functions
 rownames(mgm_meta) %in% colnames(scale_cov_matrix2) # check if rownames in metadata (SampleID) match column names in count data
+# sanity check
 dim(mgm_meta)
 dim(scale_cov_matrix2)
 
@@ -475,7 +523,7 @@ dev.off()
 # create unique list of KO ID and functions
 # check for duplicates to make sure each KO_ID has a unique function assignment
 head(mgm_fxns.cov)
-"NA" %in% mgm_fxns.cov$CovPerGene # just to ensure there are no NAs for genes in this df
+NA %in% mgm_fxns.cov$CovPerGene # just to ensure there are no NAs for genes in this df
 
 ko_fxns1<-mgm_fxns.cov[which(mgm_fxns.cov$KO_Function %in% unique(mgm_fxns.cov$KO_Function)),] # first subset out data based on unique KO functions
 ko_fxns2<-subset(ko_fxns1, select=c("Gene_ID","KO_ID","KO_Function"))
@@ -513,7 +561,9 @@ colnames(mgm_clr_melt)[which(names(mgm_clr_melt) == "value")] <- "CovPerGene"
 mgm.clr.all<-as.data.frame(merge(ko_fxns, mgm_clr_melt, by=c("Gene_ID"),allow.cartesian = TRUE))
 head(mgm.clr.all)
 
-mgm.clr.all<-na.omit(mgm.clr.all) # only looking at functions we have KO IDs for
+NA %in% mgm.clr.all$KO_ID
+
+mgm.clr.all<-mgm.clr.all[!is.na(mgm.clr.all$KO_ID),] # only looking at functions we have KO IDs for
 head(mgm.clr.all)
 #NA %in% mgm.clr.all
 
@@ -531,608 +581,6 @@ mapped_meta<-merge(mapped_all, mgm_meta, by=c("SampleID"))
 head(mapped_meta)
 
 #save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
-
-#### Clustering by Features Across Samples ####
-
-# using CLR data first
-mgm.clr[1:4,1:4]
-
-# calculate our Euclidean distance matrix using CLR data
-mgm.euc_dist1 <- dist(mgm.clr, method = "euclidean")
-
-# creating our hierarcical clustering dendrogram
-mgm.euc_clust1 <- hclust(mgm.euc_dist1, method="ward.D2")
-
-# let's make it a little nicer...
-mgm.euc_dend <- as.dendrogram(mgm.euc_clust1, hang=0.2)
-mgm.dend_cols <- as.character(mgm_meta$SampDate_Color[order.dendrogram(mgm.euc_dend)])
-labels_colors(mgm.euc_dend) <- mgm.dend_cols
-
-plot(mgm.euc_dend, ylab="CLR Euclidean Distance",cex = 0.5) + title(main = "Functional Trait Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 3)
-legend("topright",legend = c("June 2021","August 2021","December 2021","April 2022"),cex=.8,col = c( "#36ab57","#ff6f00","#26547c","#32cbff"),pch = 15, bty = "n")
-
-# Control is dark blue ("#218380"), #Alternaria is light blue ("#73d2de")
-dev.off()
-
-#### Functional Beta Diversity - MRT data ####
-# MR = median-ratio transformation
-mgm.mr[1:4,1:4] # sample IDs are rows, genes are columns
-mgm_fxn.counts_table[1:4,1:4] # sanity check
-
-# check rownames of MR & Mr transformed feature count data & metadata
-rownames(mgm.mr) %in% rownames(meta_scaled)
-
-## PCOA with VST transformed data first
-# calculate our Euclidean distance matrix using VST data
-mgm.euc_dist.mr <- dist(mgm.mr, method = "euclidean")
-
-# creating our hierarcical clustering dendrogram
-mgm.euc.mr_clust <- hclust(mgm.euc_dist.mr, method="ward.D2")
-
-# let's make it a little nicer...
-mgm.euc.mr_dend <- as.dendrogram(mgm.euc.mr_clust, hang=0.2)
-mgm.dend_cols <- as.character(mgm_meta$SampDate_Color[order.dendrogram(mgm.euc.mr_dend)])
-labels_colors(mgm.euc.mr_dend) <- mgm.dend_cols
-
-plot(mgm.euc.mr_dend, ylab="Median-Ratio, Euclidean Distance",cex = 0.5) + title(main = "Bacteria/Archaea Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 3)
-legend("topright",legend = c("June 2021","August 2021","December 2021","April 2022"),cex=.8,col = c( "#36ab57","#ff6f00","#26547c","#32cbff"),pch = 15, bty = "n")
-# Control is dark blue ("#218380"), #Alternaria is light blue ("#73d2de")
-dev.off()
-
-# let's use our Euclidean distance matrix from before
-mgm.pcoa.mr <- pcoa(mgm.euc_dist.mr) # pcoa of euclidean distance matrix = PCA of euclidean distance matrix
-##save.image("data/ssw_mr.euc.dist1_3.7.23.Rdata")
-
-# The proportion of variances explained is in its element values$Relative_eig
-mgm.pcoa.mr$values
-
-# extract principal coordinates
-mgm.pcoa.mr.vectors<-data.frame(mgm.pcoa.mr$vectors)
-mgm.pcoa.mr.vectors$SampleID<-rownames(mgm.pcoa.mr$vectors)
-
-# merge pcoa coordinates w/ metadata
-mgm.pcoa.mr.meta<-merge(mgm.pcoa.mr.vectors, mgm_meta, by.x="SampleID", by.y="SampleID")
-mgm.pcoa.mr.meta$SampleMonth
-mgm.pcoa.mr.meta$SampDate
-
-head(mgm.pcoa.mr.meta)
-
-head(mgm.pcoa.mr$values) # pull out Relative (Relative_eig) variation % to add to axes labels
-
-# create PCoA ggplot fig
-pcoa3<-ggplot(mgm.pcoa.mr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
-  labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using Median-Ratio Transformed Feature Data",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Type")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
-  guides(shape = guide_legend(override.aes = list(size = 5)))+
-  scale_color_manual(name ="Sample Type",values=unique(mgm.pcoa.mr.meta$SampDate_Color[order(mgm.pcoa.mr.meta$SampDate)]),labels=c("June.2021"="June 2021","August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("PC1 [33.04%]") + ylab("PC2 [29.24%]")
-
-ggsave(pcoa3,filename = "figures/MGM_Figs/SSW_MGM_pcoa_MR_sampdate.png", width=12, height=10, dpi=600)
-
-# sample month shape, depth color
-pcoa4<-ggplot(mgm.pcoa.mr.meta, aes(x=Axis.1, y=Axis.2)) +
-  geom_point(aes(color=as.numeric(Depth_m),shape=SampleMonth), size=5)+theme_bw()+
-  labs(title="PCoA: Metagenome Functions in Salton Seawater",subtitle="Using Median-Ratio Transformed Feature Data",xlab="PC1", ylab="PC2",color="Depth (m)")+
-  theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
-  scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
-  xlab("PC1 [33.04%]") + ylab("PC2 [29.24%]")
-
-ggsave(pcoa4,filename = "figures/MGM_Figs/SSW_MGM_pcoa_MR.traits_depth.png", width=12, height=10, dpi=600)
-
-## betadisper to look at within group variance
-
-# first by sampling date
-mgm.disper1<-betadisper(mgm.euc_dist.mr, mgm_meta$SampDate)
-mgm.disper1
-
-permutest(mgm.disper1, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
-#Pairwise comparisons:
-#  (Observed p-value below diagonal, permuted p-value above diagonal)
-#               June.2021 August.2021 December.2021 April.2022
-#June.2021                   0.69800       0.26000      0.221
-#August.2021     0.62084                   0.36600      0.425
-#December.2021   0.25263     0.33869                    0.747
-#April.2022      0.23545     0.37980       0.69090
-
-anova(mgm.disper1) # p = 0.5253 --> accept the Null H, spatial medians are NOT significantly difference across sample dates
-
-TukeyHSD(mgm.disper1) # tells us which Sample Dates/category's dispersion MEANS are significantly different than each other
-
-#                             diff        lwr       upr     p adj
-#August.2021-June.2021      33.096688 -101.9651 168.15849 0.8474848
-#December.2021-June.2021   -18.757013 -153.8188 116.30479 0.9655375
-#April.2022-June.2021      -13.429156 -148.4910 121.63265 0.9866629
-#December.2021-August.2021 -51.853701 -172.6567  68.94925 0.5260566
-#April.2022-August.2021    -46.525845 -167.3288  74.27711 0.6046202
-#April.2022-December.2021    5.327857 -115.4751 126.13081 0.9987814
-
-# Visualize dispersions
-png('figures/MGM_Figs/SSW_MGM_pcoa_MR_betadispersion_sampledate.png',width = 700, height = 600, res=100)
-plot(mgm.disper1,main = "Centroids and Dispersion (Median-Ratio Data)", col=colorset1$SampDate_Color)
-dev.off()
-
-png('figures/MGM_Figs/SSW_MGM_boxplot_MR_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
-boxplot(mgm.disper1,xlab="Sample Collection Date", main = "Distance to Centroid by Category (Median-Ratio Data)", sub="Euclidean Distance of Median-Ratio Transformed Data", col=colorset1$SampDate_Color)
-dev.off()
-
-# What about between sampling depths?
-mgm.disper2<-betadisper(mgm.euc_dist.mr, mgm_meta$Depth_m)
-mgm.disper2
-
-permutest(mgm.disper2, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
-
-anova(mgm.disper2) # p = 0.3914 --> accept the Null H, spatial medians are NOT significantly difference across sample dates
-
-TukeyHSD(mgm.disper2) # tells us which Sample Dates/category's dispersion MEANS are significantly different than each other
-#         diff       lwr      upr     p adj
-#5-0  67.213614  -84.49614 218.9234 0.4511753
-#10-0 69.573085  -82.13667 221.2828 0.4287061
-#10-5  2.359471 -138.09647 142.8154 0.9987307
-
-colfunc <- colorRampPalette(c("red", "blue"))
-colfunc(3)
-
-# Visualize dispersions
-png('figures/MGM_Figs/ssw_mgm_pcoa_MR_betadispersion_depth.png',width = 700, height = 600, res=100)
-plot(mgm.disper2,main = "Centroids and Dispersion (Median-Ratio Data)", col=colfunc(3))
-dev.off()
-
-png('figures/MGM_Figs/ssw_mgm_boxplot_MR_centroid_distance_depth.png',width = 700, height = 600, res=100)
-boxplot(mgm.disper2,xlab="Sample Collection Depth", main = "Distance to Centroid by Category (Median-Ratio Data)", sub="Euclidean Distance of Median-Ratio Transformed Data", col=colfunc(3))
-dev.off()
-
-
-#### Functional Beta Diversity - VST data ####
-mgm.vst[1:4,1:4] # sample IDs are rows, genes are columns
-mgm_fxn.counts_table[1:4,1:4] # sanity check
-
-# check rownames of VST & VST transformed feature count data & metadata
-colnames(mgm.vst) %in% rownames(meta_scaled)
-
-## PCOA with VST transformed data first
-# calculate our Euclidean distance matrix using VST data
-mgm.euc.vst_dist <- dist(t(mgm.vst), method = "euclidean")
-
-# creating our hierarcical clustering dendrogram
-mgm.euc.vst_clust <- hclust(mgm.euc.vst_dist, method="ward.D2")
-
-# let's make it a little nicer...
-mgm.euc.vst_dend <- as.dendrogram(mgm.euc.vst_clust, hang=0.2)
-mgm.dend_cols <- as.character(mgm_meta$SampDate_Color[order.dendrogram(mgm.euc.vst_dend)])
-labels_colors(mgm.euc.vst_dend) <- mgm.dend_cols
-
-plot(mgm.euc.vst_dend, ylab="VST Euclidean Distance",cex = 0.5) + title(main = "Bacteria/Archaea Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 3)
-legend("topright",legend = c("June 2021","August 2021","December 2021","April 2022"),cex=.8,col = c( "#26547c","#36ab57","#32cbff","#ff6f00"),pch = 15, bty = "n")
-# Control is dark blue ("#218380"), #Alternaria is light blue ("#73d2de")
-dev.off()
-
-# let's use our euc.vstlidean distance matrix from before
-mgm.pcoa.vst <- pcoa(mgm.euc.vst_dist) # pcoa of euc.vstlidean distance matrix = PCA of euc.vstlidean distance matrix
-##save.image("data/ssw_vst.euc.vst.dist1_3.7.23.Rdata")
-
-# The proportion of variances explained is in its element values$Relative_eig
-mgm.pcoa.vst$values
-
-# extract principal coordinates
-mgm.pcoa.vst.vectors<-data.frame(mgm.pcoa.vst$vectors)
-mgm.pcoa.vst.vectors$SampleID<-rownames(mgm.pcoa.vst$vectors)
-
-# merge pcoa coordinates w/ metadata
-mgm.pcoa.vst.meta<-merge(mgm.pcoa.vst.vectors, mgm_meta, by.x="SampleID", by.y="SampleID")
-mgm.pcoa.vst.meta$SampleMonth
-mgm.pcoa.vst.meta$SampDate
-
-head(mgm.pcoa.vst.meta)
-
-mgm.pcoa.vst$values # pull out Relative (Relative_eig) variation % to add to axes labels
-
-# create PCoA ggplot fig
-pcoa3<-ggplot(mgm.pcoa.vst.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
-  labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using Variance Stabilization Transformed Feature Data",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Type")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
-  guides(shape = guide_legend(override.aes = list(size = 5)))+
-  scale_color_manual(name ="Sample Type",values=unique(mgm.pcoa.vst.meta$SampDate_Color[order(mgm.pcoa.vst.meta$SampDate)]),labels=c("June.2021"="June 2021","August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("PC1 [25.06%]") + ylab("PC2 [21.98%]")
-
-ggsave(pcoa3,filename = "figures/MGM_Figs/SSW_MGM_pcoa_VST_sampdate.png", width=12, height=10, dpi=600)
-
-# sample month shape, depth color
-pcoa4<-ggplot(mgm.pcoa.vst.meta, aes(x=Axis.1, y=Axis.2)) +
-  geom_point(aes(color=as.numeric(Depth_m),shape=SampleMonth), size=5)+theme_bw()+
-  labs(title="PCoA: Metagenome Functions in Salton Seawater",subtitle="Using Variance Stabilization Transformed Feature Data",xlab="PC1", ylab="PC2",color="Depth (m)")+
-  theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
-  scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
-  xlab("PC1 [25.06%]") + ylab("PC2 [21.98%]")
-
-ggsave(pcoa4,filename = "figures/MGM_Figs/SSW_MGM_pcoa_VST.traits_depth.png", width=12, height=10, dpi=600)
-
-## betadisper to look at within group variance
-
-# first by sampling date
-mgm.disper3<-betadisper(mgm.euc.vst_dist, mgm_meta$SampDate)
-mgm.disper3
-
-permutest(mgm.disper3, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
-#Pairwise comparisons:
-#  (Observed p-value below diagonal, permuted p-value above diagonal)
-#               June.2021 August.2021 December.2021 April.2022
-#June.2021                  0.347000      0.083000      0.037
-#August.2021    0.306448                  0.638000      0.793
-#December.2021  0.072562    0.635576                    0.283
-#April.2022     0.039442    0.818560      0.281216
-
-anova(mgm.disper3) # p = 0.2825 --> accept the Null H, spatial medians are NOT significantly difference across sample dates
-
-TukeyHSD(mgm.disper3) # tells us which Sample Dates/category's dispersion MEANS are significantly different than each other
-
-#                             diff        lwr       upr     p adj
-#August.2021-June.2021      0.42756584 -0.4879045 1.3430362 0.4622918
-#December.2021-June.2021    0.59012975 -0.3253406 1.5056001 0.2312457
-#April.2022-June.2021       0.35879411 -0.5566762 1.2742644 0.5923352
-#December.2021-August.2021  0.16256391 -0.6562577 0.9813855 0.9097581
-#April.2022-August.2021    -0.06877173 -0.8875933 0.7500498 0.9918298
-#April.2022-December.2021  -0.23133564 -1.0501572 0.5874859 0.7879737
-
-# Visualize dispersions
-png('figures/MGM_Figs/SSW_MGM_pcoa_vst_betadispersion_sampledate.png',width = 700, height = 600, res=100)
-plot(mgm.disper3,main = "Centroids and Dispersion (VST Data)", col=colorset1$SampDate_Color)
-dev.off()
-
-png('figures/MGM_Figs/SSW_MGM_boxplot_vst_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
-boxplot(mgm.disper3,xlab="Sample Collection Date", main = "Distance to Centroid by Category (VST Data)", sub="Euclidean Distance of VST Data", col=colorset1$SampDate_Color)
-dev.off()
-
-# What about between sampling depths?
-mgm.disper4<-betadisper(mgm.euc.vst_dist, mgm_meta$Depth_m)
-mgm.disper4
-
-permutest(mgm.disper4, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
-
-anova(mgm.disper4) # p = 0.5946 --> accept the Null H, spatial medians are NOT significantly difference across sample dates
-
-TukeyHSD(mgm.disper4) # tells us which Sample Dates/category's dispersion MEANS are significantly different than each other
-#         diff       lwr      upr     p adj
-#5-0  0.4686185 -1.335515 2.272752 0.7464998
-#10-0 0.6553526 -1.148780 2.459486 0.5754756
-#10-5 0.1867341 -1.483569 1.857037 0.9456750
-
-colfunc <- colorRampPalette(c("red", "blue"))
-colfunc(3)
-
-# Visualize dispersions
-png('figures/MGM_Figs/ssw_mgm_pcoa_VST_betadispersion_depth.png',width = 700, height = 600, res=100)
-plot(mgm.disper2,main = "Centroids and Dispersion (VST Data)", col=colfunc(3))
-dev.off()
-
-png('figures/MGM_Figs/ssw_mgm_boxplot_VST_centroid_distance_depth.png',width = 700, height = 600, res=100)
-boxplot(mgm.disper2,xlab="Sample Collection Depth", main = "Distance to Centroid by Category (VST Data)", sub="Euclidean Distance of VST Data", col=colfunc(3))
-dev.off()
-
-#### Functional Beta Diversity - CLR data ####
-mgm.clr[1:4,1:4] # sample IDs are rows, genes are columns
-mgm_fxn.counts_table[1:4,1:4] # sanity check
-
-# check rownames of CLR & VST transformed feature count data & metadata
-rownames(mgm.clr) %in% rownames(meta_scaled)
-
-## PCOA with CLR transformed data first
-# calculate our Euclidean distance matrix using CLR data
-mgm.euc.clr_dist <- dist(mgm.clr, method = "euclidean")
-
-# creating our hierarcical clustering dendrogram
-mgm.euc.clr_clust <- hclust(mgm.euc.clr_dist, method="ward.D2")
-
-# let's make it a little nicer...
-mgm.euc.clr_dend <- as.dendrogram(mgm.euc.clr_clust, hang=0.2)
-mgm.dend_cols <- as.character(mgm_meta$SampDate_Color[order.dendrogram(mgm.euc.clr_dend)])
-labels_colors(mgm.euc.clr_dend) <- mgm.dend_cols
-
-plot(mgm.euc.clr_dend, ylab="CLR Euclidean Distance",cex = 0.5) + title(main = "Bacteria/Archaea Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 3)
-legend("topright",legend = c("June 2021","August 2021","December 2021","April 2022"),cex=.8,col = c( "#26547c","#36ab57","#32cbff","#ff6f00"),pch = 15, bty = "n")
-# Control is dark blue ("#218380"), #Alternaria is light blue ("#73d2de")
-dev.off()
-
-# let's use our Euclidean distance matrix from before
-mgm.pcoa.clr <- pcoa(mgm.euc.clr_dist) # pcoa of euclidean distance matrix = PCA of euclidean distance matrix
-##save.image("data/ssw_clr.euc.dist1_3.7.23.Rdata")
-
-# The proportion of variances explained is in its element values$Relative_eig
-mgm.pcoa.clr$values
-
-# extract principal coordinates
-mgm.pcoa.clr.vectors<-data.frame(mgm.pcoa.clr$vectors)
-mgm.pcoa.clr.vectors$SampleID<-rownames(mgm.pcoa.clr$vectors)
-
-# merge pcoa coordinates w/ metadata
-mgm.pcoa.clr.meta<-merge(mgm.pcoa.clr.vectors, mgm_meta, by.x="SampleID", by.y="SampleID")
-mgm.pcoa.clr.meta$SampleMonth
-mgm.pcoa.clr.meta$SampDate
-
-head(mgm.pcoa.clr.meta)
-
-mgm.pcoa.clr$values # pull out Relative (Relative_eig) variation % to add to axes labels
-
-# create PCoA ggplot fig
-pcoa5<-ggplot(mgm.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
-  labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using Centered-Log Ratio Feature Data",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Type")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
-  guides(shape = guide_legend(override.aes = list(size = 5)))+
-  scale_color_manual(name ="Sample Type",values=unique(mgm.pcoa.clr.meta$SampDate_Color[order(mgm.pcoa.clr.meta$SampDate)]),labels=c("June.2021"="June 2021","August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("PC1 [23.56%]") + ylab("PC2 [20.45%]")
-
-ggsave(pcoa5,filename = "figures/MGM_Figs/SSW_MGM_pcoa_CLR_sampdate.png", width=12, height=10, dpi=600)
-
-# sample month shape, depth color
-pcoa6<-ggplot(mgm.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
-  geom_point(aes(color=as.numeric(Depth_m),shape=SampleMonth), size=5)+theme_bw()+
-  labs(title="PCoA: Metagenome Functions in Salton Seawater",subtitle="Using Centered-Log Ratio Feature Data",xlab="PC1", ylab="PC2",color="Depth (m)")+
-  theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
-  scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
-  xlab("PC1 [23.56%]") + ylab("PC2 [20.45%]")
-
-ggsave(pcoa6,filename = "figures/MGM_Figs/SSW_MGM_pcoa_CLR.traits_depth.png", width=12, height=10, dpi=600)
-
-## betadisper to look at within group variance
-
-# first by sampling date
-mgm.disper5<-betadisper(mgm.euc.clr_dist, mgm_meta$SampDate)
-mgm.disper5
-
-permutest(mgm.disper5, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
-#Pairwise comparisons:
-#  (Observed p-value below diagonal, permuted p-value above diagonal)
-#               June.2021 August.2021 December.2021 April.2022
-#June.2021                 0.13000000    0.03700000      0.010
-#August.2021   0.12533884                0.50300000      0.189
-#December.2021 0.00835232  0.56548064                    0.038
-#April.2022    0.00043402  0.20006152    0.00656846
-
-anova(mgm.disper5) # p = 0.02656 --> reject the Null H, spatial medians ARE significantly difference across sample dates
-
-TukeyHSD(mgm.disper5) # tells us which Sample Dates/category's dispersion MEANS are significantly different than each other
-
-#                             diff        lwr       upr     p adj
-#August.2021-June.2021      3.611143 -0.4208285 7.6431151 0.0784173 .
-#December.2021-June.2021    4.511716  0.4797445 8.5436881 0.0302728 *
-#April.2022-June.2021       1.576242 -2.4557301 5.6082134 0.5941200
-#December.2021-August.2021  0.900573 -2.7057322 4.5068782 0.8404583
-#April.2022-August.2021    -2.034902 -5.6412069 1.5714035 0.3208184
-#April.2022-December.2021  -2.935475 -6.5417798 0.6708306 0.1118431
-
-# Visualize dispersions
-png('figures/MGM_Figs/SSW_MGM_pcoa_CLR_betadispersion_sampledate.png',width = 700, height = 600, res=100)
-plot(mgm.disper5,main = "Centroids and Dispersion based on Aitchison Distance (CLR Data)", col=colorset1$SampDate_Color)
-dev.off()
-
-png('figures/MGM_Figs/SSW_MGM_boxplot_CLR_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
-boxplot(mgm.disper5,xlab="Sample Collection Date", main = "Distance to Centroid by Category (CLR Data)", sub="Based on Aitchison Distance", col=colorset1$SampDate_Color)
-dev.off()
-
-# What about between sampling depths?
-mgm.disper6<-betadisper(mgm.euc.clr_dist, mgm_meta$Depth_m)
-mgm.disper6
-
-permutest(mgm.disper6, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
-
-anova(mgm.disper6) # p = 0.6044 --> accept the Null H, spatial medians are NOT significantly difference across sample dates
-
-TukeyHSD(mgm.disper6) # tells us which Sample Dates/category's dispersion MEANS are significantly different than each other
-#         diff       lwr      upr     p adj
-#5-0   2.3886761 -4.507223 9.284575 0.6031569
-#10-0  1.9710200 -4.924879 8.866919 0.7037811
-#10-5 -0.4176561 -6.802018 5.966706 0.9809665
-
-colfunc <- colorRampPalette(c("red", "blue"))
-colfunc(3)
-
-# Visualize dispersions
-png('figures/MGM_Figs/ssw_mgm_pcoa_CLR_betadispersion_depth.png',width = 700, height = 600, res=100)
-plot(mgm.disper6,main = "Centroids and Dispersion based on Aitchison Distance (CLR Data)", col=colfunc(3))
-dev.off()
-
-png('figures/MGM_Figs/ssw_mgm_boxplot_CLR_centroid_distance_depth.png',width = 700, height = 600, res=100)
-boxplot(mgm.disper6,xlab="Sample Collection Depth", main = "Distance to Centroid by Category (CLR Data)", sub="Based on Aitchison Distance", col=colfunc(3))
-dev.off()
-
-#### Traits of Interest - Heat Maps ####
-## heatmaps of traits of interest
-test<-mgm.fxn.nolows[,which(colnames(mgm.fxn.nolows) %in% sulfur.fxns$KO_ID)]
-test2<-test[,which(colSums(test)>=200)]
-
-heatmap(as.matrix(test), scale = "none")
-
-test3<-mgm.fxn.nolows[,which(colnames(mgm.fxn.nolows) %in% arsenic.fxns$KO_ID)]
-
-heatmap(as.matrix(test3), scale = "none")
-
-#### Relative Abundance of MGM Bins Across Samples, Depths, Seasons ####
-
-head(mapped_meta)
-# pull out total mapped reads per sample, results from BWA-mem
-total_mapped_samp<-unique(data.frame(SampleID=mapped_meta$SampleID,Total_Mapped_Reads=mapped_meta$Total_Mapped_Reads))
-
-# calculate total mapped reads per bin, and recalculate them to find total mapped reads per taxa
-## this is because some bins were mapped to the same genus & species, so I am curious about these specific taxa's relative abundance in the mapped reads
-gen.spec_mapped<-dcast(mapped_meta, SampleID~Genus+Species, fun.aggregate = sum, value.var="Bin_Mapped_Reads")
-rownames(gen.spec_mapped)<-gen.spec_mapped$SampleID
-head(gen.spec_mapped)
-gen.spec_mapped2<-merge(gen.spec_mapped,total_mapped_samp, by="SampleID")
-head(gen.spec_mapped2)
-rownames(gen.spec_mapped2)<-gen.spec_mapped2$SampleID
-
-# divide total mapped reads per genus&species by total mapped reads per sample to get relative abundance of reads for specific taxa across mgms
-gen.sp_mapped_RA<-gen.spec_mapped2[,-c(1,ncol(gen.spec_mapped2))]/gen.spec_mapped2[,ncol(gen.spec_mapped2)]
-head(gen.sp_mapped_RA)
-png('figures/MGM_Figs/SSW_MGM_Genus_RelAb_Reads_4.8.23.png',width = 2200, height = 2200, res=100)
-heatmap(as.matrix(t(gen.sp_mapped_RA)), scale = "none")
-dev.off()
-
-# melt down relativized ASV counts to merge with metadata
-gen.sp_mapped_RA$SampleID<-rownames(gen.sp_mapped_RA)
-gs_map_RA.m<-melt(gen.sp_mapped_RA)
-
-head(gs_map_RA.m)
-colnames(gs_map_RA.m)[which(names(gs_map_RA.m) == "variable")] <- "Genus_species"
-colnames(gs_map_RA.m)[which(names(gs_map_RA.m) == "value")] <- "RelAb"
-head(gs_map_RA.m) ## relative abundance based on sum of counts by class!
-
-gs_map_RA.meta<-merge(gs_map_RA.m,meta_scaled, by="SampleID")
-head(gs_map_RA.meta) ## relative abundance based on sum of counts by class!
-
-# find the midpoint of RelAb
-max(gs_map_RA.meta$RelAb)
-min(gs_map_RA.meta$RelAb)
-
-gs_map_RA.meta<-gs_map_RA.meta[with(gs_map_RA.meta, order(gs_map_RA.meta$SampDate, gs_map_RA.meta$Depth_m)),]
-gs_map_RA.meta$SampleID <- factor(gs_map_RA.meta$SampleID, levels=unique(gs_map_RA.meta$SampleID[order(gs_map_RA.meta$SampDate, gs_map_RA.meta$Depth_m)]))
-
-bin.hm1<-ggplot(gs_map_RA.meta, aes(gs_map_RA.meta$SampleID[order(gs_map_RA.meta$SampDate, gs_map_RA.meta$Depth_m)], Genus_species, fill= RelAb)) +geom_tile()+scale_fill_gradient2(low="skyblue",mid="white",high="orange",midpoint=0.035)+
-  theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  labs(x="Sample ID", y="MAG Bin Assignments", title="Relative Abundance of MAG Bins by Sample",fill="Read Relative Abundance")+scale_x_discrete(expand = c(0,0))
-
-ggsave(bin.hm1,filename = "figures/MGM_Figs/Heatmap_MGM_Bins_RelAb_bySample_4.10.23.png", width=12, height=10, dpi=600)
-
-
-tsum1<-ggplot(mapped_meta, aes(Genus, RelAb_Map)) +
-  geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=2, width=0.15, height=0) +
-  scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
-  geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  labs(x="Genera of MAG Bins", y="Read Relative Abundance", title="MAG Bins (Genera) by Depth",color="Depth (m)")
-
-ggsave(tsum1,filename = "figures/MGM_Figs/TaxaSummary_MGM_Bins_RelAb_Depth_4.10.23.png", width=12, height=10, dpi=600)
-
-tsum2<-ggplot(mapped_meta, aes(Genus, RelAb_Map)) +
-  geom_jitter(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate), size=2, width=0.15, height=0) +
-  scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
-  geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  labs(x="Genera of MAG Bins", y="Read Relative Abundance", title="MAG Bins (Genera) by Depth & Sample Date",color="Depth (m)", shape="Sampling Date")
-
-ggsave(tsum2,filename = "figures/MGM_Figs/TaxaSummary_MGM_Bins_RelAb_Depth_Date_4.10.23.png", width=12, height=10, dpi=600)
-
-#### Taxonomic Beta Diversity - Read Relative Abundance data ####
-mgm.clr[1:4,1:4] # sample IDs are rows, genes are columns
-mgm_fxn.counts_table[1:4,1:4] # sanity check
-
-# check rownames of CLR & VST transformed feature count data & metadata
-rownames(mgm.clr) %in% rownames(meta_scaled)
-
-## PCOA with CLR transformed data first
-# calculate our Euclidean distance matrix using CLR data
-mgm.euc_dist.clr <- dist(mgm.clr, method = "euclidean")
-
-# creating our hierarcical clustering dendrogram
-mgm.euc_clust <- hclust(mgm.euc_dist.clr, method="ward.D2")
-
-# let's make it a little nicer...
-mgm.euc_dend <- as.dendrogram(mgm.euc_clust, hang=0.2)
-mgm.dend_cols <- as.character(mgm_meta$SampDate_Color[order.dendrogram(mgm.euc_dend)])
-labels_colors(mgm.euc_dend) <- mgm.dend_cols
-
-plot(mgm.euc_dend, ylab="CLR Euclidean Distance",cex = 0.5) + title(main = "Bacteria/Archaea Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 3)
-legend("topright",legend = c("June 2021","August 2021","December 2021","April 2022"),cex=.8,col = c( "#26547c","#36ab57","#32cbff","#ff6f00"),pch = 15, bty = "n")
-# Control is dark blue ("#218380"), #Alternaria is light blue ("#73d2de")
-dev.off()
-
-# let's use our Euclidean distance matrix from before
-mgm.pcoa.clr <- pcoa(mgm.euc_dist.clr) # pcoa of euclidean distance matrix = PCA of euclidean distance matrix
-##save.image("data/ssw_clr.euc.dist1_3.7.23.Rdata")
-
-# The proportion of variances explained is in its element values$Relative_eig
-mgm.pcoa.clr$values
-
-# extract principal coordinates
-mgm.pcoa.clr.vectors<-data.frame(mgm.pcoa.clr$vectors)
-mgm.pcoa.clr.vectors$SampleID<-rownames(mgm.pcoa.clr$vectors)
-
-# merge pcoa coordinates w/ metadata
-mgm.pcoa.clr.meta<-merge(mgm.pcoa.clr.vectors, mgm_meta, by.x="SampleID", by.y="SampleID")
-mgm.pcoa.clr.meta$SampleMonth
-mgm.pcoa.clr.meta$SampDate
-
-head(mgm.pcoa.clr.meta)
-
-head(mgm.pcoa.clr.meta$values) # pull out Relative (Relative_eig) variation % to add to axes labels
-
-# create PCoA ggplot fig
-pcoa1<-ggplot(mgm.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
-  labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using Centered-Log Ratio Feature Data",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Type")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
-  guides(shape = guide_legend(override.aes = list(size = 5)))+
-  scale_color_manual(name ="Sample Type",values=unique(mgm.pcoa.clr.meta$SampDate_Color[order(mgm.pcoa.clr.meta$SampDate)]),labels=c("June.2021"="June 2021","August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("PC1 [23.56%]") + ylab("PC2 [20.45%]")
-
-ggsave(pcoa1,filename = "figures/MGM_Figs/SSW_MGM_pcoa_CLR_sampdate.png", width=12, height=10, dpi=600)
-
-# sample month shape, depth color
-pcoa2<-ggplot(mgm.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
-  geom_point(aes(color=as.numeric(Depth_m),shape=SampleMonth), size=5)+theme_bw()+
-  labs(title="PCoA: Metagenome Functions in Salton Seawater",subtitle="Using Centered-Log Ratio Feature Data",xlab="PC1", ylab="PC2",color="Depth (m)")+
-  theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
-  scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
-  xlab("PC1 [23.56%]") + ylab("PC2 [20.45%]")
-
-ggsave(pcoa2,filename = "figures/MGM_Figs/SSW_MGM_pcoa_CLR.traits_depth.png", width=12, height=10, dpi=600)
-
-## betadisper to look at within group variance
-
-# first by sampling date
-mgm.disper1<-betadisper(mgm.euc_dist.clr, mgm_meta$SampDate)
-mgm.disper1
-
-permutest(mgm.disper1, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
-#Pairwise comparisons:
-#  (Observed p-value below diagonal, permuted p-value above diagonal)
-#               June.2021 August.2021 December.2021 April.2022
-#June.2021                 0.13000000    0.03700000      0.010
-#August.2021   0.12533884                0.50300000      0.189
-#December.2021 0.00835232  0.56548064                    0.038
-#April.2022    0.00043402  0.20006152    0.00656846
-
-anova(mgm.disper1) # p = 0.02656 --> reject the Null H, spatial medians ARE significantly difference across sample dates
-
-TukeyHSD(mgm.disper1) # tells us which Sample Dates/category's dispersion MEANS are significantly different than each other
-
-#                             diff        lwr       upr     p adj
-#August.2021-June.2021      3.611143 -0.4208285 7.6431151 0.0784173 .
-#December.2021-June.2021    4.511716  0.4797445 8.5436881 0.0302728 *
-#April.2022-June.2021       1.576242 -2.4557301 5.6082134 0.5941200
-#December.2021-August.2021  0.900573 -2.7057322 4.5068782 0.8404583
-#April.2022-August.2021    -2.034902 -5.6412069 1.5714035 0.3208184
-#April.2022-December.2021  -2.935475 -6.5417798 0.6708306 0.1118431
-
-# Visualize dispersions
-png('figures/MGM_Figs/SSW_MGM_pcoa_clr_betadispersion_sampledate.png',width = 700, height = 600, res=100)
-plot(mgm.disper1,main = "Centroids and Dispersion based on Aitchison Distance (CLR Data)", col=colorset1$SampDate_Color)
-dev.off()
-
-png('figures/MGM_Figs/SSW_MGM_boxplot_clr_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
-boxplot(mgm.disper1,xlab="Sample Collection Date", main = "Distance to Centroid by Category (CLR Data)", sub="Based on Aitchison Distance", col=colorset1$SampDate_Color)
-dev.off()
-
-# What about between sampling depths?
-mgm.disper2<-betadisper(mgm.euc_dist.clr, mgm_meta$Depth_m)
-mgm.disper2
-
-permutest(mgm.disper2, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
-
-anova(mgm.disper2) # p = 0.6044 --> accept the Null H, spatial medians are NOT significantly difference across sample dates
-
-TukeyHSD(mgm.disper2) # tells us which Sample Dates/category's dispersion MEANS are significantly different than each other
-#         diff       lwr      upr     p adj
-#5-0   2.3886761 -4.507223 9.284575 0.6031569
-#10-0  1.9710200 -4.924879 8.866919 0.7037811
-#10-5 -0.4176561 -6.802018 5.966706 0.9809665
-
-colfunc <- colorRampPalette(c("red", "blue"))
-colfunc(3)
-
-# Visualize dispersions
-png('figures/MGM_Figs/ssw_mgm_pcoa_clr_betadispersion_depth.png',width = 700, height = 600, res=100)
-plot(mgm.disper2,main = "Centroids and Dispersion based on Aitchison Distance (CLR Data)", col=colfunc(3))
-dev.off()
-
-png('figures/MGM_Figs/ssw_mgm_boxplot_clr_centroid_distance_depth.png',width = 700, height = 600, res=100)
-boxplot(mgm.disper2,xlab="Sample Collection Depth", main = "Distance to Centroid by Category (CLR Data)", sub="Based on Aitchison Distance", col=colfunc(3))
-dev.off()
-
 
 ### Export Global Env for Other Scripts ####
 #save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
