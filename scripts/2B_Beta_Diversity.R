@@ -39,6 +39,7 @@ suppressPackageStartupMessages({ # load packages quietly
 #### Load Global Env to Import Count/ASV Tables ####
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
 #load("data/SSeawater_BetaDiv_Data.Rdata")
+#load("data/SSW_16S_CLR_EucDist_PCoA_Ready.Rdata")
 
 
 #save.image("data/Env_Seqs_All/env.seq_analysis.Rdata") # save global env to Rdata file
@@ -75,13 +76,13 @@ labels_colors(b.euc_dend) <- b.dend_cols
 (August.2021="#ef781c",December.2021="#03045e",April.2022="#059c3f")
 
 plot(b.euc_dend, ylab="CLR Euclidean Distance",cex = 0.5) + title(main = "Bacteria/Archaea Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 2)
-#legend("topright",legend = c("August 2021","December 2021","April 2022"),cex=.8,col = c( "#36ab57","#32cbff","#ff6f00"),pch = 15, bty = "n")
+#legend("topright",legend = c("August 2021","December 2021","April 2022"),cex=.8,col = c("#ef781c","#03045e","#059c3f"),pch = 15, bty = "n")
 # Control is dark blue ("#218380"), #Alternaria is light blue ("#73d2de")
 dev.off()
 
 # PCOA w/ Euclidean distance matrix (of CLR data)
 b.pcoa <- pcoa(b.euc_dist) # pcoa of euclidean distance matrix = PCA of euclidean distance matrix
-save.image("data/ssw_clr.euc.dist.Rdata")
+#save.image("data/SSW_16S_CLR_EucDist_PCoA_Ready.Rdata")
 
 # The proportion of variances explained is in its element values$Relative_eig
 b.pcoa$values
@@ -98,9 +99,10 @@ b.pcoa.meta$SampDate
 head(b.pcoa.meta)
 
 head(b.pcoa$values) # pull out Relative (Relative_eig) variation % to add to axes labels
+save.image("data/SSW_16S_CLR_EucDist_PCoA_Ready.Rdata")
 
 # create PCoA ggplot fig
-pcoa1<-ggplot(b.pcoa.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
+pcoa1<-ggplot(b.pcoa.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=5)+theme_bw()+
   labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using Centered-Log Ratio Data",color="Sample Date")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Type",values=unique(b.pcoa.meta$SampDate_Color[order(b.pcoa.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
@@ -232,22 +234,24 @@ help(adonis)
 ## An advantage of adonis2 is that we can test for overall model fit, setting by=NULL, or by individual terms (w/ by="terms")
 ## w/ distance matrices - The adonis2 tests are identical to anova.cca of dbrda. With Euclidean distances, the tests are also identical to anova.cca of rda.
 
-# First make sure your data frames you're comparing are in the same exact order!!
+# create column for Depth that is a numeric version of this variable, rather than a factor
+meta_scaled$Depth.num<-as.numeric(as.character(meta_scaled$Depth_m))
+
+# now make sure your data frames you're comparing are in the same exact order!!
 rownames(b.clr) %in% rownames(meta_scaled)
 meta_scaled=meta_scaled[rownames(b.clr),] ## reorder metadata to match order of CLR data
 perm <- with(meta_scaled, how(nperm = 1000, blocks = SampDate))
 
-pnova1<-adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova1<-adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova1
-## none are significant
+#DO_Percent_Local:Dissolved_OrganicMatter_RFU  1     1709 0.03632  2.1614 0.05594 .
 
-adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 #         Df SumOfSqs     R2    F Pr(>F)
-#Model    23    34412 0.73114 1.8918 0.4825
+#Model    23    34412 0.73114 1.8918 0.4915
 #Residual 16    12654 0.26886
 #Total    39    47066 1.00000
 
-# remove categorical variables
 pnova2<-adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova2
 # nothing significant
