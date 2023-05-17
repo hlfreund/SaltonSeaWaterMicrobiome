@@ -51,7 +51,7 @@ bac.ASV_all<-bac.ASV_all[bac.ASV_all$SampleMonth!="June",]
 
 # Create ASV table
 bac.ASV_table <- as.data.frame(dcast(bac.ASV_all, SampleID~ASV_ID, value.var="Count", fun.aggregate=sum)) ###
-bac.ASV_table[1:4,1:4] # counts by asvs per sample
+bac.ASV_table[,1:4] # counts by asvs per sample
 rownames(bac.ASV_table)<-bac.ASV_table$SampleID
 bac.ASV_table[1:4,1:4]
 
