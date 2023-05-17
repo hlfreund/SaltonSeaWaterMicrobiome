@@ -38,12 +38,16 @@ suppressPackageStartupMessages({ # load packages quietly
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
 #load("data/SSeawater_RelAb_Data.Rdata")
 
-bac.dat.all[1:4,1:4]
+bac.dat.all[1:4,]
 bac.dat.all$Depth_m
 head(meta_scaled)
 
 ## DO NOT RUN THIS LINE, THIS IS YOUR COLOR REFERENCE!!!!
 (August.2021="#ef781c",December.2021="#03045e",April.2022="#059c3f")
+
+# Create numeric version of depth variable for later correlations
+meta_scaled$Depth.num<-as.numeric(as.character(meta_scaled$Depth_m))
+unique(meta_scaled$Depth.num)
 
 #### Phyla Relative Abundance ####
 
@@ -538,6 +542,7 @@ ggsave(fsd3,filename = "figures/RelativeAbundance/SSW_16S_fam.RA_date_taxasum_5p
 
 #### Genus Relative Abundance ####
 # use dcast to count up ASVs within each Genus across all of the samples
+head(bac.dat.all)
 bac.dat.all.g<-subset(bac.dat.all, bac.dat.all$Genus!="Unknown") # drop unknown genera so they don't skew analyses
 "Unknown" %in% bac.dat.all.g$Genus
 
@@ -678,21 +683,39 @@ ggsave(gd1b,filename = "figures/RelativeAbundance/SSW_16S_Genus.RA_barplot_depth
 #p_dep_meta<-merge(dep_meta,b.gen.dep_m, by="Depth_m")
 tg1<-ggplot(b.gen.dep_m[b.gen.dep_m$Count>0.01,], aes(Genus, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
-  scale_colour_gradient2(low="red",high="blue3",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
+  scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Depth", subtitle="Includes taxa with Relative Abundance > 1%",color="Depth (m)")
 
 ggsave(tg1,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_depth_taxasum_1perc.png", width=15, height=10, dpi=600)
 
-tg1a<-ggplot(b.gen.dep_m[b.gen.dep_m$Count>0.05,], aes(Genus, Count)) +
+tg1a<-ggplot(b.gen.dep_m[b.gen.dep_m$Count>0.01,], aes(Genus, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
-  scale_colour_gradient2(low="red",high="blue3",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
+  scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
+  geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Depth", subtitle="Includes taxa with Relative Abundance > 1%",color="Depth (m)")+coord_flip()
+
+ggsave(tg1a,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_depth_taxasum_1perc_v2.png", width=15, height=10, dpi=600)
+
+tg1b<-ggplot(b.gen.dep_m[b.gen.dep_m$Count>0.05,], aes(Genus, Count)) +
+  geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
+  scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Depth", subtitle="Includes taxa with Relative Abundance > 5%",color="Depth (m)")
 
-ggsave(tg1a,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_depth_taxasum_5percent.png", width=15, height=10, dpi=600)
+ggsave(tg1b,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_depth_taxasum_5percent.png", width=15, height=10, dpi=600)
+
+tg1c<-ggplot(b.gen.dep_m[b.gen.dep_m$Count>0.05,], aes(Genus, Count)) +
+  geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
+  scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
+  geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Depth", subtitle="Includes taxa with Relative Abundance > 5%",color="Depth (m)")+coord_flip()
+
+ggsave(tg1c,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_depth_taxasum_5percent_v2.png", width=15, height=10, dpi=600)
 
 # by Genus + Sampling Date
 bac.gen.date <- as.data.frame(dcast(bac.dat.all.g,SampDate~Genus, value.var="Count", fun.aggregate=sum)) ###
@@ -743,14 +766,32 @@ gsd1<-ggplot(b.gen.date_m[b.gen.date_m$Count>0.01,], aes(Genus, Count)) +
 
 ggsave(gsd1,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_taxasum_1perc.png", width=15, height=10, dpi=600)
 
-gsd1a<-ggplot(b.gen.date_m[b.gen.date_m$Count>0.05,], aes(Genus, Count)) +
+gsd1a<-ggplot(b.gen.date_m[b.gen.date_m$Count>0.01,], aes(Genus, Count)) +
+  geom_jitter(aes(color=factor(SampDate)), size=2, width=0.15, height=0) +
+  scale_color_manual(name ="Sample Date", values=c("#ef781c","#03045e","#059c3f"), labels=c("August 2021","December 2021","April 2022")) +
+  geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Sample Date",subtitle="Includes taxa with Relative Abundance > 1%")+coord_flip()
+
+ggsave(gsd1a,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_taxasum_1perc_v2.png", width=15, height=10, dpi=600)
+
+gsd1b<-ggplot(b.gen.date_m[b.gen.date_m$Count>0.05,], aes(Genus, Count)) +
   geom_jitter(aes(color=factor(SampDate)), size=2, width=0.15, height=0) +
   scale_color_manual(name ="Sample Date", values=c("#ef781c","#03045e","#059c3f"), labels=c("August 2021","December 2021","April 2022")) +
   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=0.5,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Sample Date")
 
-ggsave(gsd1a,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_taxasum_5percent.png", width=15, height=10, dpi=600)
+ggsave(gsd1b,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_taxasum_5percent.png", width=15, height=10, dpi=600)
+
+gsd1c<-ggplot(b.gen.date_m[b.gen.date_m$Count>0.05,], aes(Genus, Count)) +
+  geom_jitter(aes(color=factor(SampDate)), size=2, width=0.15, height=0) +
+  scale_color_manual(name ="Sample Date", values=c("#ef781c","#03045e","#059c3f"), labels=c("August 2021","December 2021","April 2022")) +
+  geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Sample Date")+coord_flip()
+
+ggsave(gsd1c,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_taxasum_5percent_v2.png", width=15, height=10, dpi=600)
 
 # by Genus + Sampling Date + Depth
 bac.gen.date.dep <- as.data.frame(dcast(bac.dat.all.g,SampDate+Depth_m~Genus, value.var="Count", fun.aggregate=sum)) ###
@@ -838,22 +879,25 @@ head(ds001_meta)
 
 # is this genus normally distributed?
 shapiro.test(ds001_meta$DS001) # what is the p-value?
-# p-value = 0.0004313
+# p-value = 4.896e-05
 # p > 0.05 states distribution of data are not significantly different from normal distribution
 # p < 0.05 means that data is significantly different from a normal distribution
 hist(ds001_meta$DS001, col="blue3")
 
 # visualize Q-Q plot for species richness
 qqnorm(ds001_meta$DS001, pch = 1, frame = FALSE)
-qqline(ds001_meta$DS001, col = "steelblue", lwd = 2)
+qqline(ds001_meta$DS001, col = "red", lwd = 2)
 
 # do env variables & RelAb of DS001 correlate?
 cor.test(ds001_meta$DS001, ds001_meta$ORP_mV, method="pearson")
-cor.test(ds001_meta$DS001, ds001_meta$Dissolved_OrganicMatter_RFU, method="pearson") # p-value = 0.02281
+cor.test(ds001_meta$DS001, ds001_meta$Dissolved_OrganicMatter_RFU, method="pearson") # r = 0.6702959, p-value =  2.228e-06
 cor.test(ds001_meta$DS001, ds001_meta$DO_Percent_Local, method="pearson")
 cor.test(ds001_meta$DS001, ds001_meta$Temp_DegC, method="pearson")
+cor.test(ds001_meta$DS001, ds001_meta$Depth.num, method="pearson")
+cor.test(ds001_meta$DS001, ds001_meta$Sulfate_milliM, method="pearson") # r = 0.4447975, p-value = 0.004031
+cor.test(ds001_meta$DS001, ds001_meta$Sulfide_microM, method="pearson")
 
-# does RelAb of DS001 change with depth and/or sampling date?
+# does RelAb of DS001 change with depth?
 ds001.depth.1<-aov(DS001 ~ Depth_m, data=ds001_meta)
 #pairwise.adonis(ds001_meta$DS001, ds001_meta$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 #adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
@@ -877,6 +921,25 @@ compare_means(DS001 ~ Depth_m, data=ds001_meta, method="anova",p.adjust.method =
 
 plot(DS001 ~ Depth_m, data=ds001_meta)
 
+# ds001.dep.ts1<-ggplot(ds001_meta, aes(Depth_m, DS001)) +
+#   geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
+#   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
+#   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+#   labs(x="Depth (m)", y="Relative Abundance", title="Genus DS001 & Depth", color="Depth (m)")
+#
+# ggsave(ds001.dep.ts1,filename = "figures/RelativeAbundance/SSW_16S_DS001_RA_bydepth_taxasum.png", width=15, height=10, dpi=600)
+
+ds001.dep.ts2<-ggplot(ds001_meta, aes(Depth_m, DS001)) +
+  geom_jitter(aes(color=factor(SampDate)), size=2, width=0.15, height=0) +
+  scale_color_manual(name ="Sample Date", values=c("#ef781c","#03045e","#059c3f"), labels=c("August 2021","December 2021","April 2022")) +
+  geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  labs(x="Depth (m)", y="Relative Abundance", title="Genus DS001 by Depth & Sample Date", color="Sample Date")
+
+ggsave(ds001.dep.ts2,filename = "figures/RelativeAbundance/SSW_16S_DS001_RA_bydepth_date_taxasum.png", width=15, height=10, dpi=600)
+
+# does RelAb of DS001 change with sampling date?
 ds001.samp.1<-aov(DS001 ~ SampDate, data=ds001_meta)
 #pairwise.adonis(ds001_meta$DS001, ds001_meta$SampDate, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 #adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*SampDate,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
@@ -884,18 +947,15 @@ ds001.samp.1<-aov(DS001 ~ SampDate, data=ds001_meta)
 
 summary(ds001.samp.1)
 #Df Sum Sq Mean Sq F value   Pr(>F)
-#SampDate     3 0.5554 0.18514    58.9 2.83e-15 ***
-#Residuals   43 0.1352 0.00314
+#SampDate     2 0.5551 0.27755   77.57 5.82e-14 ***
+#Residuals   37 0.1324 0.00358
 
 Tuk2<-TukeyHSD(ds001.samp.1)
 Tuk2$SampDate
 #                             diff          lwr         upr        p adj
-#August.2021-June.2021      0.11852562  0.040981898  0.19606934 1.047449e-03
-#December.2021-June.2021    0.07249457  0.004597672  0.14039147 3.233960e-02
-#April.2022-June.2021      -0.15016660 -0.218063496 -0.08226970 2.891841e-06
-#December.2021-August.2021 -0.04603105 -0.110908781  0.01884668 2.448373e-01
-#April.2022-August.2021    -0.26869222 -0.333569949 -0.20381449 1.336820e-12
-#April.2022-December.2021  -0.22266117 -0.275633614 -0.16968872 1.252665e-12
+#December.2021-August.2021 -0.04603105 -0.1092707  0.01720857 1.912425e-01
+#April.2022-August.2021    -0.26869222 -0.3319318 -0.20545260 4.753309e-12
+#April.2022-December.2021  -0.22266117 -0.2742961 -0.17102624 3.060108e-12
 
 # Levene's test with one independent variable
 ## Levene's tests whether variances of 2 samples are equal
@@ -904,22 +964,37 @@ Tuk2$SampDate
 fligner.test(DS001 ~ SampDate, data = ds001_meta)
 # Fligner-Killeen aka median test: tests null H that variances in each groups (samples) are the same
 # non-parametric version of Levene's test (aka for non-normally distributed data)
-# Fligner-Killeen:med chi-squared = 11.47, df = 3, p-value = 0.00944
+# Fligner-Killeen:med chi-squared = 9.4548, df = 2, p-value = 0.008849
 # Which shows that the data DOES deviate significantly from homogeneity.
 compare_means(DS001 ~ SampDate, data=ds001_meta, method="anova",p.adjust.method = "bonferroni") # significant
 
 plot(DS001 ~ SampDate, data=ds001_meta)
 
-# look at HS/SO4 & DS001
-cor.test(ds001_meta$DS001, ds001_meta$Sulfate_milliM, method="pearson") # p-value = 0.004031
-cor.test(ds001_meta$DS001, ds001_meta$Sulfide_microM, method="pearson")
+ds001.date.ts1<-ggplot(ds001_meta, aes(SampDate, DS001)) +
+  geom_jitter(aes(color=factor(SampDate)), size=2, width=0.15, height=0) +
+  scale_color_manual(name ="Sample Date", values=c("#ef781c","#03045e","#059c3f"), labels=c("August 2021","December 2021","April 2022")) +
+  geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  labs(x="Sample Date", y="Relative Abundance", title="Genus DS001 & Sample Date")+
+  scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
+
+ggsave(ds001.date.ts1,filename = "figures/RelativeAbundance/SSW_16S_DS001_RA_bydate_taxasum.png", width=15, height=10, dpi=600)
+
+ds001.date.ts2<-ggplot(ds001_meta, aes(SampDate, DS001)) +
+  geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
+  scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
+  geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
+  theme(axis.title.x = element_text(size=14),axis.title.y = element_text(size=14),axis.text = element_text(size=12),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=14),legend.text = element_text(size=13),plot.title = element_text(size=16)) +
+  labs(x="Sample Date", y="Relative Abundance", title="Genus DS001 & Sample Date", color="Depth (m)")+scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
+
+ggsave(ds001.date.ts2,filename = "figures/RelativeAbundance/SSW_16S_DS001_RA_bydate_depth_taxasum.png", width=15, height=10, dpi=600)
 
 # can we use env variables to predict RelAb of DS001?!
 ## correlation gives us the status of their relationship, but linear regression will tell us if these env variables predict DS001 relative abundance
 ## more on that here https://www.researchgate.net/post/Two_variables_are_correlated_but_regression_is_not_significant#:~:text=The%20simple%20answer%20is%20yes,opposite%20direction%20(negative%20correlation).
 
 ## first ORP
-ds001.orp.fit1<-lm(DS001 ~ ORP_mV, data=ds001_meta) %>%
+ds001.orp.fit1<-glm(DS001 ~ ORP_mV, data=ds001_meta) %>%
   adjust_pvalue(method="bonferroni")
 summary(ds001.orp.fit1)
 
@@ -933,7 +1008,7 @@ ds001.orp.fit3<-glm.nb(DS001 ~ ORP_mV, data=ds001_meta)
 summary(ds001.orp.fit3)
 
 # next is DOM
-ds001.dom.fit1<-lm(DS001 ~ Dissolved_OrganicMatter_RFU, data=ds001_meta) %>%
+ds001.dom.fit1<-glm(DS001 ~ Dissolved_OrganicMatter_RFU, data=ds001_meta) %>%
   adjust_pvalue(method="bonferroni")
 summary(ds001.dom.fit1) # not significant
 #Coefficients:
@@ -980,7 +1055,7 @@ fig.ds001.dom.fit1<-ggplot(ds001_meta, aes(x = Dissolved_OrganicMatter_RFU, y = 
 ggsave(fig.ds001.dom.fit1,filename = "figures/RelativeAbundance/DS001_Genus_RelAb_vs_DOM_scatterplot.pdf", width=10, height=8, dpi=600)
 
 # next is DO%
-ds001.do.fit1<-lm(DS001 ~ DO_Percent_Local, data=ds001_meta) %>%
+ds001.do.fit1<-glm(DS001 ~ DO_Percent_Local, data=ds001_meta) %>%
   adjust_pvalue(method="bonferroni")
 summary(ds001.do.fit1) # not significant
 
@@ -1010,7 +1085,7 @@ plot(DS001 ~ DO_Percent_Local, data=ds001_meta,col=SampDate_Color)
 abline(ds001.do.fit1)
 
 # next is Temp (C)
-ds001.temp.fit1<-lm(DS001 ~ Temp_DegC, data=ds001_meta) %>%
+ds001.temp.fit1<-glm(DS001 ~ Temp_DegC, data=ds001_meta) %>%
   adjust_pvalue(method="bonferroni")
 summary(ds001.temp.fit1) # not significant
 
@@ -1041,7 +1116,7 @@ abline(ds001.temp.fit1)
 
 ## next Sulfate
 
-ds001.so4.fit1<-lm(DS001 ~ Sulfate_milliM, data=ds001_meta) %>%
+ds001.so4.fit1<-glm(DS001 ~ Sulfate_milliM, data=ds001_meta) %>%
   adjust_pvalue(method="bonferroni")
 summary(ds001.so4.fit1)
 #Coefficients:
@@ -1089,7 +1164,7 @@ fig.ds001.so4.fit1<-ggplot(ds001_meta, aes(x = Sulfate_milliM, y = DS001)) +
 ggsave(fig.ds001.so4.fit1,filename = "figures/RelativeAbundance/DS001_Genus_RelAb_vs_Sulfate_scatterplot.pdf", width=10, height=8, dpi=600)
 
 ## last is Sulfide
-ds001.hs.fit1<-lm(DS001 ~ Sulfide_microM, data=ds001_meta) %>%
+ds001.hs.fit1<-glm(DS001 ~ Sulfide_microM, data=ds001_meta) %>%
   adjust_pvalue(method="bonferroni")
 summary(ds001.hs.fit1) # not significant
 
