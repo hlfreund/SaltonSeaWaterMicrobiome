@@ -38,7 +38,7 @@ load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
 load("data/SSW_Amplicon_EnvDriver.Rdata")
 
 bac.dat.all[1:4,1:4]
-bac.ASV_table[1:4,1:4]
+bac.ASV_table[,1:4]
 bac.ASV_table[(nrow(bac.ASV_table)-4):(nrow(bac.ASV_table)),(ncol(bac.ASV_table)-4):(ncol(bac.ASV_table))] # last 4 rows & cols
 
 head(metadata)
