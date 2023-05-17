@@ -444,6 +444,35 @@ rda.aug2021.d2 = ordiR2step(rda(b.clr_AUG21 ~ 1, data = August.2021[,c(11,14:15)
 
 anova(rda(b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU,data=August.2021)) # p =  0.001, significant
 
+rda.aug2021.4<-rda(b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU+Temp_DegC,data=August.2021)
+summary(rda.aug2021.4)
+RsquareAdj(rda.aug2021.4) # how much variation is explained by our model? 13.29%
+anova(rda.aug2021.4, by = "terms", permutations = how(nperm=999)) ### by variables
+## this will help us interpret our RDA and we can see some variable are not significant
+#                             Df Variance      F Pr(>F)
+#Dissolved_OrganicMatter_RFU  1   157.93 1.9005  0.003 **
+#Temp_DegC                    1    97.43 1.1724  0.187
+#Residual                     4   329.89
+
+anova(rda.aug2021.4, by=NULL,permutations = how(nperm=999)) # p =  0.006, significant
+
+vif.cca(rda.aug2021.4)
+#Dissolved_OrganicMatter_RFU  Temp_DegC
+#1.354803                    1.354803
+
+head(August.2021)
+## we can use model selection instead of picking variables we think are important -- based on p values
+rda.aug2021.e1 = ordistep(rda(b.clr_AUG21 ~ 1, data = August.2021[,c(11,14)]),
+                          scope=formula(rda.aug2021.4),
+                          direction = "forward",
+                          permutations = how(nperm=999))
+# b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU = best model
+# Can also use model selection to pick variables by which ones increase variation (R^2)
+rda.aug2021.e2 = ordiR2step(rda(b.clr_AUG21 ~ 1, data = August.2021[,c(11,14)]),
+                            scope=formula(rda.aug2021.4),
+                            permutations = how(nperm=999))
+# b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU = best model
+
 #### RDA - December 2021 ####
 
 rownames(December.2021) %in% rownames(b.clr_DEC21) # check order of DFs
@@ -852,17 +881,17 @@ anova(rda.all, by = "terms", permutations = how(nperm=999))
 #Residual                    43   992.83
 
 # August 2021
-rda.aug2021.3$call # best model
+rda.aug2021.4$call # best model
 
-rda.aug2021<-rda(b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU+Temp_DegC+Sulfate_milliM,data=August.2021)
+rda.aug2021<-rda(b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU+Temp_DegC,data=August.2021)
 summary(rda.aug2021)
 RsquareAdj(rda.aug2021) # how much variation is explained by our model? 14.31%
 anova(rda.aug2021, permutations = how(nperm=999)) # p-value = 0.009 **
 anova(rda.aug2021, by = "terms", permutations = how(nperm=999))
 #                           Df Variance      F Pr(>F)
-#Dissolved_OrganicMatter_RFU  1   157.93 1.9213  0.002 **
-#ORP_mV                       1   102.54 1.2475  0.133
-#Residual                     5   411.02
+#Dissolved_OrganicMatter_RFU  1   157.93 1.9005  0.003 **
+#Temp_DegC                    1    97.43 1.1724  0.209
+#Residual                     5   415.50
 
 # December 2021
 rda.dec2021.4$call # best model from above
@@ -905,7 +934,7 @@ RsquareAdj(rda.all) # 19.14%
 # if it is not significant, it doesn't matter how much of the variation is explained
 anova(rda.all, permutations = how(nperm=999)) # p = 0.001, significant
 
-png('autoplot_rda_example.png',width = 700, height = 600, res=100)
+png('figures/EnvDrivers/SSW_AllData_autoplot_rda_example.png',width = 700, height = 600, res=100)
 autoplot(rda.all, arrows = TRUE,data = rda.all ,layers=c("biplot","sites"),label = FALSE, label.size = 3, shape = FALSE, loadings = TRUE, loadings.colour = 'blue', loadings.label = TRUE, loadings.label.size = 3, scale= 0)+theme_classic()
 dev.off()
 ## FOR AUTOPLOT -> must load packagve ggvegan first
@@ -985,7 +1014,7 @@ summary(rda.aug2021)
 RsquareAdj(rda.aug2021) # 13.94%
 ## ^^ use this b/c chance correlations can inflate R^2
 
-png('autoplot_rda_example.png',width = 700, height = 600, res=100)
+png('figures/EnvDrivers/SSW_Aug21_autoplot_rda_example.png',width = 700, height = 600, res=100)
 autoplot(rda.aug2021, arrows = TRUE,data = rda.aug2021 ,layers=c("biplot","sites"),label = FALSE, label.size = 3, shape = FALSE, loadings = TRUE, loadings.colour = 'blue', loadings.label = TRUE, loadings.label.size = 3, scale= 0)+theme_classic()
 dev.off()
 ## FOR AUTOPLOT -> must load packagve ggvegan first
@@ -993,7 +1022,7 @@ dev.off()
 rda.sum.a21<-summary(rda.aug2021)
 rda.sum.a21$sites[,1:2]
 rda.sum.a21$cont #cumulative proportion of variance per axis
-# RDA1=26.31%, RDA2=12.53%
+# RDA1=25.66%, RDA2=12.41%
 
 # create data frame w/ RDA axes for sites
 rda.axes.a21<-data.frame(RDA1=rda.sum.a21$sites[,1], RDA2=rda.sum.a21$sites[,2], SampleID=rownames(rda.sum.a21$sites), Depth_m=August.2021$Depth_m)
@@ -1002,7 +1031,7 @@ rda.axes.a21<-data.frame(RDA1=rda.sum.a21$sites[,1], RDA2=rda.sum.a21$sites[,2],
 arrows.a21<-data.frame(RDA1=rda.sum.a21$biplot[,1], RDA2=rda.sum.a21$biplot[,2], Label=rownames(rda.sum.a21$biplot))
 #arrows.a21$Label[(arrows.a21$Label) == "ORP_mV"] <- "ORP (mV)"
 arrows.a21$Label[(arrows.a21$Label) == "Dissolved_OrganicMatter_RFU"] <- "DOM (RFU)"
-arrows.a21$Label[(arrows.a21$Label) == "Sulfate_milliM"] <- "Sulfate (milliM)"
+#arrows.a21$Label[(arrows.a21$Label) == "Sulfate_milliM"] <- "Sulfate (milliM)"
 arrows.a21$Label[(arrows.a21$Label) == "Temp_DegC"] <- "Temp (C)"
 
 rda.plot5<-ggplot(rda.axes.a21, aes(x = RDA1, y = RDA2)) + geom_point(size=2) +
@@ -1025,9 +1054,23 @@ rda.plot6<-ggplot(rda.axes.a21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=
   coord_fixed(ratio = 1, xlim = c(-10,10), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
   labs(title="RDA: Bacteria/Archaea in Salton Seawater, August 2021",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
-  xlab("RDA1 [26.31%]") + ylab("RDA2 [12.53%]")
+  xlab("RDA1 [25.66%]") + ylab("RDA2 [12.41%]")
 
 ggsave(rda.plot6,filename = "figures/EnvDrivers/SSW_16S_RDA_Aug2021.png", width=16, height=12, dpi=600)
+
+rda.plot6b<-ggplot(rda.axes.a21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m))),size=5) +
+  geom_segment(data = arrows.a21,mapping = aes(x = 0, y = 0, xend = RDA1*8, yend = RDA2*8),lineend = "round", # See available arrow types in example above
+               linejoin = "round",
+               size = 1,
+               arrow = arrow(length = unit(0.15, "inches")),
+               colour = "black") +
+  geom_label(data = arrows.a21,aes(label = Label, x = RDA1*9, y = RDA2*9.12, fontface="bold"), size=5)+
+  coord_fixed(ratio = 1, xlim = c(-10,10), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
+  labs(title="RDA: Bacteria/Archaea in Salton Seawater, August 2021",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
+  xlab("RDA1 [25.66%]") + ylab("RDA2 [12.41%]")
+
+ggsave(rda.plot6b,filename = "figures/EnvDrivers/SSW_16S_RDA_Aug2021_bigger.png", width=15, height=15, dpi=600)
 
 #### Plot RDA - Dec 2021 ####
 #plot(rda.dec2021) # depending on how many species you have, this step may take a while
@@ -1044,7 +1087,7 @@ summary(rda.dec2021)
 RsquareAdj(rda.dec2021) # 16.33%
 ## ^^ use this b/c chance correlations can inflate R^2
 
-png('autoplot_rda_example.png',width = 700, height = 600, res=100)
+png('figures/EnvDrivers/SSW_Dec21_autoplot_rda_example.png',width = 700, height = 600, res=100)
 autoplot(rda.dec2021, arrows = TRUE,data = rda.dec2021 ,layers=c("biplot","sites"),label = FALSE, label.size = 3, shape = FALSE, loadings = TRUE, loadings.colour = 'blue', loadings.label = TRUE, loadings.label.size = 3, scale= 0)+theme_classic()
 dev.off()
 ## FOR AUTOPLOT -> must load packagve ggvegan first
@@ -1088,6 +1131,19 @@ rda.plot8<-ggplot(rda.axes.d21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=
 
 ggsave(rda.plot8,filename = "figures/EnvDrivers/SSW_16S_RDA_Dec2021.png", width=15, height=12, dpi=600)
 
+rda.plot8b<-ggplot(rda.axes.d21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m))),size=5) +
+  geom_segment(data = arrows.d21,mapping = aes(x = 0, y = 0, xend = RDA1*9, yend = RDA2*9),lineend = "round", # See available arrow types in example above
+               linejoin = "round",
+               size = 1,
+               arrow = arrow(length = unit(0.15, "inches")),
+               colour = "black") +
+  geom_label(data = arrows.d21,aes(label = Label, x = RDA1*10, y = RDA2*10, fontface="bold"), size=5)+
+  coord_fixed(ratio = 1, xlim = c(-10,10), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
+  labs(title="RDA: Bacteria/Archaea in Salton Seawater, December 2021",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
+  xlab("RDA1 [20.35%]") + ylab("RDA2 [7.14%]")
+
+ggsave(rda.plot8b,filename = "figures/EnvDrivers/SSW_16S_RDA_Dec2021_bigger.png", width=15, height=15, dpi=600)
 
 #### Plot RDA - Apr 2022 ####
 #plot(rda.dec2021) # depending on how many species you have, this step may take a while
@@ -1099,7 +1155,7 @@ plot(rda.apr2022, scaling = 2)
 # check summary of RDA
 summary(rda.apr2022)
 
-png('autoplot_rda_example.png',width = 700, height = 600, res=100)
+png('figures/EnvDrivers/SSW_Apr22_autoplot_rda_example.png',width = 700, height = 600, res=100)
 autoplot(rda.apr2022, arrows = TRUE,data = rda.apr2022 ,layers=c("biplot","sites"),label = FALSE, label.size = 3, shape = FALSE, loadings = TRUE, loadings.colour = 'blue', loadings.label = TRUE, loadings.label.size = 3, scale= 0)+theme_classic()
 dev.off()
 ## FOR AUTOPLOT -> must load packagve ggvegan first
