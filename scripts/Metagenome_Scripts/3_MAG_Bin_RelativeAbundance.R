@@ -35,45 +35,12 @@ suppressPackageStartupMessages({ # load packages quietly
   library(decontam)
 })
 
+#### Load Data ####
 load("data/Metagenomes/Analysis/mgm_analysis.Rdata") # load Rdata to global env
 
-#### Import Custom Functions ####
-
-counts_to_binary <- function(dataFrame){
-  new_m <- matrix(nrow=dim(dataFrame)[1],ncol = dim(dataFrame)[2]) # create new matrix w/ same rows and cols as input dataframe
-  ## dim(df)[1] gives you first dimensions (x aka rows), dim(df)[2] gives you second dimensions (y aka columns)
-
-  for( currentRow in 1:nrow(dataFrame)){ # for every row
-    for( currentCol in 1:ncol(dataFrame)){ # for every column
-
-      if ( is.na(dataFrame[currentRow, currentCol]) & is.numeric(dataFrame[currentRow, currentCol])){ # if both row and col (specifies each cell) are NA, change val to 0
-        new_m[currentRow, currentCol] = 0
-        # is.numeric(df[currentRow,currentCol]) is to confirm each cell contains a numeric element
-      } else if( is.numeric(dataFrame[currentRow, currentCol]) & dataFrame[currentRow, currentCol] > 0){ # if both row and col (specifies each cell) are > 0, change val to 1
-        new_m[currentRow, currentCol] = 1
-      } else if ( is.numeric(dataFrame[currentRow, currentCol]) & dataFrame[currentRow, currentCol] == 0){ # if both row and col (specifies each cell) == 0 , change val to 0
-        new_m[currentRow, currentCol] = 0
-      } else if ( is.character(dataFrame[currentRow, currentCol])){ # if both row and col (specifies each cell) == 0 , change val to 0
-        new_m[currentRow, currentCol] = dataFrame[currentRow, currentCol]
-      }
-    }
-  }
-  new_df <- as.data.frame(new_m) #turns matrix into dataframe
-  names(new_df) <- names(dataFrame) #names rows & cols of new dataframe to be same as row names and col names from input dataframe
-  rownames(new_df) <- rownames(dataFrame)
-  #  new_df2=new_df[,order(ncol(new_df):1)]
-  new_df2=new_df[rownames(dataFrame),colnames(dataFrame)]
-  return(new_df2) # ensures only output is the new dataframe
-}
-
-##save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata") # save global env to Rdata file
-
-## Notes:
-# code & info came from :
-## https://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#quick-start
-## https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/07_practical.pdf
-## https://www.reneshbedre.com/blog/deseq2.html
-## https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html
+head(meta_scaled)
+arsenic.fxns[1:4,1:4]
+mgm_fxn.cov_table[1:4,1:4]
 
 #### Relative Abundance of MGM Bins Across Samples, Depths, Seasons ####
 
