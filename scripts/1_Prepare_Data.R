@@ -49,6 +49,13 @@ head(bac.ASV_all)
 bac.ASV_all<-bac.ASV_all[bac.ASV_all$SampleMonth!="June",]
 "June" %in% bac.ASV_all$SampleMonth # confirm there are no Junes left
 
+# drop technical replicates from total samps
+bac.ASV_all<-bac.ASV_all[!grepl("0.2a", bac.ASV_all$SampleID),]
+unique(bac.ASV_all$SampleID)
+
+# Clean up SampleIDs
+bac.ASV_all$SampleID<-gsub("m\\..*","m",bac.ASV_all$SampleID)
+
 # Create ASV table
 bac.ASV_table <- as.data.frame(dcast(bac.ASV_all, SampleID~ASV_ID, value.var="Count", fun.aggregate=sum)) ###
 bac.ASV_table[,1:4] # counts by asvs per sample
@@ -69,6 +76,14 @@ chem_meta[1:4,1:4] # sanity check for gsub
 # drop data from June 2021
 chem_meta<-chem_meta[chem_meta$SampleMonth!="June",]
 "June" %in% chem_meta$SampleMonth # confirm there are no Junes left
+
+# drop technical replicates from total samps
+chem_meta<-chem_meta[!grepl("0.2a", chem_meta$SampleID),]
+unique(chem_meta$SampleID)
+
+# Clean up SampleIDs
+chem_meta$SampleID<-gsub("m\\..*","m",chem_meta$SampleID)
+chem_meta$SampleID
 
 # create color variable(s) to identify variables by colors
 ## color for sample type
