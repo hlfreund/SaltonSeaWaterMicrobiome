@@ -236,11 +236,16 @@ qqline(bac.div.metadat$Sulfide_microM, col = "red", lwd = 2)
 ## here the focus is comparing dust complexity to alpha diversity, species richness, & elevation
 head(bac.div.metadat)
 
-# Shan Div ~ DO%
-plot(Bac_Shannon_Diversity ~ DO_Percent_Local, data=bac.div.metadat,col=SampDate_Color)
-
+# just look at everything at once in step-wise fashion
 step1<-step(glm(formula = Bac_Shannon_Diversity ~ ., data=bac.div.metadat[,c(3,11,13:14,18:20)]))
 summary(step1)
+#                 Estimate Std. Error t value Pr(>|t|)
+# ORP_mV           -7.049      3.865  -1.824 0.083128 .
+# Temp_DegC       -20.691      4.716  -4.387 0.000285 ***
+# Sulfate_milliM  -10.211      4.099  -2.491 0.021651 *
+
+# Shan Div ~ DO%
+plot(Bac_Shannon_Diversity ~ DO_Percent_Local, data=bac.div.metadat,col=SampDate_Color)
 
 s.div.glm.fit1<-glm(formula = Bac_Shannon_Diversity ~ DO_Percent_Local, data=bac.div.metadat)%>%
   adjust_pvalue(method="bonferroni")
@@ -404,6 +409,13 @@ compare_means(Bac_Shannon_Diversity ~ Depth_m, data=bac.div.metadat, method="ano
 #### Linear Regression Comparisons - Species Richness ####
 ## here the focus is comparing dust complexity to alpha diversity, species richness, & elevation
 head(bac.div.metadat) # bac.div.metadat - excludes outliar with very high Shannon diversity
+
+# just look at everything at once in step-wise fashion
+step2<-step(glm(formula = Bac_Species_Richness ~ ., data=bac.div.metadat[,c(4,11,13:14,18:20)]))
+summary(step2)
+#                               Estimate Std. Error t value Pr(>|t|)
+# Temp_DegC                     114.82      62.20   1.846   0.0798 .
+# Dissolved_OrganicMatter_RFU   128.54      52.69   2.439   0.0241 *
 
 # Species Richness ~ DO%
 
