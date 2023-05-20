@@ -7,6 +7,7 @@ suppressPackageStartupMessages({ # load packages quietly
   library(ggplot2)
   library(vegan)
   library(ggpubr)
+  library(lme4)
   #library(scales)
   library(grid)
   library(ape)
@@ -267,7 +268,8 @@ coef(summary(s.div.glm.fit1))[,4][2] %>% adjust_pvalue(method="bonferroni")
 summary(lm(formula = Bac_Shannon_Diversity ~ DO_Percent_Local, data=bac.div.metadat)%>%
           adjust_pvalue(method="bonferroni"))
 
-mixed1 = lmer(Bac_Shannon_Diversity ~ DO_Percent_Local+ (1 | SampDate), data = bac.div.metadat)
+# code for mixed effects model
+mixed1 = lmer(Bac_Shannon_Diversity ~ DO_Percent_Local+ (1 | Depth_m), data = bac.div.metadat)
 summary(mixed1)
 
 # Shan Div ~ ORP
