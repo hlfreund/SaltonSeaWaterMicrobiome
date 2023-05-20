@@ -47,6 +47,9 @@ bac.ASV_table[1:4,1:4]
 bac.ASV_table[(nrow(bac.ASV_table)-4):(nrow(bac.ASV_table)),(ncol(bac.ASV_table)-4):(ncol(bac.ASV_table))] # last 4 rows & cols
 head(meta_scaled)
 
+# create numeric variable for depth to be used for models later
+bac.div.metadat$Depth.num<-as.numeric(as.character(bac.div.metadat$Depth_m))
+
 ## DO NOT RUN THIS LINE, THIS IS YOUR COLOR REFERENCE!!!!
 #(August.2021="#ef781c",December.2021="#03045e",April.2022="#059c3f")
 
@@ -232,12 +235,16 @@ qqline(bac.div.metadat$Sulfide_microM, col = "red", lwd = 2)
 #### Linear Regression Comparisons - Shannon Diversity ####
 ## here the focus is comparing dust complexity to alpha diversity, species richness, & elevation
 head(bac.div.metadat)
+
+# Shan Div ~ DO%
+plot(Bac_Shannon_Diversity ~ DO_Percent_Local, data=bac.div.metadat,col=SampDate_Color)
+
+step1<-step(glm(formula = Bac_Shannon_Diversity ~ ., data=bac.div.metadat[,c(3,11,13:14,18:20)]))
+summary(step1)
+
 s.div.glm.fit1<-glm(formula = Bac_Shannon_Diversity ~ DO_Percent_Local, data=bac.div.metadat)%>%
   adjust_pvalue(method="bonferroni")
 
-# sanity check that lm() vs glm(familiy=Gaussian) is the same thing - and it is!
-summary(lm(formula = Bac_Shannon_Diversity ~ DO_Percent_Local, data=bac.div.metadat)%>%
-  adjust_pvalue(method="bonferroni"))
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(s.div.glm.fit1)
@@ -245,17 +252,37 @@ summary(s.div.glm.fit1)
 #  Estimate Std. Error t value Pr(>|t|)
 #(Intercept)        90.219      3.892  23.183   <2e-16 ***
 #DO_Percent_Local    8.249      3.975   2.075   0.0499 *
+coef(summary(s.div.glm.fit1))[,4] # p-values
+coef(summary(s.div.glm.fit1))[,4][2] # p-value for variable of interest
+
+p.adjust(coef(summary(s.div.glm.fit1))[,4][2],method="bonferroni")
+coef(summary(s.div.glm.fit1))[,4][2] %>% adjust_pvalue(method="bonferroni")
+
+# sanity check that lm() vs glm(familiy=Gaussian) is the same thing - and it is!
+summary(lm(formula = Bac_Shannon_Diversity ~ DO_Percent_Local, data=bac.div.metadat)%>%
+          adjust_pvalue(method="bonferroni"))
+
+mixed1 = lmer(Bac_Shannon_Diversity ~ DO_Percent_Local+ (1 | SampDate), data = bac.div.metadat)
+summary(mixed1)
+
+# Shan Div ~ ORP
+
+plot(Bac_Shannon_Diversity ~ ORP_mV, data=bac.div.metadat,col=SampDate_Color)
 
 s.div.glm.fit2<-glm(formula = Bac_Shannon_Diversity ~ ORP_mV, data=bac.div.metadat)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(s.div.glm.fit2)
+coef(summary(s.div.glm.fit2))[,4] # p-values
+coef(summary(s.div.glm.fit2))[,4][2] # p-value for variable of interest
 
-#Coefficients:
-#  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)   90.219      4.232  21.318 3.49e-16 ***
-#ORP_mV         2.135      4.323   0.494    0.626
+p.adjust(coef(summary(s.div.glm.fit2))[,4][2],method="bonferroni")
+coef(summary(s.div.glm.fit2))[,4][2] %>% adjust_pvalue(method="bonferroni")
+
+# Shan Div ~ Temp (C)
+
+plot(Bac_Shannon_Diversity ~ Temp_DegC, data=bac.div.metadat,col=SampDate_Color)
 
 s.div.glm.fit3<-glm(formula = Bac_Shannon_Diversity ~ Temp_DegC, data=bac.div.metadat)%>%
   adjust_pvalue(method="bonferroni")
@@ -266,48 +293,88 @@ summary(s.div.glm.fit3)
 #  Estimate Std. Error t value Pr(>|t|)
 #(Intercept)   90.219      3.560  25.343  < 2e-16 ***
 #Temp_DegC    -11.170      3.636  -3.072  0.00558 **
+coef(summary(s.div.glm.fit3))[,4] # p-values
+coef(summary(s.div.glm.fit3))[,4][2] # p-value for variable of interest
 
-s.div.glm.fit5<-glm(formula = Bac_Shannon_Diversity ~ Dissolved_OrganicMatter_RFU, data=bac.div.metadat)%>%
+p.adjust(coef(summary(s.div.glm.fit3))[,4][2],method="bonferroni")
+coef(summary(s.div.glm.fit3))[,4][2] %>% adjust_pvalue(method="bonferroni")
+
+# Shan Div ~ DOM
+
+plot(Bac_Shannon_Diversity ~ Dissolved_OrganicMatter_RFU, data=bac.div.metadat,col=SampDate_Color)
+
+s.div.glm.fit4<-glm(formula = Bac_Shannon_Diversity ~ Dissolved_OrganicMatter_RFU, data=bac.div.metadat)%>%
+  adjust_pvalue(method="bonferroni")
+## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
+# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
+summary(s.div.glm.fit4)
+#Coefficients:
+#  Estimate Std. Error t value Pr(>|t|)
+#(Intercept)                   90.219      3.902   23.12   <2e-16 ***
+#Dissolved_OrganicMatter_RFU   -8.131      3.986   -2.04   0.0536 .
+coef(summary(s.div.glm.fit4))[,4] # p-values
+coef(summary(s.div.glm.fit4))[,4][2] # p-value for variable of interest
+
+p.adjust(coef(summary(s.div.glm.fit4))[,4][2],method="bonferroni")
+coef(summary(s.div.glm.fit4))[,4][2] %>% adjust_pvalue(method="bonferroni")
+
+# Shan Div ~ Sulfate
+
+plot(Bac_Shannon_Diversity ~ Sulfate_milliM, data=bac.div.metadat,col=SampDate_Color)
+
+s.div.glm.fit5<-glm(formula = Bac_Shannon_Diversity ~ Sulfate_milliM, data=bac.div.metadat)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(s.div.glm.fit5)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)                   90.219      3.902   23.12   <2e-16 ***
-#Dissolved_OrganicMatter_RFU   -8.131      3.986   -2.04   0.0536 .
+#(Intercept)     90.2188     4.2508  21.224 3.84e-16 ***
+#Sulfate_milliM   0.9457     4.3422   0.218     0.83
+coef(summary(s.div.glm.fit5))[,4] # p-values
+coef(summary(s.div.glm.fit5))[,4][2] # p-value for variable of interest
 
-s.div.glm.fit6<-glm(formula = Bac_Shannon_Diversity ~ Sulfate_milliM, data=bac.div.metadat)%>%
+p.adjust(coef(summary(s.div.glm.fit5))[,4][2],method="bonferroni")
+coef(summary(s.div.glm.fit5))[,4][2] %>% adjust_pvalue(method="bonferroni")
+
+# Shan Div ~ Sulfide
+
+plot(Bac_Shannon_Diversity ~ Sulfide_microM, data=bac.div.metadat,col=SampDate_Color)
+
+s.div.glm.fit6<-glm(formula = Bac_Shannon_Diversity ~ Sulfide_microM, data=bac.div.metadat)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(s.div.glm.fit6)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)     90.2188     4.2508  21.224 3.84e-16 ***
-#Sulfate_milliM   0.9457     4.3422   0.218     0.83
+#(Intercept)      90.219      4.203  21.465 3.02e-16 ***
+#Sulfide_microM   -3.189      4.293  -0.743    0.465
+coef(summary(s.div.glm.fit6))[,4] # p-values
+coef(summary(s.div.glm.fit6))[,4][2] # p-value for variable of interest
 
-s.div.glm.fit7<-glm(formula = Bac_Shannon_Diversity ~ Sulfide_microM, data=bac.div.metadat)%>%
+p.adjust(coef(summary(s.div.glm.fit6))[,4][2],method="bonferroni")
+coef(summary(s.div.glm.fit6))[,4][2] %>% adjust_pvalue(method="bonferroni")
+
+# Shan Div ~ Depth
+plot(Bac_Shannon_Diversity ~ Depth.num, data=bac.div.metadat,col=SampDate_Color)
+
+# Depth_m is a numeric variable here
+s.div.glm.fit7<-glm(formula = Bac_Shannon_Diversity ~ Depth.num, data=bac.div.metadat)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(s.div.glm.fit7)
-#Coefficients:
-#  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)      90.219      4.203  21.465 3.02e-16 ***
-#Sulfide_microM   -3.189      4.293  -0.743    0.465
-
-# Depth_m is a numeric variable here
-s.div.glm.fit8<-glm(formula = Bac_Shannon_Diversity ~ Depth_m, data=bac.div.metadat)%>%
-  adjust_pvalue(method="bonferroni")
-## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
-# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.div.glm.fit8)
 #                                   Estimate Std. Error t value Pr(>|t|)
 # (Intercept)                        86.4731     8.4340  10.253 7.65e-10 ***
 #   as.numeric(as.character(Depth_m))   0.6115     1.1913   0.513    0.613
+coef(summary(s.div.glm.fit7))[,4] # p-values
+coef(summary(s.div.glm.fit7))[,4][2] # p-value for variable of interest
 
-fit1<-aov(Bac_Shannon_Diversity ~ as.factor(Depth_m), data=bac.div.metadat)
+p.adjust(coef(summary(s.div.glm.fit7))[,4][2],method="bonferroni")
+coef(summary(s.div.glm.fit7))[,4][2] %>% adjust_pvalue(method="bonferroni")
+
+fit1<-aov(Bac_Shannon_Diversity ~ Depth_m, data=bac.div.metadat)
 #pairwise.adonis(bac.div.metadat$Bac_Shannon_Diversity, bac.div.metadat$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 
 summary(fit1)
@@ -329,7 +396,7 @@ Tuk1$Depth_m
 ## t test assumes that variances are the same, so Levene's test needs to be non significant
 ## Fligner's test is a Levene's test for data that are not normally distributed
 ## more here: https://www.geeksforgeeks.org/fligner-killeen-test-in-r-programming/
-fligner.test(Bac_Shannon_Diversity ~ as.factor(Depth_m), data = bac.div.metadat)
+fligner.test(Bac_Shannon_Diversity ~ Depth_m, data = bac.div.metadat)
 # Fligner-Killeen:med chi-squared = 1.1963, df = 7, p-value = 0.991
 # Which shows that the data do not deviate significantly from homogeneity.
 compare_means(Bac_Shannon_Diversity ~ Depth_m, data=bac.div.metadat, method="anova",p.adjust.method = "bonferroni") # won't take as.factor(Elevation) as input
@@ -337,6 +404,11 @@ compare_means(Bac_Shannon_Diversity ~ Depth_m, data=bac.div.metadat, method="ano
 #### Linear Regression Comparisons - Species Richness ####
 ## here the focus is comparing dust complexity to alpha diversity, species richness, & elevation
 head(bac.div.metadat) # bac.div.metadat - excludes outliar with very high Shannon diversity
+
+# Species Richness ~ DO%
+
+plot(Bac_Species_Richness ~ DO_Percent_Local, data=bac.div.metadat,col=SampDate_Color)
+
 s.r.glm.fit1<-glm(Bac_Species_Richness ~ DO_Percent_Local,data=bac.div.metadat) %>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
@@ -346,6 +418,15 @@ summary(s.r.glm.fit1)
 #  Estimate Std. Error t value Pr(>|t|)
 #(Intercept)        975.58      41.27  23.636   <2e-16 ***
 #DO_Percent_Local   -64.21      42.16  -1.523    0.142
+coef(summary(s.r.glm.fit1))[,4] # p-values
+coef(summary(s.r.glm.fit1))[,4][2] # p-value for variable of interest
+
+p.adjust(coef(summary(s.r.glm.fit1))[,4][2],method="bonferroni")
+coef(summary(s.r.glm.fit1))[,4][2] %>% adjust_pvalue(method="bonferroni")
+
+# Species Richness ~ ORP
+
+plot(Bac_Species_Richness ~ ORP_mV, data=bac.div.metadat,col=SampDate_Color)
 
 s.r.glm.fit2<-glm(Bac_Species_Richness ~ ORP_mV,data=bac.div.metadat) %>%
   adjust_pvalue(method="bonferroni")
@@ -356,6 +437,15 @@ summary(s.r.glm.fit2)
 #  Estimate Std. Error t value Pr(>|t|)
 #(Intercept)   975.58      38.82  25.130   <2e-16 ***
 #ORP_mV        -92.92      39.66  -2.343   0.0286 *
+coef(summary(s.r.glm.fit2))[,4] # p-values
+coef(summary(s.r.glm.fit2))[,4][2] # p-value for variable of interest
+
+p.adjust(coef(summary(s.r.glm.fit2))[,4][2],method="bonferroni")
+coef(summary(s.r.glm.fit2))[,4][2] %>% adjust_pvalue(method="bonferroni")
+
+# Species Richness ~ Temp
+
+plot(Bac_Species_Richness ~ Temp_DegC, data=bac.div.metadat,col=SampDate_Color)
 
 s.r.glm.fit3<-glm(Bac_Species_Richness ~ Temp_DegC,data=bac.div.metadat) %>%
   adjust_pvalue(method="bonferroni")
@@ -366,47 +456,88 @@ summary(s.r.glm.fit3)
 #  Estimate Std. Error t value Pr(>|t|)
 #(Intercept)   975.58      38.70  25.207   <2e-16 ***
 #Temp_DegC      94.05      39.53   2.379   0.0265 *
+coef(summary(s.r.glm.fit3))[,4] # p-values
+coef(summary(s.r.glm.fit3))[,4][2] # p-value for variable of interest
 
-s.r.glm.fit5<-glm(Bac_Species_Richness ~ Dissolved_OrganicMatter_RFU,data=bac.div.metadat) %>%
+p.adjust(coef(summary(s.r.glm.fit3))[,4][2],method="bonferroni")
+coef(summary(s.r.glm.fit3))[,4][2] %>% adjust_pvalue(method="bonferroni")
+
+# Species Richness ~ DOM
+
+plot(Bac_Species_Richness ~ Dissolved_OrganicMatter_RFU, data=bac.div.metadat,col=SampDate_Color)
+
+s.r.glm.fit4<-glm(Bac_Species_Richness ~ Dissolved_OrganicMatter_RFU,data=bac.div.metadat) %>%
+  adjust_pvalue(method="bonferroni")
+## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
+# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
+summary(s.r.glm.fit4)
+#Coefficients:
+#  Estimate Std. Error t value Pr(>|t|)
+#(Intercept)                   975.58      36.83  26.491  < 2e-16 ***
+#Dissolved_OrganicMatter_RFU   109.98      37.62   2.924  0.00787 **
+coef(summary(s.r.glm.fit4))[,4] # p-values
+coef(summary(s.r.glm.fit4))[,4][2] # p-value for variable of interest
+
+p.adjust(coef(summary(s.r.glm.fit4))[,4][2],method="bonferroni")
+coef(summary(s.r.glm.fit4))[,4][2] %>% adjust_pvalue(method="bonferroni")
+
+# Species Richness ~ Sulfate
+
+plot(Bac_Species_Richness ~ Sulfate_milliM, data=bac.div.metadat,col=SampDate_Color)
+
+s.r.glm.fit5<-glm(Bac_Species_Richness ~ Sulfate_milliM,data=bac.div.metadat) %>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(s.r.glm.fit5)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)                   975.58      36.83  26.491  < 2e-16 ***
-#Dissolved_OrganicMatter_RFU   109.98      37.62   2.924  0.00787 **
+#(Intercept)      975.58      43.03  22.673   <2e-16 ***
+#Sulfate_milliM   -26.99      43.95  -0.614    0.545
+coef(summary(s.r.glm.fit5))[,4] # p-values
+coef(summary(s.r.glm.fit5))[,4][2] # p-value for variable of interest
 
-s.r.glm.fit6<-glm(Bac_Species_Richness ~ Sulfate_milliM,data=bac.div.metadat) %>%
+p.adjust(coef(summary(s.r.glm.fit5))[,4][2],method="bonferroni")
+coef(summary(s.r.glm.fit5))[,4][2] %>% adjust_pvalue(method="bonferroni")
+
+# Species Richness ~ Sulfide
+
+plot(Bac_Species_Richness ~ Sulfide_microM, data=bac.div.metadat,col=SampDate_Color)
+
+s.r.glm.fit6<-glm(Bac_Species_Richness ~ Sulfide_microM,data=bac.div.metadat) %>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(s.r.glm.fit6)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)      975.58      43.03  22.673   <2e-16 ***
-#Sulfate_milliM   -26.99      43.95  -0.614    0.545
+#(Intercept)      975.58      39.85  24.482   <2e-16 ***
+#Sulfide_microM    82.34      40.71   2.023   0.0554 .
+coef(summary(s.r.glm.fit6))[,4] # p-values
+coef(summary(s.r.glm.fit6))[,4][2] # p-value for variable of interest
 
-s.r.glm.fit7<-glm(Bac_Species_Richness ~ Sulfide_microM,data=bac.div.metadat) %>%
+p.adjust(coef(summary(s.r.glm.fit6))[,4][2],method="bonferroni")
+coef(summary(s.r.glm.fit6))[,4][2] %>% adjust_pvalue(method="bonferroni")
+
+# Species Richness ~ Depth
+
+plot(Bac_Species_Richness ~ Depth.num, data=bac.div.metadat,col=SampDate_Color)
+
+s.r.glm.fit7<-glm(formula = Bac_Species_Richness ~ Depth.num, data=bac.div.metadat)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(s.r.glm.fit7)
-#Coefficients:
-#  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)      975.58      39.85  24.482   <2e-16 ***
-#Sulfide_microM    82.34      40.71   2.023   0.0554 .
-
-s.sr.glm.fit8<-glm(formula = Bac_Species_Richness ~ Depth_m, data=bac.div.metadat)%>%
-  adjust_pvalue(method="bonferroni")
-## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
-# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.sr.glm.fit8)
 #           Estimate Std. Error t value Pr(>|t|)
 #(Intercept) 976.2462    86.5222  11.283 1.29e-10 ***
 #Depth_m      -0.1082    12.2208  -0.009    0.993
+coef(summary(s.r.glm.fit7))[,4] # p-values
+coef(summary(s.r.glm.fit7))[,4][2] # p-value for variable of interest
 
-fit2<-aov(Bac_Species_Richness ~ as.factor(Depth_m), data=bac.div.metadat)
+p.adjust(coef(summary(s.r.glm.fit7))[,4][2],method="bonferroni")
+coef(summary(s.r.glm.fit7))[,4][2] %>% adjust_pvalue(method="bonferroni")
+
+fit2<-aov(Bac_Species_Richness ~ Depth_m, data=bac.div.metadat)
 #pairwise.adonis(bac.div.metadat$Bac_Species_Richness, bac.div.metadat$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 
 summary(fit2)
@@ -472,31 +603,31 @@ summary(aug21.div.glm.fit3)
 #(Intercept) 0.0113225  0.0004451  25.439   <2e-16 ***
 #Temp_DegC   0.0011947  0.0004861   2.458   0.0188 *
 
-aug21.div.glm.fit5<-glm(formula = Bac_Shannon_Diversity ~ Dissolved_OrganicMatter_RFU, data=aug21.div)%>%
+aug21.div.glm.fit4<-glm(formula = Bac_Shannon_Diversity ~ Dissolved_OrganicMatter_RFU, data=aug21.div)%>%
+  adjust_pvalue(method="bonferroni")
+## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
+# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
+summary(aug21.div.glm.fit4)
+#Coefficients:
+#  Estimate Std. Error t value Pr(>|t|)
+#(Intercept)                 0.0112493  0.0004708  23.896   <2e-16 ***
+#Dissolved_OrganicMatter_RFU 0.0004269  0.0004659   0.916    0.365
+
+aug21.div.glm.fit5<-glm(formula = Bac_Shannon_Diversity ~ Sulfate_milliM, data=aug21.div)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(aug21.div.glm.fit5)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)                 0.0112493  0.0004708  23.896   <2e-16 ***
-#Dissolved_OrganicMatter_RFU 0.0004269  0.0004659   0.916    0.365
+#(Intercept)     0.0112325  0.0004772  23.536   <2e-16 ***
+#Sulfate_milliM -0.0002664  0.0004893  -0.545    0.589
 
-aug21.div.glm.fit6<-glm(formula = Bac_Shannon_Diversity ~ Sulfate_milliM, data=aug21.div)%>%
+aug21.div.glm.fit6<-glm(formula = Bac_Shannon_Diversity ~ Sulfide_microM, data=aug21.div)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(aug21.div.glm.fit6)
-#Coefficients:
-#  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)     0.0112325  0.0004772  23.536   <2e-16 ***
-#Sulfate_milliM -0.0002664  0.0004893  -0.545    0.589
-
-aug21.div.glm.fit7<-glm(formula = Bac_Shannon_Diversity ~ Sulfide_microM, data=aug21.div)%>%
-  adjust_pvalue(method="bonferroni")
-## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
-# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(aug21.div.glm.fit7)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
 #(Intercept)    0.0112379  0.0004723   23.80   <2e-16 ***
@@ -563,31 +694,31 @@ summary(aug21.sr.glm.fit3)
 #(Intercept) 0.0113225  0.0004451  25.439   <2e-16 ***
 #Temp_DegC   0.0011947  0.0004861   2.458   0.0188 *
 
-aug21.sr.glm.fit5<-glm(formula = Bac_Species_Richness ~ Dissolved_OrganicMatter_RFU, data=aug21.div)%>%
+aug21.sr.glm.fit4<-glm(formula = Bac_Species_Richness ~ Dissolved_OrganicMatter_RFU, data=aug21.div)%>%
+  adjust_pvalue(method="bonferroni")
+## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
+# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
+summary(aug21.sr.glm.fit4)
+#Coefficients:
+#  Estimate Std. Error t value Pr(>|t|)
+#(Intercept)                 0.0112493  0.0004708  23.896   <2e-16 ***
+#Dissolved_OrganicMatter_RFU 0.0004269  0.0004659   0.916    0.365
+
+aug21.sr.glm.fit5<-glm(formula = Bac_Species_Richness ~ Sulfate_milliM, data=aug21.div)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(aug21.sr.glm.fit5)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)                 0.0112493  0.0004708  23.896   <2e-16 ***
-#Dissolved_OrganicMatter_RFU 0.0004269  0.0004659   0.916    0.365
+#(Intercept)     0.0112325  0.0004772  23.536   <2e-16 ***
+#Sulfate_milliM -0.0002664  0.0004893  -0.545    0.589
 
-aug21.sr.glm.fit6<-glm(formula = Bac_Species_Richness ~ Sulfate_milliM, data=aug21.div)%>%
+aug21.sr.glm.fit6<-glm(formula = Bac_Species_Richness ~ Sulfide_microM, data=aug21.div)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(aug21.sr.glm.fit6)
-#Coefficients:
-#  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)     0.0112325  0.0004772  23.536   <2e-16 ***
-#Sulfate_milliM -0.0002664  0.0004893  -0.545    0.589
-
-aug21.sr.glm.fit7<-glm(formula = Bac_Species_Richness ~ Sulfide_microM, data=aug21.div)%>%
-  adjust_pvalue(method="bonferroni")
-## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
-# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(aug21.sr.glm.fit7)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
 #(Intercept)    0.0112379  0.0004723   23.80   <2e-16 ***
@@ -654,31 +785,31 @@ summary(dec21.div.glm.fit3)
 #(Intercept) 0.0113225  0.0004451  25.439   <2e-16 ***
 #Temp_DegC   0.0011947  0.0004861   2.458   0.0188 *
 
-dec21.div.glm.fit5<-glm(formula = Bac_Shannon_Diversity ~ Dissolved_OrganicMatter_RFU, data=dec21.div)%>%
+dec21.div.glm.fit4<-glm(formula = Bac_Shannon_Diversity ~ Dissolved_OrganicMatter_RFU, data=dec21.div)%>%
+  adjust_pvalue(method="bonferroni")
+## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
+# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
+summary(dec21.div.glm.fit4)
+#Coefficients:
+#  Estimate Std. Error t value Pr(>|t|)
+#(Intercept)                 0.0112493  0.0004708  23.896   <2e-16 ***
+#Dissolved_OrganicMatter_RFU 0.0004269  0.0004659   0.916    0.365
+
+dec21.div.glm.fit5<-glm(formula = Bac_Shannon_Diversity ~ Sulfate_milliM, data=dec21.div)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(dec21.div.glm.fit5)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)                 0.0112493  0.0004708  23.896   <2e-16 ***
-#Dissolved_OrganicMatter_RFU 0.0004269  0.0004659   0.916    0.365
+#(Intercept)     0.0112325  0.0004772  23.536   <2e-16 ***
+#Sulfate_milliM -0.0002664  0.0004893  -0.545    0.589
 
-dec21.div.glm.fit6<-glm(formula = Bac_Shannon_Diversity ~ Sulfate_milliM, data=dec21.div)%>%
+dec21.div.glm.fit6<-glm(formula = Bac_Shannon_Diversity ~ Sulfide_microM, data=dec21.div)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(dec21.div.glm.fit6)
-#Coefficients:
-#  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)     0.0112325  0.0004772  23.536   <2e-16 ***
-#Sulfate_milliM -0.0002664  0.0004893  -0.545    0.589
-
-dec21.div.glm.fit7<-glm(formula = Bac_Shannon_Diversity ~ Sulfide_microM, data=dec21.div)%>%
-  adjust_pvalue(method="bonferroni")
-## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
-# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(dec21.div.glm.fit7)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
 #(Intercept)    0.0112379  0.0004723   23.80   <2e-16 ***
@@ -744,31 +875,31 @@ summary(dec21.sr.glm.fit3)
 #(Intercept) 0.0113225  0.0004451  25.439   <2e-16 ***
 #Temp_DegC   0.0011947  0.0004861   2.458   0.0188 *
 
-dec21.sr.glm.fit5<-glm(formula = Bac_Species_Richness ~ Dissolved_OrganicMatter_RFU, data=dec21.div)%>%
+dec21.sr.glm.fit4<-glm(formula = Bac_Species_Richness ~ Dissolved_OrganicMatter_RFU, data=dec21.div)%>%
+  adjust_pvalue(method="bonferroni")
+## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
+# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
+summary(dec21.sr.glm.fit4)
+#Coefficients:
+#  Estimate Std. Error t value Pr(>|t|)
+#(Intercept)                 0.0112493  0.0004708  23.896   <2e-16 ***
+#Dissolved_OrganicMatter_RFU 0.0004269  0.0004659   0.916    0.365
+
+dec21.sr.glm.fit5<-glm(formula = Bac_Species_Richness ~ Sulfate_milliM, data=dec21.div)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(dec21.sr.glm.fit5)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)                 0.0112493  0.0004708  23.896   <2e-16 ***
-#Dissolved_OrganicMatter_RFU 0.0004269  0.0004659   0.916    0.365
+#(Intercept)     0.0112325  0.0004772  23.536   <2e-16 ***
+#Sulfate_milliM -0.0002664  0.0004893  -0.545    0.589
 
-dec21.sr.glm.fit6<-glm(formula = Bac_Species_Richness ~ Sulfate_milliM, data=dec21.div)%>%
+dec21.sr.glm.fit6<-glm(formula = Bac_Species_Richness ~ Sulfide_microM, data=dec21.div)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(dec21.sr.glm.fit6)
-#Coefficients:
-#  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)     0.0112325  0.0004772  23.536   <2e-16 ***
-#Sulfate_milliM -0.0002664  0.0004893  -0.545    0.589
-
-dec21.sr.glm.fit7<-glm(formula = Bac_Species_Richness ~ Sulfide_microM, data=dec21.div)%>%
-  adjust_pvalue(method="bonferroni")
-## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
-# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(dec21.sr.glm.fit7)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
 #(Intercept)    0.0112379  0.0004723   23.80   <2e-16 ***
@@ -837,31 +968,31 @@ summary(apr22.div.glm.fit3)
 #(Intercept) 0.0113225  0.0004451  25.439   <2e-16 ***
 #Temp_DegC   0.0011947  0.0004861   2.458   0.0188 *
 
-apr22.div.glm.fit5<-glm(formula = Bac_Shannon_Diversity ~ Dissolved_OrganicMatter_RFU, data=apr22.div)%>%
+apr22.div.glm.fit4<-glm(formula = Bac_Shannon_Diversity ~ Dissolved_OrganicMatter_RFU, data=apr22.div)%>%
+  adjust_pvalue(method="bonferroni")
+## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
+# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
+summary(apr22.div.glm.fit4)
+#Coefficients:
+#  Estimate Std. Error t value Pr(>|t|)
+#(Intercept)                 0.0112493  0.0004708  23.896   <2e-16 ***
+#Dissolved_OrganicMatter_RFU 0.0004269  0.0004659   0.916    0.365
+
+apr22.div.glm.fit5<-glm(formula = Bac_Shannon_Diversity ~ Sulfate_milliM, data=apr22.div)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(apr22.div.glm.fit5)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)                 0.0112493  0.0004708  23.896   <2e-16 ***
-#Dissolved_OrganicMatter_RFU 0.0004269  0.0004659   0.916    0.365
+#(Intercept)     0.0112325  0.0004772  23.536   <2e-16 ***
+#Sulfate_milliM -0.0002664  0.0004893  -0.545    0.589
 
-apr22.div.glm.fit6<-glm(formula = Bac_Shannon_Diversity ~ Sulfate_milliM, data=apr22.div)%>%
+apr22.div.glm.fit6<-glm(formula = Bac_Shannon_Diversity ~ Sulfide_microM, data=apr22.div)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(apr22.div.glm.fit6)
-#Coefficients:
-#  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)     0.0112325  0.0004772  23.536   <2e-16 ***
-#Sulfate_milliM -0.0002664  0.0004893  -0.545    0.589
-
-apr22.div.glm.fit7<-glm(formula = Bac_Shannon_Diversity ~ Sulfide_microM, data=apr22.div)%>%
-  adjust_pvalue(method="bonferroni")
-## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
-# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(apr22.div.glm.fit7)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
 #(Intercept)    0.0112379  0.0004723   23.80   <2e-16 ***
@@ -929,31 +1060,31 @@ summary(apr22.sr.glm.fit3)
 #(Intercept) 0.0113225  0.0004451  25.439   <2e-16 ***
 #Temp_DegC   0.0011947  0.0004861   2.458   0.0188 *
 
-apr22.sr.glm.fit5<-glm(formula = Bac_Species_Richness ~ Dissolved_OrganicMatter_RFU, data=apr22.div)%>%
+apr22.sr.glm.fit4<-glm(formula = Bac_Species_Richness ~ Dissolved_OrganicMatter_RFU, data=apr22.div)%>%
+  adjust_pvalue(method="bonferroni")
+## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
+# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
+summary(apr22.sr.glm.fit4)
+#Coefficients:
+#  Estimate Std. Error t value Pr(>|t|)
+#(Intercept)                 0.0112493  0.0004708  23.896   <2e-16 ***
+#Dissolved_OrganicMatter_RFU 0.0004269  0.0004659   0.916    0.365
+
+apr22.sr.glm.fit5<-glm(formula = Bac_Species_Richness ~ Sulfate_milliM, data=apr22.div)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(apr22.sr.glm.fit5)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)                 0.0112493  0.0004708  23.896   <2e-16 ***
-#Dissolved_OrganicMatter_RFU 0.0004269  0.0004659   0.916    0.365
+#(Intercept)     0.0112325  0.0004772  23.536   <2e-16 ***
+#Sulfate_milliM -0.0002664  0.0004893  -0.545    0.589
 
-apr22.sr.glm.fit6<-glm(formula = Bac_Species_Richness ~ Sulfate_milliM, data=apr22.div)%>%
+apr22.sr.glm.fit6<-glm(formula = Bac_Species_Richness ~ Sulfide_microM, data=apr22.div)%>%
   adjust_pvalue(method="bonferroni")
 ## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(apr22.sr.glm.fit6)
-#Coefficients:
-#  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)     0.0112325  0.0004772  23.536   <2e-16 ***
-#Sulfate_milliM -0.0002664  0.0004893  -0.545    0.589
-
-apr22.sr.glm.fit7<-glm(formula = Bac_Species_Richness ~ Sulfide_microM, data=apr22.div)%>%
-  adjust_pvalue(method="bonferroni")
-## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
-# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(apr22.sr.glm.fit7)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
 #(Intercept)    0.0112379  0.0004723   23.80   <2e-16 ***
