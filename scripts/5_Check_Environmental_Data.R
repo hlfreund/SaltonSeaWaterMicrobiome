@@ -6,6 +6,7 @@ suppressPackageStartupMessages({ # load packages quietly
   library(phyloseq)
   library(ggplot2)
   library(vegan)
+  library(lme4)
   library(ggpubr)
   #library(scales)
   library(grid)
@@ -241,9 +242,11 @@ cor_mat.env1
 
 symnum(cor_mat.env1)
 
-corrplot.mixed(cor_mat.env1, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, number.cex=0.8,
+png('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_CorrPlot.png')
+crrplt1<-corrplot.mixed(cor_mat.env1, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, number.cex=0.8,
                diag='l',lower.col = 'black', cl.ratio = 0.2, tl.srt = 45)
 # env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
+dev.off()
 
 # DO %
 cor.test(meta_scaled$DO_Percent_Local, meta_scaled$ORP_mV, method="pearson") # ***
