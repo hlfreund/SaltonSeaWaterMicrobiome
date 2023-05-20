@@ -45,8 +45,8 @@ ko.cov.sum_table[1:4,1:4]
 head(mgm.clr.ars)
 
 # fixing some col names in meta_scaled
-colnames(meta_scaled)[which(names(meta_scaled) == "DO_Percent_Local")] <- "DO_Percent_Local"
-colnames(meta_scaled)[which(names(meta_scaled) == "Dissolved_Organic Matter_RFU")] <- "Dissolved_OrganicMatter_RFU"
+colnames(meta_scaled)[which(names(meta_scaled) == "Dissolved_Oxygen_Percent_Local")] <- "DO_Percent_Local"
+#colnames(meta_scaled)[which(names(meta_scaled) == "Dissolved_Organic Matter_RFU")] <- "Dissolved_OrganicMatter_RFU"
 
 # Before transformations (i.e., VST, CLR, etc) were done, the following was performed
 # featureCounts counted reads that mapped to genes
@@ -439,8 +439,8 @@ sulf.hm1<-ggplot(clr.sulf.all, aes(SampleID, KO_Function, fill=CLR_SumCovPerKO))
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8") + labs(title="Heatmap: Sulfur Functions in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO",fill="CLR Coverage Sums Per KO") +
   theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),
-        axis.text = element_text(size=12),axis.text.x = element_text(vjust=-0.00000000005,angle=45),legend.text = element_text(size=12),plot.title = element_text(size=17),
-        axis.ticks=element_line(size=0.4),panel.border=element_blank()) +
+        axis.text = element_text(size=12),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank()) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
 ggsave(sulf.hm1,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_heatmap1.png", width=18, height=13, dpi=600)
@@ -451,15 +451,15 @@ mean(clr.sulf.all$CLR_SumCovPerKO)
 median(clr.sulf.all$CLR_SumCovPerKO)
 min(clr.sulf.all$CLR_SumCovPerKO)
 
-sulf.hm2<-ggplot(clr.sulf.all[clr.sulf.all$CLR_SumCovPerKO>=0.955,], aes(SampleID, KO_Function, fill=CLR_SumCovPerKO)) +
+sulf.hm2<-ggplot(clr.sulf.all[clr.sulf.all$CLR_SumCovPerKO>=0.9552092,], aes(SampleID, KO_Function, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) + theme_classic() +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8") + labs(title="Heatmap: Sulfur Functions in Salton Seawater Metagenomes",subtitle="Only Includes Functions with CLR Summed Coverage > Mean",fill="CLR Coverage Sums Per KO") +
   theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),
-        axis.text = element_text(size=12),axis.text.x = element_text(vjust=-0.00000000005,angle=45),legend.text = element_text(size=12),plot.title = element_text(size=17),
+        axis.text = element_text(size=12),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17),
         axis.ticks=element_line(size=0.4),panel.border=element_blank()) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
-ggsave(sulf.hm2,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_heatmap2.png", width=18, height=13, dpi=600)
+ggsave(sulf.hm2,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_higher.cov_heatmap2.png", width=18, height=13, dpi=600)
 
 ## Arsenic Fxns
 ars.ko<-mgm.clr[,which(colnames(mgm.clr) %in% arsenic.fxns$KO_ID)]
@@ -495,11 +495,51 @@ ars.hm1<-ggplot(clr.ars.all, aes(SampleID, KO_Function, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8") + labs(title="Heatmap: Arsenic Functions in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO",fill="CLR Coverage Sums Per KO") +
   theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),
-        axis.text = element_text(size=12),axis.text.x = element_text(vjust=-0.00000000001,angle=45),legend.text = element_text(size=12),plot.title = element_text(size=17),
+        axis.text = element_text(size=12),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17),
         axis.ticks=element_line(size=0.4),panel.border=element_blank()) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
 ggsave(ars.hm1,filename = "figures/MGM_Figs/Arsenic_KOFxns_MGMs_heatmap1.png", width=18, height=15, dpi=600)
+
+## Selenium Fxns
+sel.ko<-mgm.clr[,which(colnames(mgm.clr) %in% selen.fxns$KO_ID)]
+sel.ko$SampleID<-rownames(sel.ko)
+sel.ko.melt<-melt(sel.ko, by="SampleID")
+colnames(sel.ko.melt)[which(names(sel.ko.melt) == "variable")] <- "KO_ID"
+colnames(sel.ko.melt)[which(names(sel.ko.melt) == "value")] <- "CLR_SumCovPerKO"
+sel.ko.melt #sanity check
+
+clr.sel.ko<-merge(sel.ko.melt,selen.fxns,by=c("KO_ID"))
+clr.cov.sum.sel.ko<-as.data.frame(dcast(clr.sel.ko, SampleID~KO_Function, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
+rownames(clr.cov.sum.sel.ko)<-clr.cov.sum.sel.ko$SampleID
+clr.cov.sum.sel.ko[1:4,1:4]
+
+# see max & mean of summed
+max(clr.cov.sum.sel.ko[,-1])
+mean(as.matrix(clr.cov.sum.sel.ko[,-1]))
+
+# first heat map of selenic KOs
+heatmap(as.matrix(clr.cov.sum.sel.ko[,-1]), scale = "none")
+
+colSums(clr.cov.sum.sel.ko[,-1])
+clr.cov.sum.sel.ko_2 <- clr.cov.sum.sel.ko[,which(colSums(clr.cov.sum.sel.ko[,-1])>10)]
+
+heatmap(as.matrix(clr.cov.sum.sel.ko_2[,-1]), scale = "none")
+
+# prep for ggplot2 heatmap
+clr.sel.ko[1:4,]
+clr.sel.all<-merge(clr.sel.ko,meta_scaled,by="SampleID")
+clr.sel.all$SampleID = factor(clr.sel.all$SampleID, levels=unique(clr.sel.all$SampleID[order(clr.sel.all$SampDate,clr.sel.all$Depth_m)]), ordered=TRUE)
+
+sel.hm1<-ggplot(clr.sel.all, aes(SampleID, KO_Function, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8") + labs(title="Heatmap: Selenium Functions in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO",fill="CLR Coverage Sums Per KO") +
+  theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),
+        axis.text = element_text(size=12),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17),
+        axis.ticks=element_line(size=0.4),panel.border=element_blank()) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
+
+ggsave(sel.hm1,filename = "figures/MGM_Figs/Selenium_KOFxns_MGMs_heatmap1.png", width=18, height=15, dpi=600)
 
 ## Osmoprotectant Fxns
 osmo.ko<-mgm.clr[,which(colnames(mgm.clr) %in% osmo.fxns$KO_ID)]
@@ -535,11 +575,51 @@ osmo.hm1<-ggplot(clr.osmo.all, aes(SampleID, KO_Function, fill=CLR_SumCovPerKO))
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8") + labs(title="Heatmap: Osmoprotectant Functions in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO",fill="CLR Coverage Sums Per KO") +
   theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),
-        axis.text = element_text(size=12),axis.text.x = element_text(vjust=-0.1,angle=45),legend.text = element_text(size=12),plot.title = element_text(size=17),
+        axis.text = element_text(size=12),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17),
         axis.ticks=element_line(size=0.4),panel.border=element_blank()) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
 ggsave(osmo.hm1,filename = "figures/MGM_Figs/OsmoProtectant_KOFxns_MGMs_heatmap1.png", width=18, height=12, dpi=600)
+
+## Metal Resistance/Tolerance Fxns
+met.ko<-mgm.clr[,which(colnames(mgm.clr) %in% metal.fxns$KO_ID)]
+met.ko$SampleID<-rownames(met.ko)
+met.ko.melt<-melt(met.ko, by="SampleID")
+colnames(met.ko.melt)[which(names(met.ko.melt) == "variable")] <- "KO_ID"
+colnames(met.ko.melt)[which(names(met.ko.melt) == "value")] <- "CLR_SumCovPerKO"
+met.ko.melt #sanity check
+
+clr.met.ko<-merge(met.ko.melt,metal.fxns,by=c("KO_ID"))
+clr.cov.sum.met.ko<-as.data.frame(dcast(clr.met.ko, SampleID~KO_Function, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
+rownames(clr.cov.sum.met.ko)<-clr.cov.sum.met.ko$SampleID
+clr.cov.sum.met.ko[1:4,1:4]
+
+# see max & mean of summed
+max(clr.cov.sum.met.ko[,-1])
+mean(as.matrix(clr.cov.sum.met.ko[,-1]))
+
+# first heat map of metalic KOs
+heatmap(as.matrix(clr.cov.sum.met.ko[,-1]), scale = "none")
+
+colSums(clr.cov.sum.met.ko[,-1])
+clr.cov.sum.met.ko_2 <- clr.cov.sum.met.ko[,which(colSums(clr.cov.sum.met.ko[,-1])>10)]
+
+#heatmap(as.matrix(clr.cov.sum.met.ko_2[,-1]), scale = "none")
+
+# prep for ggplot2 heatmap
+clr.met.ko[1:4,]
+clr.met.all<-merge(clr.met.ko,meta_scaled,by="SampleID")
+clr.met.all$SampleID = factor(clr.met.all$SampleID, levels=unique(clr.met.all$SampleID[order(clr.met.all$SampDate,clr.met.all$Depth_m)]), ordered=TRUE)
+
+met.hm1<-ggplot(clr.met.all, aes(SampleID, KO_Function, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8") + labs(title="Heatmap: Metal Resistance & Tolerance Functions in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO",fill="CLR Coverage Sums Per KO") +
+  theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),
+        axis.text = element_text(size=12),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17),
+        axis.ticks=element_line(size=0.4),panel.border=element_blank()) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
+
+ggsave(met.hm1,filename = "figures/MGM_Figs/Metal_ResistToler_KOFxns_MGMs_heatmap1.png", width=18, height=15, dpi=600)
 
 #### Homogeneity of Variance (CLR data only)- Composition by Groups ####
 ## betadisper to look at homogeneity of group dispersions (aka variance) when considering multiple variables
@@ -619,6 +699,84 @@ dev.off()
 ## Significant differences in homogeneities can be tested using either parametric or permutational tests,
 ##and parametric post hoc contrasts can also be investigated:
 
+#### Homogeneity of Variance for Specific Fxns - Composition by Groups ####
+## betadisper to look at homogeneity of group dispersions (aka variance) when considering multiple variables
+# multivariate analogue to Levene's test of homogeneity of variances
+# program finds spatial median or centroid of the group, & compare distances of group to centroid/spatial median via ANOVA
+
+#While PERMANOVA tests differences in group means (analogous to MANOVA),
+## a related test called PERMDISP can be used to evaluate homogeneity of group dispersion
+#(analogous to Levene's test for equal variances). The vegan function for this test is “betadisper”:
+## * need a distance matrix!
+
+mgm.clr[1:4,1:4] # sample IDs are rows, genes are columns
+clr.cov.sum.sulf.ko[1:4,1:4] # sanity check
+
+# check rownames of CLR & VST transformed feature count data & metadata
+rownames(meta_scaled) %in% rownames(clr.cov.sum.sulf.ko) #mgm.clr was used to make the distance matrix b.euc_dist
+
+# calculate our Euclidean distance matrix using CLR data
+sulf.euc.clr_dist <- dist(clr.cov.sum.sulf.ko[,-1], method = "euclidean")
+
+## betadisper to look at within group variance
+# first by compare dispersions by sampling date
+sulf.disper1<-betadisper(sulf.euc.clr_dist, mgm_meta$SampDate)
+sulf.disper1
+
+permutest(sulf.disper1, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
+#Pairwise comparisons:
+#  (Observed p-value below diagonal, permuted p-value above diagonal)
+#              August.2021 December.2021 April.2022
+#August.2021                     0.30400      0.470
+#December.2021     0.27483                    0.874
+#April.2022        0.44830       0.86299
+
+anova(sulf.disper1) # p = 0.4965 --> accept the Null H, spatial medians ARE NOT significantly difference across sample dates
+
+TukeyHSD(sulf.disper1) # tells us which Sample Dates/category's dispersion MEANS are significantly different than each other
+
+#                                diff       lwr       upr     p adj
+# December.2021-August.2021 -41.597964 -151.7919  68.59594 0.5171715
+# April.2022-August.2021    -35.900953 -146.0949  74.29295 0.6036850
+# April.2022-December.2021    5.697011 -104.4969 115.89091 0.9862550
+
+# Visualize dispersions
+png('figures/MGM_Figs/SSW_MGM_pcoa_CLR_SummedCoverage_perKO_SulfurOnly_betadispersion_sampledate.png',width = 700, height = 600, res=100)
+plot(sulf.disper1,main = "Centroids and Dispersion based on Aitchison Distance (Sulfur CLR Data)", col=colorset1$SampDate_Color)
+dev.off()
+
+png('figures/MGM_Figs/SSW_MGM_boxplot_CLR_SummedCoverage_perKO_SulfurOnly_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
+boxplot(sulf.disper1,xlab="Sample Collection Date", main = "Distance to Centroid by Category (Sulfur CLR Data)", sub="Based on Aitchison Distance", col=colorset1$SampDate_Color)
+dev.off()
+
+# What about between sampling depths?
+sulf.disper2<-betadisper(sulf.euc.clr_dist, mgm_meta$Depth_m)
+sulf.disper2
+
+permutest(sulf.disper2, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
+
+anova(sulf.disper2) # p = 0.313 --> accept the Null H, spatial medians are NOT significantly difference across sample dates
+
+TukeyHSD(sulf.disper2) # tells us which Sample Dates/category's dispersion MEANS are significantly different than each other
+#         diff       lwr      upr     p adj
+# 5-0   36.65950 -31.13395 104.45295 0.2942902
+# 10-0  12.78902 -55.00443  80.58247 0.8360255
+# 10-5 -23.87048 -91.66393  43.92296 0.5590104
+
+colfunc <- colorRampPalette(c("red", "blue"))
+colfunc(3)
+
+# Visualize dispersions
+png('figures/MGM_Figs/ssw_mgm_pcoa_CLR_SummedCoverage_per_KO_SulfOnly_betadispersion_depth.png',width = 700, height = 600, res=100)
+plot(sulf.disper2,main = "Centroids and Dispersion based on Aitchison Distance (Sulfur CLR Data)", col=colfunc(3))
+dev.off()
+
+png('figures/MGM_Figs/ssw_mgm_boxplot_CLR_SummedCoverage_per_KO_SulfOnly_centroid_distance_depth.png',width = 700, height = 600, res=100)
+boxplot(sulf.disper2,xlab="Sample Collection Depth", main = "Distance to Centroid by Category (Sulfur CLR Data)", sub="Based on Aitchison Distance", col=colfunc(3))
+dev.off()
+## Significant differences in homogeneities can be tested using either parametric or permutational tests,
+##and parametric post hoc contrasts can also be investigated:
+
 #### PERMANOVAs to Env Variables Across Groups ####
 
 ## The currently preferred analysis for evaluating differences among groups is PERMANOVA.
@@ -635,120 +793,43 @@ help(adonis)
 ## An advantage of adonis2 is that we can test for overall model fit, setting by=NULL, or by individual terms (w/ by="terms")
 ## w/ distance matrices - The adonis2 tests are identical to anova.cca of dbrda. With Euclidean distances, the tests are also identical to anova.cca of rda.
 
+# drop SampleID column from mgm.clr
+mgm.clr<-mgm.clr[,!names(mgm.clr) %in% c("SampleID")]
+mgm.clr[1:4,1:4]
+
 # First make sure your data frames you're comparing are in the same exact order!!
 rownames(mgm.clr) %in% rownames(meta_scaled)
+
 meta_scaled=meta_scaled[rownames(mgm.clr),] ## reorder metadata to match order of CLR data
 perm <- with(meta_scaled, how(nperm = 1000, blocks = SampDate))
 
-pnova1<-adonis2(mgm.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova1<-adonis2(mgm.clr ~ DO_Percent_Local*ORP_mV*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova1
 ## none are significant
 
-adonis2(mgm.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+adonis2(mgm.clr ~ DO_Percent_Local*ORP_mV*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 #         Df SumOfSqs     R2    F Pr(>F)
 #Model    23    34412 0.73114 1.8918 0.4825
 #Residual 16    12654 0.26886
 #Total    39    47066 1.00000
 
-# remove categorical variables
-pnova2<-adonis2(mgm.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova2<-adonis2(mgm.clr ~ DO_Percent_Local*ORP_mV*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova2
 # nothing significant
 
-adonis2(mgm.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
-#         Df SumOfSqs      R2      F   Pr(>F)
-#Model    23    34412 0.73114 1.8918 0.4615
-#Residual 16    12654 0.26886
-#Total    39    47066 1.00000
+adonis2(mgm.clr ~ DO_Percent_Local*ORP_mV*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 
-pnova3<-adonis2(mgm.clr ~ DO_Percent_Local*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova3<-adonis2(mgm.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova3
-#                                   Df SumOfSqs      R2       F   Pr(>F)
-#Sulfide_microM                                               1     1165 0.02474  1.4725 0.006993 **
-#Temp_DegC:Dissolved_OrganicMatter_RFU                        1     1349 0.02865  1.7052 0.045954 *
-#DO_Percent_Local:Sulfide_microM                              1      944 0.02006  1.1935 0.061938 .
 
 adonis2(mgm.clr ~ DO_Percent_Local*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
-#         Df SumOfSqs      R2      F   Pr(>F)
-#Model    23    34412 0.73114 1.8918 0.4775
-#Residual 16    12654 0.26886
-#Total    39    47066 1.00000
 
-pnova4<-adonis2(mgm.clr ~ DO_Percent_Local*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova4<-adonis2(mgm.clr ~ Dissolved_OrganicMatter_RFU*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova4
-#                                         Df SumOfSqs      R2       F   Pr(>F)
-#Sulfide_microM                           1     1122 0.02383  1.5127 0.004995 **
-#Temp_DegC:Dissolved_OrganicMatter_RFU    1     1256 0.02669  1.6944 0.052947 .
+# nothing
 
-adonis2(mgm.clr ~ DO_Percent_Local*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
-#         Df SumOfSqs      R2      F   Pr(>F)
-#Model   15    29270 0.62189 2.6316 0.1339
-#Residual 24    17796 0.37811
-#Total    39    47066 1.00000
+adonis2(mgm.clr ~ Dissolved_OrganicMatter_RFU*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 
-pnova4b<-adonis2(mgm.clr ~ Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-pnova4b
-#                                   Df SumOfSqs      R2       F   Pr(>F)
-#Sulfide_microM                                        1     1355 0.02880 1.7221 0.003996 **
-#Dissolved_OrganicMatter_RFU:Temp_DegC                 1     3882 0.08249 4.9329 0.055944 .
-
-pnova4c<-adonis2(mgm.clr ~ Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-pnova4c
-#                                   Df SumOfSqs      R2       F   Pr(>F)
-#Sulfide_microM                                        1     1355 0.02880 1.7221 0.003996 **
-#Dissolved_OrganicMatter_RFU:Temp_DegC                 1     3882 0.08249 4.9329 0.047952 *
-
-pnova5<-adonis2(mgm.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-pnova5
-#                                               Df SumOfSqs      R2       F   Pr(>F)
-#ORP_mV                                         1     4239 0.09006 5.5903 0.03397 *
-#Dissolved_OrganicMatter_RFU:Temp_DegC          1     1545 0.03283 2.0378 0.05295 .
-#ORP_mV:Dissolved_OrganicMatter_RFU:Temp_DegC   1     1519 0.03227 2.0033 0.06993 .
-
-adonis2(mgm.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
-#         Df SumOfSqs      R2      F   Pr(>F)
-#Model    15    28868 0.61336 2.5383 0.1748
-#Residual 24    18197 0.38664
-#Total    39    47066 1.00000
-
-pnova6a<-adonis2(mgm.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-pnova6a
-#                                             Df SumOfSqs      R2      F   Pr(>F)
-#ORP_mV                                        1     4239 0.09006 5.7372 0.003996 **
-#Dissolved_OrganicMatter_RFU                   1     5542 0.11776 7.5017 0.044955 *
-#Temp_DegC                                     1     5995 0.12736 8.1137 0.093906 .
-#ORP_mV:Dissolved_OrganicMatter_RFU            1     1261 0.02679 1.7069 0.267732
-#ORP_mV:Temp_DegC                              1     3457 0.07345 4.6791 0.167832
-#Dissolved_OrganicMatter_RFU:Temp_DegC         1     1521 0.03231 2.0584 0.040959 *
-#ORP_mV:Dissolved_OrganicMatter_RFU:Temp_DegC  1     1409 0.02994 1.9075 0.059940 .
-
-adonis2(mgm.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm) #significant
-#         Df SumOfSqs      R2      F  Pr(>F)
-#Model     7    23424 0.49768 4.5292 0.01698 *
-#Residual 32    23642 0.50232
-#Total    39    47066 1.00000
-
-pnova6b<-adonis2(mgm.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-pnova6b # only ORP is significant
-adonis2(mgm.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm) # significant
-# ^ model explains 23.15% of R^2 aka variation
-
-pnova6c<-adonis2(mgm.clr ~ ORP_mV*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-pnova6c  # only ORP is significant
-adonis2(mgm.clr ~ ORP_mV*Temp_DegC,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm) # insignificant
-# ^ model explains 37.8% of R^2 aka variation
-
-pnova6d<-adonis2(mgm.clr ~ ORP_mV*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-pnova6d # only ORP is significant
-adonis2(mgm.clr ~ ORP_mV*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm) #insignificant
-# ^ model explains 16.14% of R^2 aka variation
-
-## BEST MODEL as of 5/11/23: explains 49.77% of variation in composition, p=0.023
-adonis2(mgm.clr ~ ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
-#         Df SumOfSqs      R2      F  Pr(>F)
-#Model    7    23424 0.49768 4.5292 0.02298 *
-#Residual 32    23642 0.50232
-#Total    39    47066 1.00000
 
 ### SELF REMINDER FOR R^2
 ### Coefficient of Determination, denoted R2 or r2
@@ -757,6 +838,73 @@ adonis2(mgm.clr ~ ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU,data=meta_scaled,
 ### Pseudo F stat for PERMANOVA
 ### pseudo F-ratio: It compares the total sum of squared dissimilarities (or ranked dissimilarities) among objects belonging to different groups to that of objects belonging to the same group.
 ### Larger F-ratios indicate more pronounced group separation, however, the significance of this ratio is usually of more interest than its magnitude.
+
+#### PERMANOVAs to Env Variables Across Groups - Specific Fxns ####
+
+## The currently preferred analysis for evaluating differences among groups is PERMANOVA.
+## This analysis partitions sums of squares using dissimilarities,
+##  evaluating differences in the centroids of groups in multivariate space.
+##  The vegan functions “adonis” and “adonis2” are used to compute PERMANOVA in R.
+
+help(adonis)
+
+## can specify dataframes for analysis, or we can alternatively specify a dissimilarity matrix:
+
+#Other advantages of using PERMANOVA are that we can test for interactions between predictor variables,
+## and we can use both categorical and continuous predictor variables.
+## An advantage of adonis2 is that we can test for overall model fit, setting by=NULL, or by individual terms (w/ by="terms")
+## w/ distance matrices - The adonis2 tests are identical to anova.cca of dbrda. With Euclidean distances, the tests are also identical to anova.cca of rda.
+
+# drop SampleID column from mgm.clr
+clr.cov.sum.sulf.ko[1:4,1:4]
+
+# First make sure your data frames you're comparing are in the same exact order!!
+rownames(clr.cov.sum.sulf.ko) %in% rownames(meta_scaled)
+
+meta_scaled=meta_scaled[rownames(clr.cov.sum.sulf.ko),] ## reorder metadata to match order of CLR data
+perm <- with(meta_scaled, how(nperm = 1000, blocks = SampDate))
+
+s.pnov0<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ Depth_m,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+s.pnov0
+
+adonis2(clr.cov.sum.sulf.ko[,-1] ~ Depth_m,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+
+s.pnov1<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ ORP_mV*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+s.pnov1
+## none are significant
+
+adonis2(clr.cov.sum.sulf.ko[,-1] ~ ORP_mV*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+#         Df SumOfSqs     R2    F Pr(>F)
+#Model    23    34412 0.73114 1.8918 0.4825
+#Residual 16    12654 0.26886
+#Total    39    47066 1.00000
+
+s.pnov2<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+s.pnov2
+# nothing significant
+
+adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+
+s.pnov3<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+s.pnov3
+
+adonis2(clr.cov.sum.sulf.ko[,-1] ~ Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+
+s.pnov4<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU*Sulfate_milliM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+s.pnov4
+# nothing
+
+adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU*Sulfate_milliM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+
+
+### SELF REMINDER FOR R^2
+### Coefficient of Determination, denoted R2 or r2
+### is the proportion of the variance in the dependent variable that is predictable from the independent variable(s)
+
+### Pseudo F stat for PERMANOVA
+### pseudo F-ratio: It compares the total sum of squared dissimilarities (or ranked dissimilarities) among objects belonging to different groups to that of objects belonging to the same group.
+### Larger F-ratios indicate more pronounced group separation, however, the significance of this ratio is usually of more interest than its magnitude.
+
 
 #### Using Shapiro-Wilk test for Normality ####
 
