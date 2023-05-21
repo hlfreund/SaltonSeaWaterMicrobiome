@@ -952,7 +952,7 @@ summary(rda.all)
 
 # how much variation does our model explain?
 ## reminder: R^2 = % of variation in dependent variable explained by model
-RsquareAdj(rda.all) # 19.14%
+RsquareAdj(rda.all) # 49.56%
 ## ^^ use this b/c chance correlations can inflate R^2
 
 # we can then test for significance of the model by permutation
@@ -982,7 +982,7 @@ arrows.all$Label[(arrows.all$Label) == "DO_Percent_Local"] <- "DO %"
 arrows.all$Label[(arrows.all$Label) == "Temp_DegC"] <- "Temp (C)"
 
 rda.sum.all$cont #cumulative proportion of variance per axis
-# RDA1=15.2%, RDA2=5.55%
+# RDA1=30.8%, RDA2=23.65%
 
 rda.plot1<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(size=2) +
   geom_segment(data = arrows.all,mapping = aes(x = 0, y = 0, xend = RDA1, yend = RDA2),lineend = "round", # See available arrow types in example above
@@ -995,29 +995,29 @@ rda.plot1<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(size=2) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1))
 
 rda.plot2<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate),size=4) +
-  geom_segment(data = arrows.all,mapping = aes(x = 0, y = 0, xend = RDA1*12, yend = RDA2*12),lineend = "round", # See available arrow types in example above
+  geom_segment(data = arrows.all,mapping = aes(x = 0, y = 0, xend = RDA1*5.5, yend = RDA2*5.5),lineend = "round", # See available arrow types in example above
                linejoin = "round",
                size = 0.8,
                arrow = arrow(length = unit(0.15, "inches")),
                colour = "black") +
-  geom_label(data = arrows.all,aes(label = Label, x = RDA1*13.3, y = RDA2*13.3, fontface="bold"), size=4)+
-  coord_fixed(ratio = 1, xlim = c(-12,12), ylim = c(-12,12)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
+  geom_label(data = arrows.all,aes(label = Label, x = RDA1*7, y = RDA2*7, fontface="bold"), size=4)+
+  coord_fixed(ratio = 1, xlim = c(-8,8), ylim = c(-8,8)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
   scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
   labs(title="RDA: Bacteria/Archaea in Salton Seawater",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
   xlab("RDA1 [30.80%]") + ylab("RDA2 [23.65%]")
 
-ggsave(rda.plot2,filename = "figures/EnvDrivers/SSW_16S_RDA_AllData.png", width=15, height=15, dpi=600)
+ggsave(rda.plot2,filename = "figures/EnvDrivers/SSW_16S_RDA_AllData.png", width=10, height=10, dpi=600)
 
 
 rda.plot3<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate),size=5) +
-  geom_segment(data = arrows.all,mapping = aes(x = 0, y = 0, xend = RDA1*12, yend = RDA2*12),lineend = "round", # See available arrow types in example above
+  geom_segment(data = arrows.all,mapping = aes(x = 0, y = 0, xend = RDA1*6, yend = RDA2*6),lineend = "round", # See available arrow types in example above
                linejoin = "round",
                size = 1,
                arrow = arrow(length = unit(0.15, "inches")),
                colour = "black") +
-  geom_label(data = arrows.all,aes(label = Label, x = RDA1*13.3, y = RDA2*13.3, fontface="bold"), size=5)+
-  coord_fixed(ratio = 1, xlim = c(-12,12), ylim = c(-12,12)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
+  geom_label(data = arrows.all,aes(label = Label, x = RDA1*8, y = RDA2*8, fontface="bold"), size=5)+
+  coord_fixed(ratio = 1, xlim = c(-10,10), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
   scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
   labs(title="RDA: Bacteria/Archaea in Salton Seawater",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
@@ -1076,7 +1076,7 @@ rda.plot6<-ggplot(rda.axes.a21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=
                size = 0.8,
                arrow = arrow(length = unit(0.15, "inches")),
                colour = "black") +
-  geom_label(data = arrows.a21,aes(label = Label, x = RDA1*9, y = RDA2*9, fontface="bold"), size=4)+
+  geom_label(data = arrows.a21,aes(label = Label, x = RDA1*9, y = RDA2*9.5, fontface="bold"), size=4)+
   coord_fixed(ratio = 1, xlim = c(-10,10), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
   labs(title="RDA: Bacteria/Archaea in Salton Seawater, August 2021",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
@@ -1090,7 +1090,7 @@ rda.plot6b<-ggplot(rda.axes.a21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color
                size = 1,
                arrow = arrow(length = unit(0.15, "inches")),
                colour = "black") +
-  geom_label(data = arrows.a21,aes(label = Label, x = RDA1*9, y = RDA2*9.12, fontface="bold"), size=5)+
+  geom_label(data = arrows.a21,aes(label = Label, x = RDA1*9, y = RDA2*9.5, fontface="bold"), size=5)+
   coord_fixed(ratio = 1, xlim = c(-10,10), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
   labs(title="RDA: Bacteria/Archaea in Salton Seawater, August 2021",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
@@ -1110,7 +1110,7 @@ summary(rda.dec2021)
 
 # how much variation does our model explain?
 ## reminder: R^2 = % of variation in dependent variable explained by model
-RsquareAdj(rda.dec2021) # 16.33%
+RsquareAdj(rda.dec2021) # 0.0532124
 ## ^^ use this b/c chance correlations can inflate R^2
 
 png('figures/EnvDrivers/SSW_Dec21_autoplot_rda_example.png',width = 700, height = 600, res=100)
@@ -1128,8 +1128,8 @@ rda.axes.d21<-data.frame(RDA1=rda.sum.d21$sites[,1], RDA2=rda.sum.d21$sites[,2],
 
 # create data frame w/ RDA axes for variables
 arrows.d21<-data.frame(RDA1=rda.sum.d21$biplot[,1], RDA2=rda.sum.d21$biplot[,2], Label=rownames(rda.sum.d21$biplot))
-#arrows.d21$Label[(arrows.d21$Label) == "ORP_mV"] <- "ORP (mV)"
-arrows.d21$Label[(arrows.d21$Label) == "Dissolved_OrganicMatter_RFU"] <- "DOM (RFU)"
+arrows.d21$Label[(arrows.d21$Label) == "ORP_mV"] <- "ORP (mV)"
+arrows.d21$Label[(arrows.d21$Label) == "Sulfate_milliM"] <- "Sulfate (milliM)"
 #arrows.d21$Label[(arrows.d21$Label) == "DO_Percent_Local"] <- "DO%"
 arrows.d21$Label[(arrows.d21$Label) == "Temp_DegC"] <- "Temp (C)"
 
@@ -1149,8 +1149,8 @@ rda.plot8<-ggplot(rda.axes.d21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=
                size = 0.8,
                arrow = arrow(length = unit(0.15, "inches")),
                colour = "black") +
-  geom_label(data = arrows.d21,aes(label = Label, x = RDA1*10, y = RDA2*10, fontface="bold"), size=4)+
-  coord_fixed(ratio = 1, xlim = c(-10,10), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
+  geom_label(data = arrows.d21,aes(label = Label, x = RDA1*10.5, y = RDA2*10, fontface="bold"), size=4)+
+  coord_fixed(ratio = 1, xlim = c(-10,11), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
   labs(title="RDA: Bacteria/Archaea in Salton Seawater",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
   xlab("RDA1 [18.19%]") + ylab("RDA2 [14.18%]")
@@ -1163,8 +1163,8 @@ rda.plot8b<-ggplot(rda.axes.d21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color
                size = 1,
                arrow = arrow(length = unit(0.15, "inches")),
                colour = "black") +
-  geom_label(data = arrows.d21,aes(label = Label, x = RDA1*10, y = RDA2*10, fontface="bold"), size=5)+
-  coord_fixed(ratio = 1, xlim = c(-10,10), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
+  geom_label(data = arrows.d21,aes(label = Label, x = RDA1*10.5, y = RDA2*10.5, fontface="bold"), size=5)+
+  coord_fixed(ratio = 1, xlim = c(-10,11), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
   labs(title="RDA: Bacteria/Archaea in Salton Seawater, December 2021",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
   xlab("RDA1 [18.19%]") + ylab("RDA2 [14.18%]")
@@ -1180,6 +1180,11 @@ plot(rda.apr2022, scaling = 2)
 
 # check summary of RDA
 summary(rda.apr2022)
+
+# how much variation does our model explain?
+## reminder: R^2 = % of variation in dependent variable explained by model
+RsquareAdj(rda.apr2022) # 0.02314467
+## ^^ use this b/c chance correlations can inflate R^2
 
 png('figures/EnvDrivers/SSW_Apr22_autoplot_rda_example.png',width = 700, height = 600, res=100)
 autoplot(rda.apr2022, arrows = TRUE,data = rda.apr2022 ,layers=c("biplot","sites"),label = FALSE, label.size = 3, shape = FALSE, loadings = TRUE, loadings.colour = 'blue', loadings.label = TRUE, loadings.label.size = 3, scale= 0)+theme_classic()
@@ -1212,12 +1217,12 @@ rda.plot9<-ggplot(rda.axes.a22, aes(x = RDA1, y = RDA2)) + geom_point(size=2) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1))
 
 rda.plot10<-ggplot(rda.axes.a22, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m))),size=3) +
-  geom_segment(data = arrows.a22,mapping = aes(x = 0, y = 0, xend = RDA1*17, yend = RDA2*17),lineend = "round", # See available arrow types in example above
+  geom_segment(data = arrows.a22,mapping = aes(x = 0, y = 0, xend = RDA1*8, yend = RDA2*8),lineend = "round", # See available arrow types in example above
                linejoin = "round",
                size = 0.8,
                arrow = arrow(length = unit(0.15, "inches")),
                colour = "black") +
-  geom_label(data = arrows.a22,aes(label = Label, x = RDA1*19, y = RDA2*19, fontface="bold"), size=4)+
+  geom_label(data = arrows.a22,aes(label = Label, x = RDA1*9, y = RDA2*9, fontface="bold"), size=4)+
   coord_fixed(ratio = 1, xlim = c(-10,10), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
   labs(title="RDA: Bacteria/Archaea in Salton Seawater, April 2022",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
@@ -1231,7 +1236,7 @@ rda.plot10b<-ggplot(rda.axes.a22, aes(x = RDA1, y = RDA2)) + geom_point(aes(colo
                size = 1,
                arrow = arrow(length = unit(0.15, "inches")),
                colour = "black") +
-  geom_label(data = arrows.d21,aes(label = Label, x = RDA1*10, y = RDA2*10, fontface="bold"), size=5)+
+  geom_label(data = arrows.a22,aes(label = Label, x = RDA1*10, y = RDA2*10, fontface="bold"), size=5)+
   coord_fixed(ratio = 1, xlim = c(-10,10), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
   labs(title="RDA: Bacteria/Archaea in Salton Seawater, December 2021",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
@@ -1239,3 +1244,6 @@ rda.plot10b<-ggplot(rda.axes.a22, aes(x = RDA1, y = RDA2)) + geom_point(aes(colo
 
 ggsave(rda.plot10b,filename = "figures/EnvDrivers/SSW_16S_RDA_Dec2021_bigger.png", width=15, height=15, dpi=600)
 
+#### Save Progress ####
+
+save.image("data/SSW_Amplicon_EnvDriver.Rdata")
