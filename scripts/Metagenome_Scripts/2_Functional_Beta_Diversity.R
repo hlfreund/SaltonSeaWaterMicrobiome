@@ -38,6 +38,7 @@ suppressPackageStartupMessages({ # load packages quietly
 
 #### Load Data ####
 load("data/Metagenomes/Analysis/mgm_analysis.Rdata") # load Rdata to global env
+load("data/Metagenomes/Analysis/MGM_Contig_BetaDiv.Rdata") # load Rdata to global env
 
 head(meta_scaled)
 arsenic.fxns[1:4,1:4]
@@ -123,9 +124,9 @@ head(mgm.pcoa.mr$values) # pull out Relative (Relative_eig) variation % to add t
 
 # create PCoA ggplot fig
 pcoa3<-ggplot(mgm.pcoa.mr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
-  labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using Median-Ratio Transformed Feature Data",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Type")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using Median-Ratio Transformed Feature Data",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Date")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
-  scale_color_manual(name ="Sample Type",values=unique(mgm.pcoa.mr.meta$SampDate_Color[order(mgm.pcoa.mr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  scale_color_manual(name ="Sample Date",values=unique(mgm.pcoa.mr.meta$SampDate_Color[order(mgm.pcoa.mr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [33.04%]") + ylab("PC2 [29.24%]")
 
 ggsave(pcoa3,filename = "figures/MGM_Figs/SSW_MGM_pcoa_MR_sampdate.png", width=12, height=10, dpi=600)
@@ -256,9 +257,9 @@ mgm.pcoa.vst$values # pull out Relative (Relative_eig) variation % to add to axe
 
 # create PCoA ggplot fig
 pcoa3<-ggplot(mgm.pcoa.vst.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
-  labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using Variance Stabilization Transformed Feature Data",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Type")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using Variance Stabilization Transformed Feature Data",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Date")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
-  scale_color_manual(name ="Sample Type",values=unique(mgm.pcoa.vst.meta$SampDate_Color[order(mgm.pcoa.vst.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  scale_color_manual(name ="Sample Date",values=unique(mgm.pcoa.vst.meta$SampDate_Color[order(mgm.pcoa.vst.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [25.06%]") + ylab("PC2 [21.98%]")
 
 ggsave(pcoa3,filename = "figures/MGM_Figs/SSW_MGM_pcoa_VST_sampdate.png", width=12, height=10, dpi=600)
@@ -381,9 +382,9 @@ mgm.pcoa.clr$values # pull out Relative (Relative_eig) variation % to add to axe
 
 # create PCoA ggplot fig
 pcoa5<-ggplot(mgm.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
-  labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using CLR Transformed, Summed Gene Coverage per KO Function",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Type")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using CLR Transformed, Summed Gene Coverage per KO Function",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Date")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
-  scale_color_manual(name ="Sample Type",values=unique(mgm.pcoa.clr.meta$SampDate_Color[order(mgm.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  scale_color_manual(name ="Sample Date",values=unique(mgm.pcoa.clr.meta$SampDate_Color[order(mgm.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [34.06%]") + ylab("PC2 [22.48%]")
 
 ggsave(pcoa5,filename = "figures/MGM_Figs/SSW_MGM_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
@@ -397,8 +398,6 @@ pcoa6<-ggplot(mgm.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
   xlab("PC1 [34.06%]") + ylab("PC2 [22.48%]")
 
 ggsave(pcoa6,filename = "figures/MGM_Figs/SSW_MGM_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
-
-
 
 #### Traits of Interest - Heat Maps ####
 ## heatmaps of traits of interest
@@ -620,6 +619,187 @@ met.hm1<-ggplot(clr.met.all, aes(SampleID, KO_Function, fill=CLR_SumCovPerKO)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
 ggsave(met.hm1,filename = "figures/MGM_Figs/Metal_ResistToler_KOFxns_MGMs_heatmap1.png", width=18, height=15, dpi=600)
+
+#### Sulfur Metabolism PCoA ####
+## PCOA with CLR transformed data first
+# calculate our Euclidean distance matrix using CLR data
+sulf.ko<-mgm.clr[,which(colnames(mgm.clr) %in% sulfur.fxns$KO_ID)]
+sulf.ko[1:4,1:4]
+
+sulf.euc.clr_dist <- dist(sulf.ko, method = "euclidean")
+
+# creating our hierarcical clustering dendrogram
+sulf.euc.clr_clust <- hclust(sulf.euc.clr_dist, method="ward.D2")
+
+# let's make it a little nicer...
+sulf.euc.clr_dend <- as.dendrogram(sulf.euc.clr_clust, hang=0.2)
+sulf.dend_cols <- as.character(meta_scaled$SampDate_Color[order.dendrogram(sulf.euc.clr_dend)])
+labels_colors(sulf.euc.clr_dend) <- sulf.dend_cols
+
+plot(sulf.euc.clr_dend, ylab="CLR Euclidean Distance",cex = 0.5) + title(main = "Bacteria/Archaea Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 3)
+legend("topright",legend = c("August 2021","December 2021","April 2022"),cex=.8,col = c("#ef781c","#03045e","#059c3f"),pch = 15, bty = "n")
+# Control is dark blue ("#218380"), #Alternaria is light blue ("#73d2de")
+dev.off()
+
+# let's use our Euclidean distance matrix from before
+sulf.pcoa.clr <- pcoa(sulf.euc.clr_dist) # pcoa of euclidean distance matrix = PCA of euclidean distance matrix
+##save.image("data/ssw_clr.euc.dist1_3.7.23.Rdata")
+
+# The proportion of variances explained is in its element values$Relative_eig
+sulf.pcoa.clr$values
+
+# extract principal coordinates
+sulf.pcoa.clr.vectors<-data.frame(sulf.pcoa.clr$vectors)
+sulf.pcoa.clr.vectors$SampleID<-rownames(sulf.pcoa.clr$vectors)
+
+# merge pcoa coordinates w/ metadata
+sulf.pcoa.clr.meta<-merge(sulf.pcoa.clr.vectors, mgm_meta, by.x="SampleID", by.y="SampleID")
+sulf.pcoa.clr.meta$SampleMonth
+sulf.pcoa.clr.meta$SampDate
+
+head(sulf.pcoa.clr.meta)
+
+sulf.pcoa.clr$values # pull out Relative (Relative_eig) variation % to add to axes labels
+
+# create PCoA ggplot fig
+pcoa.s1<-ggplot(sulf.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
+  labs(title="PCoA: Sulfur Metabolism in Salton Seawater",subtitle="Using CLR Transformed, Summed Gene Coverage per KO Function",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Date")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(sulf.pcoa.clr.meta$SampDate_Color[order(sulf.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("PC1 [58.37%]") + ylab("PC2 [15.42%]")
+
+ggsave(pcoa.s1,filename = "figures/MGM_Figs/SSW_SulfurOnly_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
+
+# sample month shape, depth color
+pcoa.s2<-ggplot(sulf.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
+  geom_point(aes(color=as.numeric(Depth_m),shape=SampleMonth), size=5)+theme_bw()+
+  labs(title="PCoA: Sulfur Metabolsim in Salton Seawater",subtitle="Using CLR Transformed, Summed Gene Coverage per KO Function",xlab="PC1", ylab="PC2",color="Depth (m)")+
+  theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
+  scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
+  xlab("PC1 [58.37%]") + ylab("PC2 [15.42%]")
+
+ggsave(pcoa.s2,filename = "figures/MGM_Figs/SSW_SulfurOnly_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
+
+#### Arsenic Metabolism PCoA ####
+## PCOA with CLR transformed data first
+# calculate our Euclidean distance matrix using CLR data
+ars.ko<-mgm.clr[,which(colnames(mgm.clr) %in% arsen.fxns$KO_ID)]
+ars.ko[1:4,1:4]
+
+ars.euc.clr_dist <- dist(ars.ko, method = "euclidean")
+
+# creating our hierarcical clustering dendrogram
+ars.euc.clr_clust <- hclust(ars.euc.clr_dist, method="ward.D2")
+
+# let's make it a little nicer...
+ars.euc.clr_dend <- as.dendrogram(ars.euc.clr_clust, hang=0.2)
+ars.dend_cols <- as.character(meta_scaled$SampDate_Color[order.dendrogram(ars.euc.clr_dend)])
+labels_colors(ars.euc.clr_dend) <- ars.dend_cols
+
+plot(ars.euc.clr_dend, ylab="CLR Euclidean Distance",cex = 0.5) + title(main = "Bacteria/Archaea Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 3)
+legend("topright",legend = c("August 2021","December 2021","April 2022"),cex=.8,col = c("#ef781c","#03045e","#059c3f"),pch = 15, bty = "n")
+# Control is dark blue ("#218380"), #Alternaria is light blue ("#73d2de")
+dev.off()
+
+# let's use our Euclidean distance matrix from before
+ars.pcoa.clr <- pcoa(ars.euc.clr_dist) # pcoa of euclidean distance matrix = PCA of euclidean distance matrix
+##save.image("data/ssw_clr.euc.dist1_3.7.23.Rdata")
+
+# The proportion of variances explained is in its element values$Relative_eig
+ars.pcoa.clr$values
+
+# extract principal coordinates
+ars.pcoa.clr.vectors<-data.frame(ars.pcoa.clr$vectors)
+ars.pcoa.clr.vectors$SampleID<-rownames(ars.pcoa.clr$vectors)
+
+# merge pcoa coordinates w/ metadata
+ars.pcoa.clr.meta<-merge(ars.pcoa.clr.vectors, mgm_meta, by.x="SampleID", by.y="SampleID")
+ars.pcoa.clr.meta$SampleMonth
+ars.pcoa.clr.meta$SampDate
+
+head(ars.pcoa.clr.meta)
+
+ars.pcoa.clr$values # pull out Relative (Relative_eig) variation % to add to axes labels
+
+# create PCoA ggplot fig
+pcoa.a1<-ggplot(ars.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
+  labs(title="PCoA: Arsenic Metabolism in Salton Seawater",subtitle="Using CLR Transformed, Summed Gene Coverage per KO Function",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Date")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(ars.pcoa.clr.meta$SampDate_Color[order(ars.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("PC1 [53.60%]") + ylab("PC2 [30.40%]")
+
+ggsave(pcoa.a1,filename = "figures/MGM_Figs/SSW_ArsenicOnly_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
+
+# sample month shape, depth color
+pcoa.a2<-ggplot(ars.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
+  geom_point(aes(color=as.numeric(Depth_m),shape=SampleMonth), size=5)+theme_bw()+
+  labs(title="PCoA: Arsenic Metabolsim in Salton Seawater",subtitle="Using CLR Transformed, Summed Gene Coverage per KO Function",xlab="PC1", ylab="PC2",color="Depth (m)")+
+  theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
+  scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
+  xlab("PC1 [53.60%]") + ylab("PC2 [30.40%]")
+
+ggsave(pcoa.a2,filename = "figures/MGM_Figs/SSW_ArsenicOnly_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
+
+
+#### Metal Resistance/Tolerance PCoA ####
+## PCOA with CLR transformed data first
+# calculate our Euclidean distance matrix using CLR data
+met.ko<-mgm.clr[,which(colnames(mgm.clr) %in% metal.fxns$KO_ID)]
+met.ko[1:4,1:4]
+
+met.euc.clr_dist <- dist(met.ko, method = "euclidean")
+
+# creating our hierarcical clustering dendrogram
+met.euc.clr_clust <- hclust(met.euc.clr_dist, method="ward.D2")
+
+# let's make it a little nicer...
+met.euc.clr_dend <- as.dendrogram(met.euc.clr_clust, hang=0.2)
+met.dend_cols <- as.character(meta_scaled$SampDate_Color[order.dendrogram(met.euc.clr_dend)])
+labels_colors(met.euc.clr_dend) <- met.dend_cols
+
+plot(met.euc.clr_dend, ylab="CLR Euclidean Distance",cex = 0.5) + title(main = "Bacteria/Archaea Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 3)
+legend("topright",legend = c("August 2021","December 2021","April 2022"),cex=.8,col = c("#ef781c","#03045e","#059c3f"),pch = 15, bty = "n")
+# Control is dark blue ("#218380"), #Alternaria is light blue ("#73d2de")
+dev.off()
+
+# let's use our Euclidean distance matrix from before
+met.pcoa.clr <- pcoa(met.euc.clr_dist) # pcoa of euclidean distance matrix = PCA of euclidean distance matrix
+##save.image("data/ssw_clr.euc.dist1_3.7.23.Rdata")
+
+# The proportion of variances explained is in its element values$Relative_eig
+met.pcoa.clr$values
+
+# extract principal coordinates
+met.pcoa.clr.vectors<-data.frame(met.pcoa.clr$vectors)
+met.pcoa.clr.vectors$SampleID<-rownames(met.pcoa.clr$vectors)
+
+# merge pcoa coordinates w/ metadata
+met.pcoa.clr.meta<-merge(met.pcoa.clr.vectors, mgm_meta, by.x="SampleID", by.y="SampleID")
+met.pcoa.clr.meta$SampleMonth
+met.pcoa.clr.meta$SampDate
+
+head(met.pcoa.clr.meta)
+
+met.pcoa.clr$values # pull out Relative (Relative_eig) variation % to add to axes labels
+
+# create PCoA ggplot fig
+pcoa.m1<-ggplot(met.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
+  labs(title="PCoA: Metal Resistance & Tolerance in Salton Seawater",subtitle="Using CLR Transformed, Summed Gene Coverage per KO Function",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Date")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(met.pcoa.clr.meta$SampDate_Color[order(met.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("PC1 [61.21%]") + ylab("PC2 [19.15%]")
+
+ggsave(pcoa.m1,filename = "figures/MGM_Figs/SSW_MetalResistTolerance_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
+
+# sample month shape, depth color
+pcoa.m2<-ggplot(met.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
+  geom_point(aes(color=as.numeric(Depth_m),shape=SampleMonth), size=5)+theme_bw()+
+  labs(title="PCoA: Metal Resistance & Tolerance in Salton Seawater",subtitle="Using CLR Transformed, Summed Gene Coverage per KO Function",xlab="PC1", ylab="PC2",color="Depth (m)")+
+  theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
+  scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
+  xlab("PC1 [61.21%]") + ylab("PC2 [19.15]")
+
+ggsave(pcoa.m2,filename = "figures/MGM_Figs/SSW_MetalResistTolerance_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
 
 #### Homogeneity of Variance (CLR data only)- Composition by Groups ####
 ## betadisper to look at homogeneity of group dispersions (aka variance) when considering multiple variables
