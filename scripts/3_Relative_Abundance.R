@@ -32,6 +32,7 @@ suppressPackageStartupMessages({ # load packages quietly
   library(devtools)
   library(decontam)
   library(pairwiseAdonis)
+  library(ggfortify)
 })
 
 #### Load Global Env to Import Count/ASV Tables ####
@@ -1018,126 +1019,99 @@ ggsave(ds001.date.ts2,filename = "figures/RelativeAbundance/SSW_16S_DS001_RA_byd
 ## correlation gives us the status of their relationship, but linear regression will tell us if these env variables predict DS001 relative abundance
 ## more on that here https://www.researchgate.net/post/Two_variables_are_correlated_but_regression_is_not_significant#:~:text=The%20simple%20answer%20is%20yes,opposite%20direction%20(negative%20correlation).
 
-## first ORP
-ds001.orp.fit1<-glm(DS001 ~ ORP_mV, family=Gamma,data=ds001_meta) %>%
+# first lets make a big model and see what we find
+step.ds001<-step(glm(formula = DS001 ~ ., data=ds001_meta[,c(3,10,12:13,17:19,21)]))
+summary(step.ds001)
+#                             Estimate Std. Error t value Pr(>|t|)
+# (Intercept)                 0.235790   0.042692   5.523 3.72e-05 ***
+#   DO_Percent_Local            0.112263   0.043520   2.580   0.0195 *
+#   ORP_mV                      0.052997   0.019824   2.673   0.0160 *
+#   Temp_DegC                   0.089822   0.038534   2.331   0.0323 *
+#   Dissolved_OrganicMatter_RFU 0.147940   0.025322   5.842 1.96e-05 ***
+#   Sulfate_milliM              0.063009   0.022376   2.816   0.0119 *
+#   Depth.num                   0.011092   0.006612   1.677   0.1117
+
+# Remove sulfide & rerun
+ds001.dom.fit1<-glm(DS001 ~ Dissolved_OrganicMatter_RFU+DO_Percent_Local+ORP_mV+Temp_DegC+Sulfate_milliM+Depth.num, data=ds001_meta) %>%
   adjust_pvalue(method="bonferroni")
-summary(ds001.orp.fit1)
-
-coef(summary(ds001.orp.fit1))
-p.adjust(coef(summary(ds001.orp.fit1))[,4], method="bonferroni") # pvalue
-
-ds001.orp.fit2<-glm(DS001 ~ ORP_mV, data=ds001_meta, family=poisson)
-summary(ds001.orp.fit2)
-
-ds001.orp.fit3<-glm.nb(DS001 ~ ORP_mV, data=ds001_meta)
-summary(ds001.orp.fit3)
-
-# next is DOM
-ds001.dom.fit1<-glm(DS001 ~ Dissolved_OrganicMatter_RFU, family=Gamma,data=ds001_meta) %>%
-  adjust_pvalue(method="bonferroni")
-summary(ds001.dom.fit1) # not significant
+summary(ds001.dom.fit1)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)                   3.5643     0.3391  10.512 4.83e-10 ***
-#Dissolved_OrganicMatter_RFU  -0.9487     0.2945  -3.222  0.00393 **
+#(Intercept)                 0.235790   0.042692   5.523 3.72e-05 ***
+# Dissolved_OrganicMatter_RFU 0.147940   0.025322   5.842 1.96e-05 ***
+#   DO_Percent_Local            0.112263   0.043520   2.580   0.0195 *
+#   ORP_mV                      0.052997   0.019824   2.673   0.0160 *
+#   Temp_DegC                   0.089822   0.038534   2.331   0.0323 *
+#   Sulfate_milliM              0.063009   0.022376   2.816   0.0119 *
+#   Depth.num                   0.011092   0.006612   1.677   0.1117
 
+anova(ds001.dom.fit1, test = "LR")
+# Terms added sequentially (first to last)
+#                             Df Deviance Resid. Df Resid. Dev  Pr(>Chi)
+# NULL                                           23    0.45248
+# Dissolved_OrganicMatter_RFU  1 0.189814        22    0.26267 4.466e-11 ***
+#   DO_Percent_Local             1 0.128567        21    0.13410 5.903e-08 ***
+#   ORP_mV                       1 0.013252        20    0.12085  0.081749 .
+# Temp_DegC                    1 0.003926        19    0.11692  0.343415
+# Sulfate_milliM               1 0.030262        18    0.08666  0.008529 **
+#   Depth.num                    1 0.012307        17    0.07435  0.093450 .
 coef(summary(ds001.dom.fit1))
 #p.adjust(coef(summary(ds001.dom.fit1))[,4], method="bonferroni") # pvalue
 
-ds001.dom.fit2<-glm(DS001 ~ Dissolved_OrganicMatter_RFU, data=ds001_meta, family=poisson)
-summary(ds001.dom.fit2)
+autoplot(ds001.dom.fit1, which = 1:6, label.size = 3,colour='SampDate',data=ds001_meta)
 
-ds001.dom.fit3<-glm.nb(DS001 ~ Dissolved_OrganicMatter_RFU, data=ds001_meta)
-summary(ds001.dom.fit3)
-
-dispersiontest(ds001.dom.fit2)
+#dispersiontest(ds001.dom.fit1)
 # null hypothesis is that equidispersion exists; alternative hypothesis is overdispersion
 # if overdispersion, use negative binomial not Poisson
 ## Poisson distribution implies that the mean and variance are equal --> little dispersion
 # negative binomial means # of observations is not fixed, whereas binomial means observations are a fixed #
 
-# z = -15.483, p-value = 1 (cannot reject null)
-# alternative hypothesis: true dispersion is greater than 1
-# sample estimates:
-#   dispersion
-# 0.04687148 -- equidispersion exists
+ds001.dom.fit2<-glm(DS001 ~ Dissolved_OrganicMatter_RFU+DO_Percent_Local+Sulfate_milliM, data=ds001_meta) %>%
+  adjust_pvalue(method="bonferroni")
+summary(ds001.dom.fit2)
+
+anova(ds001.dom.fit2, test = "LR")
+
+ds001.dom.fit3<-glm(DS001 ~ Dissolved_OrganicMatter_RFU+DO_Percent_Local, data=ds001_meta) %>%
+  adjust_pvalue(method="bonferroni")
+summary(ds001.dom.fit3)
+
+anova(ds001.dom.fit3, test = "LR")
+
+ds001.dom.fit4<-glm(DS001 ~ Dissolved_OrganicMatter_RFU, data=ds001_meta) %>%
+  adjust_pvalue(method="bonferroni")
+summary(ds001.dom.fit4)
+
+anova(ds001.dom.fit4, test = "LR")
 
 plot(DS001 ~ Dissolved_OrganicMatter_RFU, data=ds001_meta,col=SampDate_Color)
 # June 2021 = green, orange = August 2021, dark blue = December 2021, light blue = April 2022
-abline(ds001.dom.fit1)
+
+plot(DS001 ~ DO_Percent_Local, data=ds001_meta,col=SampDate_Color)
+plot(DS001 ~ Sulfate_milliM, data=ds001_meta,col=SampDate_Color)
 
 # Plot DS001 RelAb x DOM
 
 fig.ds001.dom.fit1<-ggplot(ds001_meta, aes(x = Dissolved_OrganicMatter_RFU, y = DS001)) +
   geom_point(aes(color=SampDate), size=3) + theme_classic() +
   scale_color_manual(name ="Sample Date", values=c("#ef781c","#03045e","#059c3f"), labels=c("August 2021","December 2021","April 2022")) +
-  stat_smooth(method = "lm", col = "black", se=FALSE, linewidth=1)+ labs(title="Relative Abundance of Genus DS001 vs. Dissolved Organic Matter", color="Sampling Date")+ylab("Relative Abundance")+xlab("Dissolved Organic Matter (RFU)")+
+  stat_smooth(method = "glm", col = "black", se=FALSE, linewidth=1)+ labs(title="Relative Abundance of Genus DS001 vs. Dissolved Organic Matter", color="Sampling Date")+ylab("Relative Abundance")+xlab("Dissolved Organic Matter (RFU)")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
-  stat_cor(label.y = 0.5, label.x=0.6) +
-  stat_regline_equation(aes(label=paste(after_stat(adj.rr.label))),label.y = 0.53,label.x=0.6)
+  stat_cor(label.y = 0.53, label.x=0.8) +
+  stat_regline_equation(aes(label=paste(after_stat(adj.rr.label))),label.y = 0.55,label.x=0.8)
 
 ## use summary(ds001.so4.fit1) to double check that stat_cor gives same p value as linear regression! it does here :)
 ggsave(fig.ds001.dom.fit1,filename = "figures/RelativeAbundance/DS001_Genus_RelAb_vs_DOM_scatterplot.pdf", width=10, height=8, dpi=600)
 
-# next is DO%
-ds001.do.fit1<-glm(DS001 ~ DO_Percent_Local, data=ds001_meta) %>%
-  adjust_pvalue(method="bonferroni")
-summary(ds001.do.fit1) # not significant
+fig.ds001.dom.fit1a<-ggplot(ds001_meta, aes(x = Dissolved_OrganicMatter_RFU, y = DS001)) +
+  geom_point(aes(color=SampDate), size=3) + theme_classic() +
+  scale_color_manual(name ="Sample Date", values=c("#ef781c","#03045e","#059c3f"), labels=c("August 2021","December 2021","April 2022")) + labs(title="Relative Abundance of Genus DS001 vs. Dissolved Organic Matter", color="Sampling Date")+ylab("Relative Abundance")+xlab("Dissolved Organic Matter (RFU)")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
+  stat_cor(label.y = 0.53, label.x=0.8) +
+  stat_regline_equation(aes(label=paste(after_stat(adj.rr.label))),label.y = 0.55,label.x=0.8)
 
-coef(summary(ds001.do.fit1))
-p.adjust(coef(summary(ds001.do.fit1))[,4], method="bonferroni") # pvalue
-
-ds001.do.fit2<-glm(DS001 ~ DO_Percent_Local, data=ds001_meta, family=poisson)
-summary(ds001.do.fit2)
-
-ds001.do.fit3<-glm.nb(DS001 ~ DO_Percent_Local, data=ds001_meta)
-summary(ds001.do.fit3)
-
-dispersiontest(ds001.do.fit2)
-# null hypothesis is that equidispersion exists; alternative hypothesis is overdispersion
-# if overdispersion, use negative binomial not Poisson
-## Poisson distribution implies that the mean and variance are equal --> little dispersion
-# negative binomial means # of observations is not fixed, whereas binomial means observations are a fixed #
-
-# z = -14.091, p-value = 1 (cannot reject null)
-# alternative hypothesis: true dispersion is greater than 1
-# sample estimates:
-#   dispersion
-# 0.0495281 -- equidispersion exists
-
-plot(DS001 ~ DO_Percent_Local, data=ds001_meta,col=SampDate_Color)
-# orange = August 2021, dark blue = December 2021, light blue = April 2022
-abline(ds001.do.fit1)
-
-# next is Temp (C)
-ds001.temp.fit1<-glm(DS001 ~ Temp_DegC, data=ds001_meta) %>%
-  adjust_pvalue(method="bonferroni")
-summary(ds001.temp.fit1) # not significant
-
-coef(summary(ds001.temp.fit1))
-p.adjust(coef(summary(ds001.temp.fit1))[,4], method="bonferroni") # pvalue
-
-ds001.temp.fit2<-glm(DS001 ~ Temp_DegC, data=ds001_meta, family=poisson)
-summary(ds001.temp.fit2)
-
-ds001.temp.fit3<-glm.nb(DS001 ~ Temp_DegC, data=ds001_meta)
-summary(ds001.temp.fit3)
-
-dispersiontest(ds001.temp.fit2)
-# null hypothesis is that equidispersion exists; alternative hypothesis is overdispersion
-# if overdispersion, use negative binomial not Poisson
-## Poisson distribution implies that the mean and variance are equal --> little dispersion
-# negative binomial means # of observations is not fixed, whereas binomial means observations are a fixed #
-
-# z = -14.127, p-value = 1 (cannot reject null)
-# alternative hypothesis: true dispersion is greater than 1
-# sample estimates:
-#   dispersion
-# 0.05379991 -- equidispersion exists
-
-plot(DS001 ~ Temp_DegC, data=ds001_meta,col=SampDate_Color)
-# gren = June 2021, orange = August 2021, dark blue = December 2021, light blue = April 2022
-abline(ds001.temp.fit1)
+## use summary(ds001.so4.fit1) to double check that stat_cor gives same p value as linear regression! it does here :)
+ggsave(fig.ds001.dom.fit1a,filename = "figures/RelativeAbundance/DS001_Genus_RelAb_vs_DOM_scatterplot_noline.pdf", width=10, height=8, dpi=600)
 
 ## next Sulfate
 
@@ -1152,72 +1126,21 @@ summary(ds001.so4.fit1)
 coef(summary(ds001.so4.fit1))
 p.adjust(coef(summary(ds001.so4.fit1))[,4], method="bonferroni") # pvalue
 
-ds001.so4.fit2<-glm(DS001 ~ Sulfate_milliM, data=ds001_meta, family=poisson)
-summary(ds001.so4.fit2)
-
-ds001.so4.fit3<-glm.nb(DS001 ~ Sulfate_milliM, data=ds001_meta)
-summary(ds001.so4.fit3)
-
-dispersiontest(ds001.so4.fit2)
-# dispersiontest: Tests the null hypothesis of equidispersion in Poisson GLMs against the alternative of overdispersion and/or underdispersion
-# null hypothesis is that equidispersion exists; alternative hypothesis is overdispersion
-# if overdispersion, use negative binomial not Poisson
-## Poisson distribution implies that the mean and variance are equal --> little dispersion
-## negative binomial means # of observations is not fixed, whereas binomial means observations are a fixed #
-
-# z = --12.929, p-value = 1 (cannot reject null)
-# alternative hypothesis: true dispersion is greater than 1
-# sample estimates:
-#   dispersion
-# 0.05495549 -- equidispersion exists
-
 plot(DS001 ~ Sulfate_milliM, data=ds001_meta,col=SampDate_Color)
 # orange = August 2021, dark blue = December 2021, light blue = April 2022
-abline(ds001.so4.fit1)
 
 # Plot RelAb of DS001 x Sulfate
 
 fig.ds001.so4.fit1<-ggplot(ds001_meta, aes(x = Sulfate_milliM, y = DS001)) +
   geom_point(aes(color=SampDate), size=3) + theme_classic() +
   scale_color_manual(name ="Sample Date", values=c("#ef781c","#03045e","#059c3f"), labels=c("August 2021","December 2021","April 2022")) +
-  stat_smooth(method = "lm", col = "black", se=FALSE, size=1)+ labs(title="Relative Abundance of Genus DS001 vs. Sulfate (milliM)", color="Sampling Date")+ylab("Relative Abundance")+xlab("Sulfate (milliM)")+
+  stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(title="Relative Abundance of Genus DS001 vs. Sulfate (milliM)", color="Sampling Date")+ylab("Relative Abundance")+xlab("Sulfate (milliM)")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
   stat_cor(label.y = 0.5, label.x=0.6) +
   stat_regline_equation(aes(label=paste(after_stat(adj.rr.label))),label.y = 0.53,label.x=0.6)
 
 ## use summary(ds001.so4.fit1) to double check that stat_cor gives same p value as linear regression! it does here :)
 ggsave(fig.ds001.so4.fit1,filename = "figures/RelativeAbundance/DS001_Genus_RelAb_vs_Sulfate_scatterplot.pdf", width=10, height=8, dpi=600)
-
-## last is Sulfide
-ds001.hs.fit1<-glm(DS001 ~ Sulfide_microM, data=ds001_meta) %>%
-  adjust_pvalue(method="bonferroni")
-summary(ds001.hs.fit1) # not significant
-
-coef(summary(ds001.hs.fit1))
-p.adjust(coef(summary(ds001.hs.fit1))[,4], method="bonferroni") # pvalue
-
-ds001.hs.fit2<-glm(DS001 ~ Sulfide_microM, data=ds001_meta, family=poisson)
-summary(ds001.hs.fit2)
-
-ds001.hs.fit3<-glm.nb(DS001 ~ Sulfide_microM, data=ds001_meta)
-summary(ds001.hs.fit3)
-
-dispersiontest(ds001.hs.fit2)
-# dispersiontest: Tests the null hypothesis of equidispersion in Poisson GLMs against the alternative of overdispersion and/or underdispersion
-# null hypothesis is that equidispersion exists; alternative hypothesis is overdispersion
-# if overdispersion, use negative binomial not Poisson
-## Poisson distribution implies that the mean and variance are equal --> little dispersion
-# negative binomial means # of observations is not fixed, whereas binomial means observations are a fixed #
-
-# z = -12.076, p-value = 1 (cannot reject null)
-# alternative hypothesis: true dispersion is greater than 1
-# sample estimates:
-# dispersion
-# 0.06262369 -- equidispersion exists
-
-plot(DS001 ~ Sulfide_microM, data=ds001_meta,col=SampDate_Color)
-# orange = August 2021, dark blue = December 2021, light blue = April 2022
-abline(ds001.hs.fit1)
 
 #### Shared Genus Relative Abundance ####
 head(bac.dat.all)

@@ -1141,7 +1141,7 @@ compare_means(Bac_Species_Richness ~ Depth_m, data=apr22.div, method="anova",p.a
 
 ggplot(bac.div.metadat, aes(x = DO_Percent_Local, y = Bac_Shannon_Diversity)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() +
-  stat_smooth(method = "lm", col = "black", se=FALSE, size=1)+ labs(title="Dissolved Oxygen x 16S Shannon Diversity", color="Depth (m)")+ylab("Shannon Diversity")+xlab("Dissolved Oxygen (%)")+
+  stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(title="Dissolved Oxygen x 16S Shannon Diversity", color="Depth (m)")+ylab("Shannon Diversity")+xlab("Dissolved Oxygen (%)")+
   scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
   scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
@@ -1157,7 +1157,7 @@ ggplot(bac.div.metadat, aes(x = DO_Percent_Local, y = Bac_Shannon_Diversity)) +
 
 ggplot(bac.div.metadat, aes(x = ORP_mV, y = Bac_Shannon_Diversity)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() +
-  stat_smooth(method = "lm", col = "black", se=FALSE, size=1)+ labs(title="Oxidation-Reduction Potential x 16S Shannon Diversity", color="Depth (m)")+ylab("Shannon Diversity")+xlab("Redox Potential (mV)")+
+  stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(title="Oxidation-Reduction Potential x 16S Shannon Diversity", color="Depth (m)")+ylab("Shannon Diversity")+xlab("Redox Potential (mV)")+
   scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
   scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
@@ -1175,7 +1175,7 @@ ggplot(bac.div.metadat, aes(x = Temp_DegC, y = Bac_Shannon_Diversity)) +
 
 ggplot(bac.div.metadat, aes(x = DO_Percent_Local, y = Bac_Species_Richness)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() +
-  stat_smooth(method = "lm", col = "black", se=FALSE, size=1)+ labs(title="Dissolved Oxygen x 16S Species Richness", color="Depth (m)")+ylab("Species Richness")+xlab("Dissolved Oxygen (%)")+
+  stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(title="Dissolved Oxygen x 16S Species Richness", color="Depth (m)")+ylab("Species Richness")+xlab("Dissolved Oxygen (%)")+
   scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
   scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
@@ -1184,7 +1184,7 @@ ggplot(bac.div.metadat, aes(x = DO_Percent_Local, y = Bac_Species_Richness)) +
 
 ggplot(bac.div.metadat, aes(x = ORP_mV, y = Bac_Species_Richness)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() +
-  stat_smooth(method = "lm", col = "black", se=FALSE, size=1)+ labs(title="Oxidation-Reduction Potential x 16S Species Richness", color="Depth (m)")+ylab("Species Richness")+xlab("Redox Potential (mV)")+
+  stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(title="Oxidation-Reduction Potential x 16S Species Richness", color="Depth (m)")+ylab("Species Richness")+xlab("Redox Potential (mV)")+
   scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
   scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
