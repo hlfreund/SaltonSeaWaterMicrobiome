@@ -37,17 +37,18 @@ suppressPackageStartupMessages({ # load packages quietly
 })
 
 #### Load Data ####
-load("data/Metagenomes/Analysis/mgm_analysis.Rdata") # load Rdata to global env
+#load("data/Metagenomes/Analysis/mgm_analysis.Rdata") # load Rdata to global env
 load("data/Metagenomes/Analysis/mgm_MAG_analysis.Rdata")
+load("data/Metagenomes/Analysis/SSW_MAG_Bin_Fxn_BetaDiv.Rdata")
 
 head(meta_scaled)
 arsen.kegg[1:4,]
-ko.cov.sum_table[1:4,1:4]
+bin.ko.cov.sum_table[1:4,1:4]
 head(bin.clr.ars)
 
 # fixing some col names in meta_scaled
-colnames(meta_scaled)[which(names(meta_scaled) == "DO_Percent_Local")] <- "DO_Percent_Local"
-colnames(meta_scaled)[which(names(meta_scaled) == "Dissolved_Organic Matter_RFU")] <- "Dissolved_OrganicMatter_RFU"
+#colnames(meta_scaled)[which(names(meta_scaled) == "DO_Percent_Local")] <- "DO_Percent_Local"
+#colnames(meta_scaled)[which(names(meta_scaled) == "Dissolved_Organic Matter_RFU")] <- "Dissolved_OrganicMatter_RFU"
 
 # Before transformations (i.e., VST, CLR, etc) were done, the following was performed
 # featureCounts counted reads that mapped to genes
@@ -57,68 +58,66 @@ colnames(meta_scaled)[which(names(meta_scaled) == "Dissolved_Organic Matter_RFU"
 
 #### Functional Beta Diversity - CLR data ####
 bin.clr[1:4,1:4] # sample IDs are rows, genes are columns
-ko.cov.sum_table[1:4,1:4] # sanity check
+bin.ko.cov.sum_table[1:4,1:4] # sanity check
 
 # check rownames of CLR & VST transformed feature count data & metadata
 rownames(bin.clr) %in% rownames(meta_scaled)
 
 ## PCOA with CLR transformed data first
 # calculate our Euclidean distance matrix using CLR data
-mgm.euc.clr_dist <- dist(bin.clr, method = "euclidean")
+bin.euc.clr_dist <- dist(bin.clr, method = "euclidean")
 
 # creating our hierarcical clustering dendrogram
-mgm.euc.clr_clust <- hclust(mgm.euc.clr_dist, method="ward.D2")
+bin.euc.clr_clust <- hclust(bin.euc.clr_dist, method="ward.D2")
 
 # let's make it a little nicer...
-mgm.euc.clr_dend <- as.dendrogram(mgm.euc.clr_clust, hang=0.2)
-mgm.dend_cols <- as.character(meta_scaled$SampDate_Color[order.dendrogram(mgm.euc.clr_dend)])
-labels_colors(mgm.euc.clr_dend) <- mgm.dend_cols
+bin.euc.clr_dend <- as.dendrogram(bin.euc.clr_clust, hang=0.2)
+bin.dend_cols <- as.character(meta_scaled$SampDate_Color[order.dendrogram(bin.euc.clr_dend)])
+labels_colors(bin.euc.clr_dend) <- bin.dend_cols
 
-plot(mgm.euc.clr_dend, ylab="CLR Euclidean Distance",cex = 0.5) + title(main = "Bacteria/Archaea Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 3)
+plot(bin.euc.clr_dend, ylab="CLR Euclidean Distance",cex = 0.5) + title(main = "Bacteria/Archaea Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 3)
 legend("topright",legend = c("August 2021","December 2021","April 2022"),cex=.8,col = c("#ef781c","#03045e","#059c3f"),pch = 15, bty = "n")
 # Control is dark blue ("#218380"), #Alternaria is light blue ("#73d2de")
 dev.off()
 
 # let's use our Euclidean distance matrix from before
-mgm.pcoa.clr <- pcoa(mgm.euc.clr_dist) # pcoa of euclidean distance matrix = PCA of euclidean distance matrix
+bin.pcoa.clr <- pcoa(bin.euc.clr_dist) # pcoa of euclidean distance matrix = PCA of euclidean distance matrix
 ##save.image("data/ssw_clr.euc.dist1_3.7.23.Rdata")
 
 # The proportion of variances explained is in its element values$Relative_eig
-mgm.pcoa.clr$values
+bin.pcoa.clr$values
 
 # extract principal coordinates
-mgm.pcoa.clr.vectors<-data.frame(mgm.pcoa.clr$vectors)
-mgm.pcoa.clr.vectors$SampleID<-rownames(mgm.pcoa.clr$vectors)
+bin.pcoa.clr.vectors<-data.frame(bin.pcoa.clr$vectors)
+bin.pcoa.clr.vectors$Bin_ID<-rownames(bin.pcoa.clr$vectors)
 
 # merge pcoa coordinates w/ metadata
-mgm.pcoa.clr.meta<-merge(mgm.pcoa.clr.vectors, mgm_meta, by.x="SampleID", by.y="SampleID")
-mgm.pcoa.clr.meta$SampleMonth
-mgm.pcoa.clr.meta$SampDate
+bin.pcoa.clr.meta<-merge(bin.pcoa.clr.vectors, bin_meta, by.x="Bin_ID", by.y="Bin_ID")
+bin.pcoa.clr.meta$SampleMonth
+bin.pcoa.clr.meta$SampDate
 
-head(mgm.pcoa.clr.meta)
+head(bin.pcoa.clr.meta)
 
-mgm.pcoa.clr$values # pull out Relative (Relative_eig) variation % to add to axes labels
+bin.pcoa.clr$values # pull out Relative (Relative_eig) variation % to add to axes labels
 
 # create PCoA ggplot fig
-pcoa5<-ggplot(mgm.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
+bin.pcoa1<-ggplot(bin.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
   labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using CLR Transformed, Summed Gene Coverage per KO Function",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Type")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
-  scale_color_manual(name ="Sample Type",values=unique(mgm.pcoa.clr.meta$SampDate_Color[order(mgm.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("PC1 [34.06%]") + ylab("PC2 [22.48%]")
+  scale_color_manual(name ="Sample Type",values=unique(bin.pcoa.clr.meta$SampDate_Color[order(bin.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("PC1 [32.17%]") + ylab("PC2 [11.98%]")
 
-ggsave(pcoa5,filename = "figures/MGM_Figs/SSW_MGM_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
+#ggsave(bin.pcoa1,filename = "figures/MGM_Figs/SSW_MAG_Bin_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
-pcoa6<-ggplot(mgm.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
+bin.pcoa2<-ggplot(bin.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampleMonth), size=5)+theme_bw()+
   labs(title="PCoA: Metagenome Functions in Salton Seawater",subtitle="Using CLR Transformed, Summed Gene Coverage per KO Function",xlab="PC1", ylab="PC2",color="Depth (m)")+
   theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
-  xlab("PC1 [34.06%]") + ylab("PC2 [22.48%]")
+  xlab("PC1 [32.17%]") + ylab("PC2 [11.98%]")
 
-ggsave(pcoa6,filename = "figures/MGM_Figs/SSW_MGM_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
-
-
+#ggsave(bin.pcoa2,filename = "figures/MGM_Figs/SSW_MAG_Bin_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
 
 #### Traits of Interest - Heat Maps ####
 ## heatmaps of traits of interest
@@ -126,16 +125,16 @@ ggsave(pcoa6,filename = "figures/MGM_Figs/SSW_MGM_pcoa_CLR_SummedCoverage_Per_KO
 # Sulfur fxns
 bin.clr[1:4,1:4]
 
-sulf.ko<-bin.clr[,which(colnames(bin.clr) %in% sulfur.fxns$KO_ID)]
+sulf.ko<-bin.clr[,which(colnames(bin.clr) %in% sulfur.fxns.bins$KO_ID)]
 sulf.ko$SampleID<-rownames(sulf.ko)
 sulf.ko.melt<-melt(sulf.ko, by="SampleID")
 colnames(sulf.ko.melt)[which(names(sulf.ko.melt) == "variable")] <- "KO_ID"
 colnames(sulf.ko.melt)[which(names(sulf.ko.melt) == "value")] <- "CLR_SumCovPerKO"
 sulf.ko.melt #sanity check
 
-clr.sulf.ko<-merge(sulf.ko.melt,sulfur.fxns,by=c("KO_ID"))
-clr.cov.sum.sulf.ko<-as.data.frame(dcast(clr.sulf.ko, SampleID~KO_Function, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
-rownames(clr.cov.sum.sulf.ko)<-clr.cov.sum.sulf.ko$SampleID
+clr.sulf.ko<-merge(sulf.ko.melt,sulfur.fxns.bins,by=c("KO_ID"))
+clr.cov.sum.sulf.ko<-as.data.frame(dcast(clr.sulf.ko, Bin_ID~KO_Function, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
+rownames(clr.cov.sum.sulf.ko)<-clr.cov.sum.sulf.ko$Bin_ID
 clr.cov.sum.sulf.ko[1:4,1:4]
 
 # see max & mean of summed
@@ -272,7 +271,7 @@ ggsave(osmo.hm1,filename = "figures/MGM_Figs/OsmoProtectant_KOFxns_MGMs_heatmap1
 ## * need a distance matrix!
 
 bin.clr[1:4,1:4] # sample IDs are rows, genes are columns
-ko.cov.sum_table[1:4,1:4] # sanity check
+bin.ko.cov.sum_table[1:4,1:4] # sanity check
 
 # check rownames of CLR & VST transformed feature count data & metadata
 rownames(meta_scaled) %in% rownames(bin.clr) #bin.clr was used to make the distance matrix b.euc_dist
@@ -303,11 +302,11 @@ TukeyHSD(mgm.disper5) # tells us which Sample Dates/category's dispersion MEANS 
 # April.2022-December.2021  -0.1126558 -3.047615 2.822304 0.9923919
 
 # Visualize dispersions
-png('figures/MGM_Figs/SSW_MGM_pcoa_CLR_SummedCoverage_perKO_betadispersion_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/SSW_MAG_Bin_pcoa_CLR_SummedCoverage_perKO_betadispersion_sampledate.png',width = 700, height = 600, res=100)
 plot(mgm.disper5,main = "Centroids and Dispersion based on Aitchison Distance (CLR Data)", col=colorset1$SampDate_Color)
 dev.off()
 
-png('figures/MGM_Figs/SSW_MGM_boxplot_CLR_SummedCoverage_perKO_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/SSW_MAG_Bin_boxplot_CLR_SummedCoverage_perKO_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
 boxplot(mgm.disper5,xlab="Sample Collection Date", main = "Distance to Centroid by Category (CLR Data)", sub="Based on Aitchison Distance", col=colorset1$SampDate_Color)
 dev.off()
 
@@ -329,11 +328,11 @@ colfunc <- colorRampPalette(c("red", "blue"))
 colfunc(3)
 
 # Visualize dispersions
-png('figures/MGM_Figs/ssw_mgm_pcoa_CLR_SummedCoverage_per_KO_betadispersion_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/ssw_MAG_Bin_pcoa_CLR_SummedCoverage_per_KO_betadispersion_depth.png',width = 700, height = 600, res=100)
 plot(mgm.disper6,main = "Centroids and Dispersion based on Aitchison Distance (CLR Data)", col=colfunc(3))
 dev.off()
 
-png('figures/MGM_Figs/ssw_mgm_boxplot_CLR_SummedCoverage_per_KO_centroid_distance_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/ssw_MAG_Bin_boxplot_CLR_SummedCoverage_per_KO_centroid_distance_depth.png',width = 700, height = 600, res=100)
 boxplot(mgm.disper6,xlab="Sample Collection Depth", main = "Distance to Centroid by Category (CLR Data)", sub="Based on Aitchison Distance", col=colfunc(3))
 dev.off()
 ## Significant differences in homogeneities can be tested using either parametric or permutational tests,
@@ -645,7 +644,7 @@ fligner.test(CLR_SumCovPerKO ~ Depth_m, data = sulf.ko.clr.all)
 compare_means(CLR_SumCovPerKO ~ Depth_m, data=sulf.ko.clr.all, method="anova",p.adjust.method = "bonferroni") # won't take as.factor(Elevation) as input
 
 ### Export Global Env for Other Scripts ####
-#save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
+#save.image("data/Metagenomes/Analysis/SSW_MAG_Bin_Fxn_BetaDiv.Rdata")
 # ^ includes all data combined in object bac.dat.all, ASV table (samples are rows, ASVs are columns), mgm_meta, and an ASV count table (where ASVs are rows, not columns)
 # Version Information
 sessionInfo()
