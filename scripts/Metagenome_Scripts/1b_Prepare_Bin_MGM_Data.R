@@ -467,31 +467,6 @@ colSums(bin_fxn_cpm)
 
 #write.table(bin_fxn_cpm, file="data/Metagenomes/Analysis/bin_NoBins_CopiesPerMillion_GeneCounts_2.27.23.txt", sep="\t", quote=F, col.names=T)
 
-#### Compare Sequencing Depth Across Samples ####
-bin.mr[1:4,(ncol(bin.mr)-4):(ncol(bin.mr))]
-total_bin_mr_counts<-rowSums(bin.mr[,-(ncol(bin.mr))])
-
-bin_fxn_cpm[1:4,1:4]
-total_bin_cpm_counts<-colSums(bin_fxn_cpm)
-
-bin.clr[1:4,1:4]
-total_bin_clr_counts<-rowSums(bin.clr)
-
-total_bin_counts<-rowSums(bin_fxn.cov_table1[,-c(1:2)])
-total_bin_counts %>% barplot
-
-total_bin_vst_counts<-colSums(bin.vst)
-
-total_bin_counts %>% barplot
-
-par(mfrow=c(1,3)) # to plot the three box plots next to each other (1 row, 3 columns)
-total_bin_counts %>% barplot(main = "Total Counts per Sample")
-total_bin_mr_counts  %>% barplot(main = "Total Median-Ratio Transformed Counts per Sample")
-total_bin_vst_counts %>% barplot(main = "Total Variance-Stabilized Transformed Counts per Sample")
-#total_bin_cpm_counts  %>% barplot(main = "Total Copies per Million (CPM) per Sample")
-
-dev.off()
-
 ### Pull out traits of interest ####
 # create unique list of KO ID and functions
 # check for duplicates to make sure each KO_ID has a unique function assignment

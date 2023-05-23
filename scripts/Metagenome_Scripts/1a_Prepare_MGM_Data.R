@@ -35,7 +35,7 @@ suppressPackageStartupMessages({ # load packages quietly
   library(decontam)
 })
 
-#load("data/Metagenomes/Analysis/mgm_analysis.Rdata") # load Rdata to global env
+#load("data/Metagenomes/Analysis/SSW_mgm_analysis.Rdata") # load Rdata to global env
 
 #### Import Custom Functions ####
 
@@ -284,7 +284,7 @@ ggplot(df) +
 
 #save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
 
-#### Sum Coverage by KO ID in Contigs Before Transformations ####
+#### Sum Gene Coverage by KO ID in Contigs Before Transformations ####
 mgm_fxns.cov[1:4,]
 mgm_fxns.cov_noNA<-as.data.frame(mgm_fxns.cov[!is.na(mgm_fxns.cov$KO_ID),]) # drop KOs with NA as assignment
 
@@ -375,7 +375,7 @@ dev.off()
 
 #save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
 
-#### Median-Ratio Normalized - Gene Counts in Contigs ####
+#### Median-Ratio Normalized - Gene in Contigs ####
 #
 sizeFactors(mgm_dds) # will be used to normalize counts
 ## to normalize counts, we divide each raw count value in a given sample by that sample’s normalization factor (aka size factor) to generate normalized count values.
@@ -387,7 +387,7 @@ mgm.mr<-as.data.frame(t(mgm_fxn_mr))
 mgm.mr$SampleID<-rownames(mgm.mr)
 mgm.mr[1:4,1:4]
 
-#### Variance Stabilizing Transformation - Gene Counts in Contigs ####
+#### Variance Stabilizing Transformation - Gene in Contigs ####
 
 # code below is also in previous section - if you ran previous section, skip to VST step
 ko.cov.sum_table[1:4,1:4]
@@ -408,7 +408,7 @@ assay(mgm_fxn_vst) #see output of VST
 mgm.vst<-assay(mgm_fxn_vst)
 #total_fxn_vst<-colSums(mgm_fxn_vst)
 
-#### Centered Log Ratio Transformation - Gene Counts in Contigs ####
+#### Centered Log Ratio Transformation - Gene in Contigs ####
 ko.cov.sum_table[1:4,1:4]
 # ^ table contains gene coverage, Sample IDs as rows & genes as columns
 
@@ -419,7 +419,7 @@ mgm.clr[1:4,1:4]
 # check rownames of CLR transformed ASV data & metadata
 rownames(mgm.clr) %in% rownames(meta_scaled)
 
-#### Copies Per Million Transformation - Gene Counts in Contigs ####
+#### Copies Per Million Transformation - Gene in Contigs ####
 ko.cov.sum_table[1:4,1:4] # sanity check
 mgm_fxn.sum.cov_t.table<-as.data.frame(t(as.data.frame(ko.cov.sum_table[,-1])))
 mgm_fxn.sum.cov_t.table[1:4,1:4]
@@ -441,14 +441,12 @@ mgm.clr[1:4,1:4]
 total_clr_counts<-rowSums(mgm.clr)
 
 total_counts<-rowSums(mgm_fxn.cov_table1[,-1])
-total_counts %>% barplot
+#total_counts %>% barplot
 
 total_vst_counts<-colSums(mgm.vst)
 
-total_counts %>% barplot
-
 par(mfrow=c(1,3)) # to plot the three box plots next to each other (1 row, 3 columns)
-total_counts %>% barplot(main = "Total Counts per Sample")
+#total_counts %>% barplot(main = "Total Counts per Sample")
 total_mr_counts  %>% barplot(main = "Total Median-Ratio Transformed Counts per Sample")
 total_vst_counts %>% barplot(main = "Total Variance-Stabilized Transformed Counts per Sample")
 #total_cpm_counts  %>% barplot(main = "Total Copies per Million (CPM) per Sample")
@@ -484,7 +482,6 @@ metal.fxns<-ko_fxns[which(ko_fxns$KO_ID %in% metal.re.kegg$KO_ID),]
 mgm.clr[1:4,1:4]
 head(mgm_meta)
 head(ko_fxns)
-head(mapped_all)
 
 # melt data with normalized feature counts to merge with all traits & traits of interest
 mgm.clr$SampleID<-rownames(mgm.clr)
@@ -494,6 +491,7 @@ colnames(mgm_clr_melt)[which(names(mgm_clr_melt) == "variable")] <- "KO_ID"
 colnames(mgm_clr_melt)[which(names(mgm_clr_melt) == "value")] <- "SumCovPerKO"
 mgm_clr_melt[1:4,]
 
+# Merge CLR-transformed, summed gene coverage per KO w/ KO function info
 mgm.clr.all<-as.data.frame(merge(ko_fxns, mgm_clr_melt, by=c("KO_ID"),allow.cartesian = TRUE))
 head(mgm.clr.all)
 
@@ -505,23 +503,20 @@ head(mgm.clr.all)
 
 mgm_clr_melt[1:4,] #sanity check
 
+# Merge CLR-transformed, summed gene coverage per KO w/ KO functions of interest
 mgm.clr.sulf<-merge(sulfur.fxns, mgm_clr_melt, by=c("KO_ID"),allow.cartesian = TRUE)
 head(mgm.clr.sulf)
 
-mgm.clr.ars<-merge(arsenic.fxns, mgm_clr_melt, by=c("KO_ID"),allow.cartesian = TRUE)
+mgm.clr.ars<-merge(arsen.fxns, mgm_clr_melt, by=c("KO_ID"),allow.cartesian = TRUE)
 head(mgm.clr.ars)
 
 mgm.clr.osmo<-merge(osmo.fxns, mgm_clr_melt, by=c("KO_ID"),allow.cartesian = TRUE)
 head(mgm.clr.osmo)
 
-# merge mapped read counts & mgm taxonomy data to metadata
-mapped_meta<-merge(mapped_all, mgm_meta, by=c("SampleID"))
-head(mapped_meta)
-
 #save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
 
 ### Export Global Env for Other Scripts ####
-save.image("data/Metagenomes/Analysis/mgm_analysis.Rdata")
+save.image("data/Metagenomes/Analysis/SSW_mgm_analysis.Rdata")
 # ^ includes all data combined in object bac.dat.all, ASV table (samples are rows, ASVs are columns), mgm_meta, and an ASV count table (where ASVs are rows, not columns)
 # Version Information
 sessionInfo()
