@@ -271,6 +271,9 @@ head(bin_meta)
 
 rownames(bin_meta)<-bin_meta$Bin_ID
 
+bin_meta_scaled<-merge(meta_scaled,bin_list,by="SampleID")
+rownames(bin_meta_scaled)<-bin_meta$Bin_ID
+
 #### Import Gene Info from KEGG ####
 
 sulf.kegg<-read.table("data/Metagenomes/Analysis/Sulfur_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
