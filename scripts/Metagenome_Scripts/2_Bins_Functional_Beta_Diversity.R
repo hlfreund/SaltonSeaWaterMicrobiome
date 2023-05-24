@@ -201,13 +201,13 @@ NA %in% clr.sulf.some$CLR_SumCovPerKO
 
 some.sulf.hm<-ggplot(clr.sulf.some, aes(Depth_m, KO_Function, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25)  +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50") + labs(title="MAGs Containing Highest Coverages for Sulfur Metabolic Functions",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO, Grouped by Bin Assigment",fill="CLR Coverage Sums Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50") + labs(title="Sulfur Metabolic Functions Across Salton Seawater MAGs",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO, Grouped by Bin Assigment",fill="CLR Coverage Sums Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=15),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
 
-ggsave(some.sulf.hm,filename = "figures/MGM_Figs/Bins_by_Genus_HighSulfMetabolism_bySampDate_Depth_heatmap.png", width=20, height=15, dpi=600)
+ggsave(some.sulf.hm,filename = "figures/MGM_Figs/SulfurMetabolism_Across_Bins_heatmap.png", width=20, height=15, dpi=600)
 
 some.sulf.hm1<-ggplot(clr.sulf.some, aes(Bin_ID, KO_Function, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25)  +
@@ -217,7 +217,17 @@ some.sulf.hm1<-ggplot(clr.sulf.some, aes(Bin_ID, KO_Function, fill=CLR_SumCovPer
         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~Genus)
 
-ggsave(some.sulf.hm1,filename = "figures/MGM_Figs/Bins_by_Genus_HighSulfMetabolism_bySampDate_Depth_heatmap.png", width=20, height=15, dpi=600)
+ggsave(some.sulf.hm1,filename = "figures/MGM_Figs/SulfMetabolism_Bins_by_Genus_heatmap.png", width=20, height=15, dpi=600)
+
+some.sulf.hm1<-ggplot(clr.sulf.some, aes(Depth_m, KO_Function, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25)  +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8") + labs(title="MAGs Containing Highest Coverages for Sulfur Metabolic Functions",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO, Grouped by Bin Assigment",fill="CLR Coverage Sums Per KO") +
+  theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),
+        axis.text = element_text(size=12),axis.text.x = element_text(),legend.text = element_text(size=12),plot.title = element_text(size=17),
+        axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(SampDate~Genus)
+
+ggsave(some.sulf.hm1,filename = "figures/MGM_Figs/Combined_Genus_HighSulfMetabolism_bySampDate_Depth_heatmap.png", width=20, height=15, dpi=600)
 
 # pull out specific S functions
 ## first, SOX
