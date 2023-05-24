@@ -50,8 +50,8 @@ head(bin.clr.ars)
 #colnames(meta_scaled)[which(names(meta_scaled) == "DO_Percent_Local")] <- "DO_Percent_Local"
 #colnames(meta_scaled)[which(names(meta_scaled) == "Dissolved_Organic Matter_RFU")] <- "Dissolved_OrganicMatter_RFU"
 
-bin_meta_scaled$SampDate<-gsub("\\."," ",bin_meta_scaled$SampDate) # drop period between month & year in SampDate col
-bin_meta_scaled$SampDate<-factor(bin_meta_scaled$SampDate,levels=c("August 2021","December 2021","April 2022"))
+#bin_meta_scaled$SampDate<-gsub("\\."," ",bin_meta_scaled$SampDate) # drop period between month & year in SampDate col
+#bin_meta_scaled$SampDate<-factor(bin_meta_scaled$SampDate,levels=c("August 2021","December 2021","April 2022"))
 
 # Before transformations (i.e., VST, CLR, etc) were done, the following was performed
 # featureCounts counted reads that mapped to genes
@@ -140,8 +140,11 @@ colnames(sulf.ko.melt)[which(names(sulf.ko.melt) == "value")] <- "CLR_SumCovPerK
 head(sulf.ko.melt) #sanity check
 
 sulf.ko.bintax<-merge(sulf.ko.melt,mag_tax,by=c("Bin_ID"))
-clr.sulf.ko<-merge(sulf.ko.bintax,sulfur.fxns.bins,by=c("KO_ID"))
-clr.cov.sum.sulf.ko<-as.data.frame(dcast(clr.sulf.ko, Bin_ID~KO_Function, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
+clr.sulf.ko1<-merge(sulf.ko.bintax,sulfur.fxns.bins,by=c("KO_ID"))
+clr.sulf.ko<-merge(clr.sulf.ko1,sulf.kegg,by.x=c("KO_ID"),by.y=c("KO_ID"))
+colnames(clr.sulf.ko)[which(names(clr.sulf.ko) == "KO_Function.x")] <- "KO_Function.KFS"
+colnames(clr.sulf.ko)[which(names(clr.sulf.ko) == "KO_Function.y")] <- "KO_Function.KEGG"
+clr.cov.sum.sulf.ko<-as.data.frame(dcast(clr.sulf.ko, Bin_ID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
 rownames(clr.cov.sum.sulf.ko)<-clr.cov.sum.sulf.ko$Bin_ID
 clr.cov.sum.sulf.ko[1:4,1:4]
 
@@ -163,18 +166,19 @@ clr.sulf.all<-merge(clr.sulf.ko,bin_meta_scaled,by="Bin_ID")
 clr.sulf.all$SampDate = gsub("\\."," ",clr.sulf.all$SampDate)
 clr.sulf.all$SampDate = factor(clr.sulf.all$SampDate,levels=c("August 2021","December 2021","April 2022"))
 clr.sulf.all$Bin_ID = factor(clr.sulf.all$Bin_ID, levels=unique(clr.sulf.all$Bin_ID[order(clr.sulf.all$SampDate,clr.sulf.all$Depth_m)]), ordered=TRUE)
+clr.sulf.ko[1:4,]
 
-sulf.hm1<-ggplot(clr.sulf.all, aes(Bin_ID, KO_Function, fill=CLR_SumCovPerKO)) +
+sulf.hm1<-ggplot(clr.sulf.all, aes(Bin_ID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8") + labs(title="Heatmap: Sulfur Functions in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO",fill="CLR Coverage Sums Per KO") +
   theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),
         axis.text = element_text(size=12),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=12),plot.title = element_text(size=17),
         axis.ticks=element_line(size=0.4),panel.border=element_blank()) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
 
 ggsave(sulf.hm1,filename = "figures/MGM_Figs/SSW_Bins_SulfMetabolism_heatmap.png", width=15, height=15, dpi=600)
 
-sulf.hm2<-ggplot(clr.sulf.all, aes(Genus, KO_Function, fill=CLR_SumCovPerKO)) +
+sulf.hm2<-ggplot(clr.sulf.all, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8") + labs(title="Heatmap: Sulfur Functions in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO",fill="CLR Coverage Sums Per KO") +
   theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),
@@ -184,22 +188,32 @@ sulf.hm2<-ggplot(clr.sulf.all, aes(Genus, KO_Function, fill=CLR_SumCovPerKO)) +
 
 ggsave(sulf.hm2,filename = "figures/MGM_Figs/SSW_Bins_SulfMetabolism_by_Genus_heatmap.png", width=15, height=15, dpi=600)
 
-sulf.hm3<-ggplot(clr.sulf.all, aes(Genus, KO_Function, fill=CLR_SumCovPerKO)) +
+sulf.hm3<-ggplot(clr.sulf.all, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) + facet_grid(SampDate~Depth_m) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50") + labs(title="Heatmap: Sulfur Functions in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO, Grouped by Bin Assigment",fill="CLR Coverage Sums Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=15),
         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(SampDate~.)
 
 ggsave(sulf.hm3,filename = "figures/MGM_Figs/SSW_Bins_SulfMetabolism_by_Genus_Date_Depth_heatmap.png", width=20, height=15, dpi=600)
+
+sulf.hm4<-ggplot(clr.sulf.all, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) + facet_grid(SampDate~Depth_m) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50") + labs(title="Heatmap: Sulfur Functions in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO, Grouped by Bin Assigment",fill="CLR Coverage Sums Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=15),
+        axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(Pathway~.)
+
+ggsave(sulf.hm4,filename = "figures/MGM_Figs/SSW_Bins_SulfMetabolism_by_Genus_Pathway_heatmap.png", width=20, height=15, dpi=600)
 
 # only look at two MAGs w/ highest coverage of Sulfur fxns
 clr.sulf.some<-clr.sulf.all[clr.sulf.all$Genus %in% c("Casp-actino5","HIMB30"),]
 clr.sulf.some$Bin_ID = factor(clr.sulf.some$Bin_ID, levels=unique(clr.sulf.some$Bin_ID[order(clr.sulf.some$SampDate,clr.sulf.some$Depth_m)]), ordered=TRUE)
 NA %in% clr.sulf.some$CLR_SumCovPerKO
 
-some.sulf.hm<-ggplot(clr.sulf.some, aes(Depth_m, KO_Function, fill=CLR_SumCovPerKO)) +
+some.sulf.hm<-ggplot(clr.sulf.some, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25)  +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50") + labs(title="Sulfur Metabolic Functions Across Salton Seawater MAGs",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO, Grouped by Bin Assigment",fill="CLR Coverage Sums Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=15),
@@ -207,9 +221,9 @@ some.sulf.hm<-ggplot(clr.sulf.some, aes(Depth_m, KO_Function, fill=CLR_SumCovPer
         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
 
-ggsave(some.sulf.hm,filename = "figures/MGM_Figs/SulfurMetabolism_Across_Bins_heatmap.png", width=20, height=15, dpi=600)
+#ggsave(some.sulf.hm,filename = "figures/MGM_Figs/SulfurMetabolism_Across_Bins_heatmap.png", width=20, height=15, dpi=600)
 
-some.sulf.hm1<-ggplot(clr.sulf.some, aes(Bin_ID, KO_Function, fill=CLR_SumCovPerKO)) +
+some.sulf.hm1<-ggplot(clr.sulf.some, aes(Bin_ID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25)  +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8") + labs(title="MAGs Containing Highest Coverages for Sulfur Metabolic Functions",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO, Grouped by Bin Assigment",fill="CLR Coverage Sums Per KO") +
   theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),
@@ -219,7 +233,7 @@ some.sulf.hm1<-ggplot(clr.sulf.some, aes(Bin_ID, KO_Function, fill=CLR_SumCovPer
 
 ggsave(some.sulf.hm1,filename = "figures/MGM_Figs/SulfMetabolism_Bins_by_Genus_heatmap.png", width=20, height=15, dpi=600)
 
-some.sulf.hm1<-ggplot(clr.sulf.some, aes(Depth_m, KO_Function, fill=CLR_SumCovPerKO)) +
+some.sulf.hm1<-ggplot(clr.sulf.some, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25)  +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8") + labs(title="MAGs Containing Highest Coverages for Sulfur Metabolic Functions",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO, Grouped by Bin Assigment",fill="CLR Coverage Sums Per KO") +
   theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),
@@ -229,6 +243,16 @@ some.sulf.hm1<-ggplot(clr.sulf.some, aes(Depth_m, KO_Function, fill=CLR_SumCovPe
 
 ggsave(some.sulf.hm1,filename = "figures/MGM_Figs/Combined_Genus_HighSulfMetabolism_bySampDate_Depth_heatmap.png", width=20, height=15, dpi=600)
 
+some.sulf.hm2<-ggplot(clr.sulf.some, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25)  +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8") + labs(title="MAGs Containing Highest Coverages for Sulfur Metabolic Functions",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO, Grouped by Bin Assigment",fill="CLR Coverage Sums Per KO") +
+  theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),
+        axis.text = element_text(size=12),axis.text.x = element_text(),legend.text = element_text(size=12),plot.title = element_text(size=17),
+        axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(Pathway~Genus)
+
+ggsave(some.sulf.hm2,filename = "figures/MGM_Figs/Combined_Genus_S_Metabolism_Pathway_heatmap.png", width=20, height=15, dpi=600)
+
 # pull out specific S functions
 ## first, SOX
 clr.bin.Sox<-clr.sulf.all[grepl('Sox', clr.sulf.all$KO_Function),] # pull out just Sox functions
@@ -237,7 +261,7 @@ clr.bin.Sox$Bin_ID = factor(clr.bin.Sox$Bin_ID, levels=unique(clr.bin.Sox$Bin_ID
 
 NA %in% clr.bin.Sox$CLR_SumCovPerKO
 
-s.sox.hm<-ggplot(clr.bin.Sox, aes(Genus, KO_Function, fill=CLR_SumCovPerKO)) +
+s.sox.hm<-ggplot(clr.bin.Sox, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25)  +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50") + labs(title="SOX Functions in Salton Seawater MAGs by Genus",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO, Grouped by Bin Assigment",fill="CLR Coverage Sums Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=15),
@@ -254,7 +278,7 @@ clr.bin.as.S.redox$Bin_ID = factor(clr.bin.as.S.redox$Bin_ID, levels=unique(clr.
 
 NA %in% clr.bin.as.S.redox$CLR_SumCovPerKO
 
-s.R.hm1<-ggplot(clr.bin.as.S.redox, aes(Genus, KO_Function, fill=CLR_SumCovPerKO)) +
+s.R.hm1<-ggplot(clr.bin.as.S.redox, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25)  +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50") + labs(title="Assimilatory Sulfuate Reduction in Salton Seawater MAGs by Genus",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO, Grouped by Bin Assigment",fill="CLR Coverage Sums Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=15),
@@ -271,7 +295,7 @@ clr.bin.dis.S.redox$Bin_ID = factor(clr.bin.dis.S.redox$Bin_ID, levels=unique(cl
 
 NA %in% clr.bin.dis.S.redox$CLR_SumCovPerKO
 
-s.RO.hm1<-ggplot(clr.bin.dis.S.redox, aes(Genus, KO_Function, fill=CLR_SumCovPerKO)) +
+s.RO.hm1<-ggplot(clr.bin.dis.S.redox, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25)  +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50") + labs(title="Dissimilarity Sulfuate RedOx in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Summed Gene Coverage by KO, Grouped by Bin Assigment",fill="CLR Coverage Sums Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=15),
