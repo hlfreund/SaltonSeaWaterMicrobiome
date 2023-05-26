@@ -35,9 +35,6 @@ suppressPackageStartupMessages({ # load packages quietly
   library(decontam)
 })
 
-load("data/Metagenomes/Analysis/mgm_analysis.Rdata") # load Rdata to global env
-load("data/Metagenomes/Analysis/mgm_MAG_analysis.Rdata")
-
 #### Import Custom Functions ####
 
 counts_to_binary <- function(dataFrame){
