@@ -229,6 +229,8 @@ meta_scaled$Depth.num<-as.numeric(as.character(meta_scaled$Depth_m))
 
 #### Import Gene Info from KEGG ####
 
+dom.kegg<-read.table("data/Metagenomes/Analysis/DOM_KOs_Pathway_Cycle_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
+carb.kegg<-read.table("data/Metagenomes/Analysis/CarbonFixation_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 sulf.kegg<-read.table("data/Metagenomes/Analysis/Sulfur_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 arsen.kegg<-read.table("data/Metagenomes/Analysis/Arsenic_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 heatshock.kegg<-read.table("data/Metagenomes/Analysis/HeatShock_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
