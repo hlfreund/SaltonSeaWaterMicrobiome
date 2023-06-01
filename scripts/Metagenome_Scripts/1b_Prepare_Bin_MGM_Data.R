@@ -483,6 +483,8 @@ bin.ko_fxns<-as.data.frame(bin.ko_fxns1[!is.na(bin.ko_fxns1$KO_ID),])  # use uni
 head(bin.ko_fxns)
 
 ## pull out functions of interest
+carb.fxns<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% carb.kegg$KO_ID),]
+DOM.fxns<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% dom.kegg$KO_ID),]
 sulfur.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% sulf.kegg$KO_ID),]
 osmo.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% osmo.kegg$KO_ID),]
 selen.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% selen.kegg$KO_ID),]

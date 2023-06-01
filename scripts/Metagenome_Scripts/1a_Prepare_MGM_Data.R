@@ -474,6 +474,8 @@ head(ko_fxns)
 ## pull out functions of interest
 #sulfur.fxns<-as.data.frame(ko_fxns[grep("sulf|thio", ko_fxns$KO_Function), ]) # pull out sulfur functions
 sulfur.fxns<-ko_fxns[which(ko_fxns$KO_ID %in% sulf.kegg$KO_ID),]
+carb.fxns<-ko_fxns[which(ko_fxns$KO_ID %in% carb.kegg$KO_ID),]
+DOM.fxns<-ko_fxns[which(ko_fxns$KO_ID %in% dom.kegg$KO_ID),]
 osmo.fxns<-ko_fxns[which(ko_fxns$KO_ID %in% osmo.kegg$KO_ID),]
 selen.fxns<-ko_fxns[which(ko_fxns$KO_ID %in% selen.kegg$KO_ID),]
 arsen.fxns<-ko_fxns[which(ko_fxns$KO_ID %in% arsen.kegg$KO_ID),]
