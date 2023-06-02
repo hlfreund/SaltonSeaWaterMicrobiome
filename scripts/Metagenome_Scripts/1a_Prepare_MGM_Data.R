@@ -295,7 +295,7 @@ ko.cov.sum_table[1:4,1:4]
 rownames(ko.cov.sum_table)<-ko.cov.sum_table$SampleID
 ko.cov.sum_table[1:4,1:4]
 
-# check rownames of summed CLR transformed feature coverage data & metadata
+# check rownames of summed transformed feature coverage data & metadata
 rownames(ko.cov.sum_table) %in% rownames(meta_scaled)
 
 ko.cov.sum_table[1:4,1:4] # contains the sum of coverages per gene per KO -- featureCounts was normalized by gene length across samples first to get coverage, then summed up per KO ID
