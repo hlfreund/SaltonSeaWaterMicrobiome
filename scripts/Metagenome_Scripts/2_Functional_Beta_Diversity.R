@@ -699,11 +699,26 @@ clr.DOM.all$SampleID = factor(clr.DOM.all$SampleID, levels=unique(clr.DOM.all$Sa
 clr.DOM.all$SampDate<-gsub("\\."," ",clr.DOM.all$SampDate)
 clr.DOM.all$SampDate<-factor(clr.DOM.all$SampDate, levels=c("August 2021","December 2021","April 2022"))
 unique(clr.DOM.all$Pathway)
+unique(clr.DOM.all$Cycle)
+clr.DOM.all$Cycle<-factor(clr.DOM.all$Cycle, levels=c("Sulfur Cycle","Carbon Cycle","Nitrogen Cycle"))
+
+clr.DOM.all$PathShort<-clr.DOM.all$Pathway
+# vvv can only do this type of renaming if variables are characters, not factors
+clr.DOM.all$PathShort[(clr.DOM.all$PathShort) == "Assimilatory Sulfate Reduction"] <- "A. Sulfate Red"
+clr.DOM.all$PathShort[(clr.DOM.all$PathShort) == "Dissimilatory Sulfate Redox"] <- "D. Sulfate Redox"
+clr.DOM.all$PathShort[(clr.DOM.all$PathShort) == "SOX System"] <- "SOX"
+clr.DOM.all$PathShort[(clr.DOM.all$PathShort) == "Reductive Citrate Cycle"] <- "Red. Citrate Cycle"
+clr.DOM.all$PathShort[(clr.DOM.all$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3-H BC"
+clr.DOM.all$PathShort[(clr.DOM.all$PathShort) == "Phosphate acetyltransferase-acetate kinase Pathway"] <- "P.A.A.K."
+clr.DOM.all$PathShort[(clr.DOM.all$PathShort) == "Assimilatory Nitrate Reduction"] <- "A. Nitrate Red"
+
 clr.DOM.all$Pathway<-factor(clr.DOM.all$Pathway,levels=c("Assimilatory Sulfate Reduction","Dissimilatory Sulfate Redox","SOX System",
                                                          "Reductive Citrate Cycle","3-Hydroxypropionate Bi-cycle","Methanogenesis","Phosphate acetyltransferase-acetate kinase Pathway",
                                                          "Denitrification","Assimilatory Nitrate Reduction","Anammox"))
-unique(clr.DOM.all$Cycle)
-clr.DOM.all$Cycle<-factor(clr.DOM.all$Cycle, levels=c("Sulfur Cycle","Carbon Cycle","Nitrogen Cycle"))
+
+clr.DOM.all$PathShort<-factor(clr.DOM.all$PathShort,levels=c("A. Sulfate Red","D. Sulfate Redox","SOX",
+                                                         "Red. Citrate Cycle","3-H BC","Methanogenesis","P.A.A.K.",
+                                                         "Denitrification","A. Nitrate Red","Anammox"))
 clr.DOM.all$KO_Function.KEGG = factor(clr.DOM.all$KO_Function.KEGG, levels=unique(clr.DOM.all$KO_Function.KEGG[order(clr.DOM.all$Cycle,clr.DOM.all$Pathway)]), ordered=TRUE)
 
 head(clr.DOM.all)
@@ -724,9 +739,9 @@ DOM.hm1b1<-ggplot(clr.DOM.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovPe
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~.,scales="free_y", space = "free")
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(DOM.hm1b1,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_SampID_by_Function_Pathway_heatmap.png", width=17, height=20, dpi=600)
+ggsave(DOM.hm1b1,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_SampID_by_Function_Pathway_heatmap.png", width=17, height=22, dpi=600)
 
 DOM.hm1b2<-ggplot(clr.DOM.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -748,15 +763,35 @@ DOM.hm1c<-ggplot(clr.DOM.all, aes(interaction(SampDate,Depth_m), KO_Function.KEG
 
 ggsave(DOM.hm1c,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=20, dpi=600)
 
-DOM.hm1c2<-ggplot(clr.DOM.all[which(clr.DOM.all$CLR_SumCovPerKO>0.5),], aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+DOM.hm1c1<-ggplot(clr.DOM.all, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","0"),breaks=c(1.5,0.5,0)) + labs(title="DOM Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="DOM Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Cycle+Pathway~.,scales="free_y", space = "free")
+
+ggsave(DOM.hm1c1,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=20, dpi=600)
+
+DOM.hm1c2<-ggplot(clr.DOM.all[which(clr.DOM.all$CLR_SumCovPerKO>0),], aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","0"),breaks=c(1.5,0.5,0)) + labs(title="DOM Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO (CLR > 0)",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~.,scales="free_y", space = "free")
 
-ggsave(DOM.hm1c2,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_HigherCLR_heatmap.png", width=15, height=20, dpi=600)
+ggsave(DOM.hm1c2,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_HigherCLR_heatmap.png", width=15, height=18, dpi=600)
+
+DOM.hm1c3<-ggplot(clr.DOM.all[which(clr.DOM.all$CLR_SumCovPerKO>0),], aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","0"),breaks=c(1.5,0.5,0)) + labs(title="DOM Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO (CLR > 0)",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Cycle+Pathway~.,scales="free_y", space = "free")
+
+ggsave(DOM.hm1c3,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_Cycle_HigherCLR_heatmap.png", width=15, height=18, dpi=600)
 
 DOM.hm1d<-ggplot(clr.DOM.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -774,7 +809,7 @@ DOM.hm1e<-ggplot(clr.DOM.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerK
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~SampDate, scales="free", space = "free")
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Cycle~SampDate, scales="free", space = "free")
 
 ggsave(DOM.hm1e,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=15, height=20, dpi=600)
 
@@ -839,57 +874,36 @@ DOM.hm1g<-ggplot(clr.DOM.all[clr.DOM.all$Depth_m==10,], aes(Pathway, KO_Function
 
 ggsave(DOM.hm1g,filename = "figures/MGM_Figs/DOM_KOFxns_Pathways_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
 
-# # pull out specific S functions
-# ## first, SOX
-# clr.Sox<-clr.sulf.all[grepl('Sox', clr.sulf.all$KO_Function),] # pull out just Sox functions
-# clr.Sox$SampDate = factor(clr.Sox$SampDate, levels=c("August 2021","December 2021", "April 2022"))
-# clr.Sox$SampleID = factor(clr.Sox$SampleID, levels=unique(clr.Sox$SampleID[order(clr.Sox$SampDate,clr.Sox$Depth_m)]), ordered=TRUE)
-#
-# NA %in% clr.Sox$CLR_SumCovPerKO
-#
-# s.sox.hm<-ggplot(clr.Sox, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
-#   geom_tile(colour="white",size=0.25)  +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="SOX Functions in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO, Grouped by Bin Assigment",fill="CLR Coverage Per KO") +
-#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=15),
-#         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
-#         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
-#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
-#
-# ggsave(s.sox.hm,filename = "figures/MGM_Figs/SSW_S_SOX_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
-#
-# # Assimilatory sulfate reduction
-# clr.as.S.redox<-clr.sulf.all[grepl('1.8.7.1|1.8.1.2|2.7.7.4|1.8.4.10|1.8.4.8|2.7.1.25', clr.sulf.all$KO_Function),] # pull out just assimilatory sulfate reduction functions
-# clr.as.S.redox$SampDate = factor(clr.as.S.redox$SampDate, levels=c("August 2021","December 2021", "April 2022"))
-# clr.as.S.redox$SampleID = factor(clr.as.S.redox$SampleID, levels=unique(clr.as.S.redox$SampleID[order(clr.as.S.redox$SampDate,clr.as.S.redox$Depth_m)]), ordered=TRUE)
-#
-# NA %in% clr.as.S.redox$CLR_SumCovPerKO
-#
-# s.R.hm1<-ggplot(clr.as.S.redox, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
-#   geom_tile(colour="white",size=0.25)  +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Assimilatory Sulfuate Reduction in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO, Grouped by Bin Assigment",fill="CLR Coverage Per KO") +
-#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=15),
-#         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
-#         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
-#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
-#
-# ggsave(s.R.hm1,filename = "figures/MGM_Figs/SSW_S_AssSO4_Reduction_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
-#
-# # Dissimilatory sulfate reduction and oxidation
-# clr.dis.S.redox<-clr.sulf.all[grepl('1.8.99.2|1.8.99.5|2.7.7.4', clr.sulf.all$KO_Function),] # pull out just Sox functions
-# clr.dis.S.redox$SampDate = factor(clr.dis.S.redox$SampDate, levels=c("August 2021","December 2021", "April 2022"))
-# clr.dis.S.redox$SampleID = factor(clr.dis.S.redox$SampleID, levels=unique(clr.dis.S.redox$SampleID[order(clr.dis.S.redox$SampDate,clr.dis.S.redox$Depth_m)]), ordered=TRUE)
-#
-# NA %in% clr.dis.S.redox$CLR_SumCovPerKO
-#
-# s.RO.hm1<-ggplot(clr.dis.S.redox, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
-#   geom_tile(colour="white",size=0.25)  +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Dissimilarity Sulfuate RedOx in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO, Grouped by Bin Assigment",fill="CLR Coverage Per KO") +
-#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=15),
-#         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
-#         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
-#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
-#
-# ggsave(s.RO.hm1,filename = "figures/MGM_Figs/SSW_S_DissSO4_RedOx_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
+
+# Subset DOM df by pathways that are more prevalent, then rerun figs
+unique(clr.DOM.all$PathShort)
+clr.DOM.some<-clr.DOM.all[grepl('A. Sulfate Red|D. Sulfate Redox|SOX|3-H BC|P.A.A.K.|Anammox', clr.DOM.all$PathShort),] # pull out just assimilatory sulfate reduction functions
+clr.DOM.some$PathShort
+#clr.DOM.some$SampDate = factor(clr.DOM.some$SampDate, levels=c("August 2021","December 2021", "April 2022"))
+#clr.DOM.some$SampleID = factor(clr.DOM.some$SampleID, levels=unique(clr.DOM.some$SampleID[order(clr.DOM.some$Depth_m,clr.DOM.some$SampDate)]), ordered=TRUE)
+
+DOM.some.hm1<-ggplot(clr.DOM.some, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) +
+  labs(title="DOM Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO",caption = "Only Includes Pathways w/ Higher CLR") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold"),plot.caption = element_text(size=14, face = "italic")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
+
+ggsave(DOM.some.hm1,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_Depth_by_Function_SampDate_HigherCov_Pathways_Only_heatmap.png", width=15, height=15, dpi=600)
+
+DOM.some.hm2<-ggplot(clr.DOM.some, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) +
+  labs(title="DOM Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO",caption = "Only Includes Pathways w/ Higher CLR") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold"),plot.caption = element_text(size=14, face = "italic")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Cycle+PathShort~SampDate, scales="free", space = "free")
+
+ggsave(DOM.some.hm2,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_Depth_by_Function_SampDate_HigherCov_Pathways_Only_heatmap_v2.png", width=15, height=18, dpi=600)
+
 
 #### Pull Out Carbon Metabolic Fxns from CLR data ####
 ## heatmaps of traits of interest
@@ -1433,6 +1447,82 @@ pcoa.s2<-ggplot(DOM.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
 ggsave(pcoa.s2,filename = "figures/MGM_Figs/SSW_DOMOnly_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
 
 
+#### Carbon Fixation PCoA ####
+## PCOA with CLR transformed data first
+# calculate our Euclidean distance matrix using CLR data
+
+
+mgm.clr[1:4,1:4]
+
+# pull out sulfur functions from CLR transformed, summed coverages (summed coverage per KO)
+carb.ko<-mgm.clr[,which(colnames(mgm.clr) %in% carb.fxns$KO_ID)] # merge CLR data w/ DOM-related fxns found in contigs from KOFamScan
+carb.ko$SampleID<-rownames(carb.ko)
+carb.ko.melt<-melt(carb.ko, by="SampleID")
+colnames(carb.ko.melt)[which(names(carb.ko.melt) == "variable")] <- "KO_ID"
+colnames(carb.ko.melt)[which(names(carb.ko.melt) == "value")] <- "CLR_SumCovPerKO"
+head(carb.ko.melt) #sanity check
+
+clr.carb.ko<-merge(carb.ko.melt,carb.kegg,by.x=c("KO_ID"),by.y=c("KO_ID"))
+head(clr.carb.ko)
+colnames(clr.carb.ko)[which(names(clr.carb.ko) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
+clr.cov.sum.carb.ko<-as.data.frame(dcast(clr.carb.ko, SampleID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
+rownames(clr.cov.sum.carb.ko)<-clr.cov.sum.carb.ko$SampleID
+clr.cov.sum.carb.ko[1:4,1:4]
+
+carb.euc.clr_dist <- dist(clr.cov.sum.carb.ko[,-1], method = "euclidean")
+
+# creating our hierarcical clustering dendrogram
+carb.euc.clr_clust <- hclust(carb.euc.clr_dist, method="ward.D2")
+
+# let's make it a little nicer...
+carb.euc.clr_dend <- as.dendrogram(carb.euc.clr_clust, hang=0.2)
+carb.dend_cols <- as.character(meta_scaled$SampDate_Color[order.dendrogram(carb.euc.clr_dend)])
+labels_colors(carb.euc.clr_dend) <- carb.dend_cols
+
+plot(carb.euc.clr_dend, ylab="CLR Euclidean Distance",cex = 0.5) + title(main = "Bacteria/Archaea Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 3)
+legend("topright",legend = c("August 2021","December 2021","April 2022"),cex=.8,col = c("#ef781c","#03045e","#059c3f"),pch = 15, bty = "n")
+# Control is dark blue ("#218380"), #Alternaria is light blue ("#73d2de")
+dev.off()
+
+# let's use our Euclidean distance matrix from before
+carb.pcoa.clr <- pcoa(carb.euc.clr_dist) # pcoa of euclidean distance matrix = PCA of euclidean distance matrix
+##save.image("data/ssw_clr.euc.dist1_3.7.23.Rdata")
+
+# The proportion of variances explained is in its element values$Relative_eig
+carb.pcoa.clr$values
+
+# extract principal coordinates
+carb.pcoa.clr.vectors<-data.frame(carb.pcoa.clr$vectors)
+carb.pcoa.clr.vectors$SampleID<-rownames(carb.pcoa.clr$vectors)
+
+# merge pcoa coordinates w/ metadata
+carb.pcoa.clr.meta<-merge(carb.pcoa.clr.vectors, mgm_meta, by.x="SampleID", by.y="SampleID")
+carb.pcoa.clr.meta$SampleMonth
+carb.pcoa.clr.meta$SampDate
+
+head(carb.pcoa.clr.meta)
+
+carb.pcoa.clr$values # pull out Relative (Relative_eig) variation % to add to axes labels
+
+# create PCoA ggplot fig
+pcoa.s1<-ggplot(carb.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
+  labs(title="PCoA: DOM Metabolism in Salton Seawater",subtitle="Using CLR Transformed, Summed Gene Coverage per KO Function",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Date")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(carb.pcoa.clr.meta$SampDate_Color[order(carb.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("PC1 [29.64%]") + ylab("PC2 [22.51%]")
+
+ggsave(pcoa.s1,filename = "figures/MGM_Figs/SSW_CarbonFixationOnly_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
+
+# sample month shape, depth color
+pcoa.s2<-ggplot(carb.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
+  geom_point(aes(color=as.numeric(Depth_m),shape=SampleMonth), size=5)+theme_bw()+
+  labs(title="PCoA: DOM Metabolsim in Salton Seawater",subtitle="Using CLR Transformed, Summed Gene Coverage per KO Function",xlab="PC1", ylab="PC2",color="Depth (m)")+
+  theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
+  scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
+  xlab("PC1 [29.64%]") + ylab("PC2 [22.51%]")
+
+ggsave(pcoa.s2,filename = "figures/MGM_Figs/SSW_CarbonFixationOnly_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
+
 #### Arsenic Metabolism PCoA ####
 ## PCOA with CLR transformed data first
 # calculate our Euclidean distance matrix using CLR data
@@ -1949,6 +2039,36 @@ head(sulf.pcoa.clr.meta)
 
 step1<-step(glm(formula = Axis.1 ~ ., data=sulf.pcoa.clr.meta[,c(2,16,18:19,23:25)]))
 summary(step1)
+# Coefficients:
+#                 Estimate Std. Error t value Pr(>|t|)
+# (Intercept)     2.41148    4.35439   0.554   0.6092
+# ORP_mV          0.03297    0.01002   3.291   0.0302 *
+#   Temp_DegC       0.09329    0.02300   4.057   0.0154 *
+#   Sulfate_milliM -0.03820    0.01905  -2.006   0.1154
+# Sulfide_microM  0.18190    0.05676   3.205   0.0327 *
+
+step2<-step(glm(formula = Axis.1 ~ ., data=DOM.pcoa.clr.meta[,c(2,16,18:19,23:25)]))
+summary(step2)
+#
+# Coefficients:
+#                             Estimate Std. Error t value Pr(>|t|)
+# (Intercept)                  6.27047    5.08754   1.233    0.306
+# ORP_mV                       0.01941    0.01100   1.764    0.176
+# Temp_DegC                    0.06344    0.02224   2.853    0.065 .
+# Dissolved_OrganicMatter_RFU -0.08206    0.07147  -1.148    0.334
+# Sulfate_milliM              -0.03692    0.01830  -2.018    0.137
+# Sulfide_microM               0.10999    0.06076   1.810    0.168
+
+step3<-step(glm(formula = Axis.1 ~ ., data=carb.pcoa.clr.meta[,c(2,16,18:19,23:25)]))
+summary(step3)
+
+# Coefficients:
+#                               Estimate Std. Error t value Pr(>|t|)
+# (Intercept)                 -7.22530    9.58689  -0.754   0.4930
+# ORP_mV                      -0.03745    0.02677  -1.399   0.2343
+# Dissolved_OrganicMatter_RFU -0.30280    0.20883  -1.450   0.2207
+# Sulfate_milliM               0.10231    0.03519   2.907   0.0438 *
+#   Sulfide_microM              -0.23002    0.15127  -1.521   0.2030
 
 sulf.fxn.glm.fit1<-glm(formula = Axis.1 ~ DO_Percent_Local, data=sulf.pcoa.clr.meta)%>%
   adjust_pvalue(method="bonferroni")
@@ -1959,7 +2079,7 @@ summary(sulf.fxn.glm.fit1)
 #(Intercept)       0.0112706  0.0004664  24.166   <2e-16 ***
 #DO_Percent_Local -0.0009547  0.0005092  -1.875   0.0687 .
 
-sulf.fxn.glm.fit2<-glm(formula = CLR_SumCovPerKO ~ ORP_mV, data=sulf.ko.clr.all)%>%
+sulf.fxn.glm.fit2<-glm(formula = Axis.1 ~ ORP_mV, data=sulf.pcoa.clr.meta)%>%
   adjust_pvalue(method="bonferroni")
 
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
@@ -1970,7 +2090,7 @@ summary(sulf.fxn.glm.fit2)
 #(Intercept)   0.0112343  0.0004731  23.745   <2e-16 ***
 #ORP_mV      -0.0001512  0.0004968  -0.304    0.763
 
-sulf.fxn.glm.fit3<-glm(formula = CLR_SumCovPerKO ~ Temp_DegC, family = Gamma, data=sulf.ko.clr.all)%>%
+sulf.fxn.glm.fit3<-glm(formula = Axis.1 ~ Temp_DegC, family = Gamma, data=sulf.pcoa.clr.meta)%>%
   adjust_pvalue(method="bonferroni")
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(sulf.fxn.glm.fit3)
@@ -1979,7 +2099,7 @@ summary(sulf.fxn.glm.fit3)
 #(Intercept) 0.0113225  0.0004451  25.439   <2e-16 ***
 #Temp_DegC   0.0011947  0.0004861   2.458   0.0188 *
 
-sulf.fxn.glm.fit5<-glm(formula = CLR_SumCovPerKO ~ Dissolved_OrganicMatter_RFU, family = Gamma, data=sulf.ko.clr.all)%>%
+sulf.fxn.glm.fit5<-glm(formula = Axis.1 ~ Dissolved_OrganicMatter_RFU, family = Gamma, data=sulf.pcoa.clr.meta)%>%
   adjust_pvalue(method="bonferroni")
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(sulf.fxn.glm.fit5)
@@ -1988,7 +2108,7 @@ summary(sulf.fxn.glm.fit5)
 #(Intercept)                 0.0112493  0.0004708  23.896   <2e-16 ***
 #Dissolved_OrganicMatter_RFU 0.0004269  0.0004659   0.916    0.365
 
-sulf.fxn.glm.fit6<-glm(formula = CLR_SumCovPerKO ~ Sulfate_milliM, family = Gamma, data=sulf.ko.clr.all)%>%
+sulf.fxn.glm.fit6<-glm(formula = Axis.1 ~ Sulfate_milliM, family = Gamma, data=sulf.pcoa.clr.meta)%>%
   adjust_pvalue(method="bonferroni")
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(sulf.fxn.glm.fit6)
@@ -1997,7 +2117,7 @@ summary(sulf.fxn.glm.fit6)
 #(Intercept)     0.0112325  0.0004772  23.536   <2e-16 ***
 #Sulfate_milliM -0.0002664  0.0004893  -0.545    0.589
 
-sulf.fxn.glm.fit7<-glm(formula = CLR_SumCovPerKO ~ Sulfide_microM, family = Gamma, data=sulf.ko.clr.all)%>%
+sulf.fxn.glm.fit7<-glm(formula = Axis.1 ~ Sulfide_microM, family = Gamma, data=sulf.pcoa.clr.meta)%>%
   adjust_pvalue(method="bonferroni")
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(sulf.fxn.glm.fit7)
@@ -2006,13 +2126,13 @@ summary(sulf.fxn.glm.fit7)
 #(Intercept)    0.0112379  0.0004723   23.80   <2e-16 ***
 #Sulfide_microM 0.0002944  0.0005160    0.57    0.572
 
-sulf.fxn.glm.fit8<-glm(formula = CLR_SumCovPerKO ~ as.numeric(Depth_m), family = Gamma, data=sulf.ko.clr.all)%>%
+sulf.fxn.glm.fit8<-glm(formula = Axis.1 ~ as.numeric(Depth_m), family = Gamma, data=sulf.pcoa.clr.meta)%>%
   adjust_pvalue(method="bonferroni")
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(sulf.fxn.glm.fit8)
 
-fit1<-aov(CLR_SumCovPerKO ~ as.factor(Depth_m), data=sulf.ko.clr.all)
-#pairwise.adonis(sulf.ko.clr.all$CLR_SumCovPerKO, sulf.ko.clr.all$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
+#fit1<-aov(Axis.1 ~ as.factor(Depth_m), data=sulf.pcoa.clr.meta)
+#pairwise.adonis(sulf.pcoa.clr.meta$Axis.1, sulf.pcoa.clr.meta$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 
 summary(fit1)
 #Df           Sum Sq Mean Sq    F value   Pr(>F)
@@ -2021,10 +2141,10 @@ summary(fit1)
 Tuk1<-TukeyHSD(fit1)
 Tuk1$Depth_m
 
-#plot(CLR_SumCovPerKO ~ Depth_m, data=sulf.ko.clr.all)
-#abline(aov(DustComplexity ~ Elevation, data=sulf.ko.clr.all))
+#plot(Axis.1 ~ Depth_m, data=sulf.pcoa.clr.meta)
+#abline(aov(DustComplexity ~ Elevation, data=sulf.pcoa.clr.meta))
 
-# fit.0<-aov(DustComplexity ~ as.factor(Elevation), data=sulf.ko.clr.all)
+# fit.0<-aov(DustComplexity ~ as.factor(Elevation), data=sulf.pcoa.clr.meta)
 # summary(fit.0)
 # TukeyHSD(fit.0)
 # Levene's test with one independent variable
@@ -2033,10 +2153,10 @@ Tuk1$Depth_m
 ## t test assumes that variances are the same, so Levene's test needs to be non significant
 ## Fligner's test is a Levene's test for data that are not normally distributed
 ## more here: https://www.geeksforgeeks.org/fligner-killeen-test-in-r-programming/
-fligner.test(CLR_SumCovPerKO ~ Depth_m, data = sulf.ko.clr.all)
+#fligner.test(Axis.1 ~ Depth_m, data = sulf.pcoa.clr.meta)
 # Fligner-Killeen:med chi-squared = 4.091, df = 7, p-value = 0.7692
 # Which shows that the data do not deviate significantly from homogeneity.
-compare_means(CLR_SumCovPerKO ~ Depth_m, data=sulf.ko.clr.all, method="anova",p.adjust.method = "bonferroni") # won't take as.factor(Elevation) as input
+#compare_means(Axis.1 ~ Depth_m, data=sulf.pcoa.clr.meta, method="anova",p.adjust.method = "bonferroni") # won't take as.factor(Elevation) as input
 
 ### Export Global Env for Other Scripts ####
 save.image("data/Metagenomes/Analysis/SSW_MGM_Fxn_BetaDiv.Rdata")
