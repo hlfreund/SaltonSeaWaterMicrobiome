@@ -1824,7 +1824,7 @@ mgm.clr[1:4,1:4]
 rownames(mgm.clr) %in% rownames(meta_scaled)
 
 meta_scaled=meta_scaled[rownames(mgm.clr),] ## reorder metadata to match order of CLR data
-perm <- with(meta_scaled, how(nperm = 1000, blocks = SampDate))
+perm <- with(meta_scaled, how(nperm = 1000))
 
 pnova1<-adonis2(mgm.clr ~ DO_Percent_Local*ORP_mV*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova1
@@ -1862,7 +1862,7 @@ adonis2(mgm.clr ~ Dissolved_OrganicMatter_RFU*Sulfide_microM,data=meta_scaled,me
 ### pseudo F-ratio: It compares the total sum of squared dissimilarities (or ranked dissimilarities) among objects belonging to different groups to that of objects belonging to the same group.
 ### Larger F-ratios indicate more pronounced group separation, however, the significance of this ratio is usually of more interest than its magnitude.
 
-#### PERMANOVAs to Env Variables Across Groups - Specific Fxns ####
+#### PERMANOVAs to Env Variables Across Groups - Sulfur Fxns ####
 
 ## The currently preferred analysis for evaluating differences among groups is PERMANOVA.
 ## This analysis partitions sums of squares using dissimilarities,
@@ -1878,30 +1878,30 @@ help(adonis)
 ## An advantage of adonis2 is that we can test for overall model fit, setting by=NULL, or by individual terms (w/ by="terms")
 ## w/ distance matrices - The adonis2 tests are identical to anova.cca of dbrda. With Euclidean distances, the tests are also identical to anova.cca of rda.
 
-clr.cov.sum.sulf.ko2[1:4,1:4]
+clr.cov.sum.sulf.ko[1:4,1:4]
 
 # First make sure your data frames you're comparing are in the same exact order!!
-rownames(clr.cov.sum.sulf.ko2) %in% rownames(meta_scaled)
+rownames(clr.cov.sum.sulf.ko) %in% rownames(meta_scaled)
 
-meta_scaled=meta_scaled[rownames(clr.cov.sum.sulf.ko2),] ## reorder metadata to match order of CLR data
-perm <- with(meta_scaled, how(nperm = 1000, blocks = SampDate))
+meta_scaled=meta_scaled[rownames(clr.cov.sum.sulf.ko),] ## reorder metadata to match order of CLR data
+perm <- with(meta_scaled, how(nperm = 1000))
 
 s.pnov0<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ Depth_m,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 s.pnov0
 
 adonis2(clr.cov.sum.sulf.ko[,-1] ~ Depth_m,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 
-s.pnov1<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ ORP_mV*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+s.pnov1<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ ORP_mV*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 s.pnov1
 ## none are significant
 
-adonis2(clr.cov.sum.sulf.ko[,-1] ~ ORP_mV*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+adonis2(clr.cov.sum.sulf.ko[,-1] ~ ORP_mV*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM*Temp_DegC,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 #         Df SumOfSqs     R2    F Pr(>F)
 #Model    23    34412 0.73114 1.8918 0.4825
 #Residual 16    12654 0.26886
 #Total    39    47066 1.00000
 
-s.pnov2<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+s.pnov2<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ ORP_mV*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 s.pnov2
 # nothing significant
 
@@ -1916,11 +1916,13 @@ s.pnov4<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU*Sulfate_
 s.pnov4
 # nothing
 
-adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU*Sulfate_milliM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+
+s.pnov5<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU*Sulfate_milliM*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+s.pnov5
 
 # what about by S metabolic pathway?
-clr.cov.sum.sulf.ko[1:4,1:4]
-clr.cov.sum.sulf.ko[which(colnames(clr.cov.sum.sulf.ko) %in% assim.sulfate.red$KO_Function.KEGG)]
+rownames(s.path.clr) %in% rownames(meta_scaled)
 
 head(s.path.clr)
 
@@ -1960,6 +1962,155 @@ Tuk1<-TukeyHSD(fit2)
 ### Pseudo F stat for PERMANOVA
 ### pseudo F-ratio: It compares the total sum of squared dissimilarities (or ranked dissimilarities) among objects belonging to different groups to that of objects belonging to the same group.
 ### Larger F-ratios indicate more pronounced group separation, however, the significance of this ratio is usually of more interest than its magnitude.
+
+
+#### PERMANOVAs to Env Variables Across Groups - DOM Fxns ####
+
+## The currently preferred analysis for evaluating differences among groups is PERMANOVA.
+## This analysis partitions sums of squares using dissimilarities,
+##  evaluating differences in the centroids of groups in multivariate space.
+##  The vegan functions “adonis” and “adonis2” are used to compute PERMANOVA in R.
+
+help(adonis)
+
+## can specify dataframes for analysis, or we can alternatively specify a dissimilarity matrix:
+
+#Other advantages of using PERMANOVA are that we can test for interactions between predictor variables,
+## and we can use both categorical and continuous predictor variables.
+## An advantage of adonis2 is that we can test for overall model fit, setting by=NULL, or by individual terms (w/ by="terms")
+## w/ distance matrices - The adonis2 tests are identical to anova.cca of dbrda. With Euclidean distances, the tests are also identical to anova.cca of rda.
+
+clr.cov.sum.DOM.ko[1:4,1:4]
+
+# First make sure your data frames you're comparing are in the same exact order!!
+rownames(clr.cov.sum.DOM.ko) %in% rownames(meta_scaled)
+
+meta_scaled=meta_scaled[rownames(clr.cov.sum.DOM.ko),] ## reorder metadata to match order of CLR data
+perm <- with(meta_scaled, how(nperm = 1000))
+
+dom.pnov0<-adonis2(clr.cov.sum.DOM.ko[,-1] ~ Depth_m,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+dom.pnov0
+
+adonis2(clr.cov.sum.DOM.ko[,-1] ~ Depth_m,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+
+dom.pnov1<-adonis2(clr.cov.sum.DOM.ko[,-1] ~ ORP_mV*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+dom.pnov1
+## none are significant
+
+adonis2(clr.cov.sum.DOM.ko[,-1] ~ ORP_mV*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+#         Df SumOfSqs     R2    F Pr(>F)
+#Model    23    34412 0.73114 1.8918 0.4825
+#Residual 16    12654 0.26886
+#Total    39    47066 1.00000
+
+dom.pnov2<-adonis2(clr.cov.sum.DOM.ko[,-1] ~ ORP_mV*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+dom.pnov2
+# nothing significant
+
+adonis2(clr.cov.sum.DOM.ko[,-1] ~ Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+
+dom.pnov3<-adonis2(clr.cov.sum.DOM.ko[,-1] ~ ORP_mV*Sulfate_milliM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+dom.pnov3
+
+adonis2(clr.cov.sum.DOM.ko[,-1] ~ Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+
+dom.pnov4<-adonis2(clr.cov.sum.DOM.ko[,-1] ~ Dissolved_OrganicMatter_RFU*Sulfate_milliM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+dom.pnov4
+# nothing
+
+adonis2(clr.cov.sum.DOM.ko[,-1] ~ Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+
+dom.pnov5<-adonis2(clr.cov.sum.DOM.ko[,-1] ~ ORP_mV*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+dom.pnov5
+#                   Df SumOfSqs      R2      F  Pr(>F)
+# ORP_mV            1   0.6345 0.17070 3.2173 0.06019 .
+# Temp_DegC         1   1.5428 0.41507 7.8231 0.04167 *
+#   ORP_mV:Temp_DegC  1   0.5537 0.14895 2.8074 0.45833
+# Residual          5   0.9861 0.26528
+# Total             8   3.7171 1.00000
+
+
+### SELF REMINDER FOR R^2
+### Coefficient of Determination, denoted R2 or r2
+### is the proportion of the variance in the dependent variable that is predictable from the independent variable(s)
+
+### Pseudo F stat for PERMANOVA
+### pseudo F-ratio: It compares the total sum of squared dissimilarities (or ranked dissimilarities) among objects belonging to different groups to that of objects belonging to the same group.
+### Larger F-ratios indicate more pronounced group separation, however, the significance of this ratio is usually of more interest than its magnitude.
+
+
+
+#### PERMANOVAs to Env Variables Across Groups - Carbon Fxns ####
+
+## The currently preferred analysis for evaluating differences among groups is PERMANOVA.
+## This analysis partitions sums of squares using dissimilarities,
+##  evaluating differences in the centroids of groups in multivariate space.
+##  The vegan functions “adonis” and “adonis2” are used to compute PERMANOVA in R.
+
+help(adonis)
+
+## can specify dataframes for analysis, or we can alternatively specify a dissimilarity matrix:
+
+#Other advantages of using PERMANOVA are that we can test for interactions between predictor variables,
+## and we can use both categorical and continuous predictor variables.
+## An advantage of adonis2 is that we can test for overall model fit, setting by=NULL, or by individual terms (w/ by="terms")
+## w/ distance matrices - The adonis2 tests are identical to anova.cca of dbrda. With Euclidean distances, the tests are also identical to anova.cca of rda.
+
+clr.cov.sum.carb.ko[1:4,1:4]
+
+# First make sure your data frames you're comparing are in the same exact order!!
+rownames(clr.cov.sum.carb.ko) %in% rownames(meta_scaled)
+
+meta_scaled=meta_scaled[rownames(clr.cov.sum.carb.ko),] ## reorder metadata to match order of CLR data
+perm <- with(meta_scaled, how(nperm = 1000))
+
+c.pnov0<-adonis2(clr.cov.sum.carb.ko[,-1] ~ Depth_m,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+c.pnov0
+
+adonis2(clr.cov.sum.carb.ko[,-1] ~ Depth_m,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+
+c.pnov1<-adonis2(clr.cov.sum.carb.ko[,-1] ~ ORP_mV*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+c.pnov1
+## none are significant
+
+adonis2(clr.cov.sum.carb.ko[,-1] ~ ORP_mV*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+
+c.pnov2<-adonis2(clr.cov.sum.carb.ko[,-1] ~ ORP_mV*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+c.pnov2
+# nothing significant
+
+adonis2(clr.cov.sum.carb.ko[,-1] ~ ORP_mV*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM*Temp_DegC,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+
+c.pnov3<-adonis2(clr.cov.sum.carb.ko[,-1] ~ ORP_mV*Sulfate_milliM*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+c.pnov3
+
+adonis2(clr.cov.sum.carb.ko[,-1] ~ Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+
+c.pnov4<-adonis2(clr.cov.sum.carb.ko[,-1] ~ Dissolved_OrganicMatter_RFU*Sulfate_milliM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+c.pnov4
+# nothing
+
+adonis2(clr.cov.sum.carb.ko[,-1] ~ Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+
+c.pnov5<-adonis2(clr.cov.sum.carb.ko[,-1] ~ ORP_mV*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+c.pnov5
+#                   Df SumOfSqs      R2      F  Pr(>F)
+# ORP_mV            1   0.6345 0.17070 3.2173 0.06019 .
+# Temp_DegC         1   1.5428 0.41507 7.8231 0.04167 *
+#   ORP_mV:Temp_DegC  1   0.5537 0.14895 2.8074 0.45833
+# Residual          5   0.9861 0.26528
+# Total             8   3.7171 1.00000
+
+
+### SELF REMINDER FOR R^2
+### Coefficient of Determination, denoted R2 or r2
+### is the proportion of the variance in the dependent variable that is predictable from the independent variable(s)
+
+### Pseudo F stat for PERMANOVA
+### pseudo F-ratio: It compares the total sum of squared dissimilarities (or ranked dissimilarities) among objects belonging to different groups to that of objects belonging to the same group.
+### Larger F-ratios indicate more pronounced group separation, however, the significance of this ratio is usually of more interest than its magnitude.
+
+
 
 
 #### Using Shapiro-Wilk test for Normality ####
@@ -2068,7 +2219,7 @@ summary(step3)
 # ORP_mV                      -0.03745    0.02677  -1.399   0.2343
 # Dissolved_OrganicMatter_RFU -0.30280    0.20883  -1.450   0.2207
 # Sulfate_milliM               0.10231    0.03519   2.907   0.0438 *
-#   Sulfide_microM              -0.23002    0.15127  -1.521   0.2030
+# Sulfide_microM              -0.23002    0.15127  -1.521   0.2030
 
 sulf.fxn.glm.fit1<-glm(formula = Axis.1 ~ DO_Percent_Local, data=sulf.pcoa.clr.meta)%>%
   adjust_pvalue(method="bonferroni")
