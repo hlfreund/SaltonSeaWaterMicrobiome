@@ -38,7 +38,7 @@ suppressPackageStartupMessages({ # load packages quietly
 
 #### Load Global Env to Import Count/ASV Tables ####
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
-#load("data/SSeawater_BetaDiv_Data.Rdata")
+load("data/SSeawater_BetaDiv_Data.Rdata")
 #load("data/SSW_16S_CLR_EucDist_PCoA_Ready.Rdata")
 
 
@@ -244,7 +244,7 @@ meta_scaled$Depth.num<-as.numeric(as.character(meta_scaled$Depth_m))
 # now make sure your data frames you're comparing are in the same exact order!!
 rownames(b.clr) %in% rownames(meta_scaled)
 meta_scaled=meta_scaled[rownames(b.clr),] ## reorder metadata to match order of CLR data
-perm <- with(meta_scaled, how(nperm = 1000, blocks = SampDate)) # using SampDate as block because there is a significant difference between sample dates, trying to remove this effect when looking at permanovas
+perm <- with(meta_scaled, how(nperm = 1000)) # using SampDate as block because there is a significant difference between sample dates, trying to remove this effect when looking at permanovas
 
 pnova1<-adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova1
@@ -252,9 +252,9 @@ pnova1
 
 adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth.num*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 #         Df SumOfSqs     R2    F Pr(>F)
-#Model    23    34412 0.73114 1.8918 0.4915
-#Residual 16    12654 0.26886
-#Total    39    47066 1.00000
+#Model    23    25343  1
+#Residual  0        0  0
+#Total    23    25343  1
 
 pnova2<-adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova2
@@ -266,78 +266,54 @@ adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Su
 #Residual 16    12654 0.26886
 #Total    39    47066 1.00000
 
-pnova3<-adonis2(b.clr ~ ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova3<-adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova3
 
-adonis2(b.clr ~ ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+adonis2(b.clr ~ ORP_mV*DO_Percent_Local*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 
-pnova4<-adonis2(b.clr ~ ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova4<-adonis2(b.clr ~ ORP_mV*DO_Percent_Local*Dissolved_OrganicMatter_RFU*Sulfate_milliM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova4
 #                                         Df SumOfSqs      R2       F   Pr(>F)
-#ORP_mV                                   1   3435.1 0.13555  7.7635 0.04096 *
+# ORP_mV                                                              1   3435.1 0.13555  8.0320 0.000999 ***
+# DO_Percent_Local                                                    1   4009.5 0.15821  9.3749 0.000999 ***
+# Dissolved_OrganicMatter_RFU                                         1   5843.0 0.23056 13.6620 0.000999 ***
+# Sulfate_milliM                                                      1    961.4 0.03794  2.2480 0.042957 *
+# ORP_mV:DO_Percent_Local                                             1   1322.9 0.05220  3.0932 0.002997 **
+# DO_Percent_Local:Dissolved_OrganicMatter_RFU                        1   1413.3 0.05577  3.3045 0.005994 **
+# DO_Percent_Local:Sulfate_milliM                                     1    794.0 0.03133  1.8566 0.072927 .
 
-adonis2(b.clr ~ ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+adonis2(b.clr ~ ORP_mV*DO_Percent_Local*Dissolved_OrganicMatter_RFU*Sulfate_milliM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 #         Df SumOfSqs      R2      F   Pr(>F)
-#Model    15  21802.8 0.86032 3.285 0.5804
-#Residual  8   3539.8 0.13968
+#Model    15  21921.1 0.86499 3.417 0.000999 ***
+#Residual  8   3421.5 0.13501
 #Total    23  25342.6 1.00000
 
-pnova4b<-adonis2(b.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova4b<-adonis2(b.clr ~ DO_Percent_Local*Dissolved_OrganicMatter_RFU*ORP_mV,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova4b
 #                                   Df SumOfSqs      R2       F   Pr(>F)
-#ORP_mV                             1   3435.1 0.13555 6.7488 0.02597 *
+# DO_Percent_Local                                     1   5830.3 0.23006 12.2377 0.000999 ***
+#Dissolved_OrganicMatter_RFU                          1   6344.6 0.25036 13.3172 0.000999 ***
+# ORP_mV                                               1   1112.7 0.04391  2.3355 0.027972 *
+# DO_Percent_Local:Dissolved_OrganicMatter_RFU         1   1268.0 0.05004  2.6616 0.010989 *
+# DO_Percent_Local:ORP_mV                              1   1792.5 0.07073  3.7624 0.000999 ***
+# Dissolved_OrganicMatter_RFU:ORP_mV                   1    652.0 0.02573  1.3686 0.173826
+# DO_Percent_Local:Dissolved_OrganicMatter_RFU:ORP_mV  1    719.5 0.02839  1.5103 0.159840
+# Residual                                            16   7622.8 0.30079
+# Total                                               23  25342.6 1.00000
 
-pnova4c<-adonis2(b.clr ~ Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-pnova4c
-#                                   Df SumOfSqs      R2       F   Pr(>F)
-#Dissolved_OrganicMatter_RFU                           1   6415.1 0.25313 12.5048 0.029970 *
-#Temp_DegC                                             1   5251.6 0.20723 10.2370 0.084915 .
-#Sulfide_microM                                        1   1422.5 0.05613  2.7729 0.002997 **
-
-pnova5<-adonis2(b.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova5<-adonis2(b.clr ~ DO_Percent_Local*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova5
 #                                               Df SumOfSqs      R2       F   Pr(>F)
-#ORP_mV                                        1   3435.1 0.13555 6.7488 0.02697 *
+# DO_Percent_Local                              1   5830.3 0.23006  9.5297 0.000999 ***
+#   Dissolved_OrganicMatter_RFU                   1   6344.6 0.25036 10.3704 0.000999 ***
+#   DO_Percent_Local:Dissolved_OrganicMatter_RFU  1    931.5 0.03676  1.5226 0.134865
+# Residual                                     20  12236.1 0.48283
+# Total                                        23  25342.6 1.00000
 
-adonis2(b.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+adonis2(b.clr ~ DO_Percent_Local*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 #         Df SumOfSqs      R2      F   Pr(>F)
-#Model     7    17199 0.67864 4.827 0.07992 .
-#Residual 16     8144 0.32136
-#Total    23    25343 1.00000
-
-
-pnova6a<-adonis2(b.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-pnova6a
-#                                             Df SumOfSqs      R2      F   Pr(>F)
-#ORP_mV                              1   3435.1 0.13555 4.1803 0.02498 *
-#Dissolved_OrganicMatter_RFU         1   4547.2 0.17943 5.5336 0.09890 .
-
-adonis2(b.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm) #significant
-#         Df SumOfSqs      R2      F  Pr(>F)
-#Model     3   8907.7 0.35149 3.6134 0.02498 *
-#Residual 20  16434.8 0.64851
-#Total    23  25342.6 1.00000
-
-pnova6b<-adonis2(b.clr ~ ORP_mV*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-pnova6b # only ORP is significant
-adonis2(b.clr ~ ORP_mV*Temp_DegC,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm) # significant
-#Model     3    13724 0.54156 7.8753 0.007992 **
-#Residual 20    11618 0.45844
-#Total    23    25343 1.00000
-
-pnova6c<-adonis2(b.clr ~ ORP_mV*DO_Percent_Local,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-pnova6c  # only ORP is significant
-
-pnova6d<-adonis2(b.clr ~ ORP_mV*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-pnova6d # only ORP is significant
-adonis2(b.clr ~ ORP_mV*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm) #insignificant
-# ^ model explains 16.14% of R^2 aka variation
-
-## BEST MODEL as of 5/19/23: explains 54.16% of variation in composition, p=0.01099
-adonis2(b.clr ~ ORP_mV*Temp_DegC,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
-#         Df SumOfSqs      R2      F  Pr(>F)
-#Model     3    13724 0.54156 7.8753 0.01099 *
-#Residual 20    11618 0.45844
+#Model     3    13106 0.51717 7.1409 0.000999 ***
+#Residual 20    12236 0.48283
 #Total    23    25343 1.00000
 
 ### SELF REMINDER FOR R^2
