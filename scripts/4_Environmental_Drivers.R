@@ -139,7 +139,8 @@ rownames(August.2021) %in% rownames(b.clr_AUG21) # hopefully all of the rownames
 ## remember, CCA assumes that our species have a unimodal relationship with our variables.
 ### unimodal = one maximum, think upsidedown bellcurve or something
 ## RDA assumes a linear relationship
-## check the assumption
+## check the assumption w/ DCA
+# ^ more on DCA here: https://ordination.okstate.edu/DCA.htm
 
 # ALL data
 # add pseudocount so row sums are > 0
@@ -211,8 +212,10 @@ vif.cca(rda.all.0)
 # A value between 1 and 5 indicates moderate correlation between a given predictor variable and other predictor variables in the model, but this is often not severe enough to require attention.
 # A value greater than 5 indicates potentially severe correlation between a given predictor variable and other predictor variables in the model. In this case, the coefficient estimates and p-values in the regression output are likely unreliable.
 # when to ignore high VIF values: https://statisticalhorizons.com/multicollinearity/
+
 head(meta_scaled)
 ## we can use model selection instead of picking variables we think are important (by p values)
+# more info on ordistep & ordiR2step here: https://www.davidzeleny.net/anadat-r/doku.php/en:forward_sel_examples
 rda.all.a = ordistep(rda(b.clr ~ 1, data = meta_scaled[,c(8,10:11,14:16,18)]),
                      scope=formula(rda.all.0),
                      direction = "forward",
