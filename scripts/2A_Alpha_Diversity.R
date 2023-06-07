@@ -48,9 +48,6 @@ bac.ASV_table[1:4,1:4]
 bac.ASV_table[(nrow(bac.ASV_table)-4):(nrow(bac.ASV_table)),(ncol(bac.ASV_table)-4):(ncol(bac.ASV_table))] # last 4 rows & cols
 head(meta_scaled)
 
-# create numeric variable for depth to be used for models later
-bac.div.metadat$Depth.num<-as.numeric(as.character(bac.div.metadat$Depth_m))
-
 ## DO NOT RUN THIS LINE, THIS IS YOUR COLOR REFERENCE!!!!
 #(August.2021="#ef781c",December.2021="#03045e",April.2022="#059c3f")
 
@@ -116,6 +113,9 @@ bac.div.metadat$Depth_m<-factor(bac.div.metadat$Depth_m, levels=c("0","3","4","5
 # drop the outliers
 #bac.div.metadat<-bac.div.metadat[bac.div.metadat$Bac_Shannon_Diversity<300 & bac.div.metadat$Bac_Species_Richness>100,]
 
+# create numeric variable for depth to be used for models later
+bac.div.metadat$Depth.num<-as.numeric(as.character(bac.div.metadat$Depth_m))
+
 # save diversity data
 save.image("data/SSeawater_AlphaDiv_Data.Rdata")
 
@@ -176,9 +176,12 @@ shapiro.test(bac.div.metadat$Bac_Shannon_Diversity) # what is the p-value?
 # p > 0.05 states distribution of data are not significantly different from normal distribution
 # p < 0.05 means that data is significantly different from a normal distribution
 hist(bac.div.metadat$Bac_Shannon_Diversity, col="blue") # with outliars
-hist(bac.div.metadat$Bac_Shannon_Diversity, col="blue") # without outliars
 
-# visualize Q-Q plot for species richness
+# visualize Q-Q plot for alpha div
+# The Q-Q plot, or quantile-quantile plot, is a graphical tool to help us assess if a set of data plausibly came from some theoretical distribution such as a normal or exponential.
+# For example, if we run a statistical analysis that assumes our residuals are normally distributed, we can use a normal Q-Q plot to check that assumption
+# more on Q-Q plots here: https://data.library.virginia.edu/understanding-q-q-plots/
+# more here too: https://grodri.github.io/glms/notes/c2s9#:~:text=8%20The%20Q%2DQ%20Plot,versus%20quantiles%20of%20a%20distribution.
 qqnorm(bac.div.metadat$Bac_Shannon_Diversity, pch = 1, frame = FALSE)
 qqline(bac.div.metadat$Bac_Shannon_Diversity, col = "red", lwd = 2)
 
@@ -194,8 +197,6 @@ qqline(bac.div.metadat$Bac_Species_Richness, col = "red", lwd = 2)
 
 qqnorm(bac.div.metadat$Bac_Species_Richness, pch = 1, frame = FALSE) # without outliars
 qqline(bac.div.metadat$Bac_Species_Richness, col = "red", lwd = 2)
-
-### NOTE: bac.div.metadat has dropped outliers based on Shannon Diversity!
 
 shapiro.test(bac.div.metadat$DO_Percent_Local) # p-value = 0.02586
 hist(bac.div.metadat$DO_Percent_Local, col="blue")
