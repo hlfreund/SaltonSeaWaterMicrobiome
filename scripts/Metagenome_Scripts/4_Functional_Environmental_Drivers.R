@@ -295,8 +295,8 @@ rda.S.c2$anova # see significance of individual terms in model
 #### Final Sulfur Fxn RDAs ####
 # RDA by sampling timepoint
 head(meta_scaled)
-head(mgm.clr)
-rownames(mgm.clr) %in% rownames(meta_scaled) # sanity check 1
+head(clr.cov.sum.sulf.ko)
+rownames(clr.cov.sum.sulf.ko) %in% rownames(meta_scaled) # sanity check 1
 
 # all data
 rda.S2$call # best model for all data
@@ -397,7 +397,7 @@ rda.S.plot3<-ggplot(rda.axes.S, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=
 
 ggsave(rda.S.plot3,filename = "figures/MGM_Figs/SSW_MGM_S_Fxns_RDA_AllData_bigger.png", width=15, height=15, dpi=600)
 
-#### Separate Fxns by Timepoints ####
+#### Separate ALL Fxns by Timepoints ####
 # create metadata df that will contain scaled chemical data
 head(metadata)
 head(meta_scaled)
@@ -713,6 +713,372 @@ rda.all.plot3<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(aes(co
 
 ggsave(rda.all.plot3,filename = "figures/MGM_Figs/SSW_MGM_ALLFxns_RDA_bigger.png", width=15, height=15, dpi=600)
 
+
+
+
+
+#### Separate Carbon Fxns by Timepoints ####
+# create metadata df that will contain scaled chemical data
+head(metadata)
+head(meta_scaled)
+
+site_list<-unique(meta_scaled$SampDate) #define an array of string values
+# go through metadata & create a list of data frames
+## when metadata$Variable == element in site_list (aka x in this case), subset metadata by said element into elements of a list
+
+# here the function(x) is using site_list aka x to subset metadata, when $Variable column == site_list
+# Run the function so it's stored in Global Env
+site_subsets<-lapply(site_list, function(x) {subset(meta_scaled, SampDate==x)})
+
+site_subsets # sanity check1 (should see all elements in list)
+site_subsets[[1]] # sanity check2 (see 1st element in list)
+#rename the list elements
+
+# name each element in list
+names(site_subsets)<-site_list # * only do this if the order of names in site_list match order of the elements in site_subsets!
+site_subsets$April.2022 # sanity check3 - should be able to pull dataframes by names rather than index now
+
+# example of subsetting
+site_subsets[[2]][1:3]
+site_subsets$August.2021[1:3] # should produce same ouptut as line above
+
+site_subsets[[2]][1:2,1:2] # another example
+
+# ^ subsetting to [[second dataframe]], [[row #, column #]]
+site_subsets[[2]][[1,2]] # [[second dataframe]], [[row 1, column 2]]
+
+# set up the function and run this to store it in our Global environment
+df_specific.subset<-function(var_vec,var_subsets){
+  # var_vec = vector of variable elements from specific categorical variable;
+  ## e.g. vector of names from Site categorical variable (metadata sites)
+  # var_subsets = list of dataframes subsetted by column$element from original dataframe;
+  ## e.g. list of dataframes (each df = element of list) subsetted from metadata using vector of metadata$Site names
+  for(i in seq_along(var_vec)){
+    # print(var_vec[i]) -- var_vec[i] = each element in var_vec
+    # print(var_subsets[[i]]) -- var_subsets[[i]] = each sub
+    df<-paste(var_vec[i])
+    #print(df)
+    assign(df, var_subsets[[i]], envir = .GlobalEnv)
+    print(paste("Dataframe", var_vec[i] ,"done"))
+
+  }
+
+}
+
+# run the function
+df_specific.subset(site_list, site_subsets) # used scaled metadata quantitative values
+
+head(August.2021) # sanity check
+August.2021[1:5,] # double check that our new Variable (here SampDate) data frames still have scaled chemical data
+rownames(August.2021)
+
+# matching data with user defined function -- here is the function, must run to store function in Global env
+match_dat<-function(compdata, subset_metadata){
+  subset_comp_data = pullrow<-(is.element(row.names(compdata), row.names(subset_metadata)))
+  ### * comp data and metadata need to have row names - rownames should be Sample IDs
+  subset_comp_data=compdata[pullrow,]
+  return(subset_comp_data)
+}
+
+# double check that our data frames are ready for this function, aka that they both have the same rownames
+## row #s do not have to be the same, but their row names should be in the same format and be able to match up
+rownames(clr.cov.sum.carb.ko)
+rownames(August.2021)
+
+# run the function
+C.KO.clr_AUG21<-match_dat(clr.cov.sum.carb.ko,August.2021)
+C.KO.clr_DEC21<-match_dat(clr.cov.sum.carb.ko,December.2021)
+C.KO.clr_APR22<-match_dat(clr.cov.sum.carb.ko,April.2022)
+
+# did the function work the way we wanted it to?
+
+C.KO.clr_AUG21[1:3,1:3]
+rownames(August.2021) %in% rownames(C.KO.clr_AUG21) # hopefully all of the rownames match, aka will get output of TRUE
+
+#### Check Carbon Fxn Data Relationship w/ Env Variables (w/ DCA) ####
+## remember, CCA assumes that our species have a unimodal relationship with our variables.
+### unimodal = one maximum, think upsidedown bellcurve or something
+## RDA assumes a linear relationship
+## check the assumption
+
+# ALL data
+# add pseudocount so row sums are > 0
+
+C.clr.pseudo<-clr.cov.sum.carb.ko[,!names(clr.cov.sum.carb.ko) %in% c("SampleID")]+2
+C.ko.dca = decorana(C.clr.pseudo)
+
+#plot(C.ko.dca) # may take too long to load, do not run unless you have to
+C.ko.dca #DCA1 axis length = 0.154570; use RDA
+## The length of first DCA axis:
+## > 4 indicates heterogeneous dataset on which unimodal methods should be used (CCA),
+##  < 3 indicates homogeneous dataset for which linear methods are suitable (RDA)
+## between 3 and 4 both linear and unimodal methods are OK.
+
+# BY MONTH
+
+C.KO.clr_A21.pseudo<-C.KO.clr_AUG21[,!names(C.KO.clr_AUG21) %in% c("SampleID")]+1
+C.ko.A21.dca = decorana(C.KO.clr_A21.pseudo)
+C.ko.A21.dca #DCA1 axis length = 0.201019; use RDA
+
+C.KO.clr_D21.pseudo<-C.KO.clr_DEC21[,!names(C.KO.clr_DEC21) %in% c("SampleID")]+2
+C.ko.D21.dca = decorana(C.KO.clr_D21.pseudo)
+C.ko.D21.dca #DCA1 axis length = 0.185162; use RDA
+
+C.KO.clr_A22.pseudo<-C.KO.clr_APR22[,!names(C.KO.clr_APR22) %in% c("SampleID")]+1
+C.ko.A22.dca = decorana(C.KO.clr_A22.pseudo)
+C.ko.A22.dca #DCA1 axis length = 0.177835; use RDA
+
+#### RDA w/ Carbon Fxns Data ####
+
+rownames(meta_scaled) %in% rownames(clr.cov.sum.carb.ko) # check order of DFs
+head(meta_scaled)
+
+rda.C.0<-rda(clr.cov.sum.carb.ko[,!names(clr.cov.sum.carb.ko) %in% c("SampleID")] ~ DO_Percent_Local+ORP_mV+Temp_DegC+Dissolved_OrganicMatter_RFU+Depth.num+Sulfate_milliM+Sulfide_microM,data=meta_scaled)
+
+# check summary of RDA
+rda.C.0
+summary(rda.C.0)
+
+# how much variation does our model explain?
+## reminder: R^2 = % of variation in dependent variable explained by model
+RsquareAdj(rda.C.0) # 16.85%
+## ^^ use this b/c chance correlations can inflate R^2
+
+# we can then test for significance of the model by permutation
+# if it is not significant, it doesn't matter how much of the variation is explained
+anova(rda.C.0, permutations = how(nperm=999))
+
+## we can also do a permutation test by RDA axis
+#anova(rda.C.0, by = "axis", permutations = how(nperm=999)) ### by RDA axis
+## or by terms (aka variables)
+anova(rda.C.0, by = "terms", permutations = how(nperm=999)) ### by variables
+## this will help us interpret our RDA and we can see some variable are not significant
+# nothing significant
+
+# Calculating variance inflation factor (VIF) for each predictor variable to check multicolinearity of predictor variables
+## VIF helps determien which predictors are too strongly correlated with other predictor variables to explain variation observed
+vif.cca(rda.C.0)
+#DO_Percent_Local                      ORP_mV                   Temp_DegC Dissolved_OrganicMatter_RFU
+# 106.181775                 5715.479253                   60.669845                   52.575771
+# Depth.num              Sulfate_milliM              Sulfide_microM
+# 6.406329                    4.481245                 5347.192460
+
+## Understanding VIF results...
+# A value of 1 indicates there is no correlation between a given predictor variable and any other predictor variables in the model.
+# A value between 1 and 5 indicates moderate correlation between a given predictor variable and other predictor variables in the model, but this is often not severe enough to require attention.
+# A value greater than 5 indicates potentially severe correlation between a given predictor variable and other predictor variables in the model. In this case, the coefficient estimates and p-values in the regression output are likely unreliable.
+# when to ignore high VIF values: https://statisticalhorizons.com/multicollinearity/
+head(meta_scaled)
+## we can use model selection instead of picking variables we think are important (by p values)
+rda.C.a = ordistep(rda(clr.cov.sum.carb.ko[,!names(clr.cov.sum.carb.ko) %in% c("SampleID")] ~ 1, data = meta_scaled[,c(8,10:11,15:17,20)]),
+                   scope=formula(rda.C.0),
+                   direction = "forward",
+                   permutations = how(nperm=999))
+rda.C.a$anova # see significance of individual terms in model
+# Df    AIC      F Pr(>F)
+# + Temp_DegC                    1 12.245 1.6795  0.063 .
+
+# can also use model seletion to pick most important variables by which increases variation (R^2) the most
+rda.C.a2 = ordiR2step(rda(clr.cov.sum.carb.ko[,!names(clr.cov.sum.carb.ko) %in% c("SampleID")] ~ 1, data = meta_scaled[,c(8,10:11,15:17,20)]),
+                      scope=formula(rda.C.0),
+                      permutations = how(nperm=999))
+# clr.cov.sum.carb.ko ~ Temp_DegC + Dissolved_OrganicMatter_RFU + DO_Percent_Local + Depth.num  = best model
+rda.C.a2$anova # see significance of individual terms in model
+#             Df    AIC      F Pr(>F)
+#+ Temp_DegC  1 12.245 1.6795  0.059 .
+
+# check best fit model based on above results
+anova(rda.C.a, permutations = how(nperm=999))
+
+# Let's double check by removing the variables with high VIF
+rda.C1<-rda(clr.cov.sum.carb.ko[,!names(clr.cov.sum.carb.ko) %in% c("SampleID")] ~ DO_Percent_Local+Dissolved_OrganicMatter_RFU+Sulfate_milliM+Temp_DegC+ORP_mV,data=meta_scaled)
+summary(rda.C1)
+RsquareAdj(rda.C1) # how much variation is explained by our model? 17.53%
+anova(rda.C1, by = "terms", permutations = how(nperm=999)) ### by variables
+# nothing
+
+## this will help us interpret our RDA and we can see some variable are not significant
+vif.cca(rda.C1)
+# DO_Percent_Local Dissolved_OrganicMatter_RFU              Sulfate_milliM                   Temp_DegC
+# 3.646772                    2.438925                    2.959137                    3.065149
+# ORP_mV
+# 2.317548
+head(meta_scaled)
+## we can use model selection instead of picking variables we think are important -- based on p values
+rda.C.b1 = ordistep(rda(clr.cov.sum.carb.ko[,!names(clr.cov.sum.carb.ko) %in% c("SampleID")] ~ 1, data = meta_scaled[,c(8,10,11,15:16)]),
+                    scope=formula(rda.C1),
+                    direction = "forward",
+                    permutations = how(nperm=999))
+rda.C.b1$anova # see significance of individual terms in model
+# Temp near sig
+
+# Can also use model selection to pick variables by which ones increase variation (R^2)
+rda.C.b2 = ordiR2step(rda(clr.cov.sum.carb.ko[,!names(clr.cov.sum.carb.ko) %in% c("SampleID")] ~ 1, data = meta_scaled[,c(8,10,11,15:16)]),
+                      scope=formula(rda.C1),
+                      permutations = how(nperm=999))
+rda.C.b2$anova # see significance of individual terms in model
+# Temp near sig
+
+# check best fit model based on above results
+anova(rda.C.b1, permutations = how(nperm=999))
+
+# compare model fits to each other
+anova(rda.C.0, rda.C.b1)
+
+rda.C2<-rda(clr.cov.sum.carb.ko[,!names(clr.cov.sum.carb.ko) %in% c("SampleID")] ~ DO_Percent_Local+Dissolved_OrganicMatter_RFU+Sulfate_milliM+Temp_DegC,data=meta_scaled)
+summary(rda.C2)
+RsquareAdj(rda.C2) # how much variation is explained by our model? 4.72%
+anova(rda.C2, by = "terms", permutations = how(nperm=999)) ### by variables
+# nothing significant
+
+## this will help us interpret our RDA and we can see some variable are not significant
+vif.cca(rda.C2)
+#DO_Percent_Local Dissolved_OrganicMatter_RFU              Sulfate_milliM                   Temp_DegC
+#3.357882                    2.238385                    2.712690                    2.641885
+
+head(meta_scaled)
+## we can use model selection instead of picking variables we think are important -- based on p values
+rda.C.c1 = ordistep(rda(clr.cov.sum.carb.ko[,!names(clr.cov.sum.carb.ko) %in% c("SampleID")] ~ 1, data = meta_scaled[,c(8,11,15:16)]),
+                    scope=formula(rda.C2),
+                    direction = "forward",
+                    permutations = how(nperm=999))
+# Temp near sig
+rda.C.c1$anova # see significance of individual terms in model
+#                               Df    AIC      F Pr(>F)
+
+# Can also use model selection to pick variables by which ones increase variation (R^2)
+rda.C.c2 = ordiR2step(rda(clr.cov.sum.carb.ko[,!names(clr.cov.sum.carb.ko) %in% c("SampleID")] ~ 1, data = meta_scaled[,c(8,11,15:16)]),
+                      scope=formula(rda.C2),
+                      permutations = how(nperm=999))
+# clr.cov.sum.carb.ko ~ Dissolved_OrganicMatter_RFU + Temp_DegC  + DO_%Local = best model
+rda.C.c2$anova # see significance of individual terms in model
+# Temp near sig
+
+rda.C3<-rda(clr.cov.sum.carb.ko[,!names(clr.cov.sum.carb.ko) %in% c("SampleID")] ~ Temp_DegC,data=meta_scaled)
+summary(rda.C3)
+RsquareAdj(rda.C3) # how much variation is explained by our model? 4.44%
+anova(rda.C3, by = "terms", permutations = how(nperm=999)) ### by variables
+# nothing significant
+
+head(meta_scaled)
+## we can use model selection instead of picking variables we think are important -- based on p values
+rda.C.d1 = ordistep(rda(clr.cov.sum.carb.ko[,!names(clr.cov.sum.carb.ko) %in% c("SampleID")] ~ 1, data = meta_scaled[,c(11)]),
+                    scope=formula(rda.C3),
+                    direction = "forward",
+                    permutations = how(nperm=999))
+# Temp near sig
+rda.C.d1$anova # see significance of individual terms in model
+#                               Df    AIC      F Pr(>F)
+
+# Can also use model selection to pick variables by which ones increase variation (R^2)
+rda.C.d2 = ordiR2step(rda(clr.cov.sum.carb.ko[,!names(clr.cov.sum.carb.ko) %in% c("SampleID")] ~ 1, data = meta_scaled[,c(11)]),
+                      scope=formula(rda.C3),
+                      permutations = how(nperm=999))
+# clr.cov.sum.carb.ko ~ Dissolved_OrganicMatter_RFU + Temp_DegC  + DO_%Local = best model
+rda.C.d2$anova # see significance of individual terms in model
+# Temp near sig
+
+
+#### Final Carbon Fxn RDAs ####
+# RDA by sampling timepoint
+head(meta_scaled)
+head(clr.cov.sum.carb.ko)
+rownames(clr.cov.sum.carb.ko) %in% rownames(meta_scaled) # sanity check 1
+
+# all data
+rda.C3$call # best model for all data, not significant
+
+rda.C<-rda(clr.cov.sum.carb.ko[,!names(clr.cov.sum.carb.ko) %in% c("SampleID")]  ~ Temp_DegC,data=meta_scaled)
+rda.C
+summary(rda.C)
+RsquareAdj(rda.C) # how much variation is explained by our model? 18.8 variation
+anova(rda.C, permutations = how(nperm=999)) # p-value = 0.0
+anova(rda.C, by = "terms", permutations = how(nperm=999))
+
+#### Plot RDA - ALL Carbon data ####
+#plot(rda.C.aug2021) # depending on how many species you have, this step may take a while
+plot(rda.C, scaling = 1)
+## scaling = 1 -> emphasizes relationships among sites
+plot(rda.C, scaling = 2)
+## scaling = 2 -> emphasizes relationships among species
+
+# check summary of RDA
+summary(rda.C)
+
+# how much variation does our model explain?
+## reminder: R^2 = % of variation in dependent variable explained by model
+RsquareAdj(rda.C) # 41.76%
+## ^^ use this b/c chance correlations can inflate R^2
+
+# we can then test for significance of the model by permutation
+# if it is not significant, it doesn't matter how much of the variation is explained
+##anova(rda.C, permutations = how(nperm=999)) # p = 0.001, significant
+
+png('figures/MGM_Figs/SSW_AllData_autoplot_rda_example.png',width = 700, height = 600, res=100)
+autoplot(rda.C, arrows = TRUE,data = rda.C ,layers=c("biplot","sites"),label = FALSE, label.size = 3, shape = FALSE, loadings = TRUE, loadings.colour = 'blue', loadings.label = TRUE, loadings.label.size = 3, scale= 0)+theme_classic()
+dev.off()
+## FOR AUTOPLOT -> must load packagve ggvegan first
+
+rda.sum.C<-summary(rda.C)
+rda.sum.C$sites[,1:2]
+rda.sum.C$cont #cumulative proportion of variance per axis
+# RDA1 = 53.11, RDA2 = 3.21
+
+# create data frame w/ RDA axes for sites
+# first check rownames of RDA & metadata, then make df
+rownames(rda.sum.C$sites) %in% rownames(meta_scaled)
+rda.axes.C<-data.frame(RDA1=rda.sum.C$sites[,1], RDA2=rda.sum.C$sites[,2], SampleID=rownames(rda.sum.C$sites), Depth_m=meta_scaled$Depth_m, SampDate=meta_scaled$SampDate)
+
+# create data frame w/ RDA axes for variables
+arrows.C<-data.frame(RDA1=rda.sum.C$biplot[,1], RDA2=rda.sum.C$biplot[,2], Label=rownames(rda.sum.C$biplot))
+#arrows.C$Label[(arrows.C$Label) == "ORP_mV"] <- "ORP (mV)"
+arrows.C$Label[(arrows.C$Label) == "Dissolved_OrganicMatter_RFU"] <- "DOM (RFU)"
+arrows.C$Label[(arrows.C$Label) == "DO_Percent_Local"] <- "DO %"
+#arrows.C$Label[(arrows.C$Label) == "Temp_DegC"] <- "Temp (C)"
+
+rda.sum.C$cont #cumulative proportion of variance per axis
+# RDA1 = 53.11, RDA2 = 3.21
+
+rda.C.plot1<-ggplot(rda.axes.C, aes(x = RDA1, y = RDA2)) + geom_point(size=2) +
+  geom_segment(data = arrows.C,mapping = aes(x = 0, y = 0, xend = RDA1, yend = RDA2),lineend = "round", # See available arrow types in example above
+               linejoin = "round",
+               size = 0.5,
+               arrow = arrow(length = unit(0.15, "inches")),
+               colour = "black") +
+  geom_label(data = arrows.C,aes(label = Label, x = RDA1, y = RDA2, fontface="bold"))+
+  coord_fixed() + theme_classic() +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1))
+
+rda.C.plot2<-ggplot(rda.axes.C, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate),size=4) +
+  geom_segment(data = arrows.C,mapping = aes(x = 0, y = 0, xend = RDA1*1.5, yend = RDA2*1.5),lineend = "round", # See available arrow types in example above
+               linejoin = "round",
+               size = 0.8,
+               arrow = arrow(length = unit(0.15, "inches")),
+               colour = "black") +
+  geom_label(data = arrows.C,aes(label = Label, x = RDA1*1.7, y = RDA2*1.7, fontface="bold"), size=4)+
+  coord_fixed(ratio = 1, xlim = c(-2,2), ylim = c(-2,2)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
+  scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
+  labs(title="RDA: Carbon Fixation in Metagenomes from Salton Seawater",subtitle="Using Centered-Log Ratio Coverage Data",color="Depth (m)") +
+  xlab("RDA1 [53.11%]") + ylab("RDA2 [3.21%]")
+
+ggsave(rda.C.plot2,filename = "figures/MGM_Figs/SSW_MGM_C_Fxns_RDA_AllData.png", width=10, height=10, dpi=600)
+
+
+rda.C.plot3<-ggplot(rda.axes.C, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate),size=5) +
+  geom_segment(data = arrows.C,mapping = aes(x = 0, y = 0, xend = RDA1*6, yend = RDA2*6),lineend = "round", # See available arrow types in example above
+               linejoin = "round",
+               size = 1,
+               arrow = arrow(length = unit(0.15, "inches")),
+               colour = "black") +
+  geom_label(data = arrows.C,aes(label = Label, x = RDA1*8, y = RDA2*8, fontface="bold"), size=5)+
+  coord_fixed(ratio = 1, xlim = c(-10,10), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
+  scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
+  labs(title="RDA: Bacteria/Archaea in Salton Seawater",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
+  xlab("RDA1 [53.11%]") + ylab("RDA2 [3.21%]")
+
+ggsave(rda.C.plot3,filename = "figures/MGM_Figs/SSW_MGM_C_Fxns_RDA_AllData_bigger.png", width=15, height=15, dpi=600)
 
 
 #### Save Progress ####
