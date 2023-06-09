@@ -446,11 +446,16 @@ rownames(s.path.clr) %in% rownames(meta_scaled)
 
 ## pull out all KOs in each Pathway
 unique(sulf.cov.sum.m$Pathway)
-assim.sulfate.red<-data.frame(KO_Function=unique(sulf.cov.sum.m$KO_Function[which(sulf.cov.sum.m$Pathway=="Assimilatory Sulfate Reduction")]))
+assim.sulfate.red<-data.frame(KO_Function.KEGG=unique(sulf.cov.sum.m$KO_Function[which(sulf.cov.sum.m$Pathway=="Assimilatory Sulfate Reduction")]))
 dissim.sulfate.redox<-data.frame(KO_Function.KEGG=unique(clr.sulf.ko$KO_Function.KEGG[which(clr.sulf.ko$Pathway=="Dissimilatory Sulfate Redox")]))
 mult.sulf<-data.frame(KO_Function.KEGG=unique(clr.sulf.ko$KO_Function.KEGG[which(clr.sulf.ko$Pathway=="Multiple Pathways")]))
 sox.system<-data.frame(KO_Function.KEGG=unique(clr.sulf.ko$KO_Function.KEGG[which(clr.sulf.ko$Pathway=="SOX System")]))
 
+# pull out functions & CLR info per pathway
+asSO4.ko.cov<-clr.cov.sum.sulf.ko[,-1][,colnames(clr.cov.sum.sulf.ko[,-1]) %in% assim.sulfate.red$KO_Function.KEGG] # pull out sox genes from gene list found in CLR transformed cov per KO
+disSO4.ko.cov<-clr.cov.sum.sulf.ko[,-1][,colnames(clr.cov.sum.sulf.ko[,-1]) %in% dissim.sulfate.redox$KO_Function.KEGG] # pull out sox genes from gene list found in CLR transformed cov per KO
+multiS.ko.cov<-clr.cov.sum.sulf.ko[,-1][,colnames(clr.cov.sum.sulf.ko[,-1]) %in% mult.sulf$KO_Function.KEGG] # pull out sox genes from gene list found in CLR transformed cov per KO
+sox.ko.cov<-clr.cov.sum.sulf.ko[,-1][,colnames(clr.cov.sum.sulf.ko[,-1]) %in% sox.system$KO_Function.KEGG] # pull out sox genes from gene list found in CLR transformed cov per KO
 
 ### Sulfur Heat Maps ####
 # see max & mean of summed
@@ -1922,38 +1927,33 @@ s.pnov5<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU*Sulfate_
 s.pnov5
 
 # what about by S metabolic pathway?
-rownames(s.path.clr) %in% rownames(meta_scaled)
+rownames(sox.ko.cov) %in% rownames(meta_scaled)
+rownames(asSO4.ko.cov) %in% rownames(meta_scaled)
 
 head(s.path.clr)
 
-spath1<-adonis2(s.path.clr ~ SampDate,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+# includes CLR transformed coverage (summed up per gene per KO) for genes in specific Sulfur Metabolic pathways
+
+# SOX genes
+spath0<-adonis2(sox.ko.cov ~ SampDate,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+spath0
+
+spath0a<-adonis2(sox.ko.cov ~ SampDate*Depth.num,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+spath0a
+
+# Assimilatory Sulfate Reduction
+spath1<-adonis2(asSO4.ko.cov ~ SampDate,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 spath1
 
-spath2<-adonis2(s.path.clr ~ SampDate*Depth_m,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+spath1a<-adonis2(asSO4.ko.cov ~ SampDate*Depth.num,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+spath1a
+
+# Dissimilatory Sulfate Reduction
+spath2<-adonis2(disSO4.ko.cov ~ SampDate,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 spath2
 
-
-fit1<-aov(s.path.clr$`Assimilatory Sulfate Reduction` ~ meta_scaled$SampDate)
-#pairwise.adonis(aug21.div$Bac_Shannon_Diversity, aug21.div$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
-
-summary(fit1)
-#             Df           Sum Sq Mean Sq    F value   Pr(>F)
-#meta_scaled$SampDate  2 0.8403  0.4202   40.94 0.000318 ***
-#Residuals             6 0.0616  0.0103
-Tuk1<-TukeyHSD(fit1)
-#                               diff        lwr        upr     p adj
-# December.2021-August.2021  0.01600118 -0.2378062  0.2698086 0.9796528
-# April.2022-August.2021    -0.64004161 -0.8938490 -0.3862342 0.0005992
-# April.2022-December.2021  -0.65604278 -0.9098502 -0.4022354 0.0005231
-
-fit2<-aov(s.path.clr$`SOX System` ~ meta_scaled$SampDate)
-#pairwise.adonis(aug21.div$Bac_Shannon_Diversity, aug21.div$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
-
-summary(fit2)
-#             Df           Sum Sq Mean Sq    F value   Pr(>F)
-#meta_scaled$SampDate  2 0.8403  0.4202   40.94 0.000318 ***
-#Residuals             6 0.0616  0.0103
-Tuk1<-TukeyHSD(fit2)
+spath2a<-adonis2(disSO4.ko.cov ~ SampDate*Depth.num,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+spath2a
 
 ### SELF REMINDER FOR R^2
 ### Coefficient of Determination, denoted R2 or r2
