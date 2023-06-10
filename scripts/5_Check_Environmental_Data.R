@@ -716,7 +716,7 @@ dep.do<-ggplot(metadata, aes(x=Depth_m, y=DO_Percent_Local,color=SampDate,group=
 ggsave(dep.do,filename = "figures/EnvVariablesOnly/SSW_DO_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
 dep.hs<-ggplot(metadata, aes(x=Depth_m, y=Sulfide_microM,color=SampDate,group=SampDate)) + geom_point(size=3) + geom_line() + theme_bw()+
-  labs(title="Sulfide by Depth & Sample Date",subtitle="Using Raw Sulfate (microM) Data",color="Sample Date")+theme_classic()+
+  labs(title="Sulfide by Depth & Sample Date",subtitle="Using Raw Sulfide (microM) Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
