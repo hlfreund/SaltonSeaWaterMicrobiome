@@ -229,6 +229,9 @@ dev.off()
 ##  evaluating differences in the centroids of groups in multivariate space.
 ##  The vegan functions “adonis” and “adonis2” are used to compute PERMANOVA in R.
 
+## PERMANOVA NOT W/ ADONIS2
+# The adonis2 tests are identical to anova.cca of dbrda.
+# With Euclidean distances, the tests are also identical to anova.cca of rda ****
 help(adonis)
 
 ## can specify dataframes for analysis, or we can alternatively specify a dissimilarity matrix:
@@ -300,6 +303,7 @@ pnova4b
 # DO_Percent_Local:Dissolved_OrganicMatter_RFU:ORP_mV  1    719.5 0.02839  1.5103 0.159840
 # Residual                                            16   7622.8 0.30079
 # Total                                               23  25342.6 1.00000
+adonis2(b.clr ~ DO_Percent_Local*Dissolved_OrganicMatter_RFU*ORP_mV,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 
 pnova5<-adonis2(b.clr ~ DO_Percent_Local*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova5
@@ -315,6 +319,8 @@ adonis2(b.clr ~ DO_Percent_Local*Dissolved_OrganicMatter_RFU,data=meta_scaled,me
 #Model     3    13106 0.51717 7.1409 0.000999 ***
 #Residual 20    12236 0.48283
 #Total    23    25343 1.00000
+
+# BEST MODEL: b.clr ~ DO_Percent_Local*Dissolved_OrganicMatter_RFU*ORP_mV
 
 ### SELF REMINDER FOR R^2
 ### Coefficient of Determination, denoted R2 or r2
