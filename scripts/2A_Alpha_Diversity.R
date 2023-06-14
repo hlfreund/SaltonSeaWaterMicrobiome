@@ -39,7 +39,7 @@ suppressPackageStartupMessages({ # load packages quietly
 
 #### Load Global Env to Import Count/ASV Tables ####
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
-#load("data/SSeawater_AlphaDiv_Data.Rdata")
+load("data/SSeawater_AlphaDiv_Data.Rdata")
 #load("data/ssw_clr.euc.dist_2.21.23.Rdata")
 
 #save.image("data/Env_Seqs_All/env.seq_analysis.Rdata") # save global env to Rdata file
@@ -250,6 +250,14 @@ summary(div.glm.all)
 
 div.glm.p<-coef(summary(div.glm.all))[,4] # p-values
 Div.GLM.Pval<-data.frame(Div.GLM.AdjPval=p.adjust(div.glm.p, method="bonferroni"),Div.GLM.Pval=div.glm.p)
+#                               Div.GLM.AdjPval Div.GLM.Pval
+# (Intercept)                    1.209565e-14 1.727951e-15
+# DO_Percent_Local               1.000000e+00 5.749260e-01
+# ORP_mV                         1.000000e+00 3.469644e-01
+# Temp_DegC                      7.803731e-02 1.114819e-02 -- near sig after adjustment
+# Dissolved_OrganicMatter_RFU    1.000000e+00 9.064130e-01
+# Sulfate_milliM                 3.569710e-01 5.099586e-02
+# Sulfide_microM                 1.000000e+00 6.472779e-01
 
 # [Example Code for Different Models]
 
@@ -337,6 +345,14 @@ summary(sr.glm.all)
 
 sr.glm.p<-coef(summary(sr.glm.all))[,4] # p-values
 SR.GLM.Pval<-data.frame(SR.GLM.AdjPval=p.adjust(sr.glm.p, method="bonferroni"),SR.GLM.Pval=sr.glm.p)
+#                               SR.GLM.AdjPval  SR.GLM.Pval
+# (Intercept)                   1.388731e-14 1.983901e-15
+# DO_Percent_Local              1.000000e+00 1.836612e-01
+# ORP_mV                        1.000000e+00 2.813919e-01
+# Temp_DegC                     1.000000e+00 1.847486e-01
+# Dissolved_OrganicMatter_RFU   5.309113e-01 7.584447e-02
+# Sulfate_milliM                1.000000e+00 4.890501e-01
+# Sulfide_microM                1.000000e+00 3.932963e-01
 
 # Species Richness ~ DO%
 
