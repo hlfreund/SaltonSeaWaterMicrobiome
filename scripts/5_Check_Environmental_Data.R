@@ -118,7 +118,7 @@ qqline(meta_scaled$Chlorophyll_RFU, col = "steelblue", lwd = 2)
 
 #### PCA w/ Env Variables ####
 head(metadata)
-env.dat<-metadata[,c(8:17)]
+env.dat<-metadata[,c(8:12,15:17)]
 head(env.dat)
 
 # NOTE: PCA requires normally distributed data, so we are log transforming env data before scaling
@@ -128,7 +128,7 @@ env.log[1:4,1:4]
 
 # check rownames of log transformed environmental data & metadata
 rownames(env.log) %in% rownames(meta_scaled)
-meta_scaled=meta_scaled[rownames(env.log),] ## reorder metadata to match order of log data
+#meta_scaled=meta_scaled[rownames(env.log),] ## reorder metadata to match order of log data
 
 # calculate our Euclidean distance matrix using log data
 env.euc_dist <- dist(env.log, method = "euclidean")
@@ -170,17 +170,17 @@ pca1<-ggplot(env.pca.meta, aes(x=PC1, y=PC2)) +geom_point(aes(color=factor(SampD
   labs(title="PCA: Environmental Variables in Salton Seawater",subtitle="Using Log Transformed Data",color="Sample Type")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Type",values=unique(env.pca.meta$SampDate_Color[order(env.pca.meta$SampDate)]),labels=c("June.2021"="June 2021","August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("Axis 1 [61.14%]") + ylab("Axis 2 [16.78%]")
+  xlab("PC1 [67.57%]") + ylab("PC2 [17.13%]")
 
 ggsave(pca1,filename = "figures/EnvVariablesOnly/SSW_LogEnvOnly_PCA_SampDate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
 pca2<-ggplot(env.pca.meta, aes(x=PC1, y=PC2)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampleMonth), size=5)+theme_bw()+
-  labs(title="PCA: Environmental Variables in Salton Seawater",subtitle="Using Log Transformed Data",xlab="Axis 1", ylab="Axis 2",color="Depth (m)")+
+  labs(title="PCA: Environmental Variables in Salton Seawater",subtitle="Using Log Transformed Data",color="Depth (m)")+
   theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
-  xlab("Axis 1 [61.14%]") + ylab("Axis 2 [16.78%]")
+  xlab("PC1 [67.57%]") + ylab("PC2 [17.13%]")
 
 ggsave(pca2,filename = "figures/EnvVariablesOnly/SSW_LogEnvOnly_PCA_Depth_SampDate.png", width=12, height=10, dpi=600)
 
@@ -734,7 +734,7 @@ dep.chlr<-ggplot(metadata, aes(x=Depth_m, y=Chlorophyll_RFU,color=SampDate,group
 ggsave(dep.chlr,filename = "figures/EnvVariablesOnly/SSW_Chlorophyll_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
 dep.temp<-ggplot(metadata, aes(x=Depth_m, y=Temp_DegC,color=SampDate,group=SampDate)) + geom_point(size=3) + geom_line() + theme_bw()+
-  labs(title="Temperature by Depth & Sample Date",subtitle="Using Raw Chlorophyll (RFU) Data",color="Sample Date")+theme_classic()+
+  labs(title="Temperature by Depth & Sample Date",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
@@ -805,3 +805,21 @@ orp.do<-ggplot(metadata, aes(x=ORP_mV, y=DO_Percent_Local,color=SampDate,group=S
   xlab("ORP (mV") + ylab("DO %")
 
 ggsave(orp.do,filename = "figures/EnvVariablesOnly/SSW_DO.Percent_ORP_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
+
+temp.do<-ggplot(metadata, aes(x=Temp_DegC, y=DO_Percent_Local,color=SampDate,group=SampDate)) + geom_point(size=3) + geom_line() + theme_bw()+
+  labs(title="DO% ~ Temperature (C)",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Temp (C") + ylab("DO %")
+
+ggsave(temp.do,filename = "figures/EnvVariablesOnly/SSW_DO.Percent_Temp_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
+
+temp.dom<-ggplot(metadata, aes(x=Temp_DegC, y=Dissolved_OrganicMatter_RFU,color=SampDate,group=SampDate)) + geom_point(size=3) + geom_line() + theme_bw()+
+  labs(title="DOM (RFU) ~ Temperature (C)",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("DOM (RFU") + ylab("Sulfide (microM)")
+
+ggsave(temp.dom,filename = "figures/EnvVariablesOnly/SSW_DOM_ORP_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
