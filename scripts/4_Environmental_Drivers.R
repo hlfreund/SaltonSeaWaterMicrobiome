@@ -975,7 +975,7 @@ dev.off()
 rda.all.part<-varpart(b.clr, meta_scaled$Temp_DegC, meta_scaled$Dissolved_OrganicMatter_RFU,meta_scaled$DO_Percent_Local)
 rda.all.part$part
 # plot variance partitioning results
-png('figures/EnvDrivers/SSW_AllData_RDA_VariancePartitioning.png',width = 700, height = 600, res=100)
+png('figures/EnvDrivers/SSW_AllData_RDA_VariancePartitioning.png',width = 900, height = 900, res=100)
 plot(rda.all.part,
      Xnames = c("Temp (C)", "DOM (RFU)","DO%"), # name the partitions
      bg = c("#ef476f", "#ffbe0b","skyblue"), alpha = 80, # colour the circles
@@ -1068,7 +1068,7 @@ dev.off()
 rda.aug21.part<-varpart(b.clr_AUG21, August.2021$Temp_DegC, August.2021$Dissolved_OrganicMatter_RFU)
 rda.aug21.part$part
 # plot variance partitioning results
-png('figures/EnvDrivers/SSW_Aug21_RDA_VariancePartitioning.png',width = 700, height = 600, res=100)
+png('figures/EnvDrivers/SSW_Aug21_RDA_VariancePartitioning.png',width = 900, height = 900, res=100)
 plot(rda.aug21.part,
      Xnames = c("Temp (C)", "DOM (RFU)"), # name the partitions
      bg = c("#ef476f", "#ffbe0b"), alpha = 80, # colour the circles
@@ -1153,7 +1153,7 @@ dev.off()
 rda.dec21.part<-varpart(b.clr_DEC21, December.2021$ORP_mV, December.2021$Sulfate_milliM)
 rda.dec21.part$part
 # plot variance partitioning results
-png('figures/EnvDrivers/SSW_Dec21_RDA_VariancePartitioning.png',width = 700, height = 600, res=100)
+png('figures/EnvDrivers/SSW_Dec21_RDA_VariancePartitioning.png',width = 900, height = 900, res=100)
 plot(rda.dec21.part,
      Xnames = c("ORP (mV)", "Sulfate (milliM)"), # name the partitions
      bg = c("#3a0ca3", "#8ac926"), alpha = 80, # colour the circles
@@ -1238,7 +1238,7 @@ dev.off()
 rda.apr22.part<-varpart(b.clr_APR22, April.2022$ORP_mV, April.2022$Sulfate_milliM)
 rda.apr22.part$part
 # plot variance partitioning results
-png('figures/EnvDrivers/SSW_Apr22_RDA_VariancePartitioning.png',width = 700, height = 600, res=100)
+png('figures/EnvDrivers/SSW_Apr22_RDA_VariancePartitioning.png',width = 900, height = 900, res=100)
 plot(rda.apr22.part,
      Xnames = c("ORP (mV)", "Sulfate (milliM)"), # name the partitions
      bg = c("#3a0ca3", "#8ac926"), alpha = 80, # colour the circles
