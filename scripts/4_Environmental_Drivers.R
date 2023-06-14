@@ -894,12 +894,12 @@ head(b.clr)
 rownames(b.clr) %in% rownames(meta_scaled) # sanity check 1
 
 # all data
-rda.all2$call # best model for all data
+#rda.all2$call # best model for all data
 
 rda.all<-rda(b.clr ~ Temp_DegC + Dissolved_OrganicMatter_RFU + DO_Percent_Local,data=meta_scaled)
 rda.all
 summary(rda.all)
-RsquareAdj(rda.all) # how much variation is explained by our model? 18.8 variation
+RsquareAdj(rda.all) # how much variation is explained by our model? 49.56% variation
 anova(rda.all, permutations = how(nperm=999)) # p-value = 0.001
 anova(rda.all, by = "terms", permutations = how(nperm=999))
 #                               Df Variance      F Pr(>F)
@@ -909,7 +909,7 @@ anova(rda.all, by = "terms", permutations = how(nperm=999))
 #Residual                    43   992.83
 
 # August 2021
-rda.aug2021.4$call # best model
+#rda.aug2021.4$call # best model
 
 rda.aug2021<-rda(b.clr_AUG21 ~ Dissolved_OrganicMatter_RFU+Temp_DegC,data=August.2021)
 summary(rda.aug2021)
@@ -922,7 +922,7 @@ anova(rda.aug2021, by = "terms", permutations = how(nperm=999))
 #Residual                     5   415.50
 
 # December 2021
-rda.dec2021.2$call # best model from above
+#rda.dec2021.2$call # best model from above
 
 rda.dec2021<-rda(b.clr_DEC21 ~ ORP_mV + Sulfate_milliM,data=December.2021)
 summary(rda.dec2021)
@@ -935,13 +935,16 @@ anova(rda.dec2021, by = "terms", permutations = how(nperm=999))
 #Residual                    13   773.64
 
 # April 2022
-rda.apr2022.3$call  #best mode
+#rda.apr2022.3$call  #best mode
 
 rda.apr2022<-rda(b.clr_APR22 ~ ORP_mV + Sulfate_milliM,data=April.2022)
 summary(rda.apr2022)
 RsquareAdj(rda.apr2022) # how much variation is explained by our model? 0.02314467
 anova(rda.apr2022, permutations = how(nperm=999)) # p-value = 0.048
 anova(rda.apr2022, by = "terms", permutations = how(nperm=999))
+
+# save RDAs as R object
+save.image("data/SSW_Amplicon_EnvDriver_RDAsOnly.Rdata")
 
 #### Plot RDA - ALL data ####
 #plot(rda.aug2021) # depending on how many species you have, this step may take a while
@@ -966,6 +969,19 @@ png('figures/EnvDrivers/SSW_AllData_autoplot_rda_example.png',width = 700, heigh
 autoplot(rda.all, arrows = TRUE,data = rda.all ,layers=c("biplot","sites"),label = FALSE, label.size = 3, shape = FALSE, loadings = TRUE, loadings.colour = 'blue', loadings.label = TRUE, loadings.label.size = 3, scale= 0)+theme_classic()
 dev.off()
 ## FOR AUTOPLOT -> must load packagve ggvegan first
+
+
+# variance partitioning of RDA
+rda.all.part<-varpart(b.clr, meta_scaled$Temp_DegC, meta_scaled$Dissolved_OrganicMatter_RFU,meta_scaled$DO_Percent_Local)
+rda.all.part$part
+# plot variance partitioning results
+png('figures/EnvDrivers/SSW_AllData_RDA_VariancePartitioning.png',width = 700, height = 600, res=100)
+plot(rda.all.part,
+     Xnames = c("Temp (C)", "DOM (RFU)","DO%"), # name the partitions
+     bg = c("#ef476f", "#ffbe0b","skyblue"), alpha = 80, # colour the circles
+     digits = 3, # only show 2 digits
+     cex = 1.5)
+dev.off()
 
 rda.sum.all<-summary(rda.all)
 rda.sum.all$sites[,1:2]
@@ -1048,6 +1064,18 @@ autoplot(rda.aug2021, arrows = TRUE,data = rda.aug2021 ,layers=c("biplot","sites
 dev.off()
 ## FOR AUTOPLOT -> must load packagve ggvegan first
 
+# variance partitioning of RDA
+rda.aug21.part<-varpart(b.clr_AUG21, August.2021$Temp_DegC, August.2021$Dissolved_OrganicMatter_RFU)
+rda.aug21.part$part
+# plot variance partitioning results
+png('figures/EnvDrivers/SSW_Aug21_RDA_VariancePartitioning.png',width = 700, height = 600, res=100)
+plot(rda.aug21.part,
+     Xnames = c("Temp (C)", "DOM (RFU)"), # name the partitions
+     bg = c("#ef476f", "#ffbe0b"), alpha = 80, # colour the circles
+     digits = 3, # only show 3 digits
+     cex = 1.5)
+dev.off()
+
 rda.sum.a21<-summary(rda.aug2021)
 rda.sum.a21$sites[,1:2]
 rda.sum.a21$cont #cumulative proportion of variance per axis
@@ -1121,6 +1149,18 @@ autoplot(rda.dec2021, arrows = TRUE,data = rda.dec2021 ,layers=c("biplot","sites
 dev.off()
 ## FOR AUTOPLOT -> must load packagve ggvegan first
 
+# variance partitioning of RDA
+rda.dec21.part<-varpart(b.clr_DEC21, December.2021$ORP_mV, December.2021$Sulfate_milliM)
+rda.dec21.part$part
+# plot variance partitioning results
+png('figures/EnvDrivers/SSW_Dec21_RDA_VariancePartitioning.png',width = 700, height = 600, res=100)
+plot(rda.dec21.part,
+     Xnames = c("ORP (mV)", "Sulfate (milliM)"), # name the partitions
+     bg = c("#3a0ca3", "#8ac926"), alpha = 80, # colour the circles
+     digits = 3, # only show 3 digits
+     cex = 1.5)
+dev.off()
+
 rda.sum.d21<-summary(rda.dec2021)
 rda.sum.d21$sites[,1:2]
 rda.sum.d21$cont # cumulative proportion of variation per axis
@@ -1193,6 +1233,18 @@ png('figures/EnvDrivers/SSW_Apr22_autoplot_rda_example.png',width = 700, height 
 autoplot(rda.apr2022, arrows = TRUE,data = rda.apr2022 ,layers=c("biplot","sites"),label = FALSE, label.size = 3, shape = FALSE, loadings = TRUE, loadings.colour = 'blue', loadings.label = TRUE, loadings.label.size = 3, scale= 0)+theme_classic()
 dev.off()
 ## FOR AUTOPLOT -> must load packagve ggvegan first
+
+# variance partitioning of RDA
+rda.apr22.part<-varpart(b.clr_APR22, April.2022$ORP_mV, April.2022$Sulfate_milliM)
+rda.apr22.part$part
+# plot variance partitioning results
+png('figures/EnvDrivers/SSW_Apr22_RDA_VariancePartitioning.png',width = 700, height = 600, res=100)
+plot(rda.apr22.part,
+     Xnames = c("ORP (mV)", "Sulfate (milliM)"), # name the partitions
+     bg = c("#3a0ca3", "#8ac926"), alpha = 80, # colour the circles
+     digits = 3, # only show 3 digits
+     cex = 1.5)
+dev.off()
 
 rda.sum.a22<-summary(rda.apr2022)
 rda.sum.a22$sites[,1:2]
