@@ -232,6 +232,7 @@ meta_scaled$Depth.num<-as.numeric(as.character(meta_scaled$Depth_m))
 dom.kegg<-read.table("data/Metagenomes/Analysis/DOM_KOs_Pathway_Cycle_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 carb.kegg<-read.table("data/Metagenomes/Analysis/CarbonFixation_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 sulf.kegg<-read.table("data/Metagenomes/Analysis/Sulfur_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
+nitro.kegg<-read.table("data/Metagenomes/Analysis/N_KOs_Pathway_Cycle_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 arsen.kegg<-read.table("data/Metagenomes/Analysis/Arsenic_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 heatshock.kegg<-read.table("data/Metagenomes/Analysis/HeatShock_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 osmo.kegg<-read.table("data/Metagenomes/Analysis/Osmoprot_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
@@ -474,6 +475,7 @@ head(ko_fxns)
 ## pull out functions of interest
 #sulfur.fxns<-as.data.frame(ko_fxns[grep("sulf|thio", ko_fxns$KO_Function), ]) # pull out sulfur functions
 sulfur.fxns<-ko_fxns[which(ko_fxns$KO_ID %in% sulf.kegg$KO_ID),]
+nitro.fxns<-ko_fxns[which(ko_fxns$KO_ID %in% nitro.kegg$KO_ID),]
 carb.fxns<-ko_fxns[which(ko_fxns$KO_ID %in% carb.kegg$KO_ID),]
 DOM.fxns<-ko_fxns[which(ko_fxns$KO_ID %in% dom.kegg$KO_ID),]
 osmo.fxns<-ko_fxns[which(ko_fxns$KO_ID %in% osmo.kegg$KO_ID),]
