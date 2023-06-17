@@ -634,6 +634,200 @@ s.RO.hm1<-ggplot(clr.dis.S.redox, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCov
 
 ggsave(s.RO.hm1,filename = "figures/MGM_Figs/SSW_S_DissSO4_RedOx_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
 
+#### Pull Out Nitrogen Metabolic Fxns from CLR data ####
+## heatmaps of traits of interest
+
+mgm.clr[1:4,1:4]
+
+# pull out nitro functions from CLR transformed, summed coverages (summed coverage per KO)
+nitro.ko<-mgm.clr[,which(colnames(mgm.clr) %in% nitro.fxns$KO_ID)] # merge CLR data w/ S fxns found in contigs from KOFamScan
+nitro.ko$SampleID<-rownames(nitro.ko)
+nitro.ko.melt<-melt(nitro.ko, by="SampleID")
+colnames(nitro.ko.melt)[which(names(nitro.ko.melt) == "variable")] <- "KO_ID"
+colnames(nitro.ko.melt)[which(names(nitro.ko.melt) == "value")] <- "CLR_SumCovPerKO"
+head(nitro.ko.melt) #sanity check
+
+clr.nitro.ko<-merge(nitro.ko.melt,nitro.kegg,by.x=c("KO_ID"),by.y=c("KO_ID")) # merge data w/ KO assignments from KEGG db
+head(clr.nitro.ko)
+colnames(clr.nitro.ko)[which(names(clr.nitro.ko) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
+clr.cov.sum.nitro.ko<-as.data.frame(dcast(clr.nitro.ko, SampleID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###just dcast, nothing is being added here!
+rownames(clr.cov.sum.nitro.ko)<-clr.cov.sum.nitro.ko$SampleID
+clr.cov.sum.nitro.ko[1:4,]
+
+# sanity check
+clr.cov.sum.nitro.ko$`nirK; nitrite reductase (NO-forming) [EC:1.7.2.1]`[1:4]
+head(clr.nitro.ko)
+
+#### Add Sum Coverage per KO per N Pathway - then CLR transform ####
+ko.cov.sum_table[1:4,1:4] # contains the sum of coverages per gene per KO -- featureCounts was normalized by gene length across samples first to get coverage, then summed up per KO ID
+ko.cov.sum.m<-melt(ko.cov.sum_table, by="SampleID")
+colnames(ko.cov.sum.m)[which(names(ko.cov.sum.m) == "variable")] <- "KO_ID"
+colnames(ko.cov.sum.m)[which(names(ko.cov.sum.m) == "value")] <- "SumCovPerKO"
+head(ko.cov.sum.m) #sanity check
+
+# count up gene coverage by KO, by Pathway
+nitro.cov.sum.m<-merge(ko.cov.sum.m,nitro.kegg,by.x=c("KO_ID"),by.y=c("KO_ID"))
+head(nitro.cov.sum.m)
+nitro.path.cov.sum<-as.data.frame(dcast(nitro.cov.sum.m, SampleID~Pathway, value.var="SumCovPerKO", fun.aggregate=sum)) ###
+rownames(nitro.path.cov.sum)<-nitro.path.cov.sum$SampleID
+nitro.path.cov.sum[1:4,1:4]
+
+# then CLR transform
+# df must have rownames are SampleIDs, columns are ASV IDs for vegan functions below\
+n.path.clr<-decostand(nitro.path.cov.sum[,-1],method = "clr", pseudocount = 1) #CLR transformation
+n.path.clr[1:4,1:4]
+
+# check rownames of CLR transformed ASV data & metadata
+rownames(n.path.clr) %in% rownames(meta_scaled)
+
+## pull out all KOs in each Pathway
+unique(nitro.cov.sum.m$Pathway)
+assim.nitrate.red<-data.frame(KO_Function.KEGG=unique(nitro.cov.sum.m$KO_Function[which(nitro.cov.sum.m$Pathway=="Assimilatory Nitrate Reduction")]))
+dissim.nitrate.redox<-data.frame(KO_Function.KEGG=unique(clr.nitro.ko$KO_Function.KEGG[which(clr.nitro.ko$Pathway=="Dissimilatory Nitrate Redox")]))
+mult.nitro<-data.frame(KO_Function.KEGG=unique(clr.nitro.ko$KO_Function.KEGG[which(clr.nitro.ko$Pathway=="Multiple Pathways")]))
+denit.system<-data.frame(KO_Function.KEGG=unique(clr.nitro.ko$KO_Function.KEGG[which(clr.nitro.ko$Pathway=="Denitrification")]))
+anammox.system<-data.frame(KO_Function.KEGG=unique(clr.nitro.ko$KO_Function.KEGG[which(clr.nitro.ko$Pathway=="Anammox")]))
+
+# pull out functions & CLR info per pathway
+asNO3.ko.cov<-clr.cov.sum.nitro.ko[,-1][,colnames(clr.cov.sum.nitro.ko[,-1]) %in% assim.nitrate.red$KO_Function.KEGG] # pull out assimilatory nitrate reduction genes from gene list found in CLR transformed cov per KO
+disNO3.ko.cov<-clr.cov.sum.nitro.ko[,-1][,colnames(clr.cov.sum.nitro.ko[,-1]) %in% dissim.nitrate.redox$KO_Function.KEGG] # pull out dissimilatory nitrate reduction genes from gene list found in CLR transformed cov per KO
+denit.ko.cov<-clr.cov.sum.nitro.ko[,-1][,colnames(clr.cov.sum.nitro.ko[,-1]) %in% denit.system$KO_Function.KEGG] # pull out denitrification genes from gene list found in CLR transformed cov per KO
+anammox.ko.cov<-clr.cov.sum.nitro.ko[,-1][,colnames(clr.cov.sum.nitro.ko[,-1]) %in% anammox.system$KO_Function.KEGG] # pull out anammox genes from gene list found in CLR transformed cov per KO
+
+### Nitrogen Heat Maps ####
+# see max & mean of summed
+max(clr.cov.sum.nitro.ko[,-1])
+mean(as.matrix(clr.cov.sum.nitro.ko[,-1]))
+
+# first heat map of nitro KOs
+heatmap(as.matrix(clr.cov.sum.nitro.ko[,-1]), scale = "none")
+
+colSums(clr.cov.sum.nitro.ko[,-1])
+#clr.cov.sum.nitro.ko2 <- clr.cov.sum.nitro.ko[,which(colSums(clr.cov.sum.nitro.ko[,-1])>10)]
+
+heatmap(as.matrix(clr.cov.sum.nitro.ko[,-1]), scale = "none")
+
+# prep for ggplot2 heatmap
+clr.nitro.ko[1:4,]
+clr.nitro.all<-merge(clr.nitro.ko,meta_scaled,by="SampleID")
+head(clr.nitro.all)
+clr.nitro.all$SampleID = factor(clr.nitro.all$SampleID, levels=unique(clr.nitro.all$SampleID[order(clr.nitro.all$SampDate,clr.nitro.all$Depth_m)]), ordered=TRUE)
+clr.nitro.all$SampDate<-gsub("\\."," ",clr.nitro.all$SampDate)
+clr.nitro.all$SampDate<-factor(clr.nitro.all$SampDate, levels=c("August 2021","December 2021","April 2022"))
+clr.nitro.all$KO_Function.KEGG = factor(clr.nitro.all$KO_Function.KEGG, levels=unique(clr.nitro.all$KO_Function.KEGG[order(clr.nitro.all$Pathway)]), ordered=TRUE)
+
+# create shortened name for pathways
+clr.nitro.all$PathShort<-clr.nitro.all$Pathway
+# vvv can only do this type of renaming if variables are characters, not factors
+clr.nitro.all$PathShort[(clr.nitro.all$PathShort) == "Dissimilatory Nitrate Reduction"] <- "D. NO3 Red"
+clr.nitro.all$PathShort[(clr.nitro.all$PathShort) == "Assimilatory Nitrate Reduction"] <- "A. NO3 Red"
+
+# turn pathways & pathshort into factors
+clr.nitro.all$Pathway<-factor(clr.nitro.all$Pathway,levels=c("Assimilatory Nitrate Reduction","Dissimilatory Nitrate Reduction","Multiple Pathways","Denitrification","Anammox"))
+clr.nitro.all$PathShort<-factor(clr.nitro.all$PathShort,levels=c("A. NO3 Red","D. NO3 Red","Multiple Pathways","Denitrification","Anammox"))
+
+head(clr.nitro.all)
+
+nitro.hm1a<-ggplot(clr.nitro.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
+
+ggsave(nitro.hm1a,filename = "figures/MGM_Figs/Nitrogen_KOFxns_MGMs_SampID_by_Function_heatmap.png", width=18, height=13, dpi=600)
+
+nitro.hm1b<-ggplot(clr.nitro.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.15) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+
+ggsave(nitro.hm1b,filename = "figures/MGM_Figs/Nitrogen_KOFxns_MGMs_SampID_by_Function_Pathway_heatmap.png", width=17, height=15, dpi=600)
+
+nitro.hm1c<-ggplot(clr.nitro.all, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+
+ggsave(nitro.hm1c,filename = "figures/MGM_Figs/Nitrogen_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=18, dpi=600)
+
+nitro.hm1d<-ggplot(clr.nitro.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
+
+ggsave(nitro.hm1d,filename = "figures/MGM_Figs/Nitrogen_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
+
+nitro.hm1e<-ggplot(clr.nitro.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
+
+ggsave(nitro.hm1e,filename = "figures/MGM_Figs/Nitrogen_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=15, dpi=600)
+#
+# nitro.hm1f<-ggplot(clr.nitro.all, aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+#   geom_tile(colour="white",size=0.25) +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Depth_m~SampDate,scales="free", space = "free")
+#
+# ggsave(nitro.hm1f,filename = "figures/MGM_Figs/Nitrogen_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+#
+# nitro.hm1g<-ggplot(clr.nitro.all, aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+#   geom_tile(colour="white",size=0.25) +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_wrap(.~SampDate)
+#
+# ggsave(nitro.hm1g,filename = "figures/MGM_Figs/Nitrogen_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+
+nitro.hm1e<-ggplot(clr.nitro.all[clr.nitro.all$Depth_m==0,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
+
+ggsave(nitro.hm1e,filename = "figures/MGM_Figs/Nitrogen_KOFxns_Pathways_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
+
+nitro.hm1f<-ggplot(clr.nitro.all[clr.nitro.all$Depth_m==5,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
+
+ggsave(nitro.hm1f,filename = "figures/MGM_Figs/Nitrogen_KOFxns_Pathways_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
+
+nitro.hm1g<-ggplot(clr.nitro.all[clr.nitro.all$Depth_m==10,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
+
+ggsave(nitro.hm1g,filename = "figures/MGM_Figs/Nitrogen_KOFxns_Pathways_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
+
 #### Pull Out DOM Metabolic Fxns from CLR data ####
 ## heatmaps of traits of interest
 
