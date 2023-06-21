@@ -278,7 +278,7 @@ pairwise.wilcox.test(meta_scaled$Sulfide_microM, meta_scaled$SampleMonth, p.adju
 #December 0.00705 -
 #April    0.44826 0.00015
 
-#### Do Env Variables Correlate? ####
+#### Env Variable Corrplots ####
 head(meta_scaled)
 # check for colinearity among env variables themselves
 heatmap(abs(cor(meta_scaled[,c(8,10:12,15:17)])),
@@ -308,6 +308,12 @@ corrplot.mixed(cor_mat.env1, p.mat=cor.all.mat$p, tl.pos='lt', tl.cex=0.7, sig.l
 # env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
 dev.off()
 
+tiff('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_AllData_CorrPlot2.tiff', width = 7, height = 7, units = 'in', res = 300)
+corrplot(cor_mat.env1, p.mat = cor.all.mat$p, method = 'square', type = 'lower', insig='blank',
+         addCoef.col ='white', number.cex = 0.7, order = 'alphabet', diag=FALSE, tl.cex=0.5,COL2(diverging = c("RdYlBu"), n = 200),
+         title="All Timepoints",mar=c(0,0,1,0))
+dev.off()
+
 ## August Corrplot
 # Calculate correlations for corr coefficient & p values
 cor(August.2021[,c(8,10:12,15:17)],method='pearson')
@@ -325,6 +331,12 @@ corrplot.mixed(cor_mat.env.aug, p.mat=cor.aug21.mat$p, tl.pos='lt', tl.cex=0.7, 
 # env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
 dev.off()
 
+tiff('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_August21_CorrPlot2.tiff', width = 7, height = 7, units = 'in', res = 300)
+corrplot(cor_mat.env.aug, p.mat = cor.aug21.mat$p, method = 'square', type = 'lower', insig='blank',
+         addCoef.col ='white', number.cex = 0.7, order = 'alphabet', diag=FALSE, tl.cex=0.5,COL2(diverging = c("RdYlBu"), n = 200),
+         title="August 2021",mar=c(0,0,1,0))
+dev.off()
+
 ## December Corrplot
 cor(December.2021[,c(8,10:12,15:17)],method='pearson')
 cor.dec21.mat = cor.mtest(December.2021[,c(8,10:12,15:17)],method='pearson', conf.level = 0.95)
@@ -338,6 +350,12 @@ tiff('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_December21_CorrPlot
 corrplot.mixed(cor_mat.env.dec, p.mat=cor.dec21.mat$p, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, order="alphabet",insig='blank',number.cex=0.8,
                         diag='n',cl.ratio = 0.2, tl.srt = 45,title="December 2021 Env Variables",mar=c(0,0,1,0))
 # env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
+dev.off()
+
+tiff('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_December21_CorrPlot2.tiff', width = 7, height = 7, units = 'in', res = 300)
+corrplot(cor_mat.env.dec, p.mat = cor.dec21.mat$p, method = 'square', type = 'lower', insig='blank',
+         addCoef.col ='white', number.cex = 0.7, order = 'alphabet', diag=FALSE, tl.cex=0.5,COL2(diverging = c("RdYlBu"), n = 200),
+         title="December 2021",mar=c(0,0,1,0))
 dev.off()
 
 ## April Corrplot
@@ -355,6 +373,13 @@ corrplot.mixed(cor_mat.env.apr, p.mat=cor.apr22.mat$p, tl.pos='lt', tl.cex=0.7, 
 # env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
 dev.off()
 
+tiff('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_April22_CorrPlot2.tiff', width = 7, height = 7, units = 'in', res = 300)
+corrplot(cor_mat.env.apr, p.mat = cor.apr22.mat$p, method = 'square', type = 'lower', insig='blank',
+         addCoef.col ='white', number.cex = 0.7, order = 'alphabet', diag=FALSE, tl.cex=0.5,COL2(diverging = c("RdYlBu"), n = 200),
+         title="April 2022",mar=c(0,0,1,0))
+dev.off()
+
+#### Do Env Variables Correlate Individually ####
 # DO %
 cor.test(meta_scaled$DO_Percent_Local, meta_scaled$ORP_mV, method="pearson") # ***
 # r = 0.5619567, p = 0.000161 --> medium corr, & it's significant
