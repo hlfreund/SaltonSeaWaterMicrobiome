@@ -39,7 +39,6 @@ suppressPackageStartupMessages({ # load packages quietly
 
 #### Load Global Env to Import Count/ASV Tables ####
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
-load("data/SSeawater_EnvDataOnly_Ready.Rdata") # save global env to Rdata file
 
 # NOTE: chem data has already been Raw in meta_scaled; raw chem/env data in metadata
 # all samples included (outliers from alpha div data were not removed)
@@ -54,6 +53,62 @@ metadata$Depth.num<-as.numeric(as.character(metadata$Depth_m)) # for env PCA w/ 
 meta_scaled$Depth.num<-as.numeric(as.character(meta_scaled$Depth_m))
 
 head(meta_scaled)
+
+#### Separate All Data by Timepoints ####
+# create metadata df that will contain scaled chemical data
+head(metadata)
+head(meta_scaled)
+
+site_list<-unique(meta_scaled$SampDate) #define an array of string values
+# go through metadata & create a list of data frames
+## when metadata$Variable == element in site_list (aka x in this case), subset metadata by said element into elements of a list
+
+# here the function(x) is using site_list aka x to subset metadata, when $Variable column == site_list
+# Run the function so it's stored in Global Env
+site_subsets<-lapply(site_list, function(x) {subset(meta_scaled, SampDate==x)})
+
+site_subsets # sanity check1 (should see all elements in list)
+site_subsets[[1]] # sanity check2 (see 1st element in list)
+#rename the list elements
+
+# name each element in list
+names(site_subsets)<-site_list # * only do this if the order of names in site_list match order of the elements in site_subsets!
+site_subsets$April.2022 # sanity check3 - should be able to pull dataframes by names rather than index now
+
+# example of subsetting
+site_subsets[[2]][1:3]
+site_subsets$August.2021[1:3] # should produce same ouptut as line above
+
+site_subsets[[2]][1:2,1:2] # another example
+
+# ^ subsetting to [[second dataframe]], [[row #, column #]]
+site_subsets[[2]][[1,2]] # [[second dataframe]], [[row 1, column 2]]
+
+# set up the function and run this to store it in our Global environment
+df_specific.subset<-function(var_vec,var_subsets){
+  # var_vec = vector of variable elements from specific categorical variable;
+  ## e.g. vector of names from Site categorical variable (metadata sites)
+  # var_subsets = list of dataframes subsetted by column$element from original dataframe;
+  ## e.g. list of dataframes (each df = element of list) subsetted from metadata using vector of metadata$Site names
+  for(i in seq_along(var_vec)){
+    # print(var_vec[i]) -- var_vec[i] = each element in var_vec
+    # print(var_subsets[[i]]) -- var_subsets[[i]] = each sub
+    df<-paste(var_vec[i])
+    #print(df)
+    assign(df, var_subsets[[i]], envir = .GlobalEnv)
+    print(paste("Dataframe", var_vec[i] ,"done"))
+
+  }
+
+}
+
+# run the function
+df_specific.subset(site_list, site_subsets) # used scaled metadata quantitative values
+
+head(August.2021) # sanity check
+August.2021[1:5,] # double check that our new Variable (here SampDate) data frames still have scaled chemical data
+rownames(August.2021)
+
 #### Using Shapiro-Wilk test for Normality ####
 
 shapiro.test(meta_scaled$DO_Percent_Local) # what is the p-value?
@@ -243,9 +298,46 @@ cor_mat.env1
 
 symnum(cor_mat.env1)
 
-png('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_CorrPlot.png')
-crrplt1<-corrplot.mixed(cor_mat.env1, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, number.cex=0.8,
-               diag='l',lower.col = 'black', cl.ratio = 0.2, tl.srt = 45)
+tiff('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_AllData_CorrPlot.tiff', width = 7, height = 7, units = 'in', res = 300)
+corrplot.mixed(cor_mat.env1, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, number.cex=0.8,
+               diag='n',cl.ratio = 0.2, tl.srt = 45)
+# env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
+dev.off()
+
+## August Corrplot
+# Visualize with a corrplot
+cor_mat.env.aug <- cor(August.2021[,c(8,10:12,15:17)], method='pearson')
+cor_mat.env.aug
+
+symnum(cor_mat.env.aug)
+
+tiff('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_August21_CorrPlot.tiff', width = 7, height = 7, units = 'in', res = 300)
+corrplot.mixed(cor_mat.env.aug, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, number.cex=0.8,
+                        diag='l',cl.ratio = 0.2, tl.srt = 45)
+# env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
+dev.off()
+
+## December Corrplot
+cor_mat.env.dec <- cor(December.2021[,c(8,10:12,15:17)], method='pearson')
+cor_mat.env.dec
+
+symnum(cor_mat.env.dec)
+
+tiff('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_December21_CorrPlot.tiff', width = 7, height = 7, units = 'in', res = 300)
+corrplot.mixed(cor_mat.env.dec, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, number.cex=0.8,
+                        diag='l',cl.ratio = 0.2, tl.srt = 45)
+# env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
+dev.off()
+
+## April Corrplot
+cor_mat.env.apr <- cor(April.2022[,c(8,10:12,15:17)], method='pearson')
+cor_mat.env.apr
+
+symnum(cor_mat.env.apr)
+
+tiff('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_April22_CorrPlot.tiff', width = 7, height = 7, units = 'in', res = 300)
+corrplot.mixed(cor_mat.env.apr, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, number.cex=0.8,
+               diag='l',cl.ratio = 0.2, tl.srt = 45)
 # env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
 dev.off()
 
