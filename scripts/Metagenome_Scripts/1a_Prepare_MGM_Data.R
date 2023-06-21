@@ -171,6 +171,7 @@ mgm_meta$PlotID<-gsub("^SSW.","",mgm_meta$SampleID)
 head(mgm_meta)
 
 # drop data from June 2021
+mgm_june<-mgm_meta # separate DF containing June 2021 data
 mgm_meta<-mgm_meta[mgm_meta$SampleMonth!="June",]
 "June" %in% mgm_meta$SampleMonth # confirm there are no Junes left
 unique(mgm_meta$SampleMonth) # another sanity check to be safe
