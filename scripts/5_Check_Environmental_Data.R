@@ -52,6 +52,11 @@ head(meta_scaled) # centered & Raw metadata
 metadata$Depth.num<-as.numeric(as.character(metadata$Depth_m)) # for env PCA w/ log -transformed variables
 meta_scaled$Depth.num<-as.numeric(as.character(meta_scaled$Depth_m))
 
+# drop salinity from metadata & meta_scaled --> excluding this env variable
+metadata<-subset(metadata, select=-c(Salinity_ppt))
+head(metadata)
+
+meta_scaled<-subset(meta_scaled, select=-c(Salinity_ppt))
 head(meta_scaled)
 
 #### Separate All Data by Timepoints ####
@@ -112,7 +117,7 @@ rownames(August.2021)
 #### Using Shapiro-Wilk test for Normality ####
 
 shapiro.test(meta_scaled$DO_Percent_Local) # what is the p-value?
-# my p-value was p-value =  0.0007935
+# my p-value was p-value =  0.02586
 # p > 0.05 states distribution of data are not significantly different from normal distribution
 # p < 0.05 means that data is significantly different from a normal distribution
 hist(meta_scaled$DO_Percent_Local, col="blue")
@@ -121,26 +126,25 @@ hist(meta_scaled$DO_Percent_Local, col="blue")
 qqnorm(meta_scaled$DO_Percent_Local, pch = 1, frame = FALSE)
 qqline(meta_scaled$DO_Percent_Local, col = "steelblue", lwd = 2)
 
-shapiro.test(meta_scaled$ORP_mV) # what is the p-value? p-value = 3.323e-12
+shapiro.test(meta_scaled$ORP_mV) # what is the p-value? p-value = 1.731e-08
 hist(meta_scaled$ORP_mV, col="blue")
 # visualize Q-Q plot for species richness
 qqnorm(meta_scaled$ORP_mV, pch = 1, frame = FALSE)
 qqline(meta_scaled$ORP_mV, col = "steelblue", lwd = 2)
 
-shapiro.test(meta_scaled$Temp_DegC) # what is the p-value? p-value = 3.562e-06
+shapiro.test(meta_scaled$Temp_DegC) # what is the p-value? p-value = 0.0002829
 hist(meta_scaled$Temp_DegC, col="blue")
 # visualize Q-Q plot for species richness
 qqnorm(meta_scaled$Temp_DegC, pch = 1, frame = FALSE)
 qqline(meta_scaled$Temp_DegC, col = "steelblue", lwd = 2)
 
-shapiro.test(meta_scaled$Dissolved_OrganicMatter_RFU) # what is the p-value? p-value = 1.997e-07
+shapiro.test(meta_scaled$Dissolved_OrganicMatter_RFU) # what is the p-value? p-value = 0.05411
 hist(meta_scaled$Dissolved_OrganicMatter_RFU, col="blue")
 # visualize Q-Q plot for species richness
 qqnorm(meta_scaled$Dissolved_OrganicMatter_RFU, pch = 1, frame = FALSE)
 qqline(meta_scaled$Dissolved_OrganicMatter_RFU, col = "steelblue", lwd = 2)
 
-shapiro.test(meta_scaled$Sulfate_milliM) # what is the p-value?
-# my p-value was p-value =  0.006965
+shapiro.test(meta_scaled$Sulfate_milliM) # what is the p-value? p-value =  0.1912
 # p > 0.05 states distribution of data are not significantly different from normal distribution
 # p < 0.05 means that data is significantly different from a normal distribution
 hist(meta_scaled$Sulfate_milliM, col="blue")
@@ -149,8 +153,7 @@ hist(meta_scaled$Sulfate_milliM, col="blue")
 qqnorm(meta_scaled$Sulfate_milliM, pch = 1, frame = FALSE)
 qqline(meta_scaled$Sulfate_milliM, col = "steelblue", lwd = 2)
 
-shapiro.test(meta_scaled$Sulfide_microM) # what is the p-value?
-# my p-value was p-value =  5.934e-12
+shapiro.test(meta_scaled$Sulfide_microM) # what is the p-value? p-value =  3.813e-08
 # p > 0.05 states distribution of data are not significantly different from normal distribution
 # p < 0.05 means that data is significantly different from a normal distribution
 hist(meta_scaled$Sulfide_microM, col="blue")
@@ -159,13 +162,13 @@ hist(meta_scaled$Sulfide_microM, col="blue")
 qqnorm(meta_scaled$Sulfide_microM, pch = 1, frame = FALSE)
 qqline(meta_scaled$Sulfide_microM, col = "steelblue", lwd = 2)
 
-shapiro.test(meta_scaled$Turbidity_FNU) # what is the p-value?  p-value = 0.0005629
+shapiro.test(meta_scaled$Turbidity_FNU) # what is the p-value?  p-value = 0.002374
 hist(meta_scaled$Turbidity_FNU, col="blue")
 # visualize Q-Q plot for species richness
 qqnorm(meta_scaled$Turbidity_FNU, pch = 1, frame = FALSE)
 qqline(meta_scaled$Turbidity_FNU, col = "steelblue", lwd = 2)
 
-shapiro.test(meta_scaled$Chlorophyll_RFU) # what is the p-value? p-value = 1.044e-11
+shapiro.test(meta_scaled$Chlorophyll_RFU) # what is the p-value? p-value = 0.1947
 hist(meta_scaled$Chlorophyll_RFU, col="blue")
 # visualize Q-Q plot for species richness
 qqnorm(meta_scaled$Chlorophyll_RFU, pch = 1, frame = FALSE)
@@ -173,7 +176,7 @@ qqline(meta_scaled$Chlorophyll_RFU, col = "steelblue", lwd = 2)
 
 #### PCA w/ Env Variables ####
 head(metadata)
-env.dat<-metadata[,c(8:12,15:17)]
+env.dat<-metadata[,c(8,10:11,14:16)]
 head(env.dat)
 
 # NOTE: PCA requires normally distributed data, so we are log transforming env data before scaling
@@ -225,7 +228,7 @@ pca1<-ggplot(env.pca.meta, aes(x=PC1, y=PC2)) +geom_point(aes(color=factor(SampD
   labs(title="PCA: Environmental Variables in Salton Seawater",subtitle="Using Log Transformed Data",color="Sample Type")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Type",values=unique(env.pca.meta$SampDate_Color[order(env.pca.meta$SampDate)]),labels=c("June.2021"="June 2021","August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("PC1 [67.57%]") + ylab("PC2 [17.13%]")
+  xlab("PC1 [64.74%]") + ylab("PC2 [19.73%]")
 
 ggsave(pca1,filename = "figures/EnvVariablesOnly/SSW_LogEnvOnly_PCA_SampDate.png", width=12, height=10, dpi=600)
 
@@ -235,53 +238,52 @@ pca2<-ggplot(env.pca.meta, aes(x=PC1, y=PC2)) +
   labs(title="PCA: Environmental Variables in Salton Seawater",subtitle="Using Log Transformed Data",color="Depth (m)")+
   theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
-  xlab("PC1 [67.57%]") + ylab("PC2 [17.13%]")
+  xlab("PC1 [64.74%]") + ylab("PC2 [19.73%]")
 
 ggsave(pca2,filename = "figures/EnvVariablesOnly/SSW_LogEnvOnly_PCA_Depth_SampDate.png", width=12, height=10, dpi=600)
 
 #### Compare Env Samples Variance by Sample Date ####
 # Kruskal-Wallis test = nonparametric one-way ANOVA
-kruskal.test(DO_Percent_Local ~ SampleMonth, data = meta_scaled)
-pairwise.wilcox.test(meta_scaled$DO_Percent_Local, meta_scaled$SampleMonth, p.adjust.method = "bonf") # returns p values
-#         August  December
-#December 0.00029 -
-#April    0.00704 0.00051
+kruskal.test(DO_Percent_Local ~ SampDate, data = meta_scaled)
+pairwise.wilcox.test(meta_scaled$DO_Percent_Local, meta_scaled$SampDate, p.adjust.method = "bonf") # returns p values
+#               August  December
+#December.2021 0.0028      -
+#April.2022    0.0299  0.0299
 
-kruskal.test(ORP_mV ~ SampleMonth, data = meta_scaled)
-pairwise.wilcox.test(meta_scaled$ORP_mV, meta_scaled$SampleMonth, p.adjust.method = "bonf") # returns p values
-#         August  December
-#December 0.00096 -
-#April    0.00027 4.2e-06
+kruskal.test(ORP_mV ~ SampDate, data = meta_scaled)
+pairwise.wilcox.test(meta_scaled$ORP_mV, meta_scaled$SampDate, p.adjust.method = "bonf") # returns p values
+#               August.2021 December.2021
+# December.2021 0.0068      -
+# April.2022    0.0027      0.0027
 
-kruskal.test(Temp_DegC ~ SampleMonth, data = meta_scaled)
-pairwise.wilcox.test(meta_scaled$Temp_DegC, meta_scaled$SampleMonth, p.adjust.method = "bonf") # returns p values
-#         August  December
-#December 0.00029 -
-#April  0.00029 4.3e-06
+kruskal.test(Temp_DegC ~ SampDate, data = meta_scaled)
+pairwise.wilcox.test(meta_scaled$Temp_DegC, meta_scaled$SampDate, p.adjust.method = "bonf") # returns p values
+#               August.2021 December.2021
+# December.2021 0.0028      -
+#   April.2022  0.0028      0.0028
 
+kruskal.test(Dissolved_OrganicMatter_RFU ~ SampDate, data = meta_scaled)
+pairwise.wilcox.test(meta_scaled$Dissolved_OrganicMatter_RFU, meta_scaled$SampDate, p.adjust.method = "bonf") # returns p values
+#               August.2021 December.2021
+# December.2021 0.0027      -
+# April.2022    0.0028      0.0027
 
-kruskal.test(Dissolved_OrganicMatter_RFU ~ SampleMonth, data = meta_scaled)
-pairwise.wilcox.test(meta_scaled$Dissolved_OrganicMatter_RFU, meta_scaled$SampleMonth, p.adjust.method = "bonf") # returns p values
-#         August  December
-#December 0.00028 -
-#April    0.00029 4.2e-06
+kruskal.test(Sulfate_milliM ~ SampDate, data = meta_scaled)
+pairwise.wilcox.test(meta_scaled$Sulfate_milliM, meta_scaled$SampDate, p.adjust.method = "bonf") # returns p values
+#               August.2021 December.2021
+# December.2021 0.00047     -
+# April.2022    1.00000     0.00047
 
-kruskal.test(Sulfate_milliM ~ SampleMonth, data = meta_scaled)
-pairwise.wilcox.test(meta_scaled$Sulfate_milliM, meta_scaled$SampleMonth, p.adjust.method = "bonf") # returns p values
-#         August  December
-#December 0.00029 -
-#April   1.00000 4.5e-06
-
-kruskal.test(Sulfide_microM ~ SampleMonth, data = meta_scaled)
-pairwise.wilcox.test(meta_scaled$Sulfide_microM, meta_scaled$SampleMonth, p.adjust.method = "bonf") # returns p values
-#         August  December
-#December 0.00705 -
-#April    0.44826 0.00015
+kruskal.test(Sulfide_microM ~ SampDate, data = meta_scaled)
+pairwise.wilcox.test(meta_scaled$Sulfide_microM, meta_scaled$SampDate, p.adjust.method = "bonf") # returns p values
+#               August.2021 December.2021
+# December.2021 0.030       -
+# April.2022    0.703       0.016
 
 #### Env Variable Corrplots ####
 head(meta_scaled)
 # check for colinearity among env variables themselves
-heatmap(abs(cor(meta_scaled[,c(8,10:12,15:17)])),
+heatmap(abs(cor(meta_scaled[,c(8,10:11,14:16)])),
         # Compute pearson correlation (note they are absolute values)
         col = rev(heat.colors(6)),
         Colv = NA, Rowv = NA)
@@ -293,11 +295,11 @@ legend("topleft",
 dev.off()
 
 # Calculate correlations for corr coefficient & p values
-cor(meta_scaled[,c(8,10:12,15:17)],method='pearson')
-cor.all.mat = cor.mtest(meta_scaled[,c(8,10:12,15:17)],method='pearson', conf.level = 0.95)
+cor(meta_scaled[,c(8,10:11,14:16)],method='pearson')
+cor.all.mat = cor.mtest(meta_scaled[,c(8,10:11,14:16)],method='pearson', conf.level = 0.95)
 
 # Visualize with a corrplot
-cor_mat.env1 <- cor(meta_scaled[,c(8,10:12,15:17)], method='pearson')
+cor_mat.env1 <- cor(meta_scaled[,c(8,10:11,14:16)], method='pearson')
 cor_mat.env1
 
 symnum(cor_mat.env1)
@@ -316,11 +318,11 @@ dev.off()
 
 ## August Corrplot
 # Calculate correlations for corr coefficient & p values
-cor(August.2021[,c(8,10:12,15:17)],method='pearson')
-cor.aug21.mat = cor.mtest(August.2021[,c(8,10:12,15:17)],method='pearson', conf.level = 0.95)
+cor(August.2021[,c(8,10:11,14:16)],method='pearson')
+cor.aug21.mat = cor.mtest(August.2021[,c(8,10:11,14:16)],method='pearson', conf.level = 0.95)
 
 # Visualize with a corrplot
-cor_mat.env.aug <- cor(August.2021[,c(8,10:12,15:17)], method='pearson')
+cor_mat.env.aug <- cor(August.2021[,c(8,10:11,14:16)], method='pearson')
 cor_mat.env.aug
 
 symnum(cor_mat.env.aug)
@@ -338,10 +340,10 @@ corrplot(cor_mat.env.aug, p.mat = cor.aug21.mat$p, method = 'square', type = 'lo
 dev.off()
 
 ## December Corrplot
-cor(December.2021[,c(8,10:12,15:17)],method='pearson')
-cor.dec21.mat = cor.mtest(December.2021[,c(8,10:12,15:17)],method='pearson', conf.level = 0.95)
+cor(December.2021[,c(8,10:11,14:16)],method='pearson')
+cor.dec21.mat = cor.mtest(December.2021[,c(8,10:11,14:16)],method='pearson', conf.level = 0.95)
 
-cor_mat.env.dec <- cor(December.2021[,c(8,10:12,15:17)], method='pearson')
+cor_mat.env.dec <- cor(December.2021[,c(8,10:11,14:16)], method='pearson')
 cor_mat.env.dec
 
 symnum(cor_mat.env.dec)
@@ -359,10 +361,10 @@ corrplot(cor_mat.env.dec, p.mat = cor.dec21.mat$p, method = 'square', type = 'lo
 dev.off()
 
 ## April Corrplot
-cor(April.2022[,c(8,10:12,15:17)],method='pearson')
-cor.apr22.mat = cor.mtest(April.2022[,c(8,10:12,15:17)],method='pearson', conf.level = 0.95)
+cor(April.2022[,c(8,10:11,14:16)],method='pearson')
+cor.apr22.mat = cor.mtest(April.2022[,c(8,10:11,14:16)],method='pearson', conf.level = 0.95)
 
-cor_mat.env.apr <- cor(April.2022[,c(8,10:12,15:17)], method='pearson')
+cor_mat.env.apr <- cor(April.2022[,c(8,10:11,14:16)], method='pearson')
 cor_mat.env.apr
 
 symnum(cor_mat.env.apr)
@@ -379,6 +381,55 @@ corrplot(cor_mat.env.apr, p.mat = cor.apr22.mat$p, method = 'square', type = 'lo
          title="April 2022",mar=c(0,0,1,0))
 dev.off()
 
+#### Plot Correlations by Sample Date to Check Correlations Above ####
+
+# August
+aug1<-ggplot(August.2021, aes(x=Temp_DegC, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="Temperature & DO% - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("Temp (C)") + ylab("DO (%)")
+ggsave(aug1,filename = "figures/EnvVariablesOnly/SSW_DO.Percent_Temp_August2021_scatterplot.png", width=12, height=10, dpi=600)
+
+aug2<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="DOM & DO% - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("DOM (RFU)") + ylab("DO (%)")
+ggsave(aug2,filename = "figures/EnvVariablesOnly/SSW_DO.Percent_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
+
+aug3<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=ORP_mV,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="DOM & ORP - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("DOM (RFU)") + ylab("ORP (mV)")
+ggsave(aug3,filename = "figures/EnvVariablesOnly/SSW_ORP_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
+
+aug4<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=Sulfide_microM,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="DOM & Sulfide - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("DOM (RFU)") + ylab("Sulfide (microM)")
+ggsave(aug4,filename = "figures/EnvVariablesOnly/SSW_H2S_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
+
+aug5<-ggplot(August.2021, aes(x=ORP_mV, y=Sulfide_microM,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="ORP & Sulfide - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("ORP (mV)") + ylab("Sulfide (microM)")
+ggsave(aug5,filename = "figures/EnvVariablesOnly/SSW_H2S_ORP_August2021_scatterplot.png", width=12, height=10, dpi=600)
+
+## December
+dec1<-ggplot(December.2021, aes(x=Temp_DegC, y=ORP_mV,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="Temperature & ORP - December 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("Temp (C)") + ylab("ORP (mV)")
+ggsave(dec1,filename = "figures/EnvVariablesOnly/SSW_ORP_Temp_December2021_scatterplot.png", width=12, height=10, dpi=600)
+
+## April
+
+
 #### Do Env Variables Correlate Individually ####
 # DO %
 cor.test(meta_scaled$DO_Percent_Local, meta_scaled$ORP_mV, method="pearson") # ***
@@ -389,14 +440,11 @@ cor.test(meta_scaled$DO_Percent_Local, meta_scaled$Dissolved_OrganicMatter_RFU, 
 # r = -0.6131097, p-value = 2.6e-05 --> medium correlation & significant
 cor.test(meta_scaled$DO_Percent_Local, meta_scaled$Depth.num, method="pearson") #
 # r = -0.3850655 , p = 0.01414 --> not strong negative correlation,significant
-cor.test(meta_scaled$DO_Percent_Local, meta_scaled$Salinity_ppt, method="pearson") # ****
-# r = 0.8283734, p-value = 4.192e-11 --> strong positive correlation & significant
 
 plot(x=meta_scaled$DO_Percent_Local, y=meta_scaled$Dissolved_OrganicMatter_RFU, col=meta_scaled$SampDate_Color)
 plot(x=meta_scaled$DO_Percent_Local, y=meta_scaled$ORP_mV, col=meta_scaled$SampDate_Color)
 plot(x=meta_scaled$DO_Percent_Local, y=meta_scaled$Temp_DegC, col=meta_scaled$SampDate_Color)
 plot(x=meta_scaled$DO_Percent_Local, y=meta_scaled$Depth.num, col=meta_scaled$SampDate_Color)
-plot(x=meta_scaled$DO_Percent_Local, y=meta_scaled$Salinity_ppt, col=meta_scaled$SampDate_Color)
 
 # ORP
 cor.test(meta_scaled$ORP_mV, meta_scaled$Temp_DegC, method="pearson") # ***
@@ -405,25 +453,19 @@ cor.test(meta_scaled$ORP_mV, meta_scaled$Dissolved_OrganicMatter_RFU, method="pe
 # r = -0.380499, p-value = 0.00833 --> lame negative correlation, it's significant
 cor.test(meta_scaled$ORP_mV, meta_scaled$Depth.num, method="pearson")
 # r = -0.2568054, p-value =  0.1097 --> not sig, not strong corr
-cor.test(meta_scaled$ORP_mV, meta_scaled$Salinity_ppt, method="pearson") # ***
-# r = 0.5235966, p-value =0.0005261 --> medium corr, significant
 
 plot(x=meta_scaled$ORP_mV, y=meta_scaled$Dissolved_OrganicMatter_RFU, col=meta_scaled$SampDate_Color)
 plot(x=meta_scaled$ORP_mV, y=meta_scaled$Temp_DegC, col=meta_scaled$SampDate_Color)
 plot(x=meta_scaled$ORP_mV, y=meta_scaled$Depth.num, col=meta_scaled$SampDate_Color)
-plot(x=meta_scaled$ORP_mV, y=meta_scaled$Salinity_ppt, col=meta_scaled$SampDate_Color)
 
 # Dissolved Organic Matter
 cor.test(meta_scaled$Dissolved_OrganicMatter_RFU, meta_scaled$Temp_DegC, method="pearson") # ***
 # r = 0.4585448, p-value = 0.002923 # medium corr, significant
 cor.test(meta_scaled$Dissolved_OrganicMatter_RFU, meta_scaled$Depth.num, method="pearson")
 # r = 0.3099062 , p = 0.05165 # not sig, lame corr
-cor.test(meta_scaled$Dissolved_OrganicMatter_RFU, meta_scaled$Salinity_ppt, method="pearson")
-# r = -0.6411353, p-value = 8.303e-06
 
 plot(x=meta_scaled$Dissolved_OrganicMatter_RFU, y=meta_scaled$Temp_DegC, col=meta_scaled$SampDate_Color)
 plot(x=meta_scaled$Dissolved_OrganicMatter_RFU, y=meta_scaled$Depth.num, col=meta_scaled$SampDate_Color)
-plot(x=meta_scaled$Dissolved_OrganicMatter_RFU, y=meta_scaled$Salinity_ppt, col=meta_scaled$SampDate_Color)
 
 # Sulfate (milliM)
 cor.test(meta_scaled$Sulfate_milliM, meta_scaled$ORP_mV, method="pearson")
@@ -436,8 +478,6 @@ cor.test(meta_scaled$Sulfate_milliM, meta_scaled$Dissolved_OrganicMatter_RFU, me
 # r = -0.03455734 , p = 0.8323 --> no corr, not sig
 cor.test(meta_scaled$Sulfate_milliM, meta_scaled$Sulfide_microM, method="pearson")
 # r = -0.1571489 , p = 0.3328 --> no corr, not sig
-cor.test(meta_scaled$Sulfate_milliM, meta_scaled$Salinity_ppt, method="pearson")
-# r = 0.515623, p-value = 0.0006613
 cor.test(meta_scaled$Sulfate_milliM, meta_scaled$Depth.num, method="pearson")
 # r = -0.1800819, p-value = 0.2662
 
@@ -446,7 +486,6 @@ plot(x=meta_scaled$Sulfate_milliM, y=meta_scaled$Dissolved_OrganicMatter_RFU, co
 plot(x=meta_scaled$Sulfate_milliM, y=meta_scaled$ORP_mV, col=meta_scaled$SampDate_Color)
 plot(x=meta_scaled$Sulfate_milliM, y=meta_scaled$Temp_DegC, col=meta_scaled$SampDate_Color)
 plot(x=meta_scaled$Sulfate_milliM, y=meta_scaled$Depth.num, col=meta_scaled$SampDate_Color)
-plot(x=meta_scaled$Sulfate_milliM, y=meta_scaled$Salinity_ppt, col=meta_scaled$SampDate_Color)
 
 # Sulfide (microM)
 cor.test(meta_scaled$Sulfide_microM, meta_scaled$ORP_mV, method="pearson") # ******
@@ -457,8 +496,6 @@ cor.test(meta_scaled$Sulfide_microM, meta_scaled$DO_Percent_Local, method="pears
 # r = -0.6286855, p = 1.398e-05 --> medium-strong negative correlation & significant
 cor.test(meta_scaled$Sulfide_microM, meta_scaled$Dissolved_OrganicMatter_RFU, method="pearson") # ****
 # r = 0.621356 , p = 1.88e-05 --> medium to strong correlation, significant
-cor.test(meta_scaled$Sulfide_microM, meta_scaled$Salinity_ppt, method="pearson")
-# r = -0.5595043, p-value = 0.0001745 # medium neg corr, significant
 cor.test(meta_scaled$Sulfide_microM, meta_scaled$Depth.num, method="pearson")
 # r = 0.2837005 , p-value = 0.07606 # not sig, no corr
 
@@ -467,7 +504,6 @@ plot(x=meta_scaled$Sulfide_microM, y=meta_scaled$Dissolved_OrganicMatter_RFU, co
 plot(x=meta_scaled$Sulfide_microM, y=meta_scaled$ORP_mV, col=meta_scaled$SampDate_Color)
 plot(x=meta_scaled$Sulfide_microM, y=meta_scaled$Temp_DegC, col=meta_scaled$SampDate_Color)
 plot(x=meta_scaled$Sulfide_microM, y=meta_scaled$Depth.num, col=meta_scaled$SampDate_Color)
-plot(x=meta_scaled$Sulfide_microM, y=meta_scaled$Salinity_ppt, col=meta_scaled$SampDate_Color)
 
 # Chlorophyll
 #cor.test(meta_scaled$Chlorophyll_RFU, meta_scaled$Dissolved_OrganicMatter_RFU, method="pearson") # ****
@@ -475,31 +511,6 @@ plot(x=meta_scaled$Sulfide_microM, y=meta_scaled$Salinity_ppt, col=meta_scaled$S
 #cor.test(meta_scaled$Chlorophyll_RFU, meta_scaled$Temp_DegC, method="pearson")
 
 #### Do Env Data Vary Significantly By Group?#####
-
-
-salf1<-aov(Salinity_ppt ~ SampDate, data=meta_scaled)
-#pairwise.adonis(bac.div.metadat$Bac_Species_Richness, bac.div.metadat$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
-
-summary(salf1)
-#Df           Sum Sq Mean Sq    F value   Pr(>F)
-#SampDate     2 22.887  11.444    2128 <2e-16 ***
-#Residuals   21  0.113   0.005
-Tuk1<-TukeyHSD(salf1)
-Tuk1$SampDate
-#                               diff        lwr        upr        p adj
-# December.2021-August.2021  2.2667637  2.1743447  2.3591827 4.363176e-14
-# April.2022-August.2021     1.7949426  1.7025236  1.8873615 4.363176e-14
-# April.2022-December.2021  -0.4718212 -0.5642402 -0.3794022 5.833745e-11
-
-salf2<-aov(Salinity_ppt ~ Depth_m, data=meta_scaled)
-#pairwise.adonis(bac.div.metadat$Bac_Species_Richness, bac.div.metadat$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
-
-summary(salf2)
-#Df           Sum Sq Mean Sq    F value   Pr(>F)
-#Depth_m      7  0.013  0.0019   0.001      1
-#Residuals   16 22.987  1.4367
-Tuk2<-TukeyHSD(salf2)
-Tuk2$Depth_m
 
 domf1<-aov(Dissolved_OrganicMatter_RFU ~ SampDate, data=meta_scaled)
 #pairwise.adonis(bac.div.metadat$Bac_Species_Richness, bac.div.metadat$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
@@ -818,15 +829,6 @@ dep.orp<-ggplot(metadata, aes(x=Depth_m, y=ORP_mV,color=SampDate,group=SampDate)
   xlab("Depth (m)") + ylab("ORP (mV)")+coord_flip()+ scale_x_discrete(limits=rev)
 
 ggsave(dep.orp,filename = "figures/EnvVariablesOnly/SSW_ORP_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
-
-dep.sal<-ggplot(metadata, aes(x=Depth_m, y=Salinity_ppt,color=SampDate,group=SampDate)) + geom_point(size=3) + geom_line() + theme_bw()+
-  labs(title="Salinity by Depth & Sample Date",subtitle="Using Raw Salinity (PPT) Data",color="Sample Date")+theme_classic()+
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
-  guides(shape = guide_legend(override.aes = list(size = 5)))+
-  scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("Depth (m)") + ylab("Salinity (PPT)")+coord_flip()+ scale_x_discrete(limits=rev)
-
-ggsave(dep.orp,filename = "figures/EnvVariablesOnly/SSW_Salinity_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
 dep.sulf<-ggplot(metadata, aes(x=Depth_m, y=Sulfate_milliM,color=SampDate,group=SampDate)) + geom_point(size=3) + geom_line() + theme_bw()+
   labs(title="Sulfate by Depth & Sample Date",subtitle="Using Raw Sulfate (milliM) Data",color="Sample Date")+theme_classic()+
