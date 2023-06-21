@@ -292,6 +292,10 @@ legend("topleft",
        fill = rev(heat.colors(6)))
 dev.off()
 
+# Calculate correlations for corr coefficient & p values
+cor(meta_scaled[,c(8,10:12,15:17)],method='pearson')
+cor.all.mat = cor.mtest(meta_scaled[,c(8,10:12,15:17)],method='pearson', conf.level = 0.95)
+
 # Visualize with a corrplot
 cor_mat.env1 <- cor(meta_scaled[,c(8,10:12,15:17)], method='pearson')
 cor_mat.env1
@@ -299,12 +303,16 @@ cor_mat.env1
 symnum(cor_mat.env1)
 
 tiff('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_AllData_CorrPlot.tiff', width = 7, height = 7, units = 'in', res = 300)
-corrplot.mixed(cor_mat.env1, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, number.cex=0.8,
-               diag='n',cl.ratio = 0.2, tl.srt = 45)
+corrplot.mixed(cor_mat.env1, p.mat=cor.all.mat$p, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, order="alphabet",insig='blank',number.cex=0.8,
+               diag='n',cl.ratio = 0.2, tl.srt = 45,title="All Timepoints",mar=c(0,0,1,0))
 # env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
 dev.off()
 
 ## August Corrplot
+# Calculate correlations for corr coefficient & p values
+cor(August.2021[,c(8,10:12,15:17)],method='pearson')
+cor.aug21.mat = cor.mtest(August.2021[,c(8,10:12,15:17)],method='pearson', conf.level = 0.95)
+
 # Visualize with a corrplot
 cor_mat.env.aug <- cor(August.2021[,c(8,10:12,15:17)], method='pearson')
 cor_mat.env.aug
@@ -312,32 +320,38 @@ cor_mat.env.aug
 symnum(cor_mat.env.aug)
 
 tiff('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_August21_CorrPlot.tiff', width = 7, height = 7, units = 'in', res = 300)
-corrplot.mixed(cor_mat.env.aug, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, number.cex=0.8,
-                        diag='l',cl.ratio = 0.2, tl.srt = 45)
+corrplot.mixed(cor_mat.env.aug, p.mat=cor.aug21.mat$p, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, order="alphabet",insig='blank',number.cex=0.8,
+                        diag='n',cl.ratio = 0.2, tl.srt = 45,title="August 2021 Env Variables",mar=c(0,0,1,0))
 # env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
 dev.off()
 
 ## December Corrplot
+cor(December.2021[,c(8,10:12,15:17)],method='pearson')
+cor.dec21.mat = cor.mtest(December.2021[,c(8,10:12,15:17)],method='pearson', conf.level = 0.95)
+
 cor_mat.env.dec <- cor(December.2021[,c(8,10:12,15:17)], method='pearson')
 cor_mat.env.dec
 
 symnum(cor_mat.env.dec)
 
 tiff('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_December21_CorrPlot.tiff', width = 7, height = 7, units = 'in', res = 300)
-corrplot.mixed(cor_mat.env.dec, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, number.cex=0.8,
-                        diag='l',cl.ratio = 0.2, tl.srt = 45)
+corrplot.mixed(cor_mat.env.dec, p.mat=cor.dec21.mat$p, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, order="alphabet",insig='blank',number.cex=0.8,
+                        diag='n',cl.ratio = 0.2, tl.srt = 45,title="December 2021 Env Variables",mar=c(0,0,1,0))
 # env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
 dev.off()
 
 ## April Corrplot
+cor(April.2022[,c(8,10:12,15:17)],method='pearson')
+cor.apr22.mat = cor.mtest(April.2022[,c(8,10:12,15:17)],method='pearson', conf.level = 0.95)
+
 cor_mat.env.apr <- cor(April.2022[,c(8,10:12,15:17)], method='pearson')
 cor_mat.env.apr
 
 symnum(cor_mat.env.apr)
 
 tiff('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_April22_CorrPlot.tiff', width = 7, height = 7, units = 'in', res = 300)
-corrplot.mixed(cor_mat.env.apr, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, number.cex=0.8,
-               diag='l',cl.ratio = 0.2, tl.srt = 45)
+corrplot.mixed(cor_mat.env.apr, p.mat=cor.apr22.mat$p, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, order="alphabet",insig='blank',number.cex=0.8,
+               diag='n',cl.ratio = 0.2, tl.srt = 45,title="April 2022 Env Variables",mar=c(0,0,1,0))
 # env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
 dev.off()
 
