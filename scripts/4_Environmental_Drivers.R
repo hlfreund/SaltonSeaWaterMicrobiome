@@ -36,6 +36,7 @@ suppressPackageStartupMessages({ # load packages quietly
 #### Load Global Env to Import Count/ASV Tables ####
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
 #load("data/SSW_Amplicon_EnvDriver.Rdata")
+load("data/SSW_Amplicon_EnvDriver_RDAsOnly.Rdata")
 
 bac.dat.all[1:4,1:4]
 bac.ASV_table[,1:4]
@@ -882,7 +883,10 @@ summary(rda.dec2021)
 RsquareAdj(rda.dec2021) # how much variation is explained by our model? 5.3%
 anova(rda.dec2021, permutations = how(nperm=999)) # p-value = 0.005
 anova(rda.dec2021, by = "terms", permutations = how(nperm=999))
-#
+#                 Df Variance      F Pr(>F)
+# ORP_mV          1   77.391 1.3240  0.003 **
+# Sulfate_milliM  1   62.509 1.0694  0.192
+# Residual        5  292.258
 
 # April 2022
 #rda.apr2022.3$call  #best mode
@@ -892,6 +896,10 @@ summary(rda.apr2022)
 RsquareAdj(rda.apr2022) # how much variation is explained by our model? 2.61%
 anova(rda.apr2022, permutations = how(nperm=999)) # p-value = 0.039
 anova(rda.apr2022, by = "terms", permutations = how(nperm=999))
+#                           Df Variance      F Pr(>F)
+# Dissolved_OrganicMatter_RFU  1   60.077 1.1195  0.011 *
+# Sulfate_milliM               1   57.312 1.0680  0.092 .
+# Residual                     5  268.313
 
 # save RDAs as R object
 save.image("data/SSW_Amplicon_EnvDriver_RDAsOnly.Rdata")
