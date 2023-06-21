@@ -381,56 +381,7 @@ corrplot(cor_mat.env.apr, p.mat = cor.apr22.mat$p, method = 'square', type = 'lo
          title="April 2022",mar=c(0,0,1,0))
 dev.off()
 
-#### Plot Correlations by Sample Date to Check Correlations Above ####
-
-# August
-aug1<-ggplot(August.2021, aes(x=Temp_DegC, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=3) + theme_bw()+
-  labs(title="Temperature & DO% - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
-  guides(shape = guide_legend(override.aes = list(size = 5)))+
-  xlab("Temp (C)") + ylab("DO (%)")
-ggsave(aug1,filename = "figures/EnvVariablesOnly/SSW_DO.Percent_Temp_August2021_scatterplot.png", width=12, height=10, dpi=600)
-
-aug2<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=3) + theme_bw()+
-  labs(title="DOM & DO% - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
-  guides(shape = guide_legend(override.aes = list(size = 5)))+
-  xlab("DOM (RFU)") + ylab("DO (%)")
-ggsave(aug2,filename = "figures/EnvVariablesOnly/SSW_DO.Percent_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
-
-aug3<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=ORP_mV,color=Depth_m)) + geom_point(size=3) + theme_bw()+
-  labs(title="DOM & ORP - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
-  guides(shape = guide_legend(override.aes = list(size = 5)))+
-  xlab("DOM (RFU)") + ylab("ORP (mV)")
-ggsave(aug3,filename = "figures/EnvVariablesOnly/SSW_ORP_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
-
-aug4<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=Sulfide_microM,color=Depth_m)) + geom_point(size=3) + theme_bw()+
-  labs(title="DOM & Sulfide - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
-  guides(shape = guide_legend(override.aes = list(size = 5)))+
-  xlab("DOM (RFU)") + ylab("Sulfide (microM)")
-ggsave(aug4,filename = "figures/EnvVariablesOnly/SSW_H2S_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
-
-aug5<-ggplot(August.2021, aes(x=ORP_mV, y=Sulfide_microM,color=Depth_m)) + geom_point(size=3) + theme_bw()+
-  labs(title="ORP & Sulfide - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
-  guides(shape = guide_legend(override.aes = list(size = 5)))+
-  xlab("ORP (mV)") + ylab("Sulfide (microM)")
-ggsave(aug5,filename = "figures/EnvVariablesOnly/SSW_H2S_ORP_August2021_scatterplot.png", width=12, height=10, dpi=600)
-
-## December
-dec1<-ggplot(December.2021, aes(x=Temp_DegC, y=ORP_mV,color=Depth_m)) + geom_point(size=3) + theme_bw()+
-  labs(title="Temperature & ORP - December 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
-  guides(shape = guide_legend(override.aes = list(size = 5)))+
-  xlab("Temp (C)") + ylab("ORP (mV)")
-ggsave(dec1,filename = "figures/EnvVariablesOnly/SSW_ORP_Temp_December2021_scatterplot.png", width=12, height=10, dpi=600)
-
-## April
-
-
-#### Do Env Variables Correlate Individually ####
+#### Do Env Variables Correlate Across Time Points ####
 # DO %
 cor.test(meta_scaled$DO_Percent_Local, meta_scaled$ORP_mV, method="pearson") # ***
 # r = 0.5619567, p = 0.000161 --> medium corr, & it's significant
@@ -537,277 +488,6 @@ summary(domf2)
 Tuk4<-TukeyHSD(domf2)
 Tuk4$Depth_m
 ## sampling depth
-
-#### Does Env Predict Alpha Diversity? ####
-## linear regression time!
-
-## First let's make the alpha diversity data frame
-## Calculate Shannon Diversity (abundance + richness considered in diversity calculation)
-# if you have another package loaded that has a diversity function, you can specify that you want to use vegan's diversity function as shown below
-Shan_ent.16s<-vegan::diversity(bac.ASV_table[,-1], index="shannon") # Shannon entropy
-Shan_div.16s<- exp(Shan_ent.16s) # Shannon Diversity aka Hill number 1
-
-# create data frame with Shannon entropy and Shannon diversity values
-div_16s<-data.frame(Bac_Shannon_Entropy=Shan_ent.16s,Bac_Shannon_Diversity=Shan_div.16s)
-class(div_16s)
-div_16s$SampleID<-rownames(div_16s)
-head(div_16s)
-
-# Calculate species richness (number of species per sample)
-specnumber(bac.ASV_table[,-1])
-
-# Create a DF with Species Richness
-S_16s<-data.frame(Bac_Species_Richness=specnumber(bac.ASV_table[,-1]), SampleID=rownames(bac.ASV_table)) # finds # of species per sample using RAW count data; if MARGIN = 2 it finds frequencies of species
-
-# merge richness and diversity dataframes together
-d.r_16s<-merge(div_16s, S_16s, by.x="SampleID", by.y="SampleID")
-
-# merge w/ metadata
-bac.div.metadat <- merge(d.r_16s,meta_scaled, by.x="SampleID", by.y="SampleID")
-head(bac.div.metadat)
-class(bac.div.metadat) # want data frame
-
-unique(bac.div.metadat$SampleMonth) # see how many elements there are in the Group variable
-unique(bac.div.metadat$Depth_m) # see how many elements there are in the Group variable
-
-# drop the outliers
-bac.div.metadat2<-subset(bac.div.metadat, bac.div.metadat$Bac_Shannon_Diversity<=200)
-
-# Linear Regression time!
-## here the focus is comparing dust complexity to alpha diversity, species richness, & elevation
-head(bac.div.metadat2)
-s.div.lm.fit1<-lm(Bac_Shannon_Diversity ~ DO_Percent_Local, data=bac.div.metadat2) %>%
-  adjust_pvalue(method="bonferroni")
-## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
-# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.div.lm.fit1)
-#Coefficients:
-#  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)        97.679      6.548  14.916   <2e-16 ***
-#  DO_Percent_Local   -1.922      6.647  -0.289    0.774
-
-s.div.lm.fit2<-lm(Bac_Shannon_Diversity ~ ORP_mV, data=bac.div.metadat2) %>%
-  adjust_pvalue(method="bonferroni")
-## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
-# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.div.lm.fit2)
-
-#Coefficients:
-#  Estimate Std. Error t value Pr(>|t|)
-#(Intercept)   97.674      3.709  26.333  < 2e-16 ***
-#  ORP_mV       -15.535      3.720  -4.176 0.000138 ***
-## ^^^ the two lms below show that this model is significant only for June & August 2021, not December & April
-
-not_summer_months<-subset(bac.div.metadat2, SampDate=="December.2021" | SampDate=="April.2022" )
-
-s.div.lm.fit2a<-lm(Bac_Shannon_Diversity ~ ORP_mV, data=not_summer_months) %>%
-  adjust_pvalue(method="bonferroni")
-## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
-# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.div.lm.fit2a)
-
-summer_months<-subset(bac.div.metadat2, SampDate=="June.2021" | SampDate=="August.2021" )
-
-s.div.lm.fit2b<-lm(Bac_Shannon_Diversity ~ ORP_mV, data=summer_months) %>%
-  adjust_pvalue(method="bonferroni")
-## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
-# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.div.lm.fit2b)
-
-s.div.lm.fit3<-lm(Bac_Shannon_Diversity ~ Temp_DegC, data=bac.div.metadat2) %>%
-  adjust_pvalue(method="bonferroni")
-## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
-# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.div.lm.fit3)
-
-s.div.lm.fit5<-lm(Bac_Shannon_Diversity ~ Dissolved_OrganicMatter_RFU, data=bac.div.metadat2) %>%
-  adjust_pvalue(method="bonferroni")
-## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
-# model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
-summary(s.div.lm.fit5)
-
-
-
-
-fit1<-aov(Bac_Shannon_Diversity ~ Depth_m, data=bac.div.metadat2)
-pairwise.adonis(bac.div.metadat2$Bac_Shannon_Diversity, bac.div.metadat2$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
-
-summary(fit1)
-#Df           Sum Sq Mean Sq    F value   Pr(>F)
-#Elevation2   3 0.7277 0.24258   0.084 0.774
-#Residuals   27 0.4444 0.01646
-Tuk1<-TukeyHSD(fit1)
-Tuk1$Depth_m
-
-#plot(DustComplexity ~ Elevation, data=bac.div.metadat2)
-#abline(aov(DustComplexity ~ Elevation, data=bac.div.metadat2))
-
-# fit.0<-aov(DustComplexity ~ as.factor(Elevation), data=bac.div.metadat2)
-# summary(fit.0)
-# TukeyHSD(fit.0)
-# Levene's test with one independent variable
-## Levene's tests whether variances of 2 samples are equal
-## we want variances to be the same -- want NON SIGNIFICANCE!
-## t test assumes that variances are the same, so Levene's test needs to be non significant
-fligner.test(Bac_Shannon_Diversity ~ Depth_m, data = bac.div.metadat2)
-# Levenes Test for Homogeneity of Variance
-#        Df  Chi square value  Pr(>F)
-# group  3   1.0952   0.7411
-# Which shows that the data do not deviate significantly from homogeneity.
-elev<-bac.div.metadat2$Elevation2
-compare_means(DustComplexity ~ Elevation2, data=bac.div.metadat2, method="anova",p.adjust.method = "bonferroni") # won't take as.factor(Elevation) as input
-
-p.adj.dc.elev<-compare_means(DustComplexity ~ Elevation2, data=bac.div.metadat2, method="t.test",p.adjust.method = "bonferroni") # won't take as.factor(Elevation) as input# Note https://github.com/kassambara/ggpubr/issues/65
-
-fit.test<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
-  geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
-  labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_manual(values=saturation(fair_cols, 0.9))+stat_compare_means(method = "anova",label.y=1.5) +stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,label = "p.signif")
-
-ggsave(fit.test,filename = "figures/EnvVariablesOnly/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
-
-fit.testa<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
-  geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
-  labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_manual(values=saturation(fair_cols, 0.9))+stat_compare_means(method = "anova",label.y=1.5,mapping=aes(label = format.pval(..p.adj.., digits = 3))) +stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,mapping=aes(label = format.pval(..p.adj.., digits = 3)))
-
-ggsave(fit.testa,filename = "figures/EnvVariablesOnly/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
-
-fit.test0<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
-  geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
-  labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_manual(values=saturation(fair_cols, 0.9))+stat_compare_means(method = "anova",label.y=1.5) +stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,label = "p.signif")
-
-ggsave(fit.test,filename = "figures/EnvVariablesOnly/DustComp_by_Elevation_ALL_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
-
-fit.testa<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
-  geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
-  labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_manual(values=saturation(fair_cols, 0.9))
-
-ggsave(fit.testa,filename = "figures/EnvVariablesOnly/DustComp_by_Elevation_ALL_no.sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
-
-fit.testb<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
-  geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
-  labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_grey(start=0.8, end=0.3)
-
-ggsave(fit.testb,filename = "figures/EnvVariablesOnly/DustComp_by_Elevation_ALL_gray_5.24.21.pdf", width=10, height=8, dpi=600)
-
-fit.testb.0<-ggplot(bac.div.metadat2, aes(x = as.factor(Elevation), y = DustComplexity, fill=as.factor(Elevation))) +
-  geom_boxplot() + theme_classic() + guides(fill = guide_legend(reverse=TRUE)) +
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
-  labs(title="Dust Complexity x Elevation",fill="Elevation (ft)")+ylab("Dust Complexity")+xlab("Elevation (ft)")+scale_fill_grey(start=0.8, end=0.3)+stat_compare_means(method = "anova",label.y=1.5) +stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3),  c(3,4),  c(2,4),  c(1,4)), method="t.test", hide.ns = TRUE,label = "p.signif")
-
-ggsave(fit.testb.0,filename = "figures/EnvVariablesOnly/DustComp_by_Elevation_ALL_gray_sigbars_5.24.21.pdf", width=10, height=8, dpi=600)
-
-### Fungi comparisons first
-# Dust Comp x ITS1 Shannon diversity
-hist(bac.div.metadat2$ITS1_Shannon_Diversity) # NOT normally distributed
-hist(bac.div.metadat2$DustComplexity) # somewhat normally distributed
-chisq.test(bac.div.metadat2$ITS1_Shannon_Diversity, bac.div.metadat2$DustComplexity)
-
-its1.fit1<-lm(DustComplexity ~ ITS1_Shannon_Diversity, data=bac.div.metadat2) %>%
-  adjust_pvalue(method="bonferroni")
-## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
-summary(its1.fit1)
-# Coefficients:
-#   Estimate Std. Error t value Pr(>|t|)
-# (Intercept)             0.614082   0.050858  12.074  7.8e-13 ***
-#  ITS1_Shannon_Diversity -0.001942   0.001416  -1.372    0.181
-
-its1.fit1.p<-p.adjust(coef(summary(its1.fit1))[8], method="bonferroni") # pvalue
-
-plot(DustComplexity ~ ITS1_Shannon_Diversity, data=bac.div.metadat2)
-abline(its1.fit1)
-
-
-#leveneTest(bac.div.metadat2$DustComplexity,
-#            bac.div.metadat2$ITS1_Shannon_Diversity,
-#            location = c("median"),
-#            trim.alpha = 0.25)
-# Levenes Test for Homogeneity of Variance
-#        Df  F value  Pr(>F)
-# group  3   2.3415   0.0818
-# Which shows that the data do not deviate significantly from homogeneity.
-
-fig.its1.fit1<-ggplot(its1_div_meta, aes(x = ITS1_Shannon_Diversity, y = DustComplexity)) +
-  geom_point(aes(color=Elev.num), size=3) + theme_classic() + saturation(scale_colour_gradientn(colours=fair_cols,limits=c(400,2700),breaks = c(500,1250,2000,2600),labels=c("400","1100","2000","2700")), 0.9) +
-  stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(color="Elevation (ft)")+ylab("Dust Complexity")+xlab("ITS1 Shannon Diversity")+
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
-  stat_cor(label.y = 1, label.x=75) +
-  stat_regline_equation(aes(label=paste(..adj.rr.label..)),label.y = 1.20,label.x=75)
-## use summary(its1.fit1) to double check that stat_cor gives same p value as linear regression!
-
-ggsave(fig.its1.fit1,filename = "figures/EnvVariablesOnly/DustComp_by_ITS1_ShanDiv_ALL_1.4.22.pdf", width=10, height=8, dpi=600)
-
-fig.its1.fit1<-ggplot(its1_div_meta, aes(x = ITS1_Shannon_Diversity, y = DustComplexity)) +
-  geom_point(aes(color=Elev.num),size=3) + theme_classic() + saturation(scale_colour_gradientn(colours=fair_cols,limits=c(400,2700),breaks = c(500,1250,2000,2600),labels=c("400","1100","2000","2700")), 0.9) +
-  stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(title="Dust Complexity x ITS1 Shannon Diversity", color="Elevation (ft)")+ylab("Dust Complexity")+xlab("ITS1 Shannon Diversity")+
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
-  stat_cor(label.y = 1, label.x=75) +
-  stat_regline_equation(aes(label=paste(..adj.rr.label..)),label.y = 1.05,label.x=75)
-## use summary(its1.fit1) to double check that stat_cor gives same p value as linear regression!
-
-#fig.its1.fit2<-ggplot(bac.div.metadat2, aes(x = ITS1_Shannon_Diversity, y = DustComplexity)) +
-#  geom_point(aes(color=Elevation), size=3) + theme_classic() + saturation(scale_colour_gradientn(colours=fair_cols,limits=c(400,2700),breaks = c(500,1250,2000,2600),labels=c("400","1100","2000","2700")), 0.9) +
-#  stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(title="Dust Complexity x ITS1 Shannon Diversity", color="Elevation (ft)")+ylab("Dust Complexity")+xlab("ITS1 Shannon Diversity")+
-#  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
-#  stat_cor(label.y = 1, label.x=75) +
-#  stat_regline_equation(label.y = 1.05,label.x=75)
-
-#ggsave(fig.its1.fit2,filename = "figures/EnvVariablesOnly/DustComp_by_ITS1_Shan_Div_ALL_5.19.21.pdf", width=10, height=8, dpi=600)
-
-
-# DustComp x ITS1 Species Richness
-hist(bac.div.metadat2$ITS1_Species_Richness)
-its1.sr.fit1<-lm(DustComplexity ~ ITS1_Species_Richness, data=bac.div.metadat2) %>%
-  adjust_pvalue(method="bonferroni")
-## ^ went with linear regression because Shannon diversity and dust complexity are continuous data, despite not being normally distributed
-summary(its1.sr.fit1)
-# Coefficients:
-# Estimate Std. Error t value Pr(>|t|)
-# (Intercept)            0.7761611  0.0757511  10.246 3.79e-11 ***
-#  ITS1_Species_Richness -0.0004551  0.0001475  -3.084  0.00445 **
-coef(summary(its1.sr.fit1)) # pvalue
-
-its1.sr.fit2<-lm(DustComplexity ~ ITS1_Species_Richness, data=bac.div.metadat2) %>%
-  adjust_pvalue(method="bonferroni")
-summary(its1.sr.fit2)
-coef(summary(its1.sr.fit2))
-p.adjust(coef(summary(its1.sr.fit2))[,4], method="bonferroni") # pvalue
-
-its1.sr.fit2<-glm(DustComplexity ~ ITS1_Species_Richness, data=bac.div.metadat2, family=poisson)
-its1.sr.fit3<-glm.nb(DustComplexity ~ ITS1_Species_Richness, data=bac.div.metadat2)
-
-summary(its1.sr.fit2)
-dispersiontest(its1.sr.fit2)
-# null hypothesis is that equidispersion exists; alternative hypothesis is overdispersion
-# if overdispersion, use negative binomial not Poisson
-## Poisson distribution implies that the mean and variance are equal --> little dispersion
-# negative binomial means # of observations is not fixed, whereas binomial means observations are a fixed #
-
-# z = -16.609, p-value = 1 (cannot reject null)
-# alternative hypothesis: true dispersion is greater than 1
-# sample estimates:
-#   dispersion
-# 0.0495281 -- equidispersion exists
-
-plot(DustComplexity ~ ITS1_Species_Richness, data=bac.div.metadat2)
-abline(its1.fit2)
-
-fig.its1.sr.fit1<-ggplot(its1_div_meta, aes(x = ITS1_Species_Richness, y = DustComplexity)) +
-  geom_point(aes(color=fair_cols), size=3) + theme_classic() + saturation(scale_colour_gradientn(colours=fair_cols,limits=c(400,2700),breaks = c(500,1250,2000,2600),labels=c("400","1100","2000","2700")), 0.9) +
-  stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(title="Dust Complexity x ITS1 Species Richness", color="Elevation (ft)")+ylab("Dust Complexity")+xlab("ITS1 Species Richness")+
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
-  stat_cor(label.y = 1, label.x=700) +
-  stat_regline_equation(aes(label=paste(..adj.rr.label..)),label.y = 1.05,label.x=700)
-
-## use summary(its1.sr.fit1) to double check that stat_cor gives same p value as linear regression!
-
-ggsave(fig.its1.sr.fit1,filename = "figures/EnvVariablesOnly/DustComp_by_ITS1_Spec_Richness_ALL_1.4.22.pdf", width=10, height=8, dpi=600)
-
-
 
 #### Plots of Env Variables ####
 
@@ -956,3 +636,93 @@ temp.dom<-ggplot(metadata, aes(x=Temp_DegC, y=Dissolved_OrganicMatter_RFU,color=
   xlab("DOM (RFU") + ylab("Sulfide (microM)")
 
 ggsave(temp.dom,filename = "figures/EnvVariablesOnly/SSW_DOM_ORP_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
+
+#### Plot Correlations by Sample Date to Check Correlations Above ####
+
+# August
+aug1<-ggplot(August.2021, aes(x=Temp_DegC, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="Temperature & DO% - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("Temp (C)") + ylab("DO (%)")
+ggsave(aug1,filename = "figures/EnvVariablesOnly/SSW_DO.Percent_Temp_August2021_scatterplot.png", width=12, height=10, dpi=600)
+
+aug2<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="DOM & DO% - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("DOM (RFU)") + ylab("DO (%)")
+ggsave(aug2,filename = "figures/EnvVariablesOnly/SSW_DO.Percent_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
+
+aug3<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=ORP_mV,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="DOM & ORP - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("DOM (RFU)") + ylab("ORP (mV)")
+ggsave(aug3,filename = "figures/EnvVariablesOnly/SSW_ORP_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
+
+aug4<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=Sulfide_microM,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="DOM & Sulfide - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("DOM (RFU)") + ylab("Sulfide (microM)")
+ggsave(aug4,filename = "figures/EnvVariablesOnly/SSW_H2S_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
+
+aug5<-ggplot(August.2021, aes(x=ORP_mV, y=Sulfide_microM,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="ORP & Sulfide - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("ORP (mV)") + ylab("Sulfide (microM)")
+ggsave(aug5,filename = "figures/EnvVariablesOnly/SSW_H2S_ORP_August2021_scatterplot.png", width=12, height=10, dpi=600)
+
+## December
+dec1<-ggplot(December.2021, aes(x=Temp_DegC, y=ORP_mV,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="Temperature & ORP - December 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("Temp (C)") + ylab("ORP (mV)")
+ggsave(dec1,filename = "figures/EnvVariablesOnly/SSW_ORP_Temp_December2021_scatterplot.png", width=12, height=10, dpi=600)
+
+## April
+apr1<-ggplot(April.2022, aes(x=Temp_DegC, y=ORP_mV,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="Temperature & ORP - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("Temp (C)") + ylab("ORP (mV)")
+ggsave(apr1,filename = "figures/EnvVariablesOnly/SSW_ORP_Temp_April2022_scatterplot.png", width=12, height=10, dpi=600)
+
+apr2<-ggplot(April.2022, aes(x=Temp_DegC, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="Temperature & DO - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("Temp (C)") + ylab("DO%")
+ggsave(apr2,filename = "figures/EnvVariablesOnly/SSW_DO_Temp_April2022_scatterplot.png", width=12, height=10, dpi=600)
+
+apr3<-ggplot(April.2022, aes(x=Temp_DegC, y=Dissolved_OrganicMatter_RFU,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="Temperature & DOM - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("Temp (C)") + ylab("DOM (RFU)")
+ggsave(apr3,filename = "figures/EnvVariablesOnly/SSW_DOM_Temp_April2022_scatterplot.png", width=12, height=10, dpi=600)
+
+apr4<-ggplot(April.2022, aes(x=DO_Percent_Local, y=Dissolved_OrganicMatter_RFU,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="DO & DOM - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("DO%") + ylab("DOM (RFU)")
+ggsave(apr4,filename = "figures/EnvVariablesOnly/SSW_DOM_DO_April2022_scatterplot.png", width=12, height=10, dpi=600)
+
+apr5<-ggplot(April.2022, aes(x=ORP_mV, y=Dissolved_OrganicMatter_RFU,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="DOM & ORP - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("DOM") + ylab("ORP (mV)")
+ggsave(apr5,filename = "figures/EnvVariablesOnly/SSW_DOM_ORP_April2022_scatterplot.png", width=12, height=10, dpi=600)
+
+apr6<-ggplot(April.2022, aes(x=ORP_mV, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+  labs(title="DO & ORP - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  xlab("DO%") + ylab("ORP (mV)")
+ggsave(apr6,filename = "figures/EnvVariablesOnly/SSW_DOM_ORP_April2022_scatterplot.png", width=12, height=10, dpi=600)
+
