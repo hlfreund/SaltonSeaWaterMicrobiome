@@ -645,35 +645,35 @@ aug1<-ggplot(August.2021, aes(x=Temp_DegC, y=DO_Percent_Local,color=Depth_m)) + 
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("Temp (C)") + ylab("DO (%)")
-ggsave(aug1,filename = "figures/EnvVariablesOnly/SSW_DO.Percent_Temp_August2021_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(aug1,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_DO.Percent_Temp_August2021_scatterplot.png", width=12, height=10, dpi=600)
 
 aug2<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=3) + theme_bw()+
   labs(title="DOM & DO% - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("DOM (RFU)") + ylab("DO (%)")
-ggsave(aug2,filename = "figures/EnvVariablesOnly/SSW_DO.Percent_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(aug2,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_DO.Percent_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
 
 aug3<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=ORP_mV,color=Depth_m)) + geom_point(size=3) + theme_bw()+
   labs(title="DOM & ORP - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("DOM (RFU)") + ylab("ORP (mV)")
-ggsave(aug3,filename = "figures/EnvVariablesOnly/SSW_ORP_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(aug3,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_ORP_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
 
 aug4<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=Sulfide_microM,color=Depth_m)) + geom_point(size=3) + theme_bw()+
   labs(title="DOM & Sulfide - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("DOM (RFU)") + ylab("Sulfide (microM)")
-ggsave(aug4,filename = "figures/EnvVariablesOnly/SSW_H2S_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(aug4,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_H2S_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
 
 aug5<-ggplot(August.2021, aes(x=ORP_mV, y=Sulfide_microM,color=Depth_m)) + geom_point(size=3) + theme_bw()+
   labs(title="ORP & Sulfide - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("ORP (mV)") + ylab("Sulfide (microM)")
-ggsave(aug5,filename = "figures/EnvVariablesOnly/SSW_H2S_ORP_August2021_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(aug5,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_H2S_ORP_August2021_scatterplot.png", width=12, height=10, dpi=600)
 
 ## December
 dec1<-ggplot(December.2021, aes(x=Temp_DegC, y=ORP_mV,color=Depth_m)) + geom_point(size=3) + theme_bw()+
@@ -681,7 +681,7 @@ dec1<-ggplot(December.2021, aes(x=Temp_DegC, y=ORP_mV,color=Depth_m)) + geom_poi
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("Temp (C)") + ylab("ORP (mV)")
-ggsave(dec1,filename = "figures/EnvVariablesOnly/SSW_ORP_Temp_December2021_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(dec1,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_ORP_Temp_December2021_scatterplot.png", width=12, height=10, dpi=600)
 
 ## April
 apr1<-ggplot(April.2022, aes(x=Temp_DegC, y=ORP_mV,color=Depth_m)) + geom_point(size=3) + theme_bw()+
@@ -689,40 +689,40 @@ apr1<-ggplot(April.2022, aes(x=Temp_DegC, y=ORP_mV,color=Depth_m)) + geom_point(
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("Temp (C)") + ylab("ORP (mV)")
-ggsave(apr1,filename = "figures/EnvVariablesOnly/SSW_ORP_Temp_April2022_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(apr1,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_ORP_Temp_April2022_scatterplot.png", width=12, height=10, dpi=600)
 
 apr2<-ggplot(April.2022, aes(x=Temp_DegC, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=3) + theme_bw()+
   labs(title="Temperature & DO - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("Temp (C)") + ylab("DO%")
-ggsave(apr2,filename = "figures/EnvVariablesOnly/SSW_DO_Temp_April2022_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(apr2,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_DO_Temp_April2022_scatterplot.png", width=12, height=10, dpi=600)
 
 apr3<-ggplot(April.2022, aes(x=Temp_DegC, y=Dissolved_OrganicMatter_RFU,color=Depth_m)) + geom_point(size=3) + theme_bw()+
   labs(title="Temperature & DOM - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("Temp (C)") + ylab("DOM (RFU)")
-ggsave(apr3,filename = "figures/EnvVariablesOnly/SSW_DOM_Temp_April2022_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(apr3,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_DOM_Temp_April2022_scatterplot.png", width=12, height=10, dpi=600)
 
 apr4<-ggplot(April.2022, aes(x=DO_Percent_Local, y=Dissolved_OrganicMatter_RFU,color=Depth_m)) + geom_point(size=3) + theme_bw()+
   labs(title="DO & DOM - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("DO%") + ylab("DOM (RFU)")
-ggsave(apr4,filename = "figures/EnvVariablesOnly/SSW_DOM_DO_April2022_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(apr4,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_DOM_DO_April2022_scatterplot.png", width=12, height=10, dpi=600)
 
 apr5<-ggplot(April.2022, aes(x=ORP_mV, y=Dissolved_OrganicMatter_RFU,color=Depth_m)) + geom_point(size=3) + theme_bw()+
   labs(title="DOM & ORP - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("DOM") + ylab("ORP (mV)")
-ggsave(apr5,filename = "figures/EnvVariablesOnly/SSW_DOM_ORP_April2022_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(apr5,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_DOM_ORP_April2022_scatterplot.png", width=12, height=10, dpi=600)
 
 apr6<-ggplot(April.2022, aes(x=ORP_mV, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=3) + theme_bw()+
   labs(title="DO & ORP - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("DO%") + ylab("ORP (mV)")
-ggsave(apr6,filename = "figures/EnvVariablesOnly/SSW_DOM_ORP_April2022_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(apr6,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_DOM_ORP_April2022_scatterplot.png", width=12, height=10, dpi=600)
 
