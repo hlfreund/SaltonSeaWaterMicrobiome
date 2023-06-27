@@ -490,7 +490,7 @@ August.2021$Depth.num<-as.numeric(as.character(August.2021$Depth_m))
 
 # DO %
 cor.test(August.2021$DO_Percent_Local, August.2021$ORP_mV, method="pearson") #
-# r = 0.4597742, p = 0.2517 --> little corr, & it's not significant
+# r = 0.4597742, p = 0.2517 --> little corr, not significant
 cor.test(August.2021$DO_Percent_Local, August.2021$Temp_DegC, method="pearson") # ***
 # r = 0.8213249, p-value = 0.01242 --> strong pos correlation, significant
 cor.test(August.2021$DO_Percent_Local, August.2021$Dissolved_OrganicMatter_RFU, method="pearson") # ***
@@ -498,18 +498,18 @@ cor.test(August.2021$DO_Percent_Local, August.2021$Dissolved_OrganicMatter_RFU, 
 cor.test(August.2021$DO_Percent_Local, August.2021$Depth.num, method="pearson") #
 # r = -0.9295648 , p = 0.0008281 --> not strong negative correlation,significant
 
-plot(x=August.2021$DO_Percent_Local, y=August.2021$Dissolved_OrganicMatter_RFU, col=August.2021$Depth_m)
-plot(x=August.2021$DO_Percent_Local, y=August.2021$ORP_mV, col=August.2021$Depth_m)
-plot(x=August.2021$DO_Percent_Local, y=August.2021$Temp_DegC, col=August.2021$Depth_m)
-plot(x=August.2021$DO_Percent_Local, y=August.2021$Depth.num, col=August.2021$Depth_m)
+plot(x=August.2021$DO_Percent_Local, y=August.2021$Dissolved_OrganicMatter_RFU, col=August.2021$Depth_m) %>% text(x=August.2021$DO_Percent_Local, y=August.2021$Dissolved_OrganicMatter_RFU,labels=August.2021$Depth_m,cex=0.65, pos=3,col="black")
+plot(x=August.2021$DO_Percent_Local, y=August.2021$ORP_mV, col=August.2021$Depth_m) %>% text(x=August.2021$DO_Percent_Local, y=August.2021$ORP_mV,labels=August.2021$Depth_m,cex=0.65, pos=3,col="black")
+plot(x=August.2021$DO_Percent_Local, y=August.2021$Temp_DegC, col=August.2021$Depth_m) %>% text(x=August.2021$DO_Percent_Local, y=August.2021$Temp_DegC,labels=August.2021$Depth_m,cex=0.65, pos=3,col="black")
+plot(x=August.2021$DO_Percent_Local, y=August.2021$Depth.num, col=August.2021$Depth_m) %>% text(x=August.2021$DO_Percent_Local, y=August.2021$Depth.num,labels=August.2021$Depth_m,cex=0.65, pos=3,col="black")
 
 # ORP
 cor.test(August.2021$ORP_mV, August.2021$Temp_DegC, method="pearson") # ***
-# r = -0.513023, p-value = 0.0007117 --> medium negative correlation & significant
+# r = -0.06085622, p-value = 0.8862 --> not sig
 cor.test(August.2021$ORP_mV, August.2021$Dissolved_OrganicMatter_RFU, method="pearson") # ***
-# r = -0.380499, p-value = 0.00833 --> lame negative correlation, it's significant
+# r = -0.8044803, p-value = 0.01605 --> strong negative, significant corr
 cor.test(August.2021$ORP_mV, August.2021$Depth.num, method="pearson")
-# r = -0.2568054, p-value =  0.1097 --> not sig, not strong corr
+# r = -0.719755, p-value =  0.04411 --> not sig, not strong corr
 
 plot(x=August.2021$ORP_mV, y=August.2021$Dissolved_OrganicMatter_RFU, col=August.2021$Depth_m) %>% text(x=August.2021$ORP_mV, y=August.2021$Dissolved_OrganicMatter_RFU,labels=August.2021$Depth_m,cex=0.65, pos=3,col="black")
 plot(x=August.2021$ORP_mV, y=August.2021$Temp_DegC, col=August.2021$Depth_m) %>% text(x=August.2021$ORP_mV, y=August.2021$Temp_DegC,labels=August.2021$Depth_m,cex=0.65, pos=3,col="black")
@@ -547,7 +547,7 @@ plot(x=August.2021$Sulfate_milliM, y=August.2021$Depth.num, col=August.2021$Dept
 # Sulfide (microM)
 cor.test(August.2021$Sulfide_microM, August.2021$ORP_mV, method="pearson") # ******
 # r = -0.9708461, p = 6.06e-05 --> STRONG & significant negative correlation
-cor.test(August.2021$Sulfide_microM, August.2021$Temp_DegC, method="pearson") # ***
+cor.test(August.2021$Sulfide_microM, August.2021$Temp_DegC, method="pearson") #
 # r = -0.04161607 , p = 0.9221 --> no correlation, not sig
 cor.test(August.2021$Sulfide_microM, August.2021$DO_Percent_Local, method="pearson") # ****
 # r = -0.5503672, p = 0.1575 --> medium negative correlation, not sig
@@ -575,26 +575,26 @@ December.2021$Depth.num<-as.numeric(as.character(December.2021$Depth_m))
 
 # DO %
 cor.test(December.2021$DO_Percent_Local, December.2021$ORP_mV, method="pearson") #
-# r = 0.4597742, p = 0.2517 --> little corr, & it's not significant
+# r = -0.4285268, p = 0.2895 --> little corr, not significant
 cor.test(December.2021$DO_Percent_Local, December.2021$Temp_DegC, method="pearson") # ***
-# r = 0.8213249, p-value = 0.01242 --> strong pos correlation, significant
+# r = 0.6685309, p-value = 0.06991 --> strong pos correlation, significant
 cor.test(December.2021$DO_Percent_Local, December.2021$Dissolved_OrganicMatter_RFU, method="pearson") # ***
-# r = -0.8891263, p-value = 0.00313 --> strong neg correlation & significant
+# r = -0.2855835, p-value = 0.4929 --> strong neg correlation & significant
 cor.test(December.2021$DO_Percent_Local, December.2021$Depth.num, method="pearson") #
-# r = -0.9295648 , p = 0.0008281 --> not strong negative correlation,significant
+# r = -0.7703916 , p = 0.02529 --> not strong negative correlation,significant
 
-plot(x=December.2021$DO_Percent_Local, y=December.2021$Dissolved_OrganicMatter_RFU, col=December.2021$Depth_m)
-plot(x=December.2021$DO_Percent_Local, y=December.2021$ORP_mV, col=December.2021$Depth_m)
-plot(x=December.2021$DO_Percent_Local, y=December.2021$Temp_DegC, col=December.2021$Depth_m)
-plot(x=December.2021$DO_Percent_Local, y=December.2021$Depth.num, col=December.2021$Depth_m)
+plot(x=December.2021$DO_Percent_Local, y=December.2021$Dissolved_OrganicMatter_RFU, col=December.2021$Depth_m) %>% text(x=December.2021$DO_Percent_Local, y=December.2021$Dissolved_OrganicMatter_RFU,labels=December.2021$Depth_m,cex=0.65, pos=3,col="black")
+plot(x=December.2021$DO_Percent_Local, y=December.2021$ORP_mV, col=December.2021$Depth_m) %>% text(x=December.2021$DO_Percent_Local, y=December.2021$ORP_mV,labels=December.2021$Depth_m,cex=0.65, pos=3,col="black")
+plot(x=December.2021$DO_Percent_Local, y=December.2021$Temp_DegC, col=December.2021$Depth_m) %>% text(x=December.2021$DO_Percent_Local, y=December.2021$Temp_DegC,labels=December.2021$Depth_m,cex=0.65, pos=3,col="black")
+plot(x=December.2021$DO_Percent_Local, y=December.2021$Depth.num, col=December.2021$Depth_m) %>% text(x=December.2021$DO_Percent_Local, y=December.2021$Depth.num,labels=December.2021$Depth_m,cex=0.65, pos=3,col="black")
 
 # ORP
 cor.test(December.2021$ORP_mV, December.2021$Temp_DegC, method="pearson") # ***
-# r = -0.513023, p-value = 0.0007117 --> medium negative correlation & significant
+# r = -0.8191958, p-value = 0.01285 --> medium negative correlation & significant
 cor.test(December.2021$ORP_mV, December.2021$Dissolved_OrganicMatter_RFU, method="pearson") # ***
-# r = -0.380499, p-value = 0.00833 --> lame negative correlation, it's significant
+# r = -0.5165888, p-value = 0.1899 --> mid neg corr, not sig
 cor.test(December.2021$ORP_mV, December.2021$Depth.num, method="pearson")
-# r = -0.2568054, p-value =  0.1097 --> not sig, not strong corr
+# r = 0.7949265, p-value =  0.01838 --> midstrong corr, significant
 
 plot(x=December.2021$ORP_mV, y=December.2021$Dissolved_OrganicMatter_RFU, col=December.2021$Depth_m) %>% text(x=December.2021$ORP_mV, y=December.2021$Dissolved_OrganicMatter_RFU,labels=December.2021$Depth_m,cex=0.65, pos=3,col="black")
 plot(x=December.2021$ORP_mV, y=December.2021$Temp_DegC, col=December.2021$Depth_m) %>% text(x=December.2021$ORP_mV, y=December.2021$Temp_DegC,labels=December.2021$Depth_m,cex=0.65, pos=3,col="black")
@@ -602,26 +602,26 @@ plot(x=December.2021$ORP_mV, y=December.2021$Depth.num, col=December.2021$Depth_
 
 # Dissolved Organic Matter
 cor.test(December.2021$Dissolved_OrganicMatter_RFU, December.2021$Temp_DegC, method="pearson") # ***
-# r = -0.5117475 , p-value = 0.1948 # not sig
+# r = 0.5102602 , p-value = 0.1964 # med cor,not sig
 cor.test(December.2021$Dissolved_OrganicMatter_RFU, December.2021$Depth.num, method="pearson")
-# r = 0.9774045 , p = 2.835e-05 # strong sig corr
+# r = -0.3023965 , p = 0.4666 # no cor
 
 plot(x=December.2021$Dissolved_OrganicMatter_RFU, y=December.2021$Temp_DegC, col=December.2021$Depth_m) %>% text(x=December.2021$Dissolved_OrganicMatter_RFU, y=December.2021$Temp_DegC,labels=December.2021$Depth_m,cex=0.65, pos=3,col="black")
 plot(x=December.2021$Dissolved_OrganicMatter_RFU, y=December.2021$Depth.num, col=December.2021$Depth_m) %>% text(x=December.2021$Dissolved_OrganicMatter_RFU, y=December.2021$Depth.num,labels=December.2021$Depth_m,cex=0.65, pos=3,col="black")
 
 # Sulfate (milliM)
 cor.test(December.2021$Sulfate_milliM, December.2021$ORP_mV, method="pearson")
-# r = -0.5448982 , p = 0.1625 --> med cor, not sig
+# r = -0.04002565 , p = 0.925 --> not sig
 cor.test(December.2021$Sulfate_milliM, December.2021$Temp_DegC, method="pearson") # ***
-# r = -0.1507523, p = 0.7216 --> strong negative correlation, significant
+# r = -0.08700684, p = 0.8377 not sig
 cor.test(December.2021$Sulfate_milliM, December.2021$DO_Percent_Local, method="pearson") # ****
-# r = -0.4719281, p = 0.2377 --> strong correlation & significant
+# r = -0.05199845, p = 0.9027 --> not sig
 cor.test(December.2021$Sulfate_milliM, December.2021$Dissolved_OrganicMatter_RFU, method="pearson")
-# r = -0.618558 , p = 0.1021 --> no corr, not sig
+# r = -0.07049322 , p = 0.8683 --> not sig
 cor.test(December.2021$Sulfate_milliM, December.2021$Sulfide_microM, method="pearson")
-# r = 0.5825559 , p = 0.1297 --> no corr, not sig
+# r = 0.2142547 , p = 0.6104 --> not sig
 cor.test(December.2021$Sulfate_milliM, December.2021$Depth.num, method="pearson")
-# r = 0.5011928, p-value = 0.2058
+# r = 0.2767267, p-value = 0.507 --> not sig
 
 plot(x=December.2021$Sulfate_milliM, y=December.2021$DO_Percent_Local, col=December.2021$Depth_m) %>% text(x=December.2021$Sulfate_milliM, y=December.2021$DO_Percent_Local,labels=December.2021$Depth_m,cex=0.65, pos=3,col="black")
 plot(x=December.2021$Sulfate_milliM, y=December.2021$Dissolved_OrganicMatter_RFU, col=December.2021$Depth_m) %>% text(x=December.2021$Sulfate_milliM, y=December.2021$Dissolved_OrganicMatter_RFU,labels=December.2021$Depth_m,cex=0.65, pos=3,col="black")
@@ -630,16 +630,16 @@ plot(x=December.2021$Sulfate_milliM, y=December.2021$Temp_DegC, col=December.202
 plot(x=December.2021$Sulfate_milliM, y=December.2021$Depth.num, col=December.2021$Depth_m) %>% text(x=December.2021$Sulfate_milliM, y=December.2021$Depth.num,labels=December.2021$Depth_m,cex=0.65, pos=3,col="black")
 
 # Sulfide (microM)
-cor.test(December.2021$Sulfide_microM, December.2021$ORP_mV, method="pearson") # ******
-# r = -0.9708461, p = 6.06e-05 --> STRONG & significant negative correlation
-cor.test(December.2021$Sulfide_microM, December.2021$Temp_DegC, method="pearson") # ***
-# r = -0.04161607 , p = 0.9221 --> no correlation, not sig
-cor.test(December.2021$Sulfide_microM, December.2021$DO_Percent_Local, method="pearson") # ****
-# r = -0.5503672, p = 0.1575 --> medium negative correlation, not sig
-cor.test(December.2021$Sulfide_microM, December.2021$Dissolved_OrganicMatter_RFU, method="pearson") # ****
-# r = 0.8537728 , p = 0.006985 --> strong correlation, significant
+cor.test(December.2021$Sulfide_microM, December.2021$ORP_mV, method="pearson")
+# r = 0.5933017, p = 0.121 --> not sig
+cor.test(December.2021$Sulfide_microM, December.2021$Temp_DegC, method="pearson")
+# r = -0.529703 , p = 0.177 --> no correlation, not sig
+cor.test(December.2021$Sulfide_microM, December.2021$DO_Percent_Local, method="pearson")
+# r = -0.08996701, p = 0.1575 --> medium negative correlation, not sig
+cor.test(December.2021$Sulfide_microM, December.2021$Dissolved_OrganicMatter_RFU, method="pearson")
+# r = 0.8537728 , p = 0.8322 --> no cor, not sig
 cor.test(December.2021$Sulfide_microM, December.2021$Depth.num, method="pearson")
-# r = 0.7801233 , p-value = 0.02239 # sig sig, medstrong corr
+# r = 0.593074 , p-value = 0.1212 # not sig, medstrong corr
 
 plot(x=December.2021$Sulfide_microM, y=December.2021$DO_Percent_Local, col=December.2021$Depth_m) %>% text(x=December.2021$Sulfide_microM, y=December.2021$DO_Percent_Local,labels=December.2021$Depth_m,cex=0.65, pos=3,col="black")
 plot(x=December.2021$Sulfide_microM, y=December.2021$Dissolved_OrganicMatter_RFU, col=December.2021$Depth_m) %>% text(x=December.2021$Sulfide_microM, y=December.2021$Dissolved_OrganicMatter_RFU,labels=December.2021$Depth_m,cex=0.65, pos=3,col="black")
@@ -653,7 +653,6 @@ plot(x=December.2021$Sulfide_microM, y=December.2021$Depth.num, col=December.202
 #cor.test(December.2021$Chlorophyll_RFU, December.2021$Temp_DegC, method="pearson")
 
 
-
 #### Do Env Variables Correlate within April 2022 ####
 head(April.2022)
 # create numeric depth variable
@@ -661,26 +660,26 @@ April.2022$Depth.num<-as.numeric(as.character(April.2022$Depth_m))
 
 # DO %
 cor.test(April.2022$DO_Percent_Local, April.2022$ORP_mV, method="pearson") #
-# r = 0.4597742, p = 0.2517 --> little corr, & it's not significant
+# r = 0.8447182, p = 0.008304 --> strong, sig
 cor.test(April.2022$DO_Percent_Local, April.2022$Temp_DegC, method="pearson") # ***
-# r = 0.8213249, p-value = 0.01242 --> strong pos correlation, significant
+# r = 0.916565, p-value = 0.001363 --> strong, sig
 cor.test(April.2022$DO_Percent_Local, April.2022$Dissolved_OrganicMatter_RFU, method="pearson") # ***
-# r = -0.8891263, p-value = 0.00313 --> strong neg correlation & significant
+# r = -0.9415401, p-value = 0.0004778 --> strong neg corr, sig
 cor.test(April.2022$DO_Percent_Local, April.2022$Depth.num, method="pearson") #
-# r = -0.9295648 , p = 0.0008281 --> not strong negative correlation,significant
+# r = -0.8727097 , p = 0.004676 -->
 
-plot(x=April.2022$DO_Percent_Local, y=April.2022$Dissolved_OrganicMatter_RFU, col=April.2022$Depth_m)
-plot(x=April.2022$DO_Percent_Local, y=April.2022$ORP_mV, col=April.2022$Depth_m)
-plot(x=April.2022$DO_Percent_Local, y=April.2022$Temp_DegC, col=April.2022$Depth_m)
-plot(x=April.2022$DO_Percent_Local, y=April.2022$Depth.num, col=April.2022$Depth_m)
+plot(x=April.2022$DO_Percent_Local, y=April.2022$Dissolved_OrganicMatter_RFU, col=April.2022$Depth_m) %>% text(x=April.2022$DO_Percent_Local, y=April.2022$Dissolved_OrganicMatter_RFU,labels=April.2022$Depth_m,cex=0.65, pos=3,col="black")
+plot(x=April.2022$DO_Percent_Local, y=April.2022$ORP_mV, col=April.2022$Depth_m) %>% text(x=April.2022$DO_Percent_Local, y=April.2022$ORP_mV,labels=April.2022$Depth_m,cex=0.65, pos=3,col="black")
+plot(x=April.2022$DO_Percent_Local, y=April.2022$Temp_DegC, col=April.2022$Depth_m) %>% text(x=April.2022$DO_Percent_Local, y=April.2022$Temp_DegC,labels=April.2022$Depth_m,cex=0.65, pos=3,col="black")
+plot(x=April.2022$DO_Percent_Local, y=April.2022$Depth.num, col=April.2022$Depth_m) %>% text(x=April.2022$DO_Percent_Local, y=April.2022$Depth.num,labels=April.2022$Depth_m,cex=0.65, pos=3,col="black")
 
 # ORP
 cor.test(April.2022$ORP_mV, April.2022$Temp_DegC, method="pearson") # ***
-# r = -0.513023, p-value = 0.0007117 --> medium negative correlation & significant
+# r = 0.9457778, p-value = 0.0003825 --> strong cor, sig
 cor.test(April.2022$ORP_mV, April.2022$Dissolved_OrganicMatter_RFU, method="pearson") # ***
-# r = -0.380499, p-value = 0.00833 --> lame negative correlation, it's significant
+# r = -0.9428313, p-value = 0.0004473 --> strong neg corr, sig
 cor.test(April.2022$ORP_mV, April.2022$Depth.num, method="pearson")
-# r = -0.2568054, p-value =  0.1097 --> not sig, not strong corr
+# r = -0.6067133, p-value =  0.1107 --> med strong neg corr, not sig
 
 plot(x=April.2022$ORP_mV, y=April.2022$Dissolved_OrganicMatter_RFU, col=April.2022$Depth_m) %>% text(x=April.2022$ORP_mV, y=April.2022$Dissolved_OrganicMatter_RFU,labels=April.2022$Depth_m,cex=0.65, pos=3,col="black")
 plot(x=April.2022$ORP_mV, y=April.2022$Temp_DegC, col=April.2022$Depth_m) %>% text(x=April.2022$ORP_mV, y=April.2022$Temp_DegC,labels=April.2022$Depth_m,cex=0.65, pos=3,col="black")
@@ -688,26 +687,26 @@ plot(x=April.2022$ORP_mV, y=April.2022$Depth.num, col=April.2022$Depth_m) %>% te
 
 # Dissolved Organic Matter
 cor.test(April.2022$Dissolved_OrganicMatter_RFU, April.2022$Temp_DegC, method="pearson") # ***
-# r = -0.5117475 , p-value = 0.1948 # not sig
+# r = -0.9964688 , p-value = 1.098e-07 --> strong neg corr, sig but not real (see plot)
 cor.test(April.2022$Dissolved_OrganicMatter_RFU, April.2022$Depth.num, method="pearson")
-# r = 0.9774045 , p = 2.835e-05 # strong sig corr
+# r = 0.7382372 , p = 0.0365 # --> strong cor, sig
 
 plot(x=April.2022$Dissolved_OrganicMatter_RFU, y=April.2022$Temp_DegC, col=April.2022$Depth_m) %>% text(x=April.2022$Dissolved_OrganicMatter_RFU, y=April.2022$Temp_DegC,labels=April.2022$Depth_m,cex=0.65, pos=3,col="black")
 plot(x=April.2022$Dissolved_OrganicMatter_RFU, y=April.2022$Depth.num, col=April.2022$Depth_m) %>% text(x=April.2022$Dissolved_OrganicMatter_RFU, y=April.2022$Depth.num,labels=April.2022$Depth_m,cex=0.65, pos=3,col="black")
 
 # Sulfate (milliM)
 cor.test(April.2022$Sulfate_milliM, April.2022$ORP_mV, method="pearson")
-# r = -0.5448982 , p = 0.1625 --> med cor, not sig
+# r = 0.4050627 , p = 0.3195 -->
 cor.test(April.2022$Sulfate_milliM, April.2022$Temp_DegC, method="pearson") # ***
-# r = -0.1507523, p = 0.7216 --> strong negative correlation, significant
+# r = 0.3890084, p = 0.3409 -->
 cor.test(April.2022$Sulfate_milliM, April.2022$DO_Percent_Local, method="pearson") # ****
-# r = -0.4719281, p = 0.2377 --> strong correlation & significant
+# r = 0.5755169, p = 0.1355 -->
 cor.test(April.2022$Sulfate_milliM, April.2022$Dissolved_OrganicMatter_RFU, method="pearson")
-# r = -0.618558 , p = 0.1021 --> no corr, not sig
+# r = -0.4332544 , p = 0.2836 -->
 cor.test(April.2022$Sulfate_milliM, April.2022$Sulfide_microM, method="pearson")
-# r = 0.5825559 , p = 0.1297 --> no corr, not sig
+# r = -0.3599731 , p = 0.3811 -->
 cor.test(April.2022$Sulfate_milliM, April.2022$Depth.num, method="pearson")
-# r = 0.5011928, p-value = 0.2058
+# r = -0.6734952, p-value = 0.0671
 
 plot(x=April.2022$Sulfate_milliM, y=April.2022$DO_Percent_Local, col=April.2022$Depth_m) %>% text(x=April.2022$Sulfate_milliM, y=April.2022$DO_Percent_Local,labels=April.2022$Depth_m,cex=0.65, pos=3,col="black")
 plot(x=April.2022$Sulfate_milliM, y=April.2022$Dissolved_OrganicMatter_RFU, col=April.2022$Depth_m) %>% text(x=April.2022$Sulfate_milliM, y=April.2022$Dissolved_OrganicMatter_RFU,labels=April.2022$Depth_m,cex=0.65, pos=3,col="black")
@@ -717,15 +716,15 @@ plot(x=April.2022$Sulfate_milliM, y=April.2022$Depth.num, col=April.2022$Depth_m
 
 # Sulfide (microM)
 cor.test(April.2022$Sulfide_microM, April.2022$ORP_mV, method="pearson") # ******
-# r = -0.9708461, p = 6.06e-05 --> STRONG & significant negative correlation
+# r = -0.04204334, p = 0.9213 -->
 cor.test(April.2022$Sulfide_microM, April.2022$Temp_DegC, method="pearson") # ***
-# r = -0.04161607 , p = 0.9221 --> no correlation, not sig
+# r = -0.2711869 , p = 0.5159 -->
 cor.test(April.2022$Sulfide_microM, April.2022$DO_Percent_Local, method="pearson") # ****
-# r = -0.5503672, p = 0.1575 --> medium negative correlation, not sig
+# r = -0.4560053, p = 0.2561 -->
 cor.test(April.2022$Sulfide_microM, April.2022$Dissolved_OrganicMatter_RFU, method="pearson") # ****
-# r = 0.8537728 , p = 0.006985 --> strong correlation, significant
+# r = 0.2883266 , p = 0.4886 -->
 cor.test(April.2022$Sulfide_microM, April.2022$Depth.num, method="pearson")
-# r = 0.7801233 , p-value = 0.02239 # sig sig, medstrong corr
+# r = 0.4457843 , p-value = 0.2683 #
 
 plot(x=April.2022$Sulfide_microM, y=April.2022$DO_Percent_Local, col=April.2022$Depth_m) %>% text(x=April.2022$Sulfide_microM, y=April.2022$DO_Percent_Local,labels=April.2022$Depth_m,cex=0.65, pos=3,col="black")
 plot(x=April.2022$Sulfide_microM, y=April.2022$Dissolved_OrganicMatter_RFU, col=April.2022$Depth_m) %>% text(x=April.2022$Sulfide_microM, y=April.2022$Dissolved_OrganicMatter_RFU,labels=April.2022$Depth_m,cex=0.65, pos=3,col="black")
