@@ -2094,7 +2094,7 @@ adonis2(mgm.clr ~ Dissolved_OrganicMatter_RFU*Sulfide_microM,data=meta_scaled,me
 ### pseudo F-ratio: It compares the total sum of squared dissimilarities (or ranked dissimilarities) among objects belonging to different groups to that of objects belonging to the same group.
 ### Larger F-ratios indicate more pronounced group separation, however, the significance of this ratio is usually of more interest than its magnitude.
 
-#### PERMANOVAs to Env Variables Across Groups - Sulfur Fxns ####
+#### Sulfur Fxns PERMANOVA ####
 
 ## The currently preferred analysis for evaluating differences among groups is PERMANOVA.
 ## This analysis partitions sums of squares using dissimilarities,
@@ -2156,6 +2156,7 @@ adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU,data=meta_scaled,
 s.pnov5<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU*Sulfate_milliM*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 s.pnov5
 
+#### Sulfur Fxns by Pathway PERMANOVA ####
 ## what about by S metabolic pathway?
 
 # check rownames to make sure sub-dfs of S genes are in same order as meta_scaled
@@ -2175,6 +2176,36 @@ p.adjust(spath0$`Pr(>F)`,method="bonferroni",n=3) # adjusted pval = 0.01198801
 
 spath0a<-adonis2(sox.ko.cov ~ SampDate*Depth.num,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 spath0a
+
+sox.euc.dist.mr <- dist(sox.ko.cov, method = "euclidean")
+sox.disper1<-betadisper(sox.euc.dist.mr, meta_scaled$SampDate)
+sox.disper1
+
+permutest(sox.disper1, pairwise=TRUE) # compare dispersions to each other via permutation test to see significant differences in dispersion by pairwise comparisons
+#Pairwise comparisons:
+#  (Observed p-value below diagonal, permuted p-value above diagonal)
+#               August.2021 December.2021 April.2022
+#August.2021                     0.48200      0.596
+#December.2021     0.43936                    0.495
+#April.2022        0.55487       0.47369
+
+anova(sox.disper1) # p = 0.5879 --> accept the Null H, spatial medians are NOT significantly difference across sample dates
+
+TukeyHSD(sox.disper1) # tells us which Sample Dates/category's dispersion MEANS are significantly different than each other
+
+#                             diff        lwr       upr     p adj
+#December.2021-August.2021 -0.10864260 -0.4286886 0.2114034 0.5803442
+#April.2022-August.2021    -0.07943587 -0.3994818 0.2406101 0.7382982
+#April.2022-December.2021   0.02920673 -0.2908392 0.3492527 0.9579997
+
+# Visualize dispersions
+png('figures/MGM_Figs/SSW_SOX_PCoA_betadispersion_sampledate.png',width = 700, height = 600, res=100)
+plot(sox.disper1,main = "SOX Functions - Centroids and Dispersion (Median-Ratio Data)", label=FALSE,col=colorset1$SampDate_Color)
+dev.off()
+
+png('figures/MGM_Figs/SSW_SOX_boxplot_MR_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
+boxplot(sox.disper1,xlab="Sample Collection Date", main = "SOX Functions - Distance to Centroid by Category (Median-Ratio Data)", sub="Euclidean Distance of Median-Ratio Transformed Data", col=colorset1$SampDate_Color)
+dev.off()
 
 # Assimilatory Sulfate Reduction
 spath1<-adonis2(asSO4.ko.cov ~ SampDate,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
