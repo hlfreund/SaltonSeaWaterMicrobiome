@@ -34,6 +34,7 @@ suppressPackageStartupMessages({ # load packages quietly
   library(rstatix)
   library(devtools)
   library(decontam)
+  library(pairwiseAdonis)
 })
 
 #### Load Data & See Info About Data ####
@@ -1569,6 +1570,38 @@ pcoa.s2<-ggplot(sulf.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
 
 ggsave(pcoa.s2,filename = "figures/MGM_Figs/SSW_SulfurOnly_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
 
+#### Sulfur Fxns ANOVA ####
+
+clr.sulf.ko.meta<-merge(clr.cov.sum.sulf.ko,meta_scaled,by="SampleID")
+clr.sulf.ko.meta[1:4,1:4]
+clr.sulf.ko.meta[(nrow(clr.sulf.ko.meta)-4):(nrow(clr.sulf.ko.meta)),(ncol(clr.sulf.ko.meta)-4):(ncol(clr.sulf.ko.meta))] # last 4 rows & cols
+rownames(clr.sulf.ko.meta)<-clr.sulf.ko.meta$SampleID
+
+sox.f1<-aov(`soxC; sulfane dehydrogenase subunit SoxC` ~ SampDate, data=clr.sulf.ko.meta)
+#pairwise.adonis(bac.div.metadat$Bac_Shannon_Diversity, bac.div.metadat$SampDate, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
+
+summary(sox.f1)
+#Df           Sum Sq Mean Sq    F value   Pr(>F)
+#SampDate     2 0.2197 0.10984   6.027 0.0367 *
+#Residuals    6 0.1094 0.01822
+Tuk1<-TukeyHSD(sox.f1)
+Tuk1$SampDate
+#                             diff        lwr      upr      p adj
+#December.2021-August.2021 -0.31513947 -0.653346242 0.02306729 0.06483634
+#April.2022-August.2021     0.03047278 -0.307733990 0.36867955 0.95902845
+#April.2022-December.2021   0.34561225  0.007405484 0.68381902 0.04604173
+
+# Levene's test with one independent variable
+## Levene's tests whether variances of 2 samples are equal
+## we want variances to be the same -- want NON SIGNIFICANCE!
+## t test assumes that variances are the same, so Levene's test needs to be non significant
+## Fligner's test is a Levene's test for data that are not normally distributed
+## more here: https://www.geeksforgeeks.org/fligner-killeen-test-in-r-programming/
+fligner.test(`soxC; sulfane dehydrogenase subunit SoxC` ~ SampDate, data = clr.sulf.ko.meta)
+# Fligner-Killeen:med chi-squared = 1.1963, df = 7, p-value = 0.991
+# Which shows that the data do not deviate significantly from homogeneity.
+compare_means(`soxC; sulfane dehydrogenase subunit SoxC` ~ SampDate, data=clr.sulf.ko.meta, method="anova",p.adjust.method = "bonferroni") # won't take as.factor(Elevation) as input
+
 #### DOM Metabolism PCoA ####
 ## PCOA with CLR transformed data first
 # calculate our Euclidean distance matrix using CLR data
@@ -2083,8 +2116,11 @@ clr.cov.sum.sulf.ko[1:4,1:4]
 rownames(clr.cov.sum.sulf.ko) %in% rownames(meta_scaled)
 
 meta_scaled=meta_scaled[rownames(clr.cov.sum.sulf.ko),] ## reorder metadata to match order of CLR data
+
+# Create perm variable
 perm <- with(meta_scaled, how(nperm = 1000))
 
+# Run PERMANOVAs
 s.pnov0<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ Depth_m,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 s.pnov0
 
@@ -2120,17 +2156,22 @@ adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU,data=meta_scaled,
 s.pnov5<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU*Sulfate_milliM*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 s.pnov5
 
-# what about by S metabolic pathway?
+## what about by S metabolic pathway?
+
+# check rownames to make sure sub-dfs of S genes are in same order as meta_scaled
 rownames(sox.ko.cov) %in% rownames(meta_scaled)
 rownames(asSO4.ko.cov) %in% rownames(meta_scaled)
-
-head(s.path.clr)
 
 # includes CLR transformed coverage (summed up per gene per KO) for genes in specific Sulfur Metabolic pathways
 
 # SOX genes
 spath0<-adonis2(sox.ko.cov ~ SampDate,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 spath0
+#           Df SumOfSqs     R2     F   Pr(>F)
+# SampDate  2  0.73160 0.7062 7.211 0.003996 **
+# Residual  6  0.30437 0.2938
+# Total     8  1.03596 1.0000
+p.adjust(spath0$`Pr(>F)`,method="bonferroni",n=3) # adjusted pval = 0.01198801
 
 spath0a<-adonis2(sox.ko.cov ~ SampDate*Depth.num,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 spath0a
@@ -2138,6 +2179,11 @@ spath0a
 # Assimilatory Sulfate Reduction
 spath1<-adonis2(asSO4.ko.cov ~ SampDate,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 spath1
+#           Df SumOfSqs      R2      F Pr(>F)
+# SampDate  2  0.40909 0.28398 1.1898 0.3506
+# Residual  6  1.03147 0.71602
+# Total     8  1.44056 1.00000
+p.adjust(spath1$`Pr(>F)`,method="bonferroni",n=3)
 
 spath1a<-adonis2(asSO4.ko.cov ~ SampDate*Depth.num,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 spath1a
@@ -2145,6 +2191,11 @@ spath1a
 # Dissimilatory Sulfate Reduction
 spath2<-adonis2(disSO4.ko.cov ~ SampDate,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 spath2
+#           Df SumOfSqs      R2      F   Pr(>F)
+# SampDate  2   3.0096 0.98128 157.29 0.004995 **
+# Residual  6   0.0574 0.01872
+# Total     8   3.0670 1.00000
+p.adjust(spath2$`Pr(>F)`,method="bonferroni",n=3) # adjusted pval= 0.01498501
 
 spath2a<-adonis2(disSO4.ko.cov ~ SampDate*Depth.num,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 spath2a
