@@ -303,6 +303,8 @@ pnova4b
 # DO_Percent_Local:Dissolved_OrganicMatter_RFU:ORP_mV  1    719.5 0.02839  1.5103 0.159840
 # Residual                                            16   7622.8 0.30079
 # Total                                               23  25342.6 1.00000
+p.adjust(pnova4$`Pr(>F)`,method="bonferroni",n=length(pnova4$`Pr(>F)`)) # adjusted pval
+
 adonis2(b.clr ~ DO_Percent_Local*Dissolved_OrganicMatter_RFU*ORP_mV,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 
 pnova5<-adonis2(b.clr ~ DO_Percent_Local*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
@@ -313,6 +315,7 @@ pnova5
 #   DO_Percent_Local:Dissolved_OrganicMatter_RFU  1    931.5 0.03676  1.5226 0.134865
 # Residual                                     20  12236.1 0.48283
 # Total                                        23  25342.6 1.00000
+p.adjust(pnova5$`Pr(>F)`,method="bonferroni",n=length(pnova5$`Pr(>F)`)) # adjusted pval
 
 adonis2(b.clr ~ DO_Percent_Local*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 #         Df SumOfSqs      R2      F   Pr(>F)

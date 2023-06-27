@@ -249,7 +249,7 @@ div.glm.all<-glm(formula = Bac_Shannon_Diversity ~ ., data=bac.div.metadat[,c(3,
 summary(div.glm.all)
 
 div.glm.p<-coef(summary(div.glm.all))[,4] # p-values
-Div.GLM.Pval<-data.frame(Div.GLM.AdjPval=p.adjust(div.glm.p, method="bonferroni"),Div.GLM.Pval=div.glm.p)
+Div.GLM.Pval<-data.frame(Div.GLM.AdjPval=p.adjust(div.glm.p, method="bonferroni",n=length(div.glm.p)),Div.GLM.Pval=div.glm.p)
 #                               Div.GLM.AdjPval Div.GLM.Pval
 # (Intercept)                    1.209565e-14 1.727951e-15
 # DO_Percent_Local               1.000000e+00 5.749260e-01
@@ -308,6 +308,12 @@ summary(fit1)
 #Df           Sum Sq Mean Sq    F value   Pr(>F)
 #SampDate     2   3214  1607.1   5.317 0.0135 *
 #Residuals   21   6347   302.2
+
+# ANOVA adjusted p-value
+aov.div.p<-summary(fit1)[[1]][["Pr(>F)"]] # get p values from ANOVA
+p.adjust(aov.div.p,method="bonferroni",n=length(aov.div.p))
+
+# Tukey test - tells us which groups are significantly different from each other (more here: https://www.r-bloggers.com/2013/06/anova-and-tukeys-test-on-r/)
 Tuk1<-TukeyHSD(fit1)
 Tuk1$SampDate
 #                             diff        lwr      upr      p adj
@@ -344,7 +350,7 @@ sr.glm.all<-glm(formula = Bac_Species_Richness ~ ., data=bac.div.metadat[,c(4,11
 summary(sr.glm.all)
 
 sr.glm.p<-coef(summary(sr.glm.all))[,4] # p-values
-SR.GLM.Pval<-data.frame(SR.GLM.AdjPval=p.adjust(sr.glm.p, method="bonferroni"),SR.GLM.Pval=sr.glm.p)
+SR.GLM.Pval<-data.frame(SR.GLM.AdjPval=p.adjust(sr.glm.p, method="bonferroni",n=length(sr.glm.p)),SR.GLM.Pval=sr.glm.p)
 #                               SR.GLM.AdjPval  SR.GLM.Pval
 # (Intercept)                   1.388731e-14 1.983901e-15
 # DO_Percent_Local              1.000000e+00 1.836612e-01
@@ -390,6 +396,12 @@ summary(fit2)
 #            Df Sum Sq Mean Sq F value  Pr(>F)
 #SampDate     2 378899  189450   6.465 0.00649 **
 #Residuals   21 615429   29306
+
+# ANOVA adjusted p-value
+aov.sr.p<-summary(fit2)[[1]][["Pr(>F)"]] # get p values from ANOVA
+p.adjust(aov.sr.p,method="bonferroni",n=length(aov.sr.p))
+
+# Tukey test - tells us which groups are significantly different from each other (more here: https://www.r-bloggers.com/2013/06/anova-and-tukeys-test-on-r/)
 Tuk2<-TukeyHSD(fit2)
 Tuk2$SampDate
 #                               diff       lwr       upr       p adj
