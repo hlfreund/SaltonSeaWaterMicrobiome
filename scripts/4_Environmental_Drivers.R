@@ -861,6 +861,8 @@ anova(rda.all, by = "terms", permutations = how(nperm=999))
 # Dissolved_OrganicMatter_RFU  1   169.84  7.0285  0.001 ***
 # DO_Percent_Local             1   113.20  4.6845  0.001 ***
 #Residual                    43   992.83
+aov.rda.all<-anova(rda.all, by = "terms", permutations = how(nperm=999))
+p.adjust(aov.rda.all$`Pr(>F)`,method="bonferroni",n=3) # adjusted pvalues
 
 # August 2021
 #rda.aug2021.4$call # best model
@@ -874,6 +876,8 @@ anova(rda.aug2021, by = "terms", permutations = how(nperm=999))
 #Dissolved_OrganicMatter_RFU  1   157.93 1.9302  0.001 ***
 #Sulfide_microM               1   101.16 1.2363  0.148
 #Residual                     5   409.10
+aov.rda.aug<-anova(rda.aug2021, by = "terms", permutations = how(nperm=999))
+p.adjust(aov.rda.aug$`Pr(>F)`,method="bonferroni",n=3) # adjusted pvalues
 
 # December 2021
 #rda.dec2021.2$call # best model from above
@@ -887,6 +891,8 @@ anova(rda.dec2021, by = "terms", permutations = how(nperm=999))
 # ORP_mV          1   77.391 1.3240  0.003 **
 # Sulfate_milliM  1   62.509 1.0694  0.192
 # Residual        5  292.258
+aov.rda.dec<-anova(rda.dec2021, by = "terms", permutations = how(nperm=999))
+p.adjust(aov.rda.dec$`Pr(>F)`,method="bonferroni",n=3) # adjusted pvalues
 
 # April 2022
 #rda.apr2022.3$call  #best mode
@@ -900,6 +906,8 @@ anova(rda.apr2022, by = "terms", permutations = how(nperm=999))
 # Dissolved_OrganicMatter_RFU  1   60.077 1.1195  0.011 *
 # Sulfate_milliM               1   57.312 1.0680  0.092 .
 # Residual                     5  268.313
+aov.rda.apr<-anova(rda.apr2022, by = "terms", permutations = how(nperm=999))
+p.adjust(aov.rda.apr$`Pr(>F)`,method="bonferroni",n=3) # adjusted pvalues
 
 # save RDAs as R object
 save.image("data/SSW_Amplicon_EnvDriver_RDAsOnly.Rdata")
