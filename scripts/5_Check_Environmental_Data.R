@@ -242,33 +242,38 @@ pca2<-ggplot(env.pca.meta, aes(x=PC1, y=PC2)) +
 
 ggsave(pca2,filename = "figures/EnvVariablesOnly/SSW_LogEnvOnly_PCA_Depth_SampDate.png", width=12, height=10, dpi=600)
 
-#### Compare Env Samples Variance by Sample Date ####
+#### Do Env Variables Vary by Sample Date ####
 # Kruskal-Wallis test = nonparametric one-way ANOVA
 kruskal.test(DO_Percent_Local ~ SampDate, data = meta_scaled)
+#Kruskal-Wallis chi-squared = 16.266, df = 2, p-value = 0.0002937
 pairwise.wilcox.test(meta_scaled$DO_Percent_Local, meta_scaled$SampDate, p.adjust.method = "bonf") # returns p values
 #               August  December
 #December.2021 0.0028      -
 #April.2022    0.0299  0.0299
 
 kruskal.test(ORP_mV ~ SampDate, data = meta_scaled)
+#Kruskal-Wallis chi-squared = 19.763, df = 2, p-value = 5.112e-05
 pairwise.wilcox.test(meta_scaled$ORP_mV, meta_scaled$SampDate, p.adjust.method = "bonf") # returns p values
 #               August.2021 December.2021
 # December.2021 0.0068      -
 # April.2022    0.0027      0.0027
 
 kruskal.test(Temp_DegC ~ SampDate, data = meta_scaled)
+#Kruskal-Wallis chi-squared = 20.507, df = 2, p-value = 3.524e-05
 pairwise.wilcox.test(meta_scaled$Temp_DegC, meta_scaled$SampDate, p.adjust.method = "bonf") # returns p values
 #               August.2021 December.2021
 # December.2021 0.0028      -
 #   April.2022  0.0028      0.0028
 
 kruskal.test(Dissolved_OrganicMatter_RFU ~ SampDate, data = meta_scaled)
+#Kruskal-Wallis chi-squared = 20.516, df = 2, p-value = 3.508e-05
 pairwise.wilcox.test(meta_scaled$Dissolved_OrganicMatter_RFU, meta_scaled$SampDate, p.adjust.method = "bonf") # returns p values
 #               August.2021 December.2021
 # December.2021 0.0027      -
 # April.2022    0.0028      0.0027
 
 kruskal.test(Sulfate_milliM ~ SampDate, data = meta_scaled)
+#Kruskal-Wallis chi-squared = 15.605, df = 2, p-value = 0.0004087
 pairwise.wilcox.test(meta_scaled$Sulfate_milliM, meta_scaled$SampDate, p.adjust.method = "bonf") # returns p values
 #               August.2021 December.2021
 # December.2021 0.00047     -
@@ -295,6 +300,7 @@ Tuk.Sulf$SampDate
 #April.2022-December.2021  -1.77789263 -2.4956865 -1.0600987 9.888236e-06
 
 kruskal.test(Sulfide_microM ~ SampDate, data = meta_scaled)
+#Kruskal-Wallis chi-squared = 10.75, df = 2, p-value = 0.004632
 pairwise.wilcox.test(meta_scaled$Sulfide_microM, meta_scaled$SampDate, p.adjust.method = "bonf") # returns p values
 #               August.2021 December.2021
 # December.2021 0.030       -
@@ -735,37 +741,6 @@ plot(x=April.2022$Sulfide_microM, y=April.2022$Depth.num, col=April.2022$Depth_m
 #cor.test(April.2022$Chlorophyll_RFU, April.2022$Dissolved_OrganicMatter_RFU, method="pearson") # ****
 # r = -0.70582, p-value = 3.002e-08 --> strong correlation & significant
 #cor.test(April.2022$Chlorophyll_RFU, April.2022$Temp_DegC, method="pearson")
-
-
-
-
-#### Do Env Data Vary Significantly By Group?#####
-
-domf1<-aov(Dissolved_OrganicMatter_RFU ~ SampDate, data=meta_scaled)
-#pairwise.adonis(bac.div.metadat$Bac_Species_Richness, bac.div.metadat$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
-
-summary(domf1)
-#Df           Sum Sq Mean Sq    F value   Pr(>F)
-#SampDate     2  17.87   8.935   36.58 1.44e-07 ***
-#Residuals   21   5.13   0.244
-Tuk3<-TukeyHSD(domf1)
-Tuk3$SampDate
-#                             diff       lwr        upr        p adj
-# December.2021-August.2021 -1.3249869 -1.947862 -0.7021123 7.340349e-05
-# April.2022-August.2021    -2.0886802 -2.711555 -1.4658055 9.867955e-08
-# April.2022-December.2021  -0.7636932 -1.386568 -0.1408186 1.468732e-02
-## sampling depth
-
-domf2<-aov(Dissolved_OrganicMatter_RFU ~ Depth_m, data=meta_scaled)
-#pairwise.adonis(bac.div.metadat$Bac_Species_Richness, bac.div.metadat$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
-
-summary(domf2)
-#Df           Sum Sq Mean Sq    F value   Pr(>F)
-#Depth_m      7  2.875  0.4107   0.326  0.931
-#Residuals   16 20.125  1.2578
-Tuk4<-TukeyHSD(domf2)
-Tuk4$Depth_m
-## sampling depth
 
 #### Plots of Env Variables ####
 
