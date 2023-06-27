@@ -287,10 +287,6 @@ summary(sulf.fit1)
 #SampDate     2 16.188   8.094   24.95 2.83e-06 ***
 #Residuals   21  6.812   0.324
 
-# ANOVA adjusted p-value
-aov.sulf.p<-summary(sulf.fit1)[[1]][["Pr(>F)"]] # get p values from ANOVA
-p.adjust(aov.sulf.p,method="bonferroni",n=length(aov.sulf.p))
-
 # Tukey test - tells us which groups are significantly different from each other (more here: https://www.r-bloggers.com/2013/06/anova-and-tukeys-test-on-r/)
 Tuk.Sulf<-TukeyHSD(sulf.fit1)
 Tuk.Sulf$SampDate

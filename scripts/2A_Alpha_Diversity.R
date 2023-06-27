@@ -309,10 +309,6 @@ summary(fit1)
 #SampDate     2   3214  1607.1   5.317 0.0135 *
 #Residuals   21   6347   302.2
 
-# ANOVA adjusted p-value
-aov.div.p<-summary(fit1)[[1]][["Pr(>F)"]] # get p values from ANOVA
-p.adjust(aov.div.p,method="bonferroni",n=length(aov.div.p))
-
 # Tukey test - tells us which groups are significantly different from each other (more here: https://www.r-bloggers.com/2013/06/anova-and-tukeys-test-on-r/)
 Tuk1<-TukeyHSD(fit1)
 Tuk1$SampDate
@@ -396,10 +392,6 @@ summary(fit2)
 #            Df Sum Sq Mean Sq F value  Pr(>F)
 #SampDate     2 378899  189450   6.465 0.00649 **
 #Residuals   21 615429   29306
-
-# ANOVA adjusted p-value
-aov.sr.p<-summary(fit2)[[1]][["Pr(>F)"]] # get p values from ANOVA
-p.adjust(aov.sr.p,method="bonferroni",n=length(aov.sr.p))
 
 # Tukey test - tells us which groups are significantly different from each other (more here: https://www.r-bloggers.com/2013/06/anova-and-tukeys-test-on-r/)
 Tuk2<-TukeyHSD(fit2)
