@@ -509,7 +509,7 @@ cor.test(August.2021$ORP_mV, August.2021$Temp_DegC, method="pearson") # ***
 cor.test(August.2021$ORP_mV, August.2021$Dissolved_OrganicMatter_RFU, method="pearson") # ***
 # r = -0.8044803, p-value = 0.01605 --> strong negative, significant corr
 cor.test(August.2021$ORP_mV, August.2021$Depth.num, method="pearson")
-# r = -0.719755, p-value =  0.04411 --> not sig, not strong corr
+# r = -0.719755, p-value =  0.04411 --> neg cor, sig
 
 plot(x=August.2021$ORP_mV, y=August.2021$Dissolved_OrganicMatter_RFU, col=August.2021$Depth_m) %>% text(x=August.2021$ORP_mV, y=August.2021$Dissolved_OrganicMatter_RFU,labels=August.2021$Depth_m,cex=0.65, pos=3,col="black")
 plot(x=August.2021$ORP_mV, y=August.2021$Temp_DegC, col=August.2021$Depth_m) %>% text(x=August.2021$ORP_mV, y=August.2021$Temp_DegC,labels=August.2021$Depth_m,cex=0.65, pos=3,col="black")
@@ -590,7 +590,7 @@ plot(x=December.2021$DO_Percent_Local, y=December.2021$Depth.num, col=December.2
 
 # ORP
 cor.test(December.2021$ORP_mV, December.2021$Temp_DegC, method="pearson") # ***
-# r = -0.8191958, p-value = 0.01285 --> medium negative correlation & significant
+# r = -0.8191958, p-value = 0.01285 --> strong negative correlation & significant
 cor.test(December.2021$ORP_mV, December.2021$Dissolved_OrganicMatter_RFU, method="pearson") # ***
 # r = -0.5165888, p-value = 0.1899 --> mid neg corr, not sig
 cor.test(December.2021$ORP_mV, December.2021$Depth.num, method="pearson")
@@ -715,13 +715,13 @@ plot(x=April.2022$Sulfate_milliM, y=April.2022$Temp_DegC, col=April.2022$Depth_m
 plot(x=April.2022$Sulfate_milliM, y=April.2022$Depth.num, col=April.2022$Depth_m) %>% text(x=April.2022$Sulfate_milliM, y=April.2022$Depth.num,labels=April.2022$Depth_m,cex=0.65, pos=3,col="black")
 
 # Sulfide (microM)
-cor.test(April.2022$Sulfide_microM, April.2022$ORP_mV, method="pearson") # ******
+cor.test(April.2022$Sulfide_microM, April.2022$ORP_mV, method="pearson") #
 # r = -0.04204334, p = 0.9213 -->
-cor.test(April.2022$Sulfide_microM, April.2022$Temp_DegC, method="pearson") # ***
+cor.test(April.2022$Sulfide_microM, April.2022$Temp_DegC, method="pearson") #
 # r = -0.2711869 , p = 0.5159 -->
-cor.test(April.2022$Sulfide_microM, April.2022$DO_Percent_Local, method="pearson") # ****
+cor.test(April.2022$Sulfide_microM, April.2022$DO_Percent_Local, method="pearson") #
 # r = -0.4560053, p = 0.2561 -->
-cor.test(April.2022$Sulfide_microM, April.2022$Dissolved_OrganicMatter_RFU, method="pearson") # ****
+cor.test(April.2022$Sulfide_microM, April.2022$Dissolved_OrganicMatter_RFU, method="pearson") #
 # r = 0.2883266 , p = 0.4886 -->
 cor.test(April.2022$Sulfide_microM, April.2022$Depth.num, method="pearson")
 # r = 0.4457843 , p-value = 0.2683 #
