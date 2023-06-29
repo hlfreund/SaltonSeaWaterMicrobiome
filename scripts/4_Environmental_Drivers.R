@@ -1160,7 +1160,7 @@ rda.plot8<-ggplot(rda.axes.d21, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=
   geom_label(data = arrows.d21,aes(label = Label, x = RDA1*10.5, y = RDA2*10, fontface="bold"), size=4)+
   coord_fixed(ratio = 1, xlim = c(-10,11), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
-  labs(title="RDA: Bacteria/Archaea Composition in Salton Seawater",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
+  labs(title="RDA: Bacteria/Archaea Composition in Salton Seawater, December 2021",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
   xlab("RDA1 [18.19%]") + ylab("RDA2 [14.18%]")
 
 ggsave(rda.plot8,filename = "figures/EnvDrivers/SSW_16S_RDA_Dec2021.png", width=15, height=12, dpi=600)
@@ -1259,7 +1259,7 @@ rda.plot10b<-ggplot(rda.axes.a22, aes(x = RDA1, y = RDA2)) + geom_point(aes(colo
   geom_label(data = arrows.a22,aes(label = Label, x = RDA1*10, y = RDA2*10, fontface="bold"), size=5)+
   coord_fixed(ratio = 1, xlim = c(-10,10), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
-  labs(title="RDA: Bacteria/Archaea Composition in Salton Seawater, December 2021",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
+  labs(title="RDA: Bacteria/Archaea Composition in Salton Seawater, April 2022",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
   xlab("RDA1 [16.04%]") + ylab("RDA2 [14.40]")
 
 ggsave(rda.plot10b,filename = "figures/EnvDrivers/SSW_16S_RDA_April2022_bigger.png", width=15, height=15, dpi=600)
