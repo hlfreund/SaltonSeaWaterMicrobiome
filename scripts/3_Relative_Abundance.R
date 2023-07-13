@@ -1491,77 +1491,27 @@ cor.test(ds001_meta$DS001, ds001_meta$Depth.num, method="pearson")
 cor.test(ds001_meta$DS001, ds001_meta$Sulfate_milliM, method="pearson") # r = 0.4249563, p-value = 0.03845
 cor.test(ds001_meta$DS001, ds001_meta$Sulfide_microM, method="pearson")
 
-# does RelAb of DS001 change with depth?
-ds001.depth.1<-aov(DS001 ~ Depth_m, data=ds001_meta)
-#pairwise.adonis(ds001_meta$DS001, ds001_meta$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
-#adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-#test<-adonis2(bac.div.metadat2$Bac_Species_Richness ~ Depth_m, data=bac.div.metadat2)
-
-summary(ds001.depth.1)
-#Df           Sum Sq Mean Sq    F value   Pr(>F)
-#Depth_m      8 0.0790 0.009871   0.613  0.761
-#Residuals   38 0.6116 0.016095
-Tuk1<-TukeyHSD(ds001.depth.1)
-Tuk1$Depth_m
-# Levene's test with one independent variable
-## Levene's tests whether variances of 2 samples are equal
-## we want variances to be the same -- want NON SIGNIFICANCE!
-## t test assumes that variances are the same, so Levene's test needs to be non significant
-fligner.test(DS001 ~ Depth_m, data = ds001_meta)
-# Levenes Test for Homogeneity of Variance
-#  Fligner-Killeen:med chi-squared = 5.1712, df = 8, p-value = 0.7391
-# Which shows that the data do not deviate significantly from homogeneity.
-compare_means(DS001 ~ Depth_m, data=ds001_meta, method="anova",p.adjust.method = "bonferroni") # not significant
-
-plot(DS001 ~ Depth_m, data=ds001_meta)
-
-# ds001.dep.ts1<-ggplot(ds001_meta, aes(Depth_m, DS001)) +
-#   geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
-#   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
-#   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
-#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-#   labs(x="Depth (m)", y="Relative Abundance", title="Genus DS001 & Depth", color="Depth (m)")
-#
-# ggsave(ds001.dep.ts1,filename = "figures/RelativeAbundance/SSW_16S_DS001_RA_bydepth_taxasum.png", width=15, height=10, dpi=600)
-
-ds001.dep.ts2<-ggplot(ds001_meta, aes(Depth_m, DS001)) +
-  geom_jitter(aes(color=factor(SampDate)), size=2, width=0.15, height=0) +
-  scale_color_manual(name ="Sample Date", values=c("#ef781c","#03045e","#059c3f"), labels=c("August 2021","December 2021","April 2022")) +
-  geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  labs(x="Depth (m)", y="Relative Abundance", title="Genus DS001 by Depth & Sample Date", color="Sample Date")
-
-ggsave(ds001.dep.ts2,filename = "figures/RelativeAbundance/SSW_16S_DS001_RA_bydepth_date_taxasum.png", width=15, height=10, dpi=600)
-
-# does RelAb of DS001 change with sampling date?
-ds001.samp.1<-aov(DS001 ~ SampDate, data=ds001_meta)
-#pairwise.adonis(ds001_meta$DS001, ds001_meta$SampDate, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
-#adonis2(b.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*SampDate,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
-#test<-adonis2(bac.div.metadat2$Bac_Species_Richness ~ SampDate, data=bac.div.metadat2)
-
-summary(ds001.samp.1)
-#Df Sum Sq Mean Sq F value   Pr(>F)
-#SampDate     2 0.5551 0.27755   77.57 5.82e-14 ***
-#Residuals   37 0.1324 0.00358
-
-Tuk2<-TukeyHSD(ds001.samp.1)
-Tuk2$SampDate
-#                             diff          lwr         upr        p adj
-#December.2021-August.2021 -0.04603105 -0.1092707  0.01720857 1.912425e-01
-#April.2022-August.2021    -0.26869222 -0.3319318 -0.20545260 4.753309e-12
-#April.2022-December.2021  -0.22266117 -0.2742961 -0.17102624 3.060108e-12
+# does RelAb of DS001 change with sample date??
+# Kruskal-Wallis test = nonparametric one-way ANOVA
+kruskal.test(DS001 ~ SampDate, data = ds001_meta)
+#Kruskal-Wallis chi-squared = 15.38, df = 2, p-value = 0.0004574
+pairwise.wilcox.test(ds001_meta$DS001, ds001_meta$SampDate, p.adjust.method = "bonf") # returns p values
+#               August.2021 December.2021
+#December.2021 1.00000     -
+#April.2022    0.00047     0.00047
 
 # Levene's test with one independent variable
 ## Levene's tests whether variances of 2 samples are equal
 ## we want variances to be the same -- want NON SIGNIFICANCE!
 ## t test assumes that variances are the same, so Levene's test needs to be non significant
 fligner.test(DS001 ~ SampDate, data = ds001_meta)
-# Fligner-Killeen aka median test: tests null H that variances in each groups (samples) are the same
-# non-parametric version of Levene's test (aka for non-normally distributed data)
-# Fligner-Killeen:med chi-squared = 9.4548, df = 2, p-value = 0.008849
-# Which shows that the data DOES deviate significantly from homogeneity.
-compare_means(DS001 ~ SampDate, data=ds001_meta, method="anova",p.adjust.method = "bonferroni") # significant
-
+# Levenes Test for Homogeneity of Variance
+#  Fligner-Killeen:med chi-squared = 7.9189, df = 2, p-value = 0.01907
+# Which shows that the data DO deviate significantly from homogeneity.
+compare_means(DS001 ~ SampDate, data=ds001_meta, method="kruskal.test",p.adjust.method = "bonferroni") # not significant
+# .y.       p p.adj p.format p.signif method
+# <chr> <dbl> <dbl> <chr>    <chr>    <chr>
+# DS001 0.000457 0.00046 0.00046  ***      Kruskal-Wallis
 plot(DS001 ~ SampDate, data=ds001_meta)
 
 ds001.date.ts1<-ggplot(ds001_meta, aes(SampDate, DS001)) +
@@ -1582,6 +1532,54 @@ ds001.date.ts2<-ggplot(ds001_meta, aes(SampDate, DS001)) +
   labs(x="Sample Date", y="Relative Abundance", title="Genus DS001 & Sample Date", color="Depth (m)")+scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
 ggsave(ds001.date.ts2,filename = "figures/RelativeAbundance/SSW_16S_DS001_RA_bydate_depth_taxasum.png", width=15, height=10, dpi=600)
+
+# does RelAb of DS001 change with depth??
+# Kruskal-Wallis test = nonparametric one-way ANOVA
+kruskal.test(DS001 ~ Depth_m, data = ds001_meta)
+#Kruskal-Wallis chi-squared = 3.64, df = 7, p-value = 0.8202
+pairwise.wilcox.test(ds001_meta$DS001, ds001_meta$Depth_m, p.adjust.method = "bonf") # returns p values
+
+# Levene's test with one independent variable
+## Levene's tests whether variances of 2 samples are equal
+## we want variances to be the same -- want NON SIGNIFICANCE!
+## t test assumes that variances are the same, so Levene's test needs to be non significant
+fligner.test(DS001 ~ Depth_m, data = ds001_meta)
+# Levenes Test for Homogeneity of Variance
+#  Fligner-Killeen:med chi-squared = 1.3502, df = 7, p-value = 0.987
+# Which shows that the data DO deviate significantly from homogeneity.
+compare_means(DS001 ~ Depth_m, data=ds001_meta, method="kruskal.test",p.adjust.method = "bonferroni") # not significant
+# .y.       p p.adj p.format p.signif method
+# <chr> <dbl> <dbl> <chr>    <chr>    <chr>
+#   1 DS001 0.820  0.82 0.82     ns       Kruskal-Wallis
+plot(DS001 ~ SampDate, data=ds001_meta)
+
+# ds001.dep.ts1<-ggplot(ds001_meta, aes(Depth_m, DS001)) +
+#   geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
+#   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
+#   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+#   labs(x="Depth (m)", y="Relative Abundance", title="Genus DS001 & Depth", color="Depth (m)")
+#
+# ggsave(ds001.dep.ts1,filename = "figures/RelativeAbundance/SSW_16S_DS001_RA_bydepth_taxasum.png", width=15, height=10, dpi=600)
+
+ds001.dep.ts2<-ggplot(ds001_meta, aes(Depth_m, DS001)) +
+  geom_jitter(aes(color=factor(SampDate)), size=2, width=0.15, height=0) +
+  scale_color_manual(name ="Sample Date", values=c("#ef781c","#03045e","#059c3f"), labels=c("August 2021","December 2021","April 2022")) +
+  geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  labs(x="Depth (m)", y="Relative Abundance", title="Genus DS001 by Depth & Sample Date", color="Sample Date")
+
+ggsave(ds001.dep.ts2,filename = "figures/RelativeAbundance/SSW_16S_DS001_RA_bydepth_date_taxasum.png", width=15, height=10, dpi=600)
+
+ggplot(metadata, aes(x=Depth_m, y=Sulfate_milliM,color=SampDate,group=SampDate)) + geom_point(size=3) + geom_line()
+
+ds001.dep.ts3<-ggplot(ds001_meta, aes(x=Depth_m,y=DS001,color=SampDate,group=SampDate)) +
+  geom_point(size=3) + geom_line() +
+  scale_color_manual(name ="Sample Date", values=c("#ef781c","#03045e","#059c3f"), labels=c("August 2021","December 2021","April 2022")) + theme_classic() +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  labs(x="Depth (m)", y="Relative Abundance", title="Genus DS001 by Depth & Sample Date", color="Sample Date")+coord_flip()+ scale_x_discrete(limits=rev)
+
+ggsave(ds001.dep.ts3,filename = "figures/RelativeAbundance/SSW_16S_DS001_RA_bydepth_date_scatterplot.png", width=15, height=10, dpi=600)
 
 # can we use env variables to predict RelAb of DS001?!
 ## correlation gives us the status of their relationship, but linear regression will tell us if these env variables predict DS001 relative abundance
