@@ -438,15 +438,17 @@ rownames(sulf.path.cov.sum)<-sulf.path.cov.sum$SampleID
 sulf.path.cov.sum[1:4,1:4]
 
 # then CLR transform
-# df must have rownames are SampleIDs, columns are ASV IDs for vegan functions below\
-s.path.clr<-decostand(sulf.path.cov.sum[,-1],method = "clr", pseudocount = 1) #CLR transformation
-s.path.clr[1:4,1:4]
+# # df must have rownames are SampleIDs, columns are ASV IDs for vegan functions below\
+# s.path.clr<-decostand(sulf.path.cov.sum[,-1],method = "clr", pseudocount = 1) #CLR transformation
+# s.path.clr[1:4,1:4]
 
 # check rownames of CLR transformed ASV data & metadata
 rownames(s.path.clr) %in% rownames(meta_scaled)
 
 ## pull out all KOs in each Pathway
 unique(sulf.cov.sum.m$Pathway)
+clr.cov.sum.sulf.ko[1:4,]
+
 assim.sulfate.red<-data.frame(KO_Function.KEGG=unique(sulf.cov.sum.m$KO_Function[which(sulf.cov.sum.m$Pathway=="Assimilatory Sulfate Reduction")]))
 dissim.sulfate.redox<-data.frame(KO_Function.KEGG=unique(clr.sulf.ko$KO_Function.KEGG[which(clr.sulf.ko$Pathway=="Dissimilatory Sulfate Redox")]))
 mult.sulf<-data.frame(KO_Function.KEGG=unique(clr.sulf.ko$KO_Function.KEGG[which(clr.sulf.ko$Pathway=="Multiple Pathways")]))
@@ -2156,7 +2158,7 @@ adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU,data=meta_scaled,
 s.pnov5<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU*Sulfate_milliM*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 s.pnov5
 
-#### Sulfur Fxns by Pathway PERMANOVA ####
+#### Sulfur Pathway PERMANOVA ####
 ## what about by S metabolic pathway?
 
 # check rownames to make sure sub-dfs of S genes are in same order as meta_scaled
@@ -2462,6 +2464,7 @@ qqline(meta_scaled$Sulfide_microM, col = "red", lwd = 2)
 # osmo.ko.clr.all<-merge(clr.osmo.ko,meta_scaled,by=c("SampleID"))
 
 #### Linear Regression Comparisons ####
+# using PCoA axes as a variable to see if can be predicted by env vars
 head(sulf.pcoa.clr.meta)
 
 step1<-step(glm(formula = Axis.1 ~ ., data=sulf.pcoa.clr.meta[,c(2,16,18:19,23:25)]))
