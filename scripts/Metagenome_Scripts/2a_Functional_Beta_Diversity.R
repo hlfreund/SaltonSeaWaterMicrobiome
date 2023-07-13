@@ -404,7 +404,7 @@ ggsave(pcoa6,filename = "figures/MGM_Figs/SSW_MGM_pcoa_CLR_SummedCoverage_Per_KO
 
 mgm.clr[1:4,1:4]
 
-# pull out sulfur functions from CLR transformed, summed coverages (summed coverage per KO)
+# pull out sulfur functions from CLR transformed, summed coverages (summed gene coverage per KO)
 sulf.ko<-mgm.clr[,which(colnames(mgm.clr) %in% sulfur.fxns$KO_ID)] # merge CLR data w/ S fxns found in contigs from KOFamScan
 sulf.ko$SampleID<-rownames(sulf.ko)
 sulf.ko.melt<-melt(sulf.ko, by="SampleID")
@@ -423,33 +423,15 @@ clr.cov.sum.sulf.ko[1:4,]
 clr.cov.sum.sulf.ko$`cysJ; sulfite reductase (NADPH) flavoprotein alpha-component [EC:1.8.1.2]`[1:4]
 head(clr.sulf.ko)
 
-#### Add Sum Coverage per KO per S Pathway - then CLR transform ####
+#### Pull out CLR Cov Per S Genes in S Pathways ####
 ko.cov.sum_table[1:4,1:4] # contains the sum of coverages per gene per KO -- featureCounts was normalized by gene length across samples first to get coverage, then summed up per KO ID
-ko.cov.sum.m<-melt(ko.cov.sum_table, by="SampleID")
-colnames(ko.cov.sum.m)[which(names(ko.cov.sum.m) == "variable")] <- "KO_ID"
-colnames(ko.cov.sum.m)[which(names(ko.cov.sum.m) == "value")] <- "SumCovPerKO"
-head(ko.cov.sum.m) #sanity check
-
-# count up gene coverage by KO, by Pathway
-sulf.cov.sum.m<-merge(ko.cov.sum.m,sulf.kegg,by.x=c("KO_ID"),by.y=c("KO_ID"))
-head(sulf.cov.sum.m)
-sulf.path.cov.sum<-as.data.frame(dcast(sulf.cov.sum.m, SampleID~Pathway, value.var="SumCovPerKO", fun.aggregate=sum)) ###
-rownames(sulf.path.cov.sum)<-sulf.path.cov.sum$SampleID
-sulf.path.cov.sum[1:4,1:4]
-
-# then CLR transform
-# # df must have rownames are SampleIDs, columns are ASV IDs for vegan functions below\
-# s.path.clr<-decostand(sulf.path.cov.sum[,-1],method = "clr", pseudocount = 1) #CLR transformation
-# s.path.clr[1:4,1:4]
-
-# check rownames of CLR transformed ASV data & metadata
-rownames(s.path.clr) %in% rownames(meta_scaled)
 
 ## pull out all KOs in each Pathway
-unique(sulf.cov.sum.m$Pathway)
+unique(clr.sulf.ko$Pathway)
+head(clr.sulf.ko)
 clr.cov.sum.sulf.ko[1:4,]
 
-assim.sulfate.red<-data.frame(KO_Function.KEGG=unique(sulf.cov.sum.m$KO_Function[which(sulf.cov.sum.m$Pathway=="Assimilatory Sulfate Reduction")]))
+assim.sulfate.red<-data.frame(KO_Function.KEGG=unique(clr.sulf.ko$KO_Function[which(clr.sulf.ko$Pathway=="Assimilatory Sulfate Reduction")]))
 dissim.sulfate.redox<-data.frame(KO_Function.KEGG=unique(clr.sulf.ko$KO_Function.KEGG[which(clr.sulf.ko$Pathway=="Dissimilatory Sulfate Redox")]))
 mult.sulf<-data.frame(KO_Function.KEGG=unique(clr.sulf.ko$KO_Function.KEGG[which(clr.sulf.ko$Pathway=="Multiple Pathways")]))
 sox.system<-data.frame(KO_Function.KEGG=unique(clr.sulf.ko$KO_Function.KEGG[which(clr.sulf.ko$Pathway=="SOX System")]))
@@ -459,6 +441,9 @@ asSO4.ko.cov<-clr.cov.sum.sulf.ko[,-1][,colnames(clr.cov.sum.sulf.ko[,-1]) %in% 
 disSO4.ko.cov<-clr.cov.sum.sulf.ko[,-1][,colnames(clr.cov.sum.sulf.ko[,-1]) %in% dissim.sulfate.redox$KO_Function.KEGG] # pull out sox genes from gene list found in CLR transformed cov per KO
 multiS.ko.cov<-clr.cov.sum.sulf.ko[,-1][,colnames(clr.cov.sum.sulf.ko[,-1]) %in% mult.sulf$KO_Function.KEGG] # pull out sox genes from gene list found in CLR transformed cov per KO
 sox.ko.cov<-clr.cov.sum.sulf.ko[,-1][,colnames(clr.cov.sum.sulf.ko[,-1]) %in% sox.system$KO_Function.KEGG] # pull out sox genes from gene list found in CLR transformed cov per KO
+
+# * NOTE - using summed coverage per KO, CLR transformed data --> then using info about genes in each pathway to pull out specific gene CLRs to compare pathways
+# we are NOT summering coverage per KO, then per pathway, then CLR transforming. Note added 7/13/23
 
 ### Sulfur Heat Maps ####
 # see max & mean of summed
@@ -661,42 +646,6 @@ clr.cov.sum.nitro.ko[1:4,]
 clr.cov.sum.nitro.ko$`nirK; nitrite reductase (NO-forming) [EC:1.7.2.1]`[1:4]
 head(clr.nitro.ko)
 
-#### Add Sum Coverage per KO per N Pathway - then CLR transform ####
-ko.cov.sum_table[1:4,1:4] # contains the sum of coverages per gene per KO -- featureCounts was normalized by gene length across samples first to get coverage, then summed up per KO ID
-ko.cov.sum.m<-melt(ko.cov.sum_table, by="SampleID")
-colnames(ko.cov.sum.m)[which(names(ko.cov.sum.m) == "variable")] <- "KO_ID"
-colnames(ko.cov.sum.m)[which(names(ko.cov.sum.m) == "value")] <- "SumCovPerKO"
-head(ko.cov.sum.m) #sanity check
-
-# count up gene coverage by KO, by Pathway
-nitro.cov.sum.m<-merge(ko.cov.sum.m,nitro.kegg,by.x=c("KO_ID"),by.y=c("KO_ID"))
-head(nitro.cov.sum.m)
-nitro.path.cov.sum<-as.data.frame(dcast(nitro.cov.sum.m, SampleID~Pathway, value.var="SumCovPerKO", fun.aggregate=sum)) ###
-rownames(nitro.path.cov.sum)<-nitro.path.cov.sum$SampleID
-nitro.path.cov.sum[1:4,1:4]
-
-# then CLR transform
-# df must have rownames are SampleIDs, columns are ASV IDs for vegan functions below\
-n.path.clr<-decostand(nitro.path.cov.sum[,-1],method = "clr", pseudocount = 1) #CLR transformation
-n.path.clr[1:4,1:4]
-
-# check rownames of CLR transformed ASV data & metadata
-rownames(n.path.clr) %in% rownames(meta_scaled)
-
-## pull out all KOs in each Pathway
-unique(nitro.cov.sum.m$Pathway)
-assim.nitrate.red<-data.frame(KO_Function.KEGG=unique(nitro.cov.sum.m$KO_Function[which(nitro.cov.sum.m$Pathway=="Assimilatory Nitrate Reduction")]))
-dissim.nitrate.redox<-data.frame(KO_Function.KEGG=unique(clr.nitro.ko$KO_Function.KEGG[which(clr.nitro.ko$Pathway=="Dissimilatory Nitrate Redox")]))
-mult.nitro<-data.frame(KO_Function.KEGG=unique(clr.nitro.ko$KO_Function.KEGG[which(clr.nitro.ko$Pathway=="Multiple Pathways")]))
-denit.system<-data.frame(KO_Function.KEGG=unique(clr.nitro.ko$KO_Function.KEGG[which(clr.nitro.ko$Pathway=="Denitrification")]))
-anammox.system<-data.frame(KO_Function.KEGG=unique(clr.nitro.ko$KO_Function.KEGG[which(clr.nitro.ko$Pathway=="Anammox")]))
-
-# pull out functions & CLR info per pathway
-asNO3.ko.cov<-clr.cov.sum.nitro.ko[,-1][,colnames(clr.cov.sum.nitro.ko[,-1]) %in% assim.nitrate.red$KO_Function.KEGG] # pull out assimilatory nitrate reduction genes from gene list found in CLR transformed cov per KO
-disNO3.ko.cov<-clr.cov.sum.nitro.ko[,-1][,colnames(clr.cov.sum.nitro.ko[,-1]) %in% dissim.nitrate.redox$KO_Function.KEGG] # pull out dissimilatory nitrate reduction genes from gene list found in CLR transformed cov per KO
-denit.ko.cov<-clr.cov.sum.nitro.ko[,-1][,colnames(clr.cov.sum.nitro.ko[,-1]) %in% denit.system$KO_Function.KEGG] # pull out denitrification genes from gene list found in CLR transformed cov per KO
-anammox.ko.cov<-clr.cov.sum.nitro.ko[,-1][,colnames(clr.cov.sum.nitro.ko[,-1]) %in% anammox.system$KO_Function.KEGG] # pull out anammox genes from gene list found in CLR transformed cov per KO
-
 ### Nitrogen Heat Maps ####
 # see max & mean of summed
 max(clr.cov.sum.nitro.ko[,-1])
@@ -850,36 +799,6 @@ colnames(clr.DOM.ko)[which(names(clr.DOM.ko) == "KO_Function")] <- "KO_Function.
 clr.cov.sum.DOM.ko<-as.data.frame(dcast(clr.DOM.ko, SampleID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
 rownames(clr.cov.sum.DOM.ko)<-clr.cov.sum.DOM.ko$SampleID
 clr.cov.sum.DOM.ko[1:4,1:4]
-
-#### Add Sum Coverage per KO per DOM Pathway - then CLR transform ####
-ko.cov.sum_table[1:4,1:4] # contains the sum of coverages per gene per KO -- featureCounts was normalized by gene length across samples first to get coverage, then summed up per KO ID
-ko.cov.sum.m<-melt(ko.cov.sum_table, by="SampleID")
-colnames(ko.cov.sum.m)[which(names(ko.cov.sum.m) == "variable")] <- "KO_ID"
-colnames(ko.cov.sum.m)[which(names(ko.cov.sum.m) == "value")] <- "SumCovPerKO"
-head(ko.cov.sum.m) #sanity check
-
-# count up gene coverage by KO, by Pathway
-DOM.cov.sum.m<-merge(ko.cov.sum.m,dom.kegg,by.x=c("KO_ID"),by.y=c("KO_ID"))
-head(DOM.cov.sum.m)
-DOM.path.cov.sum<-as.data.frame(dcast(DOM.cov.sum.m, SampleID~Pathway, value.var="SumCovPerKO", fun.aggregate=sum)) ###
-rownames(DOM.path.cov.sum)<-DOM.path.cov.sum$SampleID
-DOM.path.cov.sum[1:4,]
-
-unique(dom.kegg$Pathway)
-names(DOM.path.cov.sum) # not all DOM pathways considered are found in contigs
-
-# then CLR transform
-# df must have rownames are SampleIDs, columns are ASV IDs for vegan functions below\
-DOM.path.clr<-decostand(DOM.path.cov.sum[,-1],method = "clr", pseudocount = 1) #CLR transformation
-DOM.path.clr[1:4,]
-
-# check rownames of CLR transformed ASV data & metadata
-rownames(DOM.path.clr) %in% rownames(meta_scaled)
-
-unique(DOM.cov.sum.m$Pathway)
-unique(dom.kegg$Pathway)
-
-head(DOM.cov.sum.m)
 
 ### DOM Heat Maps ####
 # see max & mean of summed
@@ -1126,36 +1045,6 @@ colnames(clr.carb.ko)[which(names(clr.carb.ko) == "KO_Function")] <- "KO_Functio
 clr.cov.sum.carb.ko<-as.data.frame(dcast(clr.carb.ko, SampleID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
 rownames(clr.cov.sum.carb.ko)<-clr.cov.sum.carb.ko$SampleID
 clr.cov.sum.carb.ko[1:4,1:4]
-
-#### Add Sum Coverage per KO per DOM Pathway - then CLR transform ####
-ko.cov.sum_table[1:4,1:4] # contains the sum of coverages per gene per KO -- featureCounts was normalized by gene length across samples first to get coverage, then summed up per KO ID
-ko.cov.sum.m<-melt(ko.cov.sum_table, by="SampleID")
-colnames(ko.cov.sum.m)[which(names(ko.cov.sum.m) == "variable")] <- "KO_ID"
-colnames(ko.cov.sum.m)[which(names(ko.cov.sum.m) == "value")] <- "SumCovPerKO"
-head(ko.cov.sum.m) #sanity check
-
-# count up gene coverage by KO, by Pathway
-carb.cov.sum.m<-merge(ko.cov.sum.m,carb.kegg,by.x=c("KO_ID"),by.y=c("KO_ID"))
-head(carb.cov.sum.m)
-carb.path.cov.sum<-as.data.frame(dcast(carb.cov.sum.m, SampleID~Pathway, value.var="SumCovPerKO", fun.aggregate=sum)) ###
-rownames(carb.path.cov.sum)<-carb.path.cov.sum$SampleID
-carb.path.cov.sum[1:4,]
-
-unique(carb.kegg$Pathway)
-names(carb.path.cov.sum) # not all DOM pathways considered are found in contigs
-
-# then CLR transform
-# df must have rownames are SampleIDs, columns are ASV IDs for vegan functions below\
-carb.path.clr<-decostand(carb.path.cov.sum[,-1],method = "clr", pseudocount = 1) #CLR transformation
-carb.path.clr[1:4,]
-
-# check rownames of CLR transformed ASV data & metadata
-rownames(carb.path.clr) %in% rownames(meta_scaled)
-
-unique(carb.cov.sum.m$Pathway)
-unique(carb.kegg$Pathway)
-
-head(carb.cov.sum.m)
 
 ### Carbon Heat Maps ####
 # see max & mean of summed
