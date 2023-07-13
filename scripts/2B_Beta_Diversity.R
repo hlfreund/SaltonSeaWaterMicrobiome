@@ -165,7 +165,7 @@ pnova1 # p-value = 0.000999
 
 ##one issue with adonis is that it doesn't do multiple comparisons *******
 # tells us that something is different, but what is different? Which sample/plot/location?
-## our four provinces differ, but do all of them differ,or just one?
+## our 3 dates differ, but do all of them differ,or just one?
 
 ##random person on the internet to the rescue!
 #install_github("pmartinezarbizu/pairwiseAdonis/pairwiseAdonis")
