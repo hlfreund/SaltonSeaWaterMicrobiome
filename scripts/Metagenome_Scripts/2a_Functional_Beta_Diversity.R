@@ -39,7 +39,7 @@ suppressPackageStartupMessages({ # load packages quietly
 
 #### Load Data & See Info About Data ####
 load("data/Metagenomes/Analysis/SSW_mgm_analysis.Rdata") # load Rdata to global env
-load("data/Metagenomes/Analysis/SSW_MGM_FxnBetaDiv.Rdata")
+#load("data/Metagenomes/Analysis/SSW_MGM_FxnBetaDiv.Rdata")
 
 head(meta_scaled)
 arsen.fxns[1:4,]
@@ -1065,10 +1065,20 @@ head(clr.carb.all)
 clr.carb.all$SampleID = factor(clr.carb.all$SampleID, levels=unique(clr.carb.all$SampleID[order(clr.carb.all$SampDate,clr.carb.all$Depth_m)]), ordered=TRUE)
 clr.carb.all$SampDate<-gsub("\\."," ",clr.carb.all$SampDate)
 clr.carb.all$SampDate<-factor(clr.carb.all$SampDate, levels=c("August 2021","December 2021","April 2022"))
+
 unique(clr.carb.all$Pathway)
 clr.carb.all<-subset(clr.carb.all, clr.carb.all$Pathway!="Multiple Pathways")
 "Multiple Pathways" %in% clr.carb.all$Pathway
-clr.carb.all$Pathway<-factor(clr.carb.all$Pathway,levels=c("3-Hydroxypropionate Bi-cycle","Reductive Citrate Cycle","Phosphate acetyltransferase-acetate kinase Pathway","Reductive acetyl-CoA Pathway"))
+clr.carb.all$PathShort<-clr.carb.all$Pathway
+clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Reductive Citrate Cycle"] <- "Red.Citrate"
+clr.carb.all$PathShort[(clr.carb.all$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3HOP BC"
+clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Phosphate acetyltransferase-acetate kinase Pathway"] <- "PAAK"
+clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Reductive acetyl-CoA Pathway"] <- "Red.a-CoA"
+clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Calvin Cycle"] <- "Calvin"
+
+clr.carb.all$Pathway<-factor(clr.carb.all$Pathway,levels=c("3-Hydroxypropionate Bi-cycle","Reductive Citrate Cycle","Phosphate acetyltransferase-acetate kinase Pathway","Reductive acetyl-CoA Pathway","Calvin Cycle"))
+clr.carb.all$PathShort<-factor(clr.carb.all$PathShort,levels=c("3HOP BC","Red.Citrate","PAAK","Red.a-CoA","Calvin"))
+
 clr.carb.all$KO_Function.KEGG = factor(clr.carb.all$KO_Function.KEGG, levels=unique(clr.carb.all$KO_Function.KEGG[order(clr.carb.all$Pathway)]), ordered=TRUE)
 
 head(clr.carb.all)
@@ -1089,7 +1099,7 @@ carb.hm1b<-ggplot(clr.carb.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovP
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~.,scales="free_y", space = "free")
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
 ggsave(carb.hm1b,filename = "figures/MGM_Figs/Carbon_KOFxns_MGMs_SampID_by_Function_Pathway_heatmap.png", width=17, height=20, dpi=600)
 
@@ -1099,7 +1109,7 @@ carb.hm1c<-ggplot(clr.carb.all, aes(interaction(SampDate,Depth_m), KO_Function.K
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~.,scales="free_y", space = "free")
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
 ggsave(carb.hm1c,filename = "figures/MGM_Figs/Carbon_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=20, dpi=600)
 
@@ -1119,7 +1129,7 @@ carb.hm1e<-ggplot(clr.carb.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPe
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~SampDate, scales="free", space = "free")
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
 
 ggsave(carb.hm1e,filename = "figures/MGM_Figs/Carbon_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=15, dpi=600)
 #
