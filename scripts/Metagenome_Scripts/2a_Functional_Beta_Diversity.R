@@ -476,16 +476,16 @@ clr.sulf.all$Pathway<-factor(clr.sulf.all$Pathway,levels=c("Assimilatory Sulfate
 clr.sulf.all$PathShort<-factor(clr.sulf.all$PathShort,levels=c("A.SO4 Red","D.SO4 RedOx","Multi Paths","SOX","S Disprop."))
 
 clr.sulf.all$PathSpecShort<-clr.sulf.all$PathwaySpecific
-clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Dissimilatory Sulfate Redox"] <- "D.SO4 RedOx"
-clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Assimilatory Sulfate Reduction"] <- "A.SO4 Red"
-clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Multiple Pathways"] <- "Multi Paths"
-clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Sulfur Disproportionation"] <- "S Disprop."
-clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Sulfide Oxidation"] <- "H2S Ox"
-clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Sulfite Oxidation"] <- "SO3 Ox"
-clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Thiosulfate Oxidation"] <- "S2O3 Ox"
+clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Dissimilatory Sulfate Redox"] <- "1"
+clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Assimilatory Sulfate Reduction"] <- "2"
+clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Multiple Pathways"] <- "3"
+clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Sulfur Disproportionation"] <- "4"
+clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Sulfide Oxidation"] <- "5"
+clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Sulfite Oxidation"] <- "6"
+clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Thiosulfate Oxidation"] <- "7"
 
 clr.sulf.all$PathwaySpecific<-factor(clr.sulf.all$PathwaySpecific,levels=c("Assimilatory Sulfate Reduction","Dissimilatory Sulfate Redox","Multiple Pathways","SOX","S Disproportionation","Sulfide Oxidation","Sulfite Oxidation","Thiosulfate Oxidation"))
-clr.sulf.all$PathSpecShort<-factor(clr.sulf.all$PathSpecShort,levels=c("A.SO4 Red","D.SO4 RedOx","Multi Paths","SOX","S Disprop.","H2S Ox","SO3 Ox","S2O3 Ox"))
+clr.sulf.all$PathSpecShort<-factor(clr.sulf.all$PathSpecShort,levels=c("1","2","3","4","5","6","7"))
 
 clr.sulf.all$KO_Function.KEGG = factor(clr.sulf.all$KO_Function.KEGG, levels=unique(clr.sulf.all$KO_Function.KEGG[order(clr.sulf.all$Pathway)]), ordered=TRUE)
 
