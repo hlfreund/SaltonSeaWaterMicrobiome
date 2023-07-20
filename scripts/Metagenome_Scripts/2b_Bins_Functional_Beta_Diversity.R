@@ -1,6 +1,6 @@
 #### Set WD & Load Libraries ####
 getwd() # use setwd("path/to/files") if you are not in the right directory
-setwd("/Volumes/HLF_SSD/Aronson_Lab_Data/Salton_Sea/SaltonSeaWater")
+#setwd("/Volumes/HLF_SSD/Aronson_Lab_Data/Salton_Sea/SaltonSeaWater")
 suppressPackageStartupMessages({ # load packages quietly
   library(phyloseq)
   library(ggplot2)
@@ -146,13 +146,14 @@ clr.sulf.ko.bin<-merge(sulf.ko.bin.melt,sulf.kegg,by.x=c("KO_ID"),by.y=c("KO_ID"
 head(clr.sulf.ko.bin)
 colnames(clr.sulf.ko.bin)[which(names(clr.sulf.ko.bin) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
 clr.cov.sum.sulf.ko.bin<-as.data.frame(dcast(clr.sulf.ko.bin, Bin_ID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###just dcast, nothing is being added here!
-rownames(clr.cov.sum.sulf.ko.bin)<-clr.cov.sum.sulf.ko.bin$SampleID
+rownames(clr.cov.sum.sulf.ko.bin)<-clr.cov.sum.sulf.ko.bin$Bin_ID
 clr.cov.sum.sulf.ko.bin[1:4,]
 
 # sanity check
 clr.cov.sum.sulf.ko.bin$`cysH; phosphoadenosine phosphosulfate reductase [EC:1.8.4.8 1.8.4.10]`[1:4]
 head(clr.sulf.ko.bin)
-#### Add Sum Coverage per KO per S Pathway - then CLR transform ####
+
+#### Pull Out Specific Genes by S Pathways ####
 bin.ko.cov.sum_table[1:4,1:4] # contains the sum of coverages per gene per KO -- featureCounts was normalized by gene length across samples first to get coverage, then summed up per KO ID
 
 ## pull out all KOs in each Pathway
@@ -181,7 +182,7 @@ colSums(clr.cov.sum.sulf.ko.bin[,-1])
 heatmap(as.matrix(clr.cov.sum.sulf.ko.bin[,-1]), scale = "none")
 
 # prep for ggplot2 heatmap
-clr.sulf.ko.bin[1:4,]
+head(clr.sulf.ko.bin)
 clr.sulf.all.bin1<-merge(clr.sulf.ko.bin,bin_meta_scaled,by="Bin_ID")
 clr.sulf.all.bin<-merge(clr.sulf.all.bin1,mag_tax,by="Bin_ID")
 
@@ -211,11 +212,14 @@ clr.sulf.all.bin$PathSpecShort[(clr.sulf.all.bin$PathSpecShort) == "Thiosulfate 
 clr.sulf.all.bin$PathwaySpecific<-factor(clr.sulf.all.bin$PathwaySpecific,levels=c("Assimilatory Sulfate Reduction","Dissimilatory Sulfate Redox","Multiple Pathways","SOX","S Disproportionation","Sulfide Oxidation","Sulfite Oxidation","Thiosulfate Oxidation"))
 clr.sulf.all.bin$PathSpecShort<-factor(clr.sulf.all.bin$PathSpecShort,levels=c("1","2","3","4","5","6","7"))
 
-# get range for heatmap
-max(clr.sulf.ko.bin$CLR_SumCovPerKO)
-min(clr.sulf.ko.bin$CLR_SumCovPerKO)
-
 head(clr.sulf.all.bin)
+
+# For heatmap color gradient
+max(clr.sulf.all.bin$CLR_SumCovPerKO)
+max(clr.sulf.all.bin$CLR_SumCovPerKO)/2
+min(clr.sulf.all.bin$CLR_SumCovPerKO)
+
+# Figures
 
 sulf.hm1a<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -225,7 +229,7 @@ sulf.hm1a<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumC
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
-ggsave(sulf.hm1a,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_SampID_by_Function_heatmap.png", width=20, height=13, dpi=600)
+ggsave(sulf.hm1a,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_heatmap.png", width=20, height=13, dpi=600)
 
 sulf.hm1a2<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -235,7 +239,7 @@ sulf.hm1a2<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_Sum
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(SampDate~.,scales="free_y", space = "free")
 
-ggsave(sulf.hm1a2,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_SampID_by_Function_heatmap2.png", width=17, height=15, dpi=600)
+ggsave(sulf.hm1a2,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_heatmap2.png", width=17, height=15, dpi=600)
 
 sulf.hm1b<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -245,7 +249,7 @@ sulf.hm1b<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumC
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~.,scales="free_y", space = "free")
 
-ggsave(sulf.hm1b,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_SampID_by_Function_Pathway_heatmap.png", width=20, height=15, dpi=600)
+ggsave(sulf.hm1b,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_Pathway_heatmap.png", width=20, height=15, dpi=600)
 
 sulf.hm1b2<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -255,7 +259,7 @@ sulf.hm1b2<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_Sum
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(sulf.hm1b2,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_SampID_by_Function_Pathway_heatmap2.png", width=17, height=15, dpi=600)
+ggsave(sulf.hm1b2,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_Pathway_heatmap2.png", width=17, height=15, dpi=600)
 
 sulf.hm1b3<-ggplot(clr.sulf.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -265,77 +269,77 @@ sulf.hm1b3<-ggplot(clr.sulf.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCo
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(sulf.hm1b3,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_Genus_by_Function_Pathway_heatmap.png", width=17, height=15, dpi=600)
+ggsave(sulf.hm1b3,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_Genus_by_Function_Pathway_heatmap.png", width=17, height=15, dpi=600)
 
 sulf.hm1c<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathwaySpecific~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1c,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_SampID_by_Function_SampDate_PathwaySpecific_best_heatmap.png", width=20, height=20, dpi=600)
+ggsave(sulf.hm1c,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_SampDate_PathwaySpecific_best_heatmap.png", width=20, height=20, dpi=600)
 
 sulf.hm1c2<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathSpecShort~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1c2,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_SampID_by_Function_SampDate_PathwaySpecific_best_heatmap2.png", width=20, height=20, dpi=600)
+ggsave(sulf.hm1c2,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_SampDate_PathwaySpecific_best_heatmap2.png", width=20, height=20, dpi=600)
 
 sulf.hm1c3<-ggplot(clr.sulf.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathwaySpecific~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1c3,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_Genus_by_Function_SampDate_PathwaySpecific_best_heatmap.png", width=20, height=20, dpi=600)
+ggsave(sulf.hm1c3,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_Genus_by_Function_SampDate_PathwaySpecific_best_heatmap.png", width=20, height=20, dpi=600)
 
 sulf.hm1c4<-ggplot(clr.sulf.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathSpecShort~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1c4,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_Genus_by_Function_SampDate_PathwaySpecific_best_heatmap2.png", width=20, height=20, dpi=600)
+ggsave(sulf.hm1c4,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_Genus_by_Function_SampDate_PathwaySpecific_best_heatmap2.png", width=20, height=20, dpi=600)
 
 sulf.hm1d2<-ggplot(clr.sulf.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathwaySpecific~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1d2,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap.png", width=20, height=20, dpi=600)
+ggsave(sulf.hm1d2,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap.png", width=20, height=20, dpi=600)
 
 sulf.hm1d2a<-ggplot(clr.sulf.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathSpecShort~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1d2a,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap2.png", width=20, height=20, dpi=600)
+ggsave(sulf.hm1d2a,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap2.png", width=20, height=20, dpi=600)
 
 # sulf.hm1c<-ggplot(clr.sulf.all.bin, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~.,scales="free_y", space = "free")
 #
-# ggsave(sulf.hm1c,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=18, dpi=600)
+# ggsave(sulf.hm1c,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=18, dpi=600)
 
 sulf.hm1d<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -345,7 +349,7 @@ sulf.hm1d<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumC
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
 
-ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=15, dpi=600)
+ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=15, dpi=600)
 
 # sulf.hm1e<-ggplot(clr.sulf.all.bin, aes(Bin_ID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -355,57 +359,57 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_D
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~SampDate,scales="free_x", space = "free")
 #
-# ggsave(sulf.hm1e,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
+# ggsave(sulf.hm1e,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
 
 # sulf.hm1f<-ggplot(clr.sulf.all.bin, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Depth_m~SampDate,scales="free", space = "free")
 #
-# ggsave(sulf.hm1f,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_heatmap1d.png", width=18, height=18, dpi=600)
+# ggsave(sulf.hm1f,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_heatmap1d.png", width=18, height=18, dpi=600)
 #
 # sulf.hm1g<-ggplot(clr.sulf.all.bin, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_wrap(.~SampDate)
 #
-# ggsave(sulf.hm1g,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_heatmap1d.png", width=18, height=18, dpi=600)
+# ggsave(sulf.hm1g,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_heatmap1d.png", width=18, height=18, dpi=600)
 
 # sulf.hm1e<-ggplot(clr.sulf.all.bin[clr.sulf.all.bin$Depth_m==0,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 #
-# ggsave(sulf.hm1e,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_Pathways_MGMs_Bins_0m_heatmap.png", width=18, height=18, dpi=600)
+# ggsave(sulf.hm1e,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_Pathways_MGMs_Bins_0m_heatmap.png", width=18, height=18, dpi=600)
 #
 # sulf.hm1f<-ggplot(clr.sulf.all.bin[clr.sulf.all.bin$Depth_m==5,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 #
-# ggsave(sulf.hm1f,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_Pathways_MGMs_Bins_5m_heatmap.png", width=18, height=18, dpi=600)
+# ggsave(sulf.hm1f,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_Pathways_MGMs_Bins_5m_heatmap.png", width=18, height=18, dpi=600)
 #
 # sulf.hm1g<-ggplot(clr.sulf.all.bin[clr.sulf.all.bin$Depth_m==10,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 #
-# ggsave(sulf.hm1g,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_Pathways_MGMs_Bins_10m_heatmap.png", width=18, height=18, dpi=600)
+# ggsave(sulf.hm1g,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_Pathways_MGMs_Bins_10m_heatmap.png", width=18, height=18, dpi=600)
 # #
 # # pull out specific S functions
 # ## first, SOX
@@ -417,13 +421,13 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_D
 #
 # s.sox.hm<-ggplot(clr.Sox, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25)  +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="SOX Functions in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO, Grouped by Bin Assigment",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="SOX Functions in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO, Grouped by Bin Assigment",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=15),
 #         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
 #
-# ggsave(s.sox.hm,filename = "figures/MGM_Figs/BinsOnly/SSW_S_SOX_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
+# ggsave(s.sox.hm,filename = "figures/MGM_Figs/BinsOnly/Sulfur/SSW_S_SOX_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
 #
 # # Assimilatory sulfate reduction
 # clr.as.S.redox<-clr.sulf.all.bin[grepl('1.8.7.1|1.8.1.2|2.7.7.4|1.8.4.10|1.8.4.8|2.7.1.25', clr.sulf.all.bin$KO_Function),] # pull out just assimilatory sulfate reduction functions
@@ -434,13 +438,13 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_D
 #
 # s.R.hm1<-ggplot(clr.as.S.redox, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25)  +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Assimilatory Sulfuate Reduction in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO, Grouped by Bin Assigment",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Assimilatory Sulfuate Reduction in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO, Grouped by Bin Assigment",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=15),
 #         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
 #
-# ggsave(s.R.hm1,filename = "figures/MGM_Figs/BinsOnly/SSW_S_AssSO4_Reduction_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
+# ggsave(s.R.hm1,filename = "figures/MGM_Figs/BinsOnly/Sulfur/SSW_S_AssSO4_Reduction_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
 #
 # # Dissimilatory sulfate reduction and oxidation
 # clr.dis.S.redox<-clr.sulf.all.bin[grepl('1.8.99.2|1.8.99.5|2.7.7.4', clr.sulf.all.bin$KO_Function),] # pull out just Sox functions
@@ -451,13 +455,345 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/Sulfur_KOFxns_MGMs_Bins_D
 #
 # s.RO.hm1<-ggplot(clr.dis.S.redox, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25)  +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Dissimilarity Sulfuate RedOx in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO, Grouped by Bin Assigment",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Dissimilarity Sulfuate RedOx in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO, Grouped by Bin Assigment",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=15),
 #         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
 #
-# ggsave(s.RO.hm1,filename = "figures/MGM_Figs/BinsOnly/SSW_S_DissSO4_RedOx_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
+# ggsave(s.RO.hm1,filename = "figures/MGM_Figs/BinsOnly/Sulfur/SSW_S_DissSO4_RedOx_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
+
+#### Pull Out Nitrogen Metabolic Fxns from CLR data ####
+## heatmaps of traits of interest
+
+bin.clr[1:4,1:4]
+
+# pull out nitro functions from CLR transformed, summed coverages (summed coverage per KO)
+nitro.ko.bin<-bin.clr[,which(colnames(bin.clr) %in% nitro.fxns.bins$KO_ID)] # merge CLR data w/ S fxns found in contigs from KOFamScan
+nitro.ko.bin$Bin_ID<-rownames(nitro.ko.bin)
+nitro.ko.bin.melt<-melt(nitro.ko.bin, by="Bin_ID")
+colnames(nitro.ko.bin.melt)[which(names(nitro.ko.bin.melt) == "variable")] <- "KO_ID"
+colnames(nitro.ko.bin.melt)[which(names(nitro.ko.bin.melt) == "value")] <- "CLR_SumCovPerKO"
+head(nitro.ko.bin.melt) #sanity check
+
+clr.nitro.ko.bin<-merge(nitro.ko.bin.melt,nitro.kegg,by.x=c("KO_ID"),by.y=c("KO_ID")) # merge data w/ KO assignments from KEGG db
+head(clr.nitro.ko.bin)
+colnames(clr.nitro.ko.bin)[which(names(clr.nitro.ko.bin) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
+clr.cov.sum.nitro.ko.bin<-as.data.frame(dcast(clr.nitro.ko.bin, Bin_ID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###just dcast, nothing is being added here!
+rownames(clr.cov.sum.nitro.ko.bin)<-clr.cov.sum.nitro.ko.bin$Bin_ID
+clr.cov.sum.nitro.ko.bin[1:4,]
+
+# sanity check
+clr.cov.sum.nitro.ko.bin$`nirK; nitrite reductase (NO-forming) [EC:1.7.2.1]`[1:4]
+head(clr.nitro.ko.bin)
+
+### Nitrogen Heat Maps ####
+# see max & mean of summed
+max(clr.cov.sum.nitro.ko.bin[,-1])
+mean(as.matrix(clr.cov.sum.nitro.ko.bin[,-1]))
+
+# first heat map of nitro KOs
+heatmap(as.matrix(clr.cov.sum.nitro.ko.bin[,-1]), scale = "none")
+
+colSums(clr.cov.sum.nitro.ko.bin[,-1])
+#clr.cov.sum.nitro.ko.bin2 <- clr.cov.sum.nitro.ko.bin[,which(colSums(clr.cov.sum.nitro.ko.bin[,-1])>10)]
+
+heatmap(as.matrix(clr.cov.sum.nitro.ko.bin[,-1]), scale = "none")
+
+# prep for ggplot2 heatmap
+clr.nitro.ko.bin[1:4,]
+
+clr.nitro.all.bin1<-merge(clr.nitro.ko.bin,bin_meta_scaled,by="Bin_ID")
+clr.nitro.all.bin<-merge(clr.nitro.all.bin1,mag_tax,by="Bin_ID")
+
+head(clr.sulf.all.bin)
+clr.nitro.all.bin$PlotBin = factor(clr.nitro.all.bin$PlotBin, levels=unique(clr.nitro.all.bin$PlotBin[order(clr.nitro.all.bin$SampDate,clr.nitro.all.bin$Depth_m)]), ordered=TRUE)
+clr.nitro.all.bin$SampDate<-gsub("\\."," ",clr.nitro.all.bin$SampDate)
+clr.nitro.all.bin$SampDate<-factor(clr.nitro.all.bin$SampDate, levels=c("August 2021","December 2021","April 2022"))
+clr.nitro.all.bin$KO_Function.KEGG = factor(clr.nitro.all.bin$KO_Function.KEGG, levels=unique(clr.nitro.all.bin$KO_Function.KEGG[order(clr.nitro.all.bin$Pathway)]), ordered=TRUE)
+
+# create shortened name for pathways
+clr.nitro.all.bin$PathShort<-clr.nitro.all.bin$Pathway
+# vvv can only do this type of renaming if variables are characters, not factors
+clr.nitro.all.bin$PathShort[(clr.nitro.all.bin$PathShort) == "Dissimilatory Nitrate Reduction"] <- "D. NO3 Red"
+clr.nitro.all.bin$PathShort[(clr.nitro.all.bin$PathShort) == "Assimilatory Nitrate Reduction"] <- "A. NO3 Red"
+
+# turn pathways & pathshort into factors
+clr.nitro.all.bin$Pathway<-factor(clr.nitro.all.bin$Pathway,levels=c("Assimilatory Nitrate Reduction","Dissimilatory Nitrate Reduction","Multiple Pathways","Denitrification","Anammox"))
+clr.nitro.all.bin$PathShort<-factor(clr.nitro.all.bin$PathShort,levels=c("A. NO3 Red","D. NO3 Red","Multiple Pathways","Denitrification","Anammox"))
+
+head(clr.nitro.all.bin)
+
+# for heatmap color gradient
+max(clr.nitro.all.bin$CLR_SumCovPerKO)
+max(clr.nitro.all.bin$CLR_SumCovPerKO)/2
+min(clr.nitro.all.bin$CLR_SumCovPerKO)
+
+# Figures
+nitro.hm1a<-ggplot(clr.nitro.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
+
+ggsave(nitro.hm1a,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_MGMs_BinID_by_Function_heatmap.png", width=18, height=13, dpi=600)
+
+nitro.hm1b<-ggplot(clr.nitro.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.15) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+
+ggsave(nitro.hm1b,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_MGMs_BinID_by_Function_Pathway_heatmap.png", width=17, height=15, dpi=600)
+
+# nitro.hm1c<-ggplot(clr.nitro.all.bin, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+#   geom_tile(colour="white",size=0.25) +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+#
+# ggsave(nitro.hm1c,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=18, dpi=600)
+
+nitro.hm1d<-ggplot(clr.nitro.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
+
+ggsave(nitro.hm1d,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
+
+nitro.hm1e<-ggplot(clr.nitro.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
+
+ggsave(nitro.hm1e,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=15, dpi=600)
+#
+# nitro.hm1f<-ggplot(clr.nitro.all.bin, aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+#   geom_tile(colour="white",size=0.25) +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Depth_m~SampDate,scales="free", space = "free")
+#
+# ggsave(nitro.hm1f,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+#
+# nitro.hm1g<-ggplot(clr.nitro.all.bin, aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+#   geom_tile(colour="white",size=0.25) +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_wrap(.~SampDate)
+#
+# ggsave(nitro.hm1g,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+
+nitro.hm1e<-ggplot(clr.nitro.all.bin[clr.nitro.all.bin$Depth_m==0,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
+
+ggsave(nitro.hm1e,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_Pathways_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
+
+nitro.hm1f<-ggplot(clr.nitro.all.bin[clr.nitro.all.bin$Depth_m==5,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
+
+ggsave(nitro.hm1f,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_Pathways_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
+
+nitro.hm1g<-ggplot(clr.nitro.all.bin[clr.nitro.all.bin$Depth_m==10,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
+
+ggsave(nitro.hm1g,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_Pathways_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
+
+#### Pull Out Carbon Metabolic Fxns from CLR data ####
+## heatmaps of traits of interest
+
+bin.clr[1:4,1:4]
+
+# pull out Carbon metabolism functions from CLR transformed, summed coverages (summed coverage per KO)
+carb.ko.bin<-bin.clr[,which(colnames(bin.clr) %in% carb.fxns.bins$KO_ID)] # merge CLR data w/ carbon-related fxns found in contigs from KOFamScan
+carb.ko.bin$Bin_ID<-rownames(carb.ko.bin)
+carb.ko.bin.melt<-melt(carb.ko.bin, by="Bin_ID")
+colnames(carb.ko.bin.melt)[which(names(carb.ko.bin.melt) == "variable")] <- "KO_ID"
+colnames(carb.ko.bin.melt)[which(names(carb.ko.bin.melt) == "value")] <- "CLR_SumCovPerKO"
+head(carb.ko.bin.melt) #sanity check
+
+clr.carb.ko.bin<-merge(carb.ko.bin.melt,carb.kegg,by.x=c("KO_ID"),by.y=c("KO_ID"))
+head(clr.carb.ko.bin)
+colnames(clr.carb.ko.bin)[which(names(clr.carb.ko.bin) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
+clr.cov.sum.carb.ko.bin<-as.data.frame(dcast(clr.carb.ko.bin, Bin_ID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
+rownames(clr.cov.sum.carb.ko.bin)<-clr.cov.sum.carb.ko.bin$Bin_ID
+clr.cov.sum.carb.ko.bin[1:4,1:4]
+
+### Carbon Heat Maps ####
+# see max & mean of summed
+max(clr.cov.sum.carb.ko.bin[,-1])
+mean(as.matrix(clr.cov.sum.carb.ko.bin[,-1]))
+
+# first heat map of sulfur KOs
+heatmap(as.matrix(clr.cov.sum.carb.ko.bin[,-1]), scale = "none")
+
+colSums(clr.cov.sum.carb.ko.bin[,-1])
+
+heatmap(as.matrix(clr.cov.sum.carb.ko.bin[,-1]), scale = "none")
+
+# prep for ggplot2 heatmap
+clr.carb.ko.bin[1:4,]
+clr.carb.all.bin1<-merge(clr.carb.ko.bin,bin_meta_scaled,by="Bin_ID")
+clr.carb.all.bin<-merge(clr.carb.all.bin1,mag_tax,by="Bin_ID")
+
+head(clr.sulf.all.bin)
+clr.carb.all.bin$PlotBin = factor(clr.carb.all.bin$PlotBin, levels=unique(clr.carb.all.bin$PlotBin[order(clr.carb.all.bin$SampDate,clr.carb.all.bin$Depth_m)]), ordered=TRUE)
+clr.carb.all.bin$SampDate<-gsub("\\."," ",clr.carb.all.bin$SampDate)
+clr.carb.all.bin$SampDate<-factor(clr.carb.all.bin$SampDate, levels=c("August 2021","December 2021","April 2022"))
+
+unique(clr.carb.all.bin$Pathway)
+clr.carb.all.bin<-subset(clr.carb.all.bin, clr.carb.all.bin$Pathway!="Multiple Pathways")
+"Multiple Pathways" %in% clr.carb.all.bin$Pathway
+clr.carb.all.bin$PathShort<-clr.carb.all.bin$Pathway
+clr.carb.all.bin$PathShort[(clr.carb.all.bin$PathShort) == "Reductive Citrate Cycle"] <- "Red.Citrate"
+clr.carb.all.bin$PathShort[(clr.carb.all.bin$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3HOP BC"
+clr.carb.all.bin$PathShort[(clr.carb.all.bin$PathShort) == "Phosphate acetyltransferase-acetate kinase Pathway"] <- "PAAK"
+clr.carb.all.bin$PathShort[(clr.carb.all.bin$PathShort) == "Reductive acetyl-CoA Pathway"] <- "Red.a-CoA"
+clr.carb.all.bin$PathShort[(clr.carb.all.bin$PathShort) == "Calvin Cycle"] <- "Calvin"
+
+clr.carb.all.bin$Pathway<-factor(clr.carb.all.bin$Pathway,levels=c("3-Hydroxypropionate Bi-cycle","Reductive Citrate Cycle","Phosphate acetyltransferase-acetate kinase Pathway","Reductive acetyl-CoA Pathway","Calvin Cycle"))
+clr.carb.all.bin$PathShort<-factor(clr.carb.all.bin$PathShort,levels=c("3HOP BC","Red.Citrate","PAAK","Red.a-CoA","Calvin"))
+
+clr.carb.all.bin$KO_Function.KEGG = factor(clr.carb.all.bin$KO_Function.KEGG, levels=unique(clr.carb.all.bin$KO_Function.KEGG[order(clr.carb.all.bin$Pathway)]), ordered=TRUE)
+
+head(clr.carb.all.bin)
+
+# For heatmap color gradient
+max(clr.carb.all.bin$CLR_SumCovPerKO)
+max(clr.carb.all.bin$CLR_SumCovPerKO)/2
+min(clr.carb.all.bin$CLR_SumCovPerKO)
+
+# Figures
+carb.hm1a<-ggplot(clr.carb.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
+
+ggsave(carb.hm1a,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_MGMs_BinID_by_Function_heatmap.png", width=18, height=13, dpi=600)
+
+carb.hm1b<-ggplot(clr.carb.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.15) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+
+ggsave(carb.hm1b,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_MGMs_BinID_by_Function_Pathway_heatmap.png", width=17, height=20, dpi=600)
+
+carb.hm1c<-ggplot(clr.carb.all.bin, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+
+ggsave(carb.hm1c,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=20, height=20, dpi=600)
+
+carb.hm1d<-ggplot(clr.carb.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
+
+ggsave(carb.hm1d,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=18, dpi=600)
+
+carb.hm1e<-ggplot(clr.carb.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
+
+ggsave(carb.hm1e,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=18, dpi=600)
+#
+# carb.hm1f<-ggplot(clr.carb.all.bin, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+#   geom_tile(colour="white",size=0.25) +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Depth_m~SampDate,scales="free", space = "free")
+#
+# ggsave(carb.hm1f,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+#
+# carb.hm1g<-ggplot(clr.carb.all.bin, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+#   geom_tile(colour="white",size=0.25) +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_wrap(.~SampDate)
+#
+# ggsave(carb.hm1g,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+
+carb.hm1e<-ggplot(clr.carb.all.bin[clr.carb.all.bin$Depth_m==0,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
+
+ggsave(carb.hm1e,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_Pathways_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
+
+carb.hm1f<-ggplot(clr.carb.all.bin[clr.carb.all.bin$Depth_m==5,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
+
+ggsave(carb.hm1f,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_Pathways_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
+
+carb.hm1g<-ggplot(clr.carb.all.bin[clr.carb.all.bin$Depth_m==10,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
+
+ggsave(carb.hm1g,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_Pathways_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
 
 #### Homogeneity of Variance (CLR data only)- Composition by Groups ####
 ## betadisper to look at homogeneity of group dispersions (aka variance) when considering multiple variables
