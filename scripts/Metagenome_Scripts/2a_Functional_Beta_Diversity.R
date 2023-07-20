@@ -1573,7 +1573,7 @@ Tuk1$SampDate
 fligner.test(`soxC; sulfane dehydrogenase subunit SoxC` ~ SampDate, data = clr.sulf.ko.meta)
 # Fligner-Killeen:med chi-squared = 1.1963, df = 7, p-value = 0.991
 # Which shows that the data do not deviate significantly from homogeneity.
-compare_means(`soxC; sulfane dehydrogenase subunit SoxC` ~ SampDate, data=clr.sulf.ko.meta, method="anova",p.adjust.method = "bonferroni") # won't take as.factor(Elevation) as input
+#compare_means(`soxC; sulfane dehydrogenase subunit SoxC` ~ SampDate, data=clr.sulf.ko.meta, method="anova",p.adjust.method = "bonferroni") # won't take as.factor(Elevation) as input
 
 #### DOM Metabolism PCoA ####
 ## PCOA with CLR transformed data first
