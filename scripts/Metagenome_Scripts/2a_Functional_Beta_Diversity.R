@@ -129,7 +129,7 @@ pcoa3<-ggplot(mgm.pcoa.mr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=f
   scale_color_manual(name ="Sample Date",values=unique(mgm.pcoa.mr.meta$SampDate_Color[order(mgm.pcoa.mr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [33.04%]") + ylab("PC2 [29.24%]")
 
-ggsave(pcoa3,filename = "figures/MGM_Figs/SSW_MGM_pcoa_MR_sampdate.png", width=12, height=10, dpi=600)
+ggsave(pcoa3,filename = "figures/MGM_Figs/FunctionalDiv/SSW_MGM_pcoa_MR_sampdate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
 pcoa4<-ggplot(mgm.pcoa.mr.meta, aes(x=Axis.1, y=Axis.2)) +
@@ -139,7 +139,7 @@ pcoa4<-ggplot(mgm.pcoa.mr.meta, aes(x=Axis.1, y=Axis.2)) +
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("PC1 [33.04%]") + ylab("PC2 [29.24%]")
 
-ggsave(pcoa4,filename = "figures/MGM_Figs/SSW_MGM_pcoa_MR.traits_depth.png", width=12, height=10, dpi=600)
+ggsave(pcoa4,filename = "figures/MGM_Figs/FunctionalDiv/SSW_MGM_pcoa_MR.traits_depth.png", width=12, height=10, dpi=600)
 
 ## betadisper to look at homogeneity of group dispersions (aka variance) when considering multiple variables
 # multivariate analogue to Levene's test of homogeneity of variances
@@ -176,11 +176,11 @@ TukeyHSD(mgm.disper1) # tells us which Sample Dates/category's dispersion MEANS 
 #April.2022-December.2021    5.327857 -115.4751 126.13081 0.9987814
 
 # Visualize dispersions
-png('figures/MGM_Figs/SSW_MGM_pcoa_MR_betadispersion_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/SSW_MGM_pcoa_MR_betadispersion_sampledate.png',width = 700, height = 600, res=100)
 plot(mgm.disper1,main = "Centroids and Dispersion (Median-Ratio Data)", col=colorset1$SampDate_Color)
 dev.off()
 
-png('figures/MGM_Figs/SSW_MGM_boxplot_MR_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/SSW_MGM_boxplot_MR_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
 boxplot(mgm.disper1,xlab="Sample Collection Date", main = "Distance to Centroid by Category (Median-Ratio Data)", sub="Euclidean Distance of Median-Ratio Transformed Data", col=colorset1$SampDate_Color)
 dev.off()
 
@@ -202,11 +202,11 @@ colfunc <- colorRampPalette(c("red", "blue"))
 colfunc(3)
 
 # Visualize dispersions
-png('figures/MGM_Figs/ssw_mgm_pcoa_MR_betadispersion_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/ssw_mgm_pcoa_MR_betadispersion_depth.png',width = 700, height = 600, res=100)
 plot(mgm.disper2,main = "Centroids and Dispersion (Median-Ratio Data)", col=colfunc(3))
 dev.off()
 
-png('figures/MGM_Figs/ssw_mgm_boxplot_MR_centroid_distance_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/ssw_mgm_boxplot_MR_centroid_distance_depth.png',width = 700, height = 600, res=100)
 boxplot(mgm.disper2,xlab="Sample Collection Depth", main = "Distance to Centroid by Category (Median-Ratio Data)", sub="Euclidean Distance of Median-Ratio Transformed Data", col=colfunc(3))
 dev.off()
 
@@ -262,7 +262,7 @@ pcoa3<-ggplot(mgm.pcoa.vst.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=
   scale_color_manual(name ="Sample Date",values=unique(mgm.pcoa.vst.meta$SampDate_Color[order(mgm.pcoa.vst.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [25.06%]") + ylab("PC2 [21.98%]")
 
-ggsave(pcoa3,filename = "figures/MGM_Figs/SSW_MGM_pcoa_VST_sampdate.png", width=12, height=10, dpi=600)
+ggsave(pcoa3,filename = "figures/MGM_Figs/FunctionalDiv/SSW_MGM_pcoa_VST_sampdate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
 pcoa4<-ggplot(mgm.pcoa.vst.meta, aes(x=Axis.1, y=Axis.2)) +
@@ -272,7 +272,7 @@ pcoa4<-ggplot(mgm.pcoa.vst.meta, aes(x=Axis.1, y=Axis.2)) +
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("PC1 [25.06%]") + ylab("PC2 [21.98%]")
 
-ggsave(pcoa4,filename = "figures/MGM_Figs/SSW_MGM_pcoa_VST.traits_depth.png", width=12, height=10, dpi=600)
+ggsave(pcoa4,filename = "figures/MGM_Figs/FunctionalDiv/SSW_MGM_pcoa_VST.traits_depth.png", width=12, height=10, dpi=600)
 
 ## betadisper to look at within group variance
 
@@ -302,11 +302,11 @@ TukeyHSD(mgm.disper3) # tells us which Sample Dates/category's dispersion MEANS 
 #April.2022-December.2021  -0.23133564 -1.0501572 0.5874859 0.7879737
 
 # Visualize dispersions
-png('figures/MGM_Figs/SSW_MGM_pcoa_vst_betadispersion_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/SSW_MGM_pcoa_vst_betadispersion_sampledate.png',width = 700, height = 600, res=100)
 plot(mgm.disper3,main = "Centroids and Dispersion (VST Data)", col=colorset1$SampDate_Color)
 dev.off()
 
-png('figures/MGM_Figs/SSW_MGM_boxplot_vst_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/SSW_MGM_boxplot_vst_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
 boxplot(mgm.disper3,xlab="Sample Collection Date", main = "Distance to Centroid by Category (VST Data)", sub="Euclidean Distance of VST Data", col=colorset1$SampDate_Color)
 dev.off()
 
@@ -328,11 +328,11 @@ colfunc <- colorRampPalette(c("red", "blue"))
 colfunc(3)
 
 # Visualize dispersions
-png('figures/MGM_Figs/ssw_mgm_pcoa_VST_betadispersion_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/ssw_mgm_pcoa_VST_betadispersion_depth.png',width = 700, height = 600, res=100)
 plot(mgm.disper2,main = "Centroids and Dispersion (VST Data)", col=colfunc(3))
 dev.off()
 
-png('figures/MGM_Figs/ssw_mgm_boxplot_VST_centroid_distance_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/ssw_mgm_boxplot_VST_centroid_distance_depth.png',width = 700, height = 600, res=100)
 boxplot(mgm.disper2,xlab="Sample Collection Depth", main = "Distance to Centroid by Category (VST Data)", sub="Euclidean Distance of VST Data", col=colfunc(3))
 dev.off()
 
@@ -387,7 +387,7 @@ pcoa5<-ggplot(mgm.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=
   scale_color_manual(name ="Sample Date",values=unique(mgm.pcoa.clr.meta$SampDate_Color[order(mgm.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [34.06%]") + ylab("PC2 [22.48%]")
 
-ggsave(pcoa5,filename = "figures/MGM_Figs/SSW_MGM_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
+ggsave(pcoa5,filename = "figures/MGM_Figs/FunctionalDiv/SSW_MGM_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
 pcoa6<-ggplot(mgm.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
@@ -397,7 +397,7 @@ pcoa6<-ggplot(mgm.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("PC1 [34.06%]") + ylab("PC2 [22.48%]")
 
-ggsave(pcoa6,filename = "figures/MGM_Figs/SSW_MGM_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
+ggsave(pcoa6,filename = "figures/MGM_Figs/FunctionalDiv/SSW_MGM_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
 
 #### Pull Out Sulfur Metabolic Fxns from CLR data ####
 ## heatmaps of traits of interest
@@ -499,7 +499,7 @@ sulf.hm1a<-ggplot(clr.sulf.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovP
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
-ggsave(sulf.hm1a,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_SampID_by_Function_heatmap.png", width=18, height=13, dpi=600)
+ggsave(sulf.hm1a,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/Sulfur_KOFxns_MGMs_SampID_by_Function_heatmap.png", width=18, height=13, dpi=600)
 
 sulf.hm1b<-ggplot(clr.sulf.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -509,7 +509,7 @@ sulf.hm1b<-ggplot(clr.sulf.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovP
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~.,scales="free_y", space = "free")
 
-ggsave(sulf.hm1b,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_SampID_by_Function_Pathway_heatmap.png", width=17, height=15, dpi=600)
+ggsave(sulf.hm1b,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/Sulfur_KOFxns_MGMs_SampID_by_Function_Pathway_heatmap.png", width=17, height=15, dpi=600)
 
 sulf.hm1b2<-ggplot(clr.sulf.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -519,7 +519,7 @@ sulf.hm1b2<-ggplot(clr.sulf.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCov
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(sulf.hm1b2,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_SampID_by_Function_Pathway_heatmap2.png", width=17, height=15, dpi=600)
+ggsave(sulf.hm1b2,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/Sulfur_KOFxns_MGMs_SampID_by_Function_Pathway_heatmap2.png", width=17, height=15, dpi=600)
 
 sulf.hm1c<-ggplot(clr.sulf.all, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -529,7 +529,7 @@ sulf.hm1c<-ggplot(clr.sulf.all, aes(interaction(SampDate,Depth_m), KO_Function.K
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~.,scales="free_y", space = "free")
 
-ggsave(sulf.hm1c,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=18, dpi=600)
+ggsave(sulf.hm1c,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/Sulfur_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=18, dpi=600)
 
 sulf.hm1c2<-ggplot(clr.sulf.all, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -539,7 +539,7 @@ sulf.hm1c2<-ggplot(clr.sulf.all, aes(interaction(SampDate,Depth_m), KO_Function.
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(sulf.hm1c2,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap2.png", width=15, height=18, dpi=600)
+ggsave(sulf.hm1c2,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/Sulfur_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap2.png", width=15, height=18, dpi=600)
 
 sulf.hm1d<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -549,7 +549,7 @@ sulf.hm1d<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPe
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
 
-ggsave(sulf.hm1d,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
+ggsave(sulf.hm1d,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
 
 sulf.hm1e<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -559,7 +559,7 @@ sulf.hm1e<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPe
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1e,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=15, dpi=600)
+ggsave(sulf.hm1e,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=15, dpi=600)
 
 sulf.hm1e2<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -569,7 +569,7 @@ sulf.hm1e2<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovP
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1e2,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap2.png", width=20, height=15, dpi=600)
+ggsave(sulf.hm1e2,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap2.png", width=20, height=15, dpi=600)
 
 sulf.hm1e3<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -579,7 +579,7 @@ sulf.hm1e3<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovP
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathwaySpecific~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1e3,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap.png", width=20, height=20, dpi=600)
+ggsave(sulf.hm1e3,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap.png", width=20, height=20, dpi=600)
 
 sulf.hm1e3a<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -589,7 +589,7 @@ sulf.hm1e3a<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCov
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathSpecShort~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1e3a,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap2.png", width=20, height=20, dpi=600)
+ggsave(sulf.hm1e3a,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap2.png", width=20, height=20, dpi=600)
 
 #
 # sulf.hm1f<-ggplot(clr.sulf.all, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
@@ -600,7 +600,7 @@ ggsave(sulf.hm1e3a,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_Depth_by_Func
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Depth_m~SampDate,scales="free", space = "free")
 #
-# ggsave(sulf.hm1f,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+# ggsave(sulf.hm1f,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/Sulfur_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
 #
 # sulf.hm1g<-ggplot(clr.sulf.all, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -610,7 +610,7 @@ ggsave(sulf.hm1e3a,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_Depth_by_Func
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_wrap(.~SampDate)
 #
-# ggsave(sulf.hm1g,filename = "figures/MGM_Figs/Sulfur_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+# ggsave(sulf.hm1g,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/Sulfur_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
 
 sulf.hm1e<-ggplot(clr.sulf.all[clr.sulf.all$Depth_m==0,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -620,7 +620,7 @@ sulf.hm1e<-ggplot(clr.sulf.all[clr.sulf.all$Depth_m==0,], aes(Pathway, KO_Functi
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(sulf.hm1e,filename = "figures/MGM_Figs/Sulfur_KOFxns_Pathways_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(sulf.hm1e,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/Sulfur_KOFxns_Pathways_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
 
 sulf.hm1f<-ggplot(clr.sulf.all[clr.sulf.all$Depth_m==5,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -630,7 +630,7 @@ sulf.hm1f<-ggplot(clr.sulf.all[clr.sulf.all$Depth_m==5,], aes(Pathway, KO_Functi
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(sulf.hm1f,filename = "figures/MGM_Figs/Sulfur_KOFxns_Pathways_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(sulf.hm1f,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/Sulfur_KOFxns_Pathways_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
 
 sulf.hm1g<-ggplot(clr.sulf.all[clr.sulf.all$Depth_m==10,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -640,7 +640,7 @@ sulf.hm1g<-ggplot(clr.sulf.all[clr.sulf.all$Depth_m==10,], aes(Pathway, KO_Funct
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(sulf.hm1g,filename = "figures/MGM_Figs/Sulfur_KOFxns_Pathways_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(sulf.hm1g,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/Sulfur_KOFxns_Pathways_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
 
 # pull out specific S functions
 ## first, SOX
@@ -658,7 +658,7 @@ s.sox.hm<-ggplot(clr.Sox, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) 
         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
 
-ggsave(s.sox.hm,filename = "figures/MGM_Figs/SSW_S_SOX_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
+ggsave(s.sox.hm,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/SSW_S_SOX_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
 
 # Assimilatory sulfate reduction
 clr.as.S.redox<-clr.sulf.all[grepl('1.8.7.1|1.8.1.2|2.7.7.4|1.8.4.10|1.8.4.8|2.7.1.25', clr.sulf.all$KO_Function),] # pull out just assimilatory sulfate reduction functions
@@ -675,7 +675,7 @@ s.R.hm1<-ggplot(clr.as.S.redox, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPe
         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
 
-ggsave(s.R.hm1,filename = "figures/MGM_Figs/SSW_S_AssSO4_Reduction_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
+ggsave(s.R.hm1,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/SSW_S_AssSO4_Reduction_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
 
 # Dissimilatory sulfate reduction and oxidation
 clr.dis.S.redox<-clr.sulf.all[grepl('1.8.99.2|1.8.99.5|2.7.7.4', clr.sulf.all$KO_Function),] # pull out just Sox functions
@@ -692,7 +692,7 @@ s.RO.hm1<-ggplot(clr.dis.S.redox, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCov
         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
 
-ggsave(s.RO.hm1,filename = "figures/MGM_Figs/SSW_S_DissSO4_RedOx_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
+ggsave(s.RO.hm1,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/SSW_S_DissSO4_RedOx_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
 
 #### Pull Out Nitrogen Metabolic Fxns from CLR data ####
 ## heatmaps of traits of interest
@@ -760,7 +760,7 @@ nitro.hm1a<-ggplot(clr.nitro.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCo
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
-ggsave(nitro.hm1a,filename = "figures/MGM_Figs/Nitrogen_KOFxns_MGMs_SampID_by_Function_heatmap.png", width=18, height=13, dpi=600)
+ggsave(nitro.hm1a,filename = "figures/MGM_Figs/FunctionalDiv/Nitrogen/Nitrogen_KOFxns_MGMs_SampID_by_Function_heatmap.png", width=18, height=13, dpi=600)
 
 nitro.hm1b<-ggplot(clr.nitro.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -770,7 +770,7 @@ nitro.hm1b<-ggplot(clr.nitro.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCo
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(nitro.hm1b,filename = "figures/MGM_Figs/Nitrogen_KOFxns_MGMs_SampID_by_Function_Pathway_heatmap.png", width=17, height=15, dpi=600)
+ggsave(nitro.hm1b,filename = "figures/MGM_Figs/FunctionalDiv/Nitrogen/Nitrogen_KOFxns_MGMs_SampID_by_Function_Pathway_heatmap.png", width=17, height=15, dpi=600)
 
 nitro.hm1c<-ggplot(clr.nitro.all, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -780,7 +780,7 @@ nitro.hm1c<-ggplot(clr.nitro.all, aes(interaction(SampDate,Depth_m), KO_Function
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(nitro.hm1c,filename = "figures/MGM_Figs/Nitrogen_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=18, dpi=600)
+ggsave(nitro.hm1c,filename = "figures/MGM_Figs/FunctionalDiv/Nitrogen/Nitrogen_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=18, dpi=600)
 
 nitro.hm1d<-ggplot(clr.nitro.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -790,7 +790,7 @@ nitro.hm1d<-ggplot(clr.nitro.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCov
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
 
-ggsave(nitro.hm1d,filename = "figures/MGM_Figs/Nitrogen_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
+ggsave(nitro.hm1d,filename = "figures/MGM_Figs/FunctionalDiv/Nitrogen/Nitrogen_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
 
 nitro.hm1e<-ggplot(clr.nitro.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -800,7 +800,7 @@ nitro.hm1e<-ggplot(clr.nitro.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCov
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
 
-ggsave(nitro.hm1e,filename = "figures/MGM_Figs/Nitrogen_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=15, dpi=600)
+ggsave(nitro.hm1e,filename = "figures/MGM_Figs/FunctionalDiv/Nitrogen/Nitrogen_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=15, dpi=600)
 #
 # nitro.hm1f<-ggplot(clr.nitro.all, aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -810,7 +810,7 @@ ggsave(nitro.hm1e,filename = "figures/MGM_Figs/Nitrogen_KOFxns_MGMs_Depth_by_Fun
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Depth_m~SampDate,scales="free", space = "free")
 #
-# ggsave(nitro.hm1f,filename = "figures/MGM_Figs/Nitrogen_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+# ggsave(nitro.hm1f,filename = "figures/MGM_Figs/FunctionalDiv/Nitrogen/Nitrogen_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
 #
 # nitro.hm1g<-ggplot(clr.nitro.all, aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -820,7 +820,7 @@ ggsave(nitro.hm1e,filename = "figures/MGM_Figs/Nitrogen_KOFxns_MGMs_Depth_by_Fun
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_wrap(.~SampDate)
 #
-# ggsave(nitro.hm1g,filename = "figures/MGM_Figs/Nitrogen_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+# ggsave(nitro.hm1g,filename = "figures/MGM_Figs/FunctionalDiv/Nitrogen/Nitrogen_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
 
 nitro.hm1e<-ggplot(clr.nitro.all[clr.nitro.all$Depth_m==0,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -830,7 +830,7 @@ nitro.hm1e<-ggplot(clr.nitro.all[clr.nitro.all$Depth_m==0,], aes(PathShort, KO_F
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(nitro.hm1e,filename = "figures/MGM_Figs/Nitrogen_KOFxns_Pathways_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(nitro.hm1e,filename = "figures/MGM_Figs/FunctionalDiv/Nitrogen/Nitrogen_KOFxns_Pathways_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
 
 nitro.hm1f<-ggplot(clr.nitro.all[clr.nitro.all$Depth_m==5,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -840,7 +840,7 @@ nitro.hm1f<-ggplot(clr.nitro.all[clr.nitro.all$Depth_m==5,], aes(PathShort, KO_F
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(nitro.hm1f,filename = "figures/MGM_Figs/Nitrogen_KOFxns_Pathways_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(nitro.hm1f,filename = "figures/MGM_Figs/FunctionalDiv/Nitrogen/Nitrogen_KOFxns_Pathways_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
 
 nitro.hm1g<-ggplot(clr.nitro.all[clr.nitro.all$Depth_m==10,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -850,7 +850,7 @@ nitro.hm1g<-ggplot(clr.nitro.all[clr.nitro.all$Depth_m==10,], aes(PathShort, KO_
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(nitro.hm1g,filename = "figures/MGM_Figs/Nitrogen_KOFxns_Pathways_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(nitro.hm1g,filename = "figures/MGM_Figs/FunctionalDiv/Nitrogen/Nitrogen_KOFxns_Pathways_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
 
 #### Pull Out DOM Metabolic Fxns from CLR data ####
 ## heatmaps of traits of interest
@@ -924,7 +924,7 @@ DOM.hm1a<-ggplot(clr.DOM.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovPer
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
-ggsave(DOM.hm1a,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_SampID_by_Function_heatmap.png", width=18, height=13, dpi=600)
+ggsave(DOM.hm1a,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_MGMs_SampID_by_Function_heatmap.png", width=18, height=13, dpi=600)
 
 DOM.hm1b1<-ggplot(clr.DOM.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -934,7 +934,7 @@ DOM.hm1b1<-ggplot(clr.DOM.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovPe
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(DOM.hm1b1,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_SampID_by_Function_Pathway_heatmap.png", width=17, height=22, dpi=600)
+ggsave(DOM.hm1b1,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_MGMs_SampID_by_Function_Pathway_heatmap.png", width=17, height=22, dpi=600)
 
 DOM.hm1b2<-ggplot(clr.DOM.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -944,7 +944,7 @@ DOM.hm1b2<-ggplot(clr.DOM.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovPe
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Cycle~.,scales="free_y", space = "free")
 
-ggsave(DOM.hm1b2,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_SampID_by_Function_Cycle_heatmap.png", width=17, height=15, dpi=600)
+ggsave(DOM.hm1b2,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_MGMs_SampID_by_Function_Cycle_heatmap.png", width=17, height=15, dpi=600)
 
 DOM.hm1c<-ggplot(clr.DOM.all, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -954,7 +954,7 @@ DOM.hm1c<-ggplot(clr.DOM.all, aes(interaction(SampDate,Depth_m), KO_Function.KEG
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~.,scales="free_y", space = "free")
 
-ggsave(DOM.hm1c,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=20, dpi=600)
+ggsave(DOM.hm1c,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=20, dpi=600)
 
 DOM.hm1c1<-ggplot(clr.DOM.all, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -964,7 +964,7 @@ DOM.hm1c1<-ggplot(clr.DOM.all, aes(interaction(SampDate,Depth_m), KO_Function.KE
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Cycle+Pathway~.,scales="free_y", space = "free")
 
-ggsave(DOM.hm1c1,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=20, dpi=600)
+ggsave(DOM.hm1c1,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=20, dpi=600)
 
 DOM.hm1c2<-ggplot(clr.DOM.all[which(clr.DOM.all$CLR_SumCovPerKO>0),], aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -974,7 +974,7 @@ DOM.hm1c2<-ggplot(clr.DOM.all[which(clr.DOM.all$CLR_SumCovPerKO>0),], aes(intera
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~.,scales="free_y", space = "free")
 
-ggsave(DOM.hm1c2,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_HigherCLR_heatmap.png", width=15, height=18, dpi=600)
+ggsave(DOM.hm1c2,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_HigherCLR_heatmap.png", width=15, height=18, dpi=600)
 
 DOM.hm1c3<-ggplot(clr.DOM.all[which(clr.DOM.all$CLR_SumCovPerKO>0),], aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -984,7 +984,7 @@ DOM.hm1c3<-ggplot(clr.DOM.all[which(clr.DOM.all$CLR_SumCovPerKO>0),], aes(intera
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Cycle+Pathway~.,scales="free_y", space = "free")
 
-ggsave(DOM.hm1c3,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_Cycle_HigherCLR_heatmap.png", width=15, height=18, dpi=600)
+ggsave(DOM.hm1c3,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_Cycle_HigherCLR_heatmap.png", width=15, height=18, dpi=600)
 
 DOM.hm1d<-ggplot(clr.DOM.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -994,7 +994,7 @@ DOM.hm1d<-ggplot(clr.DOM.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerK
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
 
-ggsave(DOM.hm1d,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
+ggsave(DOM.hm1d,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
 
 DOM.hm1e<-ggplot(clr.DOM.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -1004,7 +1004,7 @@ DOM.hm1e<-ggplot(clr.DOM.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerK
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Cycle~SampDate, scales="free", space = "free")
 
-ggsave(DOM.hm1e,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=15, height=20, dpi=600)
+ggsave(DOM.hm1e,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=15, height=20, dpi=600)
 
 DOM.hm1e2<-ggplot(clr.DOM.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -1014,7 +1014,7 @@ DOM.hm1e2<-ggplot(clr.DOM.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPer
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Cycle~SampDate, scales="free", space = "free")
 
-ggsave(DOM.hm1e2,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_Depth_by_Function_SampDate_Cycle_best_heatmap.png", width=15, height=15, dpi=600)
+ggsave(DOM.hm1e2,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_MGMs_Depth_by_Function_SampDate_Cycle_best_heatmap.png", width=15, height=15, dpi=600)
 
 #
 # DOM.hm1f<-ggplot(clr.DOM.all, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
@@ -1025,7 +1025,7 @@ ggsave(DOM.hm1e2,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_Depth_by_Function_
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Depth_m~SampDate,scales="free", space = "free")
 #
-# ggsave(DOM.hm1f,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+# ggsave(DOM.hm1f,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
 #
 # DOM.hm1g<-ggplot(clr.DOM.all, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -1035,7 +1035,7 @@ ggsave(DOM.hm1e2,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_Depth_by_Function_
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_wrap(.~SampDate)
 #
-# ggsave(DOM.hm1g,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+# ggsave(DOM.hm1g,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
 
 DOM.hm1e<-ggplot(clr.DOM.all[clr.DOM.all$Depth_m==0,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -1045,7 +1045,7 @@ DOM.hm1e<-ggplot(clr.DOM.all[clr.DOM.all$Depth_m==0,], aes(Pathway, KO_Function.
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(DOM.hm1e,filename = "figures/MGM_Figs/DOM_KOFxns_Pathways_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(DOM.hm1e,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_Pathways_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
 
 DOM.hm1f<-ggplot(clr.DOM.all[clr.DOM.all$Depth_m==5,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -1055,7 +1055,7 @@ DOM.hm1f<-ggplot(clr.DOM.all[clr.DOM.all$Depth_m==5,], aes(Pathway, KO_Function.
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(DOM.hm1f,filename = "figures/MGM_Figs/DOM_KOFxns_Pathways_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(DOM.hm1f,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_Pathways_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
 
 DOM.hm1g<-ggplot(clr.DOM.all[clr.DOM.all$Depth_m==10,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -1065,7 +1065,7 @@ DOM.hm1g<-ggplot(clr.DOM.all[clr.DOM.all$Depth_m==10,], aes(Pathway, KO_Function
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(DOM.hm1g,filename = "figures/MGM_Figs/DOM_KOFxns_Pathways_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(DOM.hm1g,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_Pathways_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
 
 
 # Subset DOM df by pathways that are more prevalent, then rerun figs
@@ -1084,7 +1084,7 @@ DOM.some.hm1<-ggplot(clr.DOM.some, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCo
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold"),plot.caption = element_text(size=14, face = "italic")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
 
-ggsave(DOM.some.hm1,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_Depth_by_Function_SampDate_HigherCov_Pathways_Only_heatmap.png", width=15, height=15, dpi=600)
+ggsave(DOM.some.hm1,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_MGMs_Depth_by_Function_SampDate_HigherCov_Pathways_Only_heatmap.png", width=15, height=15, dpi=600)
 
 DOM.some.hm2<-ggplot(clr.DOM.some, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -1095,7 +1095,7 @@ DOM.some.hm2<-ggplot(clr.DOM.some, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCo
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold"),plot.caption = element_text(size=14, face = "italic")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Cycle+PathShort~SampDate, scales="free", space = "free")
 
-ggsave(DOM.some.hm2,filename = "figures/MGM_Figs/DOM_KOFxns_MGMs_Depth_by_Function_SampDate_HigherCov_Pathways_Only_heatmap_v2.png", width=15, height=18, dpi=600)
+ggsave(DOM.some.hm2,filename = "figures/MGM_Figs/FunctionalDiv/DOM/DOM_KOFxns_MGMs_Depth_by_Function_SampDate_HigherCov_Pathways_Only_heatmap_v2.png", width=15, height=18, dpi=600)
 
 
 #### Pull Out Carbon Metabolic Fxns from CLR data ####
@@ -1163,7 +1163,7 @@ carb.hm1a<-ggplot(clr.carb.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovP
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
-ggsave(carb.hm1a,filename = "figures/MGM_Figs/Carbon_KOFxns_MGMs_SampID_by_Function_heatmap.png", width=18, height=13, dpi=600)
+ggsave(carb.hm1a,filename = "figures/MGM_Figs/FunctionalDiv/Carbon/Carbon_KOFxns_MGMs_SampID_by_Function_heatmap.png", width=18, height=13, dpi=600)
 
 carb.hm1b<-ggplot(clr.carb.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -1173,7 +1173,7 @@ carb.hm1b<-ggplot(clr.carb.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCovP
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(carb.hm1b,filename = "figures/MGM_Figs/Carbon_KOFxns_MGMs_SampID_by_Function_Pathway_heatmap.png", width=17, height=20, dpi=600)
+ggsave(carb.hm1b,filename = "figures/MGM_Figs/FunctionalDiv/Carbon/Carbon_KOFxns_MGMs_SampID_by_Function_Pathway_heatmap.png", width=17, height=20, dpi=600)
 
 carb.hm1c<-ggplot(clr.carb.all, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -1183,7 +1183,7 @@ carb.hm1c<-ggplot(clr.carb.all, aes(interaction(SampDate,Depth_m), KO_Function.K
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(carb.hm1c,filename = "figures/MGM_Figs/Carbon_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=20, height=20, dpi=600)
+ggsave(carb.hm1c,filename = "figures/MGM_Figs/FunctionalDiv/Carbon/Carbon_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=20, height=20, dpi=600)
 
 carb.hm1d<-ggplot(clr.carb.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -1193,7 +1193,7 @@ carb.hm1d<-ggplot(clr.carb.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPe
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
 
-ggsave(carb.hm1d,filename = "figures/MGM_Figs/Carbon_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=18, dpi=600)
+ggsave(carb.hm1d,filename = "figures/MGM_Figs/FunctionalDiv/Carbon/Carbon_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=18, dpi=600)
 
 carb.hm1e<-ggplot(clr.carb.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -1203,7 +1203,7 @@ carb.hm1e<-ggplot(clr.carb.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPe
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
 
-ggsave(carb.hm1e,filename = "figures/MGM_Figs/Carbon_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=18, dpi=600)
+ggsave(carb.hm1e,filename = "figures/MGM_Figs/FunctionalDiv/Carbon/Carbon_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=18, dpi=600)
 #
 # carb.hm1f<-ggplot(clr.carb.all, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -1213,7 +1213,7 @@ ggsave(carb.hm1e,filename = "figures/MGM_Figs/Carbon_KOFxns_MGMs_Depth_by_Functi
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Depth_m~SampDate,scales="free", space = "free")
 #
-# ggsave(carb.hm1f,filename = "figures/MGM_Figs/Carbon_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+# ggsave(carb.hm1f,filename = "figures/MGM_Figs/FunctionalDiv/Carbon/Carbon_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
 #
 # carb.hm1g<-ggplot(clr.carb.all, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -1223,7 +1223,7 @@ ggsave(carb.hm1e,filename = "figures/MGM_Figs/Carbon_KOFxns_MGMs_Depth_by_Functi
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_wrap(.~SampDate)
 #
-# ggsave(carb.hm1g,filename = "figures/MGM_Figs/Carbon_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+# ggsave(carb.hm1g,filename = "figures/MGM_Figs/FunctionalDiv/Carbon/Carbon_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
 
 carb.hm1e<-ggplot(clr.carb.all[clr.carb.all$Depth_m==0,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -1233,7 +1233,7 @@ carb.hm1e<-ggplot(clr.carb.all[clr.carb.all$Depth_m==0,], aes(Pathway, KO_Functi
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(carb.hm1e,filename = "figures/MGM_Figs/Carbon_KOFxns_Pathways_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(carb.hm1e,filename = "figures/MGM_Figs/FunctionalDiv/Carbon/Carbon_KOFxns_Pathways_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
 
 carb.hm1f<-ggplot(clr.carb.all[clr.carb.all$Depth_m==5,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -1243,7 +1243,7 @@ carb.hm1f<-ggplot(clr.carb.all[clr.carb.all$Depth_m==5,], aes(Pathway, KO_Functi
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(carb.hm1f,filename = "figures/MGM_Figs/Carbon_KOFxns_Pathways_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(carb.hm1f,filename = "figures/MGM_Figs/FunctionalDiv/Carbon/Carbon_KOFxns_Pathways_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
 
 carb.hm1g<-ggplot(clr.carb.all[clr.carb.all$Depth_m==10,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -1253,7 +1253,7 @@ carb.hm1g<-ggplot(clr.carb.all[clr.carb.all$Depth_m==10,], aes(Pathway, KO_Funct
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(carb.hm1g,filename = "figures/MGM_Figs/Carbon_KOFxns_Pathways_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(carb.hm1g,filename = "figures/MGM_Figs/FunctionalDiv/Carbon/Carbon_KOFxns_Pathways_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
 
 #### Pull Out Arsenic Metabolic Fxns from CLR data ####
 ars.ko<-mgm.clr[,which(colnames(mgm.clr) %in% arsen.fxns$KO_ID)]
@@ -1296,7 +1296,7 @@ ars.hm1<-ggplot(clr.ars.all, aes(SampleID, KO_Function, fill=CLR_SumCovPerKO)) +
         axis.ticks=element_line(size=0.4),panel.border=element_blank()) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
-ggsave(ars.hm1,filename = "figures/MGM_Figs/Arsenic_KOFxns_MGMs_heatmap1.png", width=18, height=15, dpi=600)
+ggsave(ars.hm1,filename = "figures/MGM_Figs/FunctionalDiv/Arsenic/Arsenic_KOFxns_MGMs_heatmap1.png", width=18, height=15, dpi=600)
 
 ars.hm2<-ggplot(clr.ars.all, aes(Depth_m, KO_Function, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -1306,7 +1306,7 @@ ars.hm2<-ggplot(clr.ars.all, aes(Depth_m, KO_Function, fill=CLR_SumCovPerKO)) +
         axis.ticks=element_line(size=0.4),panel.border=element_blank()) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(ars.hm2,filename = "figures/MGM_Figs/Arsenic_KOFxns_MGMs_heatmap_better.png", width=18, height=12, dpi=600)
+ggsave(ars.hm2,filename = "figures/MGM_Figs/FunctionalDiv/Arsenic/Arsenic_KOFxns_MGMs_heatmap_better.png", width=18, height=12, dpi=600)
 
 #### Pull Out Selenium Metabolism Fxns from CLR data ####
 sel.ko<-mgm.clr[,which(colnames(mgm.clr) %in% selen.fxns$KO_ID)]
@@ -1350,7 +1350,7 @@ sel.hm1<-ggplot(clr.sel.all, aes(SampleID, KO_Function, fill=CLR_SumCovPerKO)) +
         axis.ticks=element_line(size=0.4),panel.border=element_blank()) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
-ggsave(sel.hm1,filename = "figures/MGM_Figs/Selenium_KOFxns_MGMs_heatmap1.png", width=18, height=15, dpi=600)
+ggsave(sel.hm1,filename = "figures/MGM_Figs/FunctionalDiv/Selenium/Selenium_KOFxns_MGMs_heatmap1.png", width=18, height=15, dpi=600)
 
 sel.hm2<-ggplot(clr.sel.all, aes(Depth_m, KO_Function, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -1360,7 +1360,7 @@ sel.hm2<-ggplot(clr.sel.all, aes(Depth_m, KO_Function, fill=CLR_SumCovPerKO)) +
         axis.ticks=element_line(size=0.4),panel.border=element_blank()) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(sel.hm2,filename = "figures/MGM_Figs/Selenium_KOFxns_MGMs_heatmap_better.png", width=18, height=12, dpi=600)
+ggsave(sel.hm2,filename = "figures/MGM_Figs/FunctionalDiv/Selenium/Selenium_KOFxns_MGMs_heatmap_better.png", width=18, height=12, dpi=600)
 
 #### Pull Out Osmoprotectant/tolerance Fxns from CLR data ####
 osmo.ko<-mgm.clr[,which(colnames(mgm.clr) %in% osmo.fxns$KO_ID)]
@@ -1404,7 +1404,7 @@ osmo.hm1<-ggplot(clr.osmo.all, aes(SampleID, KO_Function, fill=CLR_SumCovPerKO))
         axis.ticks=element_line(size=0.4),panel.border=element_blank()) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
-ggsave(osmo.hm1,filename = "figures/MGM_Figs/OsmoProtectant_KOFxns_MGMs_heatmap1.png", width=18, height=12, dpi=600)
+ggsave(osmo.hm1,filename = "figures/MGM_Figs/FunctionalDiv/OsmoProctection_Tolerance/OsmoProtectant_KOFxns_MGMs_heatmap1.png", width=18, height=12, dpi=600)
 
 osmo.hm2<-ggplot(clr.osmo.all, aes(Depth_m, KO_Function, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -1414,7 +1414,7 @@ osmo.hm2<-ggplot(clr.osmo.all, aes(Depth_m, KO_Function, fill=CLR_SumCovPerKO)) 
         axis.ticks=element_line(size=0.4),panel.border=element_blank()) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(osmo.hm2,filename = "figures/MGM_Figs/OsmoProtectant_KOFxns_MGMs_heatmap_better.png", width=18, height=12, dpi=600)
+ggsave(osmo.hm2,filename = "figures/MGM_Figs/FunctionalDiv/OsmoProctection_Tolerance/OsmoProtectant_KOFxns_MGMs_heatmap_better.png", width=18, height=12, dpi=600)
 
 #### Pull Out Metal Resistance/Tolerance Fxns from CLR data ####
 met.ko<-mgm.clr[,which(colnames(mgm.clr) %in% metal.fxns$KO_ID)]
@@ -1458,7 +1458,7 @@ met.hm1<-ggplot(clr.met.all, aes(SampleID, KO_Function, fill=CLR_SumCovPerKO)) +
         axis.ticks=element_line(size=0.4),panel.border=element_blank()) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
-ggsave(met.hm1,filename = "figures/MGM_Figs/Metal_ResistToler_KOFxns_MGMs_heatmap1.png", width=18, height=15, dpi=600)
+ggsave(met.hm1,filename = "figures/MGM_Figs/FunctionalDiv/MetalResist_Tolerance/Metal_ResistToler_KOFxns_MGMs_heatmap1.png", width=18, height=15, dpi=600)
 
 met.hm2<-ggplot(clr.met.all, aes(Depth_m, KO_Function, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -1468,7 +1468,7 @@ met.hm2<-ggplot(clr.met.all, aes(Depth_m, KO_Function, fill=CLR_SumCovPerKO)) +
         axis.ticks=element_line(size=0.4),panel.border=element_blank()) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(met.hm2,filename = "figures/MGM_Figs/Metal_ResistToler_KOFxns_MGMs_heatmap_better.png", width=18, height=15, dpi=600)
+ggsave(met.hm2,filename = "figures/MGM_Figs/FunctionalDiv/MetalResist_Tolerance/Metal_ResistToler_KOFxns_MGMs_heatmap_better.png", width=18, height=15, dpi=600)
 
 #### Sulfur Metabolism PCoA ####
 ## PCOA with CLR transformed data first
@@ -1531,7 +1531,7 @@ pcoa.s1<-ggplot(sulf.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(col
   scale_color_manual(name ="Sample Date",values=unique(sulf.pcoa.clr.meta$SampDate_Color[order(sulf.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [67.36%]") + ylab("PC2 [16.73%]")
 
-ggsave(pcoa.s1,filename = "figures/MGM_Figs/SSW_SulfurOnly_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
+ggsave(pcoa.s1,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/SSW_SulfurOnly_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
 pcoa.s2<-ggplot(sulf.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
@@ -1541,7 +1541,7 @@ pcoa.s2<-ggplot(sulf.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("PC1 [67.36%]") + ylab("PC2 [16.73%]")
 
-ggsave(pcoa.s2,filename = "figures/MGM_Figs/SSW_SulfurOnly_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
+ggsave(pcoa.s2,filename = "figures/MGM_Figs/FunctionalDiv/Sulfur/SSW_SulfurOnly_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
 
 #### Sulfur Fxns ANOVA ####
 
@@ -1639,7 +1639,7 @@ pcoa.s1<-ggplot(DOM.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(colo
   scale_color_manual(name ="Sample Date",values=unique(DOM.pcoa.clr.meta$SampDate_Color[order(DOM.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [63.86%]") + ylab("PC2 [19.14%]")
 
-ggsave(pcoa.s1,filename = "figures/MGM_Figs/SSW_DOMOnly_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
+ggsave(pcoa.s1,filename = "figures/MGM_Figs/FunctionalDiv/DOM/SSW_DOMOnly_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
 pcoa.s2<-ggplot(DOM.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
@@ -1649,7 +1649,7 @@ pcoa.s2<-ggplot(DOM.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("PC1 [63.86%]") + ylab("PC2 [19.14%]")
 
-ggsave(pcoa.s2,filename = "figures/MGM_Figs/SSW_DOMOnly_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
+ggsave(pcoa.s2,filename = "figures/MGM_Figs/FunctionalDiv/DOM/SSW_DOMOnly_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
 
 
 #### Carbon Fixation PCoA ####
@@ -1716,7 +1716,7 @@ pcoa.s1<-ggplot(carb.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(col
   scale_color_manual(name ="Sample Date",values=unique(carb.pcoa.clr.meta$SampDate_Color[order(carb.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [29.64%]") + ylab("PC2 [22.51%]")
 
-ggsave(pcoa.s1,filename = "figures/MGM_Figs/SSW_CarbonFixationOnly_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
+ggsave(pcoa.s1,filename = "figures/MGM_Figs/FunctionalDiv/Carbon/SSW_CarbonFixationOnly_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
 pcoa.s2<-ggplot(carb.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
@@ -1726,7 +1726,7 @@ pcoa.s2<-ggplot(carb.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("PC1 [29.64%]") + ylab("PC2 [22.51%]")
 
-ggsave(pcoa.s2,filename = "figures/MGM_Figs/SSW_CarbonFixationOnly_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
+ggsave(pcoa.s2,filename = "figures/MGM_Figs/FunctionalDiv/Carbon/SSW_CarbonFixationOnly_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
 
 #### Arsenic Metabolism PCoA ####
 ## PCOA with CLR transformed data first
@@ -1776,7 +1776,7 @@ pcoa.a1<-ggplot(ars.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(colo
   scale_color_manual(name ="Sample Date",values=unique(ars.pcoa.clr.meta$SampDate_Color[order(ars.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [53.60%]") + ylab("PC2 [30.40%]")
 
-ggsave(pcoa.a1,filename = "figures/MGM_Figs/SSW_ArsenicOnly_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
+ggsave(pcoa.a1,filename = "figures/MGM_Figs/FunctionalDiv/Arsenic/SSW_ArsenicOnly_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
 pcoa.a2<-ggplot(ars.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
@@ -1786,7 +1786,7 @@ pcoa.a2<-ggplot(ars.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("PC1 [53.60%]") + ylab("PC2 [30.40%]")
 
-ggsave(pcoa.a2,filename = "figures/MGM_Figs/SSW_ArsenicOnly_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
+ggsave(pcoa.a2,filename = "figures/MGM_Figs/FunctionalDiv/Arsenic/SSW_ArsenicOnly_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
 
 
 #### Metal Resistance/Tolerance PCoA ####
@@ -1837,7 +1837,7 @@ pcoa.m1<-ggplot(met.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(colo
   scale_color_manual(name ="Sample Date",values=unique(met.pcoa.clr.meta$SampDate_Color[order(met.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [61.21%]") + ylab("PC2 [19.15%]")
 
-ggsave(pcoa.m1,filename = "figures/MGM_Figs/SSW_MetalResistTolerance_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
+ggsave(pcoa.m1,filename = "figures/MGM_Figs/FunctionalDiv/MetalResist_Tolerance/SSW_MetalResistTolerance_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
 pcoa.m2<-ggplot(met.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
@@ -1847,7 +1847,7 @@ pcoa.m2<-ggplot(met.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("PC1 [61.21%]") + ylab("PC2 [19.15]")
 
-ggsave(pcoa.m2,filename = "figures/MGM_Figs/SSW_MetalResistTolerance_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
+ggsave(pcoa.m2,filename = "figures/MGM_Figs/FunctionalDiv/MetalResist_Tolerance/SSW_MetalResistTolerance_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
 
 #### Homogeneity of Variance (CLR data only)- Composition by Groups ####
 ## betadisper to look at homogeneity of group dispersions (aka variance) when considering multiple variables
@@ -1891,11 +1891,11 @@ TukeyHSD(mgm.disper) # tells us which Sample Dates/category's dispersion MEANS a
 # April.2022-December.2021  -0.1126558 -3.047615 2.822304 0.9923919
 
 # Visualize dispersions
-png('figures/MGM_Figs/SSW_MGM_pcoa_CLR_SummedCoverage_perKO_betadispersion_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/SSW_MGM_pcoa_CLR_SummedCoverage_perKO_betadispersion_sampledate.png',width = 700, height = 600, res=100)
 plot(mgm.disper,main = "Centroids and Dispersion based on Aitchison Distance (CLR Data)", col=colorset1$SampDate_Color)
 dev.off()
 
-png('figures/MGM_Figs/SSW_MGM_boxplot_CLR_SummedCoverage_perKO_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/SSW_MGM_boxplot_CLR_SummedCoverage_perKO_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
 boxplot(mgm.disper,xlab="Sample Collection Date", main = "Distance to Centroid by Category (CLR Data)", sub="Based on Aitchison Distance", col=colorset1$SampDate_Color)
 dev.off()
 
@@ -1917,11 +1917,11 @@ colfunc <- colorRampPalette(c("red", "blue"))
 colfunc(3)
 
 # Visualize dispersions
-png('figures/MGM_Figs/ssw_mgm_pcoa_CLR_SummedCoverage_per_KO_betadispersion_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/ssw_mgm_pcoa_CLR_SummedCoverage_per_KO_betadispersion_depth.png',width = 700, height = 600, res=100)
 plot(mgm.disper2,main = "Centroids and Dispersion based on Aitchison Distance (CLR Data)", col=colfunc(3))
 dev.off()
 
-png('figures/MGM_Figs/ssw_mgm_boxplot_CLR_SummedCoverage_per_KO_centroid_distance_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/ssw_mgm_boxplot_CLR_SummedCoverage_per_KO_centroid_distance_depth.png',width = 700, height = 600, res=100)
 boxplot(mgm.disper2,xlab="Sample Collection Depth", main = "Distance to Centroid by Category (CLR Data)", sub="Based on Aitchison Distance", col=colfunc(3))
 dev.off()
 ## Significant differences in homogeneities can be tested using either parametric or permutational tests,
@@ -1969,11 +1969,11 @@ TukeyHSD(sulf.disper1) # tells us which Sample Dates/category's dispersion MEANS
 # April.2022-December.2021    5.697011 -104.4969 115.89091 0.9862550
 
 # Visualize dispersions
-png('figures/MGM_Figs/SSW_MGM_pcoa_CLR_SummedCoverage_perKO_SulfurOnly_betadispersion_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/SSW_MGM_pcoa_CLR_SummedCoverage_perKO_SulfurOnly_betadispersion_sampledate.png',width = 700, height = 600, res=100)
 plot(sulf.disper1,main = "Centroids and Dispersion based on Aitchison Distance (Sulfur CLR Data)", col=colorset1$SampDate_Color)
 dev.off()
 
-png('figures/MGM_Figs/SSW_MGM_boxplot_CLR_SummedCoverage_perKO_SulfurOnly_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/SSW_MGM_boxplot_CLR_SummedCoverage_perKO_SulfurOnly_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
 boxplot(sulf.disper1,xlab="Sample Collection Date", main = "Distance to Centroid by Category (Sulfur CLR Data)", sub="Based on Aitchison Distance", col=colorset1$SampDate_Color)
 dev.off()
 
@@ -1995,11 +1995,11 @@ colfunc <- colorRampPalette(c("red", "blue"))
 colfunc(3)
 
 # Visualize dispersions
-png('figures/MGM_Figs/ssw_mgm_pcoa_CLR_SummedCoverage_per_KO_SulfOnly_betadispersion_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/ssw_mgm_pcoa_CLR_SummedCoverage_per_KO_SulfOnly_betadispersion_depth.png',width = 700, height = 600, res=100)
 plot(sulf.disper2,main = "Centroids and Dispersion based on Aitchison Distance (Sulfur CLR Data)", col=colfunc(3))
 dev.off()
 
-png('figures/MGM_Figs/ssw_mgm_boxplot_CLR_SummedCoverage_per_KO_SulfOnly_centroid_distance_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/ssw_mgm_boxplot_CLR_SummedCoverage_per_KO_SulfOnly_centroid_distance_depth.png',width = 700, height = 600, res=100)
 boxplot(sulf.disper2,xlab="Sample Collection Depth", main = "Distance to Centroid by Category (Sulfur CLR Data)", sub="Based on Aitchison Distance", col=colfunc(3))
 dev.off()
 ## Significant differences in homogeneities can be tested using either parametric or permutational tests,
@@ -2172,11 +2172,11 @@ TukeyHSD(sox.disper1) # tells us which Sample Dates/category's dispersion MEANS 
 #April.2022-December.2021   0.02920673 -0.2908392 0.3492527 0.9579997
 
 # Visualize dispersions
-png('figures/MGM_Figs/SSW_SOX_PCoA_betadispersion_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/SSW_SOX_PCoA_betadispersion_sampledate.png',width = 700, height = 600, res=100)
 plot(sox.disper1,main = "SOX Functions - Centroids and Dispersion (Median-Ratio Data)", label=FALSE,col=colorset1$SampDate_Color)
 dev.off()
 
-png('figures/MGM_Figs/SSW_SOX_boxplot_MR_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FunctionalDiv/SSW_SOX_boxplot_MR_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
 boxplot(sox.disper1,xlab="Sample Collection Date", main = "SOX Functions - Distance to Centroid by Category (Median-Ratio Data)", sub="Euclidean Distance of Median-Ratio Transformed Data", col=colorset1$SampDate_Color)
 dev.off()
 
