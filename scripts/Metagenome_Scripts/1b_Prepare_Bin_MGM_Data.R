@@ -276,6 +276,7 @@ rownames(bin_meta_scaled)<-bin_meta$Bin_ID
 dom.kegg<-read.table("data/Metagenomes/Analysis/DOM_KOs_Pathway_Cycle_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 carb.kegg<-read.table("data/Metagenomes/Analysis/CarbonFixation_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 sulf.kegg<-read.table("data/Metagenomes/Analysis/Sulfur_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
+nitro.kegg<-read.table("data/Metagenomes/Analysis/N_KOs_Pathway_Cycle_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 arsen.kegg<-read.table("data/Metagenomes/Analysis/Arsenic_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 heatshock.kegg<-read.table("data/Metagenomes/Analysis/HeatShock_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 osmo.kegg<-read.table("data/Metagenomes/Analysis/Osmoprot_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
@@ -483,9 +484,10 @@ bin.ko_fxns<-as.data.frame(bin.ko_fxns1[!is.na(bin.ko_fxns1$KO_ID),])  # use uni
 head(bin.ko_fxns)
 
 ## pull out functions of interest
-carb.fxns<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% carb.kegg$KO_ID),]
-DOM.fxns<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% dom.kegg$KO_ID),]
+carb.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% carb.kegg$KO_ID),]
+DOM.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% dom.kegg$KO_ID),]
 sulfur.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% sulf.kegg$KO_ID),]
+nitro.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% nitro.kegg$KO_ID),]
 osmo.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% osmo.kegg$KO_ID),]
 selen.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% selen.kegg$KO_ID),]
 arsen.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% arsen.kegg$KO_ID),]
