@@ -467,6 +467,14 @@ colSums(bin_fxn_cpm)
 
 #write.table(bin_fxn_cpm, file="data/Metagenomes/Analysis/bin_NoBins_CopiesPerMillion_GeneCounts_2.27.23.txt", sep="\t", quote=F, col.names=T)
 
+#### Create Presence/Absence Table of Functions in MAGs ####
+bin.ko.cov.sum_table[,-c(1:2)][1:4,1:4]
+
+bin_fxn.binary<-counts_to_binary(bin.ko.cov.sum_table[,-c(1:2)]) # custom function to convert all counts to binary (presence/absence)
+# sanity check that function worked below
+bin_fxn.binary[1:5,1:5]
+bin.ko.cov.sum_table[,-c(1:2)][1:5,1:5]
+
 ### Pull out traits of interest ####
 # create unique list of KO ID and functions
 # check for duplicates to make sure each KO_ID has a unique function assignment
