@@ -60,6 +60,9 @@ head(bin.clr.ars)
 # Gene coverage was then added together for each KO ID, since multiple genes were assigned the same KO ID
 # Summed coverage per KO was then transformed via median-ratio, vst, and clr
 
+# create color palette for binary heat maps
+binary.cols<-c("1"="red","0"="white")
+
 #### Functional Beta Diversity - CLR data ####
 bin.clr[1:4,1:4] # sample IDs are rows, genes are columns
 bin.ko.cov.sum_table[1:4,1:4] # sanity check
@@ -110,7 +113,7 @@ bin.pcoa1<-ggplot(bin.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(co
   scale_color_manual(name ="Sample Type",values=unique(bin.pcoa.clr.meta$SampDate_Color[order(bin.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [32.17%]") + ylab("PC2 [11.98%]")
 
-#ggsave(bin.pcoa1,filename = "figures/MGM_Figs/BinsOnly/SSW_MAG_Bin_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
+#ggsave(bin.pcoa1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/SSW_MAG_Bin_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
 bin.pcoa2<-ggplot(bin.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
@@ -126,7 +129,7 @@ ggplot(bin.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +theme_bw()+
   theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("PC1 [32.17%]") + ylab("PC2 [11.98%]")
-#ggsave(bin.pcoa2,filename = "figures/MGM_Figs/BinsOnly/SSW_MAG_Bin_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
+#ggsave(bin.pcoa2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/SSW_MAG_Bin_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
 
 
 #### Pull Out Sulfur Metabolic Fxns from CLR data ####
@@ -168,7 +171,7 @@ disSO4.ko.cov.bin<-clr.cov.sum.sulf.ko.bin[,-1][,colnames(clr.cov.sum.sulf.ko.bi
 multiS.ko.cov.bin<-clr.cov.sum.sulf.ko.bin[,-1][,colnames(clr.cov.sum.sulf.ko.bin[,-1]) %in% mult.sulf.bin$KO_Function.KEGG] # pull out sox genes from gene list found in CLR transformed cov per KO
 sox.ko.cov.bin<-clr.cov.sum.sulf.ko.bin[,-1][,colnames(clr.cov.sum.sulf.ko.bin[,-1]) %in% sox.system.bin$KO_Function.KEGG] # pull out sox genes from gene list found in CLR transformed cov per KO
 
-### Sulfur Heat Maps ####
+#### Sulfur Heat Maps ####
 # see max & mean of summed
 max(clr.cov.sum.sulf.ko.bin[,-1])
 mean(as.matrix(clr.cov.sum.sulf.ko.bin[,-1]))
@@ -229,7 +232,7 @@ sulf.hm1a<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumC
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
-ggsave(sulf.hm1a,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_heatmap.png", width=20, height=13, dpi=600)
+ggsave(sulf.hm1a,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_heatmap.png", width=20, height=13, dpi=600)
 
 sulf.hm1a2<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -239,7 +242,7 @@ sulf.hm1a2<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_Sum
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(SampDate~.,scales="free_y", space = "free")
 
-ggsave(sulf.hm1a2,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_heatmap2.png", width=17, height=15, dpi=600)
+ggsave(sulf.hm1a2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_heatmap2.png", width=17, height=15, dpi=600)
 
 sulf.hm1b<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -249,7 +252,7 @@ sulf.hm1b<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumC
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~.,scales="free_y", space = "free")
 
-ggsave(sulf.hm1b,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_Pathway_heatmap.png", width=20, height=15, dpi=600)
+ggsave(sulf.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_Pathway_heatmap.png", width=20, height=15, dpi=600)
 
 sulf.hm1b2<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -259,7 +262,7 @@ sulf.hm1b2<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_Sum
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(sulf.hm1b2,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_Pathway_heatmap2.png", width=17, height=15, dpi=600)
+ggsave(sulf.hm1b2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_Pathway_heatmap2.png", width=17, height=15, dpi=600)
 
 sulf.hm1b3<-ggplot(clr.sulf.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -269,7 +272,7 @@ sulf.hm1b3<-ggplot(clr.sulf.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCo
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(sulf.hm1b3,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_Genus_by_Function_Pathway_heatmap.png", width=17, height=15, dpi=600)
+ggsave(sulf.hm1b3,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Bins_Genus_by_Function_Pathway_heatmap.png", width=17, height=15, dpi=600)
 
 sulf.hm1c<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -279,7 +282,7 @@ sulf.hm1c<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumC
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathwaySpecific~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1c,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_SampDate_PathwaySpecific_best_heatmap.png", width=20, height=20, dpi=600)
+ggsave(sulf.hm1c,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_SampDate_PathwaySpecific_best_heatmap.png", width=20, height=20, dpi=600)
 
 sulf.hm1c2<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -289,7 +292,7 @@ sulf.hm1c2<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_Sum
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathSpecShort~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1c2,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_SampDate_PathwaySpecific_best_heatmap2.png", width=20, height=20, dpi=600)
+ggsave(sulf.hm1c2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_SampDate_PathwaySpecific_best_heatmap2.png", width=20, height=20, dpi=600)
 
 sulf.hm1c3<-ggplot(clr.sulf.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -299,7 +302,7 @@ sulf.hm1c3<-ggplot(clr.sulf.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCo
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathwaySpecific~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1c3,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_Genus_by_Function_SampDate_PathwaySpecific_best_heatmap.png", width=20, height=20, dpi=600)
+ggsave(sulf.hm1c3,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Bins_Genus_by_Function_SampDate_PathwaySpecific_best_heatmap.png", width=20, height=20, dpi=600)
 
 sulf.hm1c4<-ggplot(clr.sulf.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -309,7 +312,7 @@ sulf.hm1c4<-ggplot(clr.sulf.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCo
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathSpecShort~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1c4,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_Genus_by_Function_SampDate_PathwaySpecific_best_heatmap2.png", width=20, height=20, dpi=600)
+ggsave(sulf.hm1c4,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Bins_Genus_by_Function_SampDate_PathwaySpecific_best_heatmap2.png", width=20, height=20, dpi=600)
 
 sulf.hm1d2<-ggplot(clr.sulf.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -319,7 +322,7 @@ sulf.hm1d2<-ggplot(clr.sulf.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_Sum
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathwaySpecific~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1d2,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap.png", width=20, height=20, dpi=600)
+ggsave(sulf.hm1d2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap.png", width=20, height=20, dpi=600)
 
 sulf.hm1d2a<-ggplot(clr.sulf.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -329,7 +332,7 @@ sulf.hm1d2a<-ggplot(clr.sulf.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_Su
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathSpecShort~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1d2a,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap2.png", width=20, height=20, dpi=600)
+ggsave(sulf.hm1d2a,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap2.png", width=20, height=20, dpi=600)
 
 # sulf.hm1c<-ggplot(clr.sulf.all.bin, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -339,7 +342,7 @@ ggsave(sulf.hm1d2a,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MG
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~.,scales="free_y", space = "free")
 #
-# ggsave(sulf.hm1c,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=18, dpi=600)
+# ggsave(sulf.hm1c,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Bins_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=18, dpi=600)
 
 sulf.hm1d<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -349,7 +352,7 @@ sulf.hm1d<-ggplot(clr.sulf.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumC
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
 
-ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=15, dpi=600)
+ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=15, dpi=600)
 
 # sulf.hm1e<-ggplot(clr.sulf.all.bin, aes(Bin_ID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -359,7 +362,7 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~SampDate,scales="free_x", space = "free")
 #
-# ggsave(sulf.hm1e,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
+# ggsave(sulf.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
 
 # sulf.hm1f<-ggplot(clr.sulf.all.bin, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -369,7 +372,7 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Depth_m~SampDate,scales="free", space = "free")
 #
-# ggsave(sulf.hm1f,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_heatmap1d.png", width=18, height=18, dpi=600)
+# ggsave(sulf.hm1f,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Bins_heatmap1d.png", width=18, height=18, dpi=600)
 #
 # sulf.hm1g<-ggplot(clr.sulf.all.bin, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -379,7 +382,7 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_wrap(.~SampDate)
 #
-# ggsave(sulf.hm1g,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs_Bins_heatmap1d.png", width=18, height=18, dpi=600)
+# ggsave(sulf.hm1g,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Bins_heatmap1d.png", width=18, height=18, dpi=600)
 
 # sulf.hm1e<-ggplot(clr.sulf.all.bin[clr.sulf.all.bin$Depth_m==0,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -389,7 +392,7 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 #
-# ggsave(sulf.hm1e,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_Pathways_MGMs_Bins_0m_heatmap.png", width=18, height=18, dpi=600)
+# ggsave(sulf.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_Pathways_MGMs_Bins_0m_heatmap.png", width=18, height=18, dpi=600)
 #
 # sulf.hm1f<-ggplot(clr.sulf.all.bin[clr.sulf.all.bin$Depth_m==5,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -399,7 +402,7 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 #
-# ggsave(sulf.hm1f,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_Pathways_MGMs_Bins_5m_heatmap.png", width=18, height=18, dpi=600)
+# ggsave(sulf.hm1f,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_Pathways_MGMs_Bins_5m_heatmap.png", width=18, height=18, dpi=600)
 #
 # sulf.hm1g<-ggplot(clr.sulf.all.bin[clr.sulf.all.bin$Depth_m==10,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -409,7 +412,7 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 #
-# ggsave(sulf.hm1g,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_Pathways_MGMs_Bins_10m_heatmap.png", width=18, height=18, dpi=600)
+# ggsave(sulf.hm1g,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFxns_Pathways_MGMs_Bins_10m_heatmap.png", width=18, height=18, dpi=600)
 # #
 # # pull out specific S functions
 # ## first, SOX
@@ -427,7 +430,7 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs
 #         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
 #
-# ggsave(s.sox.hm,filename = "figures/MGM_Figs/BinsOnly/Sulfur/SSW_S_SOX_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
+# ggsave(s.sox.hm,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/SSW_S_SOX_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
 #
 # # Assimilatory sulfate reduction
 # clr.as.S.redox<-clr.sulf.all.bin[grepl('1.8.7.1|1.8.1.2|2.7.7.4|1.8.4.10|1.8.4.8|2.7.1.25', clr.sulf.all.bin$KO_Function),] # pull out just assimilatory sulfate reduction functions
@@ -444,7 +447,7 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs
 #         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
 #
-# ggsave(s.R.hm1,filename = "figures/MGM_Figs/BinsOnly/Sulfur/SSW_S_AssSO4_Reduction_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
+# ggsave(s.R.hm1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/SSW_S_AssSO4_Reduction_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
 #
 # # Dissimilatory sulfate reduction and oxidation
 # clr.dis.S.redox<-clr.sulf.all.bin[grepl('1.8.99.2|1.8.99.5|2.7.7.4', clr.sulf.all.bin$KO_Function),] # pull out just Sox functions
@@ -461,7 +464,197 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/Sulfur/Sulfur_KOFxns_MGMs
 #         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
 #
-# ggsave(s.RO.hm1,filename = "figures/MGM_Figs/BinsOnly/Sulfur/SSW_S_DissSO4_RedOx_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
+# ggsave(s.RO.hm1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/SSW_S_DissSO4_RedOx_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
+
+#### Pull out Sulfur Metabolic Fxns from Binary Data ####
+
+sulf.ko.bin.bi<-bin_fxn.binary[,which(colnames(bin_fxn.binary) %in% sulfur.fxns.bins$KO_ID)] # merge CLR data w/ S fxns found in contigs from KOFamScan
+sulf.ko.bin.bi$Bin_ID<-rownames(sulf.ko.bin.bi)
+sulf.ko.bin.bi.melt<-melt(sulf.ko.bin.bi, by="Bin_ID")
+colnames(sulf.ko.bin.bi.melt)[which(names(sulf.ko.bin.bi.melt) == "variable")] <- "KO_ID"
+colnames(sulf.ko.bin.bi.melt)[which(names(sulf.ko.bin.bi.melt) == "value")] <- "PresAb"
+head(sulf.ko.bin.bi.melt) #sanity check
+
+clr.sulf.ko.bin.bi<-merge(sulf.ko.bin.bi.melt,sulf.kegg,by.x=c("KO_ID"),by.y=c("KO_ID")) # merge data w/ KO assignments from KEGG db
+head(clr.sulf.ko.bin.bi)
+colnames(clr.sulf.ko.bin.bi)[which(names(clr.sulf.ko.bin.bi) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
+clr.cov.sum.sulf.ko.bin.bi<-as.data.frame(dcast(clr.sulf.ko.bin.bi, Bin_ID~KO_Function.KEGG, value.var="PresAb", fun.aggregate=sum)) ###just dcast, nothing is being added here!
+rownames(clr.cov.sum.sulf.ko.bin.bi)<-clr.cov.sum.sulf.ko.bin.bi$Bin_ID
+clr.cov.sum.sulf.ko.bin.bi[1:4,]
+
+# sanity check
+clr.cov.sum.sulf.ko.bin.bi$`cysH; phosphoadenosine phosphosulfate reductase [EC:1.8.4.8 1.8.4.10]`[1:4]
+head(clr.sulf.ko.bin.bi)
+
+#### Sulfur Binary Heat Maps ####
+# see max & mean of summed
+
+# prep for ggplot2 heatmap
+clr.sulf.ko.bin.bi[1:4,]
+
+clr.sulf.all.bin.bi1<-merge(clr.sulf.ko.bin.bi,bin_meta_scaled,by="Bin_ID")
+clr.sulf.all.bin.bi<-merge(clr.sulf.all.bin.bi1,mag_tax,by="Bin_ID")
+
+head(clr.sulf.ko.bin.bi)
+clr.sulf.all.bin.bi$PlotBin = factor(clr.sulf.all.bin.bi$PlotBin, levels=unique(clr.sulf.all.bin.bi$PlotBin[order(clr.sulf.all.bin.bi$SampDate,clr.sulf.all.bin.bi$Depth_m)]), ordered=TRUE)
+clr.sulf.all.bin.bi$SampDate<-gsub("\\."," ",clr.sulf.all.bin.bi$SampDate)
+clr.sulf.all.bin.bi$SampDate<-factor(clr.sulf.all.bin.bi$SampDate, levels=c("August 2021","December 2021","April 2022"))
+clr.sulf.all.bin.bi$KO_Function.KEGG = factor(clr.sulf.all.bin.bi$KO_Function.KEGG, levels=unique(clr.sulf.all.bin.bi$KO_Function.KEGG[order(clr.sulf.all.bin.bi$Pathway)]), ordered=TRUE)
+
+clr.sulf.all.bin.bi$PathShort<-clr.sulf.all.bin.bi$Pathway
+clr.sulf.all.bin.bi$PathShort[(clr.sulf.all.bin.bi$PathShort) == "Dissimilatory Sulfate Redox"] <- "D.SO4 RedOx"
+clr.sulf.all.bin.bi$PathShort[(clr.sulf.all.bin.bi$PathShort) == "Assimilatory Sulfate Reduction"] <- "A.SO4 Red"
+clr.sulf.all.bin.bi$PathShort[(clr.sulf.all.bin.bi$PathShort) == "Multiple Pathways"] <- "Multi Paths"
+clr.sulf.all.bin.bi$PathShort[(clr.sulf.all.bin.bi$PathShort) == "S Disproportionation"] <- "S Disprop."
+
+clr.sulf.all.bin.bi$Pathway<-factor(clr.sulf.all.bin.bi$Pathway,levels=c("Assimilatory Sulfate Reduction","Dissimilatory Sulfate Redox","Multiple Pathways","SOX","S Disproportionation"))
+clr.sulf.all.bin.bi$PathShort<-factor(clr.sulf.all.bin.bi$PathShort,levels=c("A.SO4 Red","D.SO4 RedOx","Multi Paths","SOX","S Disprop."))
+
+clr.sulf.all.bin.bi$PathSpecShort<-clr.sulf.all.bin.bi$PathwaySpecific
+clr.sulf.all.bin.bi$PathSpecShort[(clr.sulf.all.bin.bi$PathSpecShort) == "Dissimilatory Sulfate Redox"] <- "1"
+clr.sulf.all.bin.bi$PathSpecShort[(clr.sulf.all.bin.bi$PathSpecShort) == "Assimilatory Sulfate Reduction"] <- "2"
+clr.sulf.all.bin.bi$PathSpecShort[(clr.sulf.all.bin.bi$PathSpecShort) == "Multiple Pathways"] <- "3"
+clr.sulf.all.bin.bi$PathSpecShort[(clr.sulf.all.bin.bi$PathSpecShort) == "Sulfur Disproportionation"] <- "4"
+clr.sulf.all.bin.bi$PathSpecShort[(clr.sulf.all.bin.bi$PathSpecShort) == "Sulfide Oxidation"] <- "5"
+clr.sulf.all.bin.bi$PathSpecShort[(clr.sulf.all.bin.bi$PathSpecShort) == "Sulfite Oxidation"] <- "6"
+clr.sulf.all.bin.bi$PathSpecShort[(clr.sulf.all.bin.bi$PathSpecShort) == "Thiosulfate Oxidation"] <- "7"
+
+clr.sulf.all.bin.bi$PathwaySpecific<-factor(clr.sulf.all.bin.bi$PathwaySpecific,levels=c("Assimilatory Sulfate Reduction","Dissimilatory Sulfate Redox","Multiple Pathways","SOX","S Disproportionation","Sulfide Oxidation","Sulfite Oxidation","Thiosulfate Oxidation"))
+clr.sulf.all.bin.bi$PathSpecShort<-factor(clr.sulf.all.bin.bi$PathSpecShort,levels=c("1","2","3","4","5","6","7"))
+
+head(clr.sulf.all.bin.bi)
+
+# Figures
+sulf.bi.hm1a<-ggplot(clr.sulf.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
+
+ggsave(sulf.bi.hm1a,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_BinID_by_Function_Binary_heatmap.png", width=18, height=13, dpi=600)
+
+sulf.bi.hm1b<-ggplot(clr.sulf.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+
+ggsave(sulf.bi.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_BinID_by_Function_Pathway_Binary_heatmap.png", width=17, height=15, dpi=600)
+
+sulf.bi.hm1b2<-ggplot(clr.sulf.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+
+ggsave(sulf.bi.hm1b2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Genus_by_Function_Pathway_Binary_heatmap.png", width=17, height=15, dpi=600)
+
+sulf.bi.hm1c2<-ggplot(clr.sulf.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathwaySpecific~SampDate, scales="free", space = "free")
+
+ggsave(sulf.bi.hm1c2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Bins_BinID_by_Function_SampDate_PathwaySpecific_Binary_best_heatmap.png", width=20, height=20, dpi=600)
+
+sulf.bi.hm1c3<-ggplot(clr.sulf.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathwaySpecific~SampDate, scales="free", space = "free")
+
+ggsave(sulf.bi.hm1c3,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Bins_Genus_by_Function_SampDate_PathwaySpecific_Binary_best_heatmap.png", width=20, height=20, dpi=600)
+
+sulf.bi.hm1d<-ggplot(clr.sulf.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
+
+ggsave(sulf.bi.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_BinID_by_Function_SampDate_Binary_best_heatmap.png", width=20, height=13, dpi=600)
+
+sulf.bi.hm1d2<-ggplot(clr.sulf.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
+
+ggsave(sulf.bi.hm1d2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Genus_by_Function_SampDate_Binary_best_heatmap.png", width=20, height=13, dpi=600)
+
+sulf.bi.hm1e<-ggplot(clr.sulf.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
+
+ggsave(sulf.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_BinID_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
+
+sulf.bi.hm1e2<-ggplot(clr.sulf.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
+
+ggsave(sulf.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Genus_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
+
+sulf.bi.hm1e2<-ggplot(clr.sulf.all.bin.bi, aes(Depth_m, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
+
+ggsave(sulf.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
+
+# sulf.bi.hm1e0<-ggplot(clr.sulf.all.bin.bi[clr.sulf.all.bin.bi$Depth_m==0,], aes(PathShort, KO_Function.KEGG, fill=factor(PresAb))) +
+#   geom_tile(colour="black",size=0.25) +
+#   scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate)
+#
+# ggsave(sulf.bi.hm1e0,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_Bins_Pathways_Binary_0m_heatmap.png", width=18, height=18, dpi=600)
+#
+# sulf.bi.hm1e5<-ggplot(clr.sulf.all.bin.bi[clr.sulf.all.bin.bi$Depth_m==5,], aes(PathShort, KO_Function.KEGG, fill=factor(PresAb))) +
+#   geom_tile(colour="black",size=0.25) +
+#   scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
+#
+# ggsave(sulf.bi.hm1e5,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_Bins_Pathways_Binary_5m_heatmap.png", width=18, height=18, dpi=600)
+#
+# sulf.bi.hm1e6<-ggplot(clr.sulf.all.bin.bi[clr.sulf.all.bin.bi$Depth_m==10,], aes(PathShort, KO_Function.KEGG, fill=factor(PresAb))) +
+#   geom_tile(colour="black",size=0.25) +
+#   scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
+#
+# ggsave(sulf.bi.hm1e6,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_Bins_Pathways_Binary_10m_heatmap.png", width=18, height=18, dpi=600)
+
 
 #### Pull Out Nitrogen Metabolic Fxns from CLR data ####
 ## heatmaps of traits of interest
@@ -487,7 +680,7 @@ clr.cov.sum.nitro.ko.bin[1:4,]
 clr.cov.sum.nitro.ko.bin$`nirK; nitrite reductase (NO-forming) [EC:1.7.2.1]`[1:4]
 head(clr.nitro.ko.bin)
 
-### Nitrogen Heat Maps ####
+#### Nitrogen Heat Maps ####
 # see max & mean of summed
 max(clr.cov.sum.nitro.ko.bin[,-1])
 mean(as.matrix(clr.cov.sum.nitro.ko.bin[,-1]))
@@ -538,7 +731,7 @@ nitro.hm1a<-ggplot(clr.nitro.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_Su
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
-ggsave(nitro.hm1a,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_MGMs_BinID_by_Function_heatmap.png", width=18, height=13, dpi=600)
+ggsave(nitro.hm1a,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen_KOFxns_MGMs_BinID_by_Function_heatmap.png", width=18, height=13, dpi=600)
 
 nitro.hm1b<-ggplot(clr.nitro.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -548,7 +741,7 @@ nitro.hm1b<-ggplot(clr.nitro.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_Su
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(nitro.hm1b,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_MGMs_BinID_by_Function_Pathway_heatmap.png", width=17, height=15, dpi=600)
+ggsave(nitro.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen_KOFxns_MGMs_BinID_by_Function_Pathway_heatmap.png", width=17, height=15, dpi=600)
 
 # nitro.hm1c<-ggplot(clr.nitro.all.bin, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -558,7 +751,7 @@ ggsave(nitro.hm1b,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 #
-# ggsave(nitro.hm1c,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=18, dpi=600)
+# ggsave(nitro.hm1c,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=15, height=18, dpi=600)
 
 nitro.hm1d<-ggplot(clr.nitro.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -568,7 +761,7 @@ nitro.hm1d<-ggplot(clr.nitro.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_Su
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
 
-ggsave(nitro.hm1d,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
+ggsave(nitro.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
 
 nitro.hm1e<-ggplot(clr.nitro.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -578,7 +771,7 @@ nitro.hm1e<-ggplot(clr.nitro.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_Su
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
 
-ggsave(nitro.hm1e,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=15, dpi=600)
+ggsave(nitro.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=15, dpi=600)
 #
 # nitro.hm1f<-ggplot(clr.nitro.all.bin, aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -588,7 +781,7 @@ ggsave(nitro.hm1e,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Depth_m~SampDate,scales="free", space = "free")
 #
-# ggsave(nitro.hm1f,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+# ggsave(nitro.hm1f,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
 #
 # nitro.hm1g<-ggplot(clr.nitro.all.bin, aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
@@ -598,7 +791,7 @@ ggsave(nitro.hm1e,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_wrap(.~SampDate)
 #
-# ggsave(nitro.hm1g,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+# ggsave(nitro.hm1g,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
 
 nitro.hm1e<-ggplot(clr.nitro.all.bin[clr.nitro.all.bin$Depth_m==0,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -608,7 +801,7 @@ nitro.hm1e<-ggplot(clr.nitro.all.bin[clr.nitro.all.bin$Depth_m==0,], aes(PathSho
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(nitro.hm1e,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_Pathways_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(nitro.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen_KOFxns_Pathways_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
 
 nitro.hm1f<-ggplot(clr.nitro.all.bin[clr.nitro.all.bin$Depth_m==5,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -618,7 +811,7 @@ nitro.hm1f<-ggplot(clr.nitro.all.bin[clr.nitro.all.bin$Depth_m==5,], aes(PathSho
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(nitro.hm1f,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_Pathways_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(nitro.hm1f,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen_KOFxns_Pathways_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
 
 nitro.hm1g<-ggplot(clr.nitro.all.bin[clr.nitro.all.bin$Depth_m==10,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -628,7 +821,176 @@ nitro.hm1g<-ggplot(clr.nitro.all.bin[clr.nitro.all.bin$Depth_m==10,], aes(PathSh
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(nitro.hm1g,filename = "figures/MGM_Figs/BinsOnly/Nitrogen/Nitrogen_KOFxns_Pathways_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(nitro.hm1g,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen_KOFxns_Pathways_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
+
+#### Pull out Nitrogen Metabolic Fxns from Binary Data ####
+
+nitro.ko.bin.bi<-bin_fxn.binary[,which(colnames(bin_fxn.binary) %in% nitro.fxns.bins$KO_ID)] # merge CLR data w/ N fxns found in contigs from KOFamScan
+nitro.ko.bin.bi$Bin_ID<-rownames(nitro.ko.bin.bi)
+nitro.ko.bin.bi.melt<-melt(nitro.ko.bin.bi, by="Bin_ID")
+colnames(nitro.ko.bin.bi.melt)[which(names(nitro.ko.bin.bi.melt) == "variable")] <- "KO_ID"
+colnames(nitro.ko.bin.bi.melt)[which(names(nitro.ko.bin.bi.melt) == "value")] <- "PresAb"
+head(nitro.ko.bin.bi.melt) #sanity check
+
+clr.nitro.ko.bin.bi<-merge(nitro.ko.bin.bi.melt,nitro.kegg,by.x=c("KO_ID"),by.y=c("KO_ID")) # merge data w/ KO assignments from KEGG db
+head(clr.nitro.ko.bin.bi)
+colnames(clr.nitro.ko.bin.bi)[which(names(clr.nitro.ko.bin.bi) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
+clr.cov.sum.nitro.ko.bin.bi<-as.data.frame(dcast(clr.nitro.ko.bin.bi, Bin_ID~KO_Function.KEGG, value.var="PresAb", fun.aggregate=sum)) ###just dcast, nothing is being added here!
+rownames(clr.cov.sum.nitro.ko.bin.bi)<-clr.cov.sum.nitro.ko.bin.bi$Bin_ID
+clr.cov.sum.nitro.ko.bin.bi[1:4,]
+
+# sanity check
+clr.cov.sum.nitro.ko.bin.bi$`nosZ; nitrous-oxide reductase [EC:1.7.2.4]`[1:4]
+head(clr.nitro.ko.bin.bi)
+
+#### Nitrogen Binary Heat Maps ####
+# see max & mean of summed
+max(clr.cov.sum.nitro.ko.bin[,-1])
+mean(as.matrix(clr.cov.sum.nitro.ko.bin[,-1]))
+
+# first heat map of nitro KOs
+heatmap(as.matrix(clr.cov.sum.nitro.ko.bin[,-1]), scale = "none")
+
+colSums(clr.cov.sum.nitro.ko.bin[,-1])
+#clr.cov.sum.nitro.ko.bin2 <- clr.cov.sum.nitro.ko.bin[,which(colSums(clr.cov.sum.nitro.ko.bin[,-1])>10)]
+
+heatmap(as.matrix(clr.cov.sum.nitro.ko.bin[,-1]), scale = "none")
+
+# prep for ggplot2 heatmap
+clr.nitro.ko.bin.bi[1:4,]
+
+clr.nitro.all.bin.bi1<-merge(clr.nitro.ko.bin.bi,bin_meta_scaled,by="Bin_ID")
+clr.nitro.all.bin.bi<-merge(clr.nitro.all.bin.bi1,mag_tax,by="Bin_ID")
+
+head(clr.nitro.all.bin.bi)
+clr.nitro.all.bin.bi$PlotBin = factor(clr.nitro.all.bin.bi$PlotBin, levels=unique(clr.nitro.all.bin.bi$PlotBin[order(clr.nitro.all.bin.bi$SampDate,clr.nitro.all.bin.bi$Depth_m)]), ordered=TRUE)
+clr.nitro.all.bin.bi$SampDate<-gsub("\\."," ",clr.nitro.all.bin.bi$SampDate)
+clr.nitro.all.bin.bi$SampDate<-factor(clr.nitro.all.bin.bi$SampDate, levels=c("August 2021","December 2021","April 2022"))
+clr.nitro.all.bin.bi$KO_Function.KEGG = factor(clr.nitro.all.bin.bi$KO_Function.KEGG, levels=unique(clr.nitro.all.bin.bi$KO_Function.KEGG[order(clr.nitro.all.bin.bi$Pathway)]), ordered=TRUE)
+
+# create shortened name for pathways
+clr.nitro.all.bin.bi$PathShort<-clr.nitro.all.bin.bi$Pathway
+# vvv can only do this type of renaming if variables are characters, not factors
+clr.nitro.all.bin.bi$PathShort[(clr.nitro.all.bin.bi$PathShort) == "Dissimilatory Nitrate Reduction"] <- "D. NO3 Red"
+clr.nitro.all.bin.bi$PathShort[(clr.nitro.all.bin.bi$PathShort) == "Assimilatory Nitrate Reduction"] <- "A. NO3 Red"
+
+# turn pathways & pathshort into factors
+clr.nitro.all.bin.bi$Pathway<-factor(clr.nitro.all.bin.bi$Pathway,levels=c("Assimilatory Nitrate Reduction","Dissimilatory Nitrate Reduction","Multiple Pathways","Denitrification","Anammox"))
+clr.nitro.all.bin.bi$PathShort<-factor(clr.nitro.all.bin.bi$PathShort,levels=c("A. NO3 Red","D. NO3 Red","Multiple Pathways","Denitrification","Anammox"))
+
+head(clr.nitro.all.bin.bi)
+
+# Figures
+nitro.bi.hm1a<-ggplot(clr.nitro.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Nitrogen Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
+
+ggsave(nitro.bi.hm1a,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/PresenceAbsence/Nitrogen_KOFxns_MGMs_BinID_by_Function_Binary_heatmap.png", width=18, height=13, dpi=600)
+
+nitro.bi.hm1b<-ggplot(clr.nitro.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Nitrogen Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+
+ggsave(nitro.bi.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/PresenceAbsence/Nitrogen_KOFxns_MGMs_BinID_by_Function_Pathway_Binary_heatmap.png", width=17, height=15, dpi=600)
+
+nitro.bi.hm1b2<-ggplot(clr.nitro.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Nitrogen Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+
+ggsave(nitro.bi.hm1b2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/PresenceAbsence/Nitrogen_KOFxns_MGMs_Genus_by_Function_Pathway_Binary_heatmap.png", width=17, height=15, dpi=600)
+
+nitro.bi.hm1d<-ggplot(clr.nitro.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Nitrogen Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
+
+ggsave(nitro.bi.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/PresenceAbsence/Nitrogen_KOFxns_MGMs_BinID_by_Function_SampDate_Binary_best_heatmap.png", width=20, height=13, dpi=600)
+
+nitro.bi.hm1d2<-ggplot(clr.nitro.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Nitrogen Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
+
+ggsave(nitro.bi.hm1d2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/PresenceAbsence/Nitrogen_KOFxns_MGMs_Genus_by_Function_SampDate_Binary_best_heatmap.png", width=20, height=13, dpi=600)
+
+nitro.bi.hm1e<-ggplot(clr.nitro.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Nitrogen Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
+
+ggsave(nitro.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/PresenceAbsence/Nitrogen_KOFxns_MGMs_BinID_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
+
+nitro.bi.hm1e2<-ggplot(clr.nitro.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Nitrogen Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
+
+ggsave(nitro.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/PresenceAbsence/Nitrogen_KOFxns_MGMs_Genus_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
+
+nitro.bi.hm1e2<-ggplot(clr.nitro.all.bin.bi, aes(Depth_m, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Nitrogen Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
+
+ggsave(nitro.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/PresenceAbsence/Nitrogen_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
+#
+# nitro.bi.hm1e0<-ggplot(clr.nitro.all.bin.bi[clr.nitro.all.bin.bi$Depth_m==0,], aes(PathShort, KO_Function.KEGG, fill=factor(PresAb))) +
+#   geom_tile(colour="black",size=0.25) +
+#   scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Nitrogen Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate)
+#
+# ggsave(nitro.bi.hm1e0,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/PresenceAbsence/Nitrogen_KOFxns_Bins_Pathways_Binary_0m_heatmap.png", width=18, height=18, dpi=600)
+#
+# nitro.bi.hm1e5<-ggplot(clr.nitro.all.bin.bi[clr.nitro.all.bin.bi$Depth_m==5,], aes(PathShort, KO_Function.KEGG, fill=factor(PresAb))) +
+#   geom_tile(colour="black",size=0.25) +
+#   scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Nitrogen Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
+#
+# ggsave(nitro.bi.hm1e5,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/PresenceAbsence/Nitrogen_KOFxns_Bins_Pathways_Binary_5m_heatmap.png", width=18, height=18, dpi=600)
+#
+# nitro.bi.hm1e6<-ggplot(clr.nitro.all.bin.bi[clr.nitro.all.bin.bi$Depth_m==10,], aes(PathShort, KO_Function.KEGG, fill=factor(PresAb))) +
+#   geom_tile(colour="black",size=0.25) +
+#   scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Nitrogen Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
+#
+# ggsave(nitro.bi.hm1e6,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/PresenceAbsence/Nitrogen_KOFxns_Bins_Pathways_Binary_10m_heatmap.png", width=18, height=18, dpi=600)
+
 
 #### Pull Out Carbon Metabolic Fxns from CLR data ####
 ## heatmaps of traits of interest
@@ -650,7 +1012,11 @@ clr.cov.sum.carb.ko.bin<-as.data.frame(dcast(clr.carb.ko.bin, Bin_ID~KO_Function
 rownames(clr.cov.sum.carb.ko.bin)<-clr.cov.sum.carb.ko.bin$Bin_ID
 clr.cov.sum.carb.ko.bin[1:4,1:4]
 
-### Carbon Heat Maps ####
+# sanity check
+clr.cov.sum.carb.ko.bin$`accB, bccP; acetyl-CoA carboxylase biotin carboxyl carrier protein`[1:4]
+head(clr.cov.sum.carb.ko.bin)
+
+#### Carbon Heat Maps ####
 # see max & mean of summed
 max(clr.cov.sum.carb.ko.bin[,-1])
 mean(as.matrix(clr.cov.sum.carb.ko.bin[,-1]))
@@ -667,7 +1033,7 @@ clr.carb.ko.bin[1:4,]
 clr.carb.all.bin1<-merge(clr.carb.ko.bin,bin_meta_scaled,by="Bin_ID")
 clr.carb.all.bin<-merge(clr.carb.all.bin1,mag_tax,by="Bin_ID")
 
-head(clr.sulf.all.bin)
+head(clr.carb.all.bin)
 clr.carb.all.bin$PlotBin = factor(clr.carb.all.bin$PlotBin, levels=unique(clr.carb.all.bin$PlotBin[order(clr.carb.all.bin$SampDate,clr.carb.all.bin$Depth_m)]), ordered=TRUE)
 clr.carb.all.bin$SampDate<-gsub("\\."," ",clr.carb.all.bin$SampDate)
 clr.carb.all.bin$SampDate<-factor(clr.carb.all.bin$SampDate, levels=c("August 2021","December 2021","April 2022"))
@@ -697,103 +1063,262 @@ min(clr.carb.all.bin$CLR_SumCovPerKO)
 # Figures
 carb.hm1a<-ggplot(clr.carb.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
-ggsave(carb.hm1a,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_MGMs_BinID_by_Function_heatmap.png", width=18, height=13, dpi=600)
+ggsave(carb.hm1a,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_BinID_by_Function_heatmap.png", width=18, height=13, dpi=600)
 
 carb.hm1b<-ggplot(clr.carb.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(carb.hm1b,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_MGMs_BinID_by_Function_Pathway_heatmap.png", width=17, height=20, dpi=600)
+ggsave(carb.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_Bins_BinID_by_Function_Pathway_heatmap.png", width=17, height=20, dpi=600)
 
-carb.hm1c<-ggplot(clr.carb.all.bin, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
-  geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+carb.hm1b1<-ggplot(clr.carb.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.15) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(carb.hm1c,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_MGMs_SampDate_Depth_by_Function_Pathway_heatmap.png", width=20, height=20, dpi=600)
+ggsave(carb.hm1b1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_Bins_Genus_by_Function_Pathway_heatmap.png", width=17, height=20, dpi=600)
 
 carb.hm1d<-ggplot(clr.carb.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs by Depth",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
 
-ggsave(carb.hm1d,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=18, dpi=600)
+ggsave(carb.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=18, dpi=600)
 
 carb.hm1e<-ggplot(clr.carb.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs by Depth",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
 
-ggsave(carb.hm1e,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=18, dpi=600)
+ggsave(carb.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=18, dpi=600)
 #
 # carb.hm1f<-ggplot(clr.carb.all.bin, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Depth_m~SampDate,scales="free", space = "free")
 #
-# ggsave(carb.hm1f,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+# ggsave(carb.hm1f,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
 #
 # carb.hm1g<-ggplot(clr.carb.all.bin, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_wrap(.~SampDate)
 #
-# ggsave(carb.hm1g,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
+# ggsave(carb.hm1g,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
 
 carb.hm1e<-ggplot(clr.carb.all.bin[clr.carb.all.bin$Depth_m==0,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(carb.hm1e,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_Pathways_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(carb.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_Bins_Pathways_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
 
 carb.hm1f<-ggplot(clr.carb.all.bin[clr.carb.all.bin$Depth_m==5,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(carb.hm1f,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_Pathways_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(carb.hm1f,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_Bins_Pathways_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
 
 carb.hm1g<-ggplot(clr.carb.all.bin[clr.carb.all.bin$Depth_m==10,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater Metagenomes - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 
-ggsave(carb.hm1g,filename = "figures/MGM_Figs/BinsOnly/Carbon/Carbon_KOFxns_Pathways_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
+ggsave(carb.hm1g,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_Bins_Pathways_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
+
+
+#### Pull out Carbon Metabolic Fxns from Binary Data ####
+carb.ko.bin.bi<-bin_fxn.binary[,which(colnames(bin_fxn.binary) %in% carb.fxns.bins$KO_ID)] # merge CLR data w/ N fxns found in contigs from KOFamScan
+carb.ko.bin.bi$Bin_ID<-rownames(carb.ko.bin.bi)
+carb.ko.bin.bi.melt<-melt(carb.ko.bin.bi, by="Bin_ID")
+colnames(carb.ko.bin.bi.melt)[which(names(carb.ko.bin.bi.melt) == "variable")] <- "KO_ID"
+colnames(carb.ko.bin.bi.melt)[which(names(carb.ko.bin.bi.melt) == "value")] <- "PresAb"
+head(carb.ko.bin.bi.melt) #sanity check
+
+clr.carb.ko.bin.bi<-merge(carb.ko.bin.bi.melt,carb.kegg,by.x=c("KO_ID"),by.y=c("KO_ID")) # merge data w/ KO assignments from KEGG db
+head(clr.carb.ko.bin.bi)
+colnames(clr.carb.ko.bin.bi)[which(names(clr.carb.ko.bin.bi) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
+clr.cov.sum.carb.ko.bin.bi<-as.data.frame(dcast(clr.carb.ko.bin.bi, Bin_ID~KO_Function.KEGG, value.var="PresAb", fun.aggregate=sum)) ###just dcast, nothing is being added here!
+rownames(clr.cov.sum.carb.ko.bin.bi)<-clr.cov.sum.carb.ko.bin.bi$Bin_ID
+clr.cov.sum.carb.ko.bin.bi[1:4,]
+
+# sanity check
+clr.cov.sum.carb.ko.bin.bi$`accB, bccP; acetyl-CoA carboxylase biotin carboxyl carrier protein`[1:4]
+head(clr.cov.sum.carb.ko.bin.bi)
+
+#### Carbon Binary Heat Maps ####
+# prep for ggplot2 heatmap
+clr.carb.ko.bin.bi[1:4,]
+clr.carb.all.bin.bi1<-merge(clr.carb.ko.bin.bi,bin_meta_scaled,by="Bin_ID")
+clr.carb.all.bin.bi<-merge(clr.carb.all.bin.bi1,mag_tax,by="Bin_ID")
+
+head(clr.carb.all.bin.bi)
+clr.carb.all.bin.bi$PlotBin = factor(clr.carb.all.bin.bi$PlotBin, levels=unique(clr.carb.all.bin.bi$PlotBin[order(clr.carb.all.bin.bi$SampDate,clr.carb.all.bin.bi$Depth_m)]), ordered=TRUE)
+clr.carb.all.bin.bi$SampDate<-gsub("\\."," ",clr.carb.all.bin.bi$SampDate)
+clr.carb.all.bin.bi$SampDate<-factor(clr.carb.all.bin.bi$SampDate, levels=c("August 2021","December 2021","April 2022"))
+
+unique(clr.carb.all.bin.bi$Pathway)
+clr.carb.all.bin.bi<-subset(clr.carb.all.bin.bi, clr.carb.all.bin.bi$Pathway!="Multiple Pathways")
+"Multiple Pathways" %in% clr.carb.all.bin.bi$Pathway
+clr.carb.all.bin.bi$PathShort<-clr.carb.all.bin.bi$Pathway
+clr.carb.all.bin.bi$PathShort[(clr.carb.all.bin.bi$PathShort) == "Reductive Citrate Cycle"] <- "Red.Citrate"
+clr.carb.all.bin.bi$PathShort[(clr.carb.all.bin.bi$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3HOP BC"
+clr.carb.all.bin.bi$PathShort[(clr.carb.all.bin.bi$PathShort) == "Phosphate acetyltransferase-acetate kinase Pathway"] <- "PAAK"
+clr.carb.all.bin.bi$PathShort[(clr.carb.all.bin.bi$PathShort) == "Reductive acetyl-CoA Pathway"] <- "Red.a-CoA"
+clr.carb.all.bin.bi$PathShort[(clr.carb.all.bin.bi$PathShort) == "Calvin Cycle"] <- "Calvin"
+
+clr.carb.all.bin.bi$Pathway<-factor(clr.carb.all.bin.bi$Pathway,levels=c("3-Hydroxypropionate Bi-cycle","Reductive Citrate Cycle","Phosphate acetyltransferase-acetate kinase Pathway","Reductive acetyl-CoA Pathway","Calvin Cycle"))
+clr.carb.all.bin.bi$PathShort<-factor(clr.carb.all.bin.bi$PathShort,levels=c("3HOP BC","Red.Citrate","PAAK","Red.a-CoA","Calvin"))
+
+clr.carb.all.bin.bi$KO_Function.KEGG = factor(clr.carb.all.bin.bi$KO_Function.KEGG, levels=unique(clr.carb.all.bin.bi$KO_Function.KEGG[order(clr.carb.all.bin.bi$Pathway)]), ordered=TRUE)
+
+head(clr.carb.all.bin.bi)
+
+# Figures
+carb.bi.hm1a<-ggplot(clr.carb.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Carbon Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
+
+ggsave(carb.bi.hm1a,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_BinID_by_Function_Binary_heatmap.png", width=18, height=13, dpi=600)
+
+carb.bi.hm1b<-ggplot(clr.carb.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Carbon Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+
+ggsave(carb.bi.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_BinID_by_Function_Pathway_Binary_heatmap.png", width=17, height=15, dpi=600)
+
+carb.bi.hm1b2<-ggplot(clr.carb.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Carbon Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+
+ggsave(carb.bi.hm1b2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_Genus_by_Function_Pathway_Binary_heatmap.png", width=17, height=15, dpi=600)
+
+carb.bi.hm1d<-ggplot(clr.carb.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Carbon Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
+
+ggsave(carb.bi.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_BinID_by_Function_SampDate_Binary_best_heatmap.png", width=20, height=13, dpi=600)
+
+carb.bi.hm1d2<-ggplot(clr.carb.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Carbon Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
+
+ggsave(carb.bi.hm1d2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_Genus_by_Function_SampDate_Binary_best_heatmap.png", width=20, height=13, dpi=600)
+
+carb.bi.hm1e<-ggplot(clr.carb.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Carbon Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
+
+ggsave(carb.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_BinID_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
+
+carb.bi.hm1e2<-ggplot(clr.carb.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Carbon Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
+
+ggsave(carb.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_Genus_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
+
+carb.bi.hm1e2<-ggplot(clr.carb.all.bin.bi, aes(Depth_m, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Carbon Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
+
+ggsave(carb.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
+#
+# carb.bi.hm1e0<-ggplot(clr.carb.all.bin.bi[clr.carb.all.bin.bi$Depth_m==0,], aes(PathShort, KO_Function.KEGG, fill=factor(PresAb))) +
+#   geom_tile(colour="black",size=0.25) +
+#   scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Carbon Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate)
+#
+# ggsave(carb.bi.hm1e0,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_Bins_Pathways_Binary_0m_heatmap.png", width=18, height=18, dpi=600)
+#
+# carb.bi.hm1e5<-ggplot(clr.carb.all.bin.bi[clr.carb.all.bin.bi$Depth_m==5,], aes(PathShort, KO_Function.KEGG, fill=factor(PresAb))) +
+#   geom_tile(colour="black",size=0.25) +
+#   scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Carbon Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
+#
+# ggsave(carb.bi.hm1e5,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_Bins_Pathways_Binary_5m_heatmap.png", width=18, height=18, dpi=600)
+#
+# carb.bi.hm1e6<-ggplot(clr.carb.all.bin.bi[clr.carb.all.bin.bi$Depth_m==10,], aes(PathShort, KO_Function.KEGG, fill=factor(PresAb))) +
+#   geom_tile(colour="black",size=0.25) +
+#   scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Carbon Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
+#
+# ggsave(carb.bi.hm1e6,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_Bins_Pathways_Binary_10m_heatmap.png", width=18, height=18, dpi=600)
 
 #### Homogeneity of Variance (CLR data only)- Composition by Groups ####
 ## betadisper to look at homogeneity of group dispersions (aka variance) when considering multiple variables
@@ -837,11 +1362,11 @@ TukeyHSD(mgm.disper5) # tells us which Sample Dates/category's dispersion MEANS 
 # April.2022-December.2021  -0.1126558 -3.047615 2.822304 0.9923919
 
 # Visualize dispersions
-png('figures/MGM_Figs/BinsOnly/SSW_MAG_Bin_pcoa_CLR_SummedCoverage_perKO_betadispersion_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/BinsOnly/FxnDiv/SSW_MAG_Bin_pcoa_CLR_SummedCoverage_perKO_betadispersion_sampledate.png',width = 700, height = 600, res=100)
 plot(mgm.disper5,main = "Centroids and Dispersion based on Aitchison Distance (CLR Data)", col=colorset1$SampDate_Color)
 dev.off()
 
-png('figures/MGM_Figs/BinsOnly/SSW_MAG_Bin_boxplot_CLR_SummedCoverage_perKO_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/BinsOnly/FxnDiv/SSW_MAG_Bin_boxplot_CLR_SummedCoverage_perKO_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
 boxplot(mgm.disper5,xlab="Sample Collection Date", main = "Distance to Centroid by Category (CLR Data)", sub="Based on Aitchison Distance", col=colorset1$SampDate_Color)
 dev.off()
 
@@ -863,11 +1388,11 @@ colfunc <- colorRampPalette(c("red", "blue"))
 colfunc(3)
 
 # Visualize dispersions
-png('figures/MGM_Figs/BinsOnly/ssw_MAG_Bin_pcoa_CLR_SummedCoverage_per_KO_betadispersion_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/BinsOnly/FxnDiv/ssw_MAG_Bin_pcoa_CLR_SummedCoverage_per_KO_betadispersion_depth.png',width = 700, height = 600, res=100)
 plot(mgm.disper6,main = "Centroids and Dispersion based on Aitchison Distance (CLR Data)", col=colfunc(3))
 dev.off()
 
-png('figures/MGM_Figs/BinsOnly/ssw_MAG_Bin_boxplot_CLR_SummedCoverage_per_KO_centroid_distance_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/BinsOnly/FxnDiv/ssw_MAG_Bin_boxplot_CLR_SummedCoverage_per_KO_centroid_distance_depth.png',width = 700, height = 600, res=100)
 boxplot(mgm.disper6,xlab="Sample Collection Depth", main = "Distance to Centroid by Category (CLR Data)", sub="Based on Aitchison Distance", col=colfunc(3))
 dev.off()
 ## Significant differences in homogeneities can be tested using either parametric or permutational tests,
