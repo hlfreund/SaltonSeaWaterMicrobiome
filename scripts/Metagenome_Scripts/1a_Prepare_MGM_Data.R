@@ -434,6 +434,14 @@ colSums(mgm_fxn_cpm)
 
 #write.table(mgm_fxn_cpm, file="data/Metagenomes/Analysis/MGM_NoBins_CopiesPerMillion_GeneCounts_2.27.23.txt", sep="\t", quote=F, col.names=T)
 
+#### Create Presence/Absence Table of Functions in MAGs ####
+ko.cov.sum_table[,-c(1)][1:4,1:4]
+
+mgm_fxn.binary<-counts_to_binary(ko.cov.sum_table[,-1]) # custom function to convert all counts to binary (presence/absence)
+# sanity check that function worked below
+mgm_fxn.binary[1:5,1:5]
+ko.cov.sum_table[,-c(1)][1:5,1:5]
+
 #### Compare Sequencing Depth Across Samples ####
 mgm.mr[1:4,(ncol(mgm.mr)-4):(ncol(mgm.mr))]
 total_mr_counts<-rowSums(mgm.mr[,-(ncol(mgm.mr))])
