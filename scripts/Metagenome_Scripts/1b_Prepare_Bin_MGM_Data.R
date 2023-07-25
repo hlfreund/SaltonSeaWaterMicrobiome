@@ -247,6 +247,9 @@ mgm_meta$SampDate_Color <- as.character(mgm_meta$SampDate_Color)
 rownames(mgm_meta)<-mgm_meta$SampleID
 # #save.image("data/Metagenomes/Analysis/mgm_MAG_analysis.Rdata")
 
+# create color palette for binary heat maps of function data
+binary.cols<-c("1"="red","0"="aliceblue")
+
 #### Scale Chem Data in Metadata ####
 head(mgm_meta)
 #meta_scaled<-subset(mgm_meta, select=-c(Salinity_ppt)) # drop salinity, for now
