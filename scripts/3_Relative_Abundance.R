@@ -1,6 +1,6 @@
 #### Set WD & Load Libraries ####
 getwd() # use setwd("path/to/files") if you are not in the right directory
-setwd("/Volumes/HLF_SSD/Aronson_Lab_Data/Salton_Sea/SaltonSeaWater")
+#setwd("/Volumes/HLF_SSD/Aronson_Lab_Data/Salton_Sea/SaltonSeaWater")
 suppressPackageStartupMessages({ # load packages quietly
   library(phyloseq)
   library(ggplot2)
@@ -570,7 +570,7 @@ head(b.fam.date.dep_m) ## relative abundance based on sum of counts by Family!
 b.fam.date.dep_m2<-as.data.frame(separate_wider_delim(data = b.fam.date.dep_m, col=SampDate_Depth, "_", names = c("SampDate", "Depth_m"))) # Separate SampDate & Depth column for Heatmap later
 b.fam.date.dep_m2$SampDate_Depth<-interaction(b.fam.date.dep_m2$SampDate,b.fam.date.dep_m2$Depth_m)
 
-b.fam.date.dep_m2$Depth_m<-factor(b.fam.date.dep_m2$Depth_m, levels=c("0","3","4","5","7","9","10","11"))
+b.fam.date.dep_m2$Depth_m<-factor(b.fam.date.dep_m2$Depth_m, levels=c("0","3","4","5","7","9","10","10.5"))
 b.fam.date.dep_m2$SampDate<-factor(b.fam.date.dep_m2$SampDate,levels=c("August.2021","December.2021","April.2022"))
 b.fam.date.dep_m2$SampDate_Depth<-gsub("(\\..*?)\\.","\\1-",b.fam.date.dep_m2$SampDate_Depth) # instructions on changing second period below
 # \\. - first period, .* is any character after that, ? suppresses greedy matching of .*, () - what we want to keep aka \\1
@@ -827,7 +827,7 @@ head(b.gen.date.dep_m) ## relative abundance based on sum of counts by genus!
 b.gen.date.dep_m2<-as.data.frame(separate_wider_delim(data = b.gen.date.dep_m, col=SampDate_Depth, "_", names = c("SampDate", "Depth_m"))) # Separate SampDate & Depth column for Heatmap later
 b.gen.date.dep_m2$SampDate_Depth<-interaction(b.gen.date.dep_m2$SampDate,b.gen.date.dep_m2$Depth_m)
 
-b.gen.date.dep_m2$Depth_m<-factor(b.gen.date.dep_m2$Depth_m, levels=c("0","3","4","5","7","9","10","11"))
+b.gen.date.dep_m2$Depth_m<-factor(b.gen.date.dep_m2$Depth_m, levels=c("0","3","4","5","7","9","10","10.5"))
 b.gen.date.dep_m2$SampDate<-factor(b.gen.date.dep_m2$SampDate,levels=c("August.2021","December.2021","April.2022"))
 b.gen.date.dep_m2$SampDate_Depth<-gsub("(\\..*?)\\.","\\1-",b.gen.date.dep_m2$SampDate_Depth)
 # \\. - first period, .* is any character after that, ? suppresses greedy matching of .*, () - what we want to keep aka \\1
@@ -958,7 +958,7 @@ aug.gen.dep_m$Genus<-gsub("^X.","",aug.gen.dep_m$Genus) # get rid of leading X. 
 aug.gen.dep_m$Genus<-gsub("\\.\\."," ",aug.gen.dep_m$Genus) # get rid of .. in species name --> . is regex
 head(aug.gen.dep_m) ## relative abundance based on sum of counts by genus!
 unique(aug.gen.dep_m$Depth_m)
-aug.gen.dep_m$Depth_m<-factor(aug.gen.dep_m$Depth_m, levels=c("0","3","4","5","7","9","10","11"))
+aug.gen.dep_m$Depth_m<-factor(aug.gen.dep_m$Depth_m, levels=c("0","3","4","5","7","9","10","10.5"))
 
 # Barplot by Depth
 
@@ -1149,7 +1149,7 @@ dec.gen.dep_m$Genus<-gsub("^X.","",dec.gen.dep_m$Genus) # get rid of leading X. 
 dec.gen.dep_m$Genus<-gsub("\\.\\."," ",dec.gen.dep_m$Genus) # get rid of .. in species name --> . is regex
 head(dec.gen.dep_m) ## relative abundance based on sum of counts by genus!
 unique(dec.gen.dep_m$Depth_m)
-dec.gen.dep_m$Depth_m<-factor(dec.gen.dep_m$Depth_m, levels=c("0","3","4","5","7","9","10","11"))
+dec.gen.dep_m$Depth_m<-factor(dec.gen.dep_m$Depth_m, levels=c("0","3","4","5","7","9","10","10.5"))
 
 # Barplot by Depth
 
@@ -1337,7 +1337,7 @@ apr.gen.dep_m$Genus<-gsub("^X.","",apr.gen.dep_m$Genus) # get rid of leading X. 
 apr.gen.dep_m$Genus<-gsub("\\.\\."," ",apr.gen.dep_m$Genus) # get rid of .. in species name --> . is regex
 head(apr.gen.dep_m) ## relative abundance based on sum of counts by genus!
 unique(apr.gen.dep_m$Depth_m)
-apr.gen.dep_m$Depth_m<-factor(apr.gen.dep_m$Depth_m, levels=c("0","3","4","5","7","9","10","11"))
+apr.gen.dep_m$Depth_m<-factor(apr.gen.dep_m$Depth_m, levels=c("0","3","4","5","7","9","10","10.5"))
 
 # Barplot by Depth
 
@@ -1424,7 +1424,7 @@ ds001.date.dep<-subset(b.RA_gen.date.dep, select=c(DS001, SampDate_Depth))
 ds001.date.dep.2<-as.data.frame(separate_wider_delim(data = ds001.date.dep, col=SampDate_Depth, "_", names = c("SampDate", "Depth_m"))) # Separate SampDate & Depth column for Heatmap later
 ds001.date.dep.2$SampDate_Depth<-interaction(ds001.date.dep.2$SampDate,ds001.date.dep.2$Depth_m)
 
-ds001.date.dep.2$Depth_m<-factor(ds001.date.dep.2$Depth_m, levels=c("0","3","4","5","7","9","10","11"))
+ds001.date.dep.2$Depth_m<-factor(ds001.date.dep.2$Depth_m, levels=c("0","3","4","5","7","9","10","10.5"))
 ds001.date.dep.2$SampDate<-factor(ds001.date.dep.2$SampDate,levels=c("August.2021","December.2021","April.2022"))
 ds001.date.dep.2$SampDate_Depth = factor(ds001.date.dep.2$SampDate_Depth, levels=unique(ds001.date.dep.2$SampDate_Depth[order(ds001.date.dep.2$Depth_m,ds001.date.dep.2$SampDate)]), ordered=TRUE)
 
