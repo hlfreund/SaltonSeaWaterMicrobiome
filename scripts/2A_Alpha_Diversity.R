@@ -108,7 +108,7 @@ class(bac.div.metadat) # want data frame
 
 unique(bac.div.metadat$SampleMonth) # see how many elements there are in the Group variable
 unique(bac.div.metadat$Depth_m) # see how many elements there are in the Group variable
-bac.div.metadat$Depth_m<-factor(bac.div.metadat$Depth_m, levels=c("0","3","4","5","7","9","10","11"))
+bac.div.metadat$Depth_m<-factor(bac.div.metadat$Depth_m, levels=c("0","3","4","5","7","9","10","10.5"))
 
 # drop the outliers
 #bac.div.metadat<-bac.div.metadat[bac.div.metadat$Bac_Shannon_Diversity<300 & bac.div.metadat$Bac_Species_Richness>100,]
