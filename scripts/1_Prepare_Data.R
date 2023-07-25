@@ -55,6 +55,10 @@ unique(bac.ASV_all$SampleID)
 
 # Clean up SampleIDs
 bac.ASV_all$SampleID<-gsub("m\\..*","m",bac.ASV_all$SampleID)
+bac.ASV_all$SampleID<-gsub("11m","10.5m",bac.ASV_all$SampleID)
+
+# Fix depth measurements
+bac.ASV_all$Depth_m<-gsub("11","10.5",bac.ASV_all$Depth_m)
 
 # Create ASV table
 bac.ASV_table <- as.data.frame(dcast(bac.ASV_all, SampleID~ASV_ID, value.var="Count", fun.aggregate=sum)) ###
@@ -92,11 +96,11 @@ head(meta1)
 dim(meta1)
 rownames(meta1)<-meta1$SampleID
 
-metadata<-merge(meta1, chem_meta, by=c("SampleID","Sample_Type","SampleMonth","SampleYear", "Depth_m", "SampleSource"))
+metadata<-merge(meta1, chem_meta, by=c("SampleID","Sample_Type","SampleMonth","SampleYear","Depth_m","SampleSource"))
 head(metadata)
 
 # create factor levels for certain groups
-metadata$Depth_m<-factor(metadata$Depth_m, levels=c("0","3","4","5","7","9","10","11"))
+metadata$Depth_m<-factor(metadata$Depth_m, levels=c("0","3","4","5","7","9","10","10.5"))
 
 metadata$SampDate<-interaction(metadata$SampleMonth,metadata$SampleYear)
 head(metadata)
