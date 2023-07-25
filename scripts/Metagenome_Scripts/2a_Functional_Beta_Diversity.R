@@ -56,9 +56,6 @@ head(mgm.clr.ars)
 ## For pathway analyses -- after gene coverage was calculated and added together per KO ID, they were added together for each pathway
 ## summed coverages per KO ID, then per pathway were transformed by CLR
 
-# create color palette for binary heat maps
-binary.cols<-c("1"="red","0"="white")
-
 #### Clustering by Features Across Samples ####
 
 # using CLR data first
@@ -561,7 +558,7 @@ sulf.hm1a7<-ggplot(clr.sulf.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCov
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
-        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathwaySpecific~SampDate, scales="free", space = "free")
 
@@ -571,7 +568,7 @@ sulf.hm1a8<-ggplot(clr.sulf.all, aes(SampleID, KO_Function.KEGG, fill=CLR_SumCov
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
-        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathSpecShort~SampDate, scales="free", space = "free")
 
@@ -754,14 +751,14 @@ clr.sulf.all.bi$PathShort<-factor(clr.sulf.all.bi$PathShort,levels=c("A.SO4 Red"
 clr.sulf.all.bi$PathSpecShort<-clr.sulf.all.bi$PathwaySpecific
 clr.sulf.all.bi$PathSpecShort[(clr.sulf.all.bi$PathSpecShort) == "Dissimilatory Sulfate Redox"] <- "D.SO4 RedOx"
 clr.sulf.all.bi$PathSpecShort[(clr.sulf.all.bi$PathSpecShort) == "Assimilatory Sulfate Reduction"] <- "A.SO4 Red"
-clr.sulf.all.bi$PathSpecShort[(clr.sulf.all.bi$PathSpecShort) == "Multiple Pathways"] <- "MultiPaths"
-clr.sulf.all.bi$PathSpecShort[(clr.sulf.all.bi$PathSpecShort) == "S Disproportionation"] <- "S Disprop."
+clr.sulf.all.bi$PathSpecShort[(clr.sulf.all.bi$PathSpecShort) == "Multiple Pathways"] <- "Multi"
+clr.sulf.all.bi$PathSpecShort[(clr.sulf.all.bi$PathSpecShort) == "Sulfur Disproportionation"] <- "S Disprop."
 clr.sulf.all.bi$PathSpecShort[(clr.sulf.all.bi$PathSpecShort) == "Sulfide Oxidation"] <- "H2S Ox"
 clr.sulf.all.bi$PathSpecShort[(clr.sulf.all.bi$PathSpecShort) == "Sulfite Oxidation"] <- "SO3 Ox"
 clr.sulf.all.bi$PathSpecShort[(clr.sulf.all.bi$PathSpecShort) == "Thiosulfate Oxidation"] <- "S2O3 Ox"
 
-clr.sulf.all.bi$PathwaySpecific<-factor(clr.sulf.all.bi$PathwaySpecific,levels=c("Assimilatory Sulfate Reduction","Dissimilatory Sulfate Redox","Multiple Pathways","SOX","S Disproportionation","Sulfide Oxidation","Sulfite Oxidation","Thiosulfate Oxidation"))
-clr.sulf.all.bi$PathSpecShort<-factor(clr.sulf.all.bi$PathSpecShort,levels=c("A.SO4 Red","D.SO4 RedOx","MultiPaths","S Disprop.","H2S Ox","SO3 Ox","S2O3 Ox"))
+clr.sulf.all.bi$PathwaySpecific<-factor(clr.sulf.all.bi$PathwaySpecific,levels=c("Assimilatory Sulfate Reduction","Dissimilatory Sulfate Redox","Multiple Pathways","Sulfur Disproportionation","Sulfide Oxidation","Sulfite Oxidation","Thiosulfate Oxidation"))
+clr.sulf.all.bi$PathSpecShort<-factor(clr.sulf.all.bi$PathSpecShort,levels=c("A.SO4 Red","D.SO4 RedOx","Multi","S Disprop.","H2S Ox","SO3 Ox","S2O3 Ox"))
 
 head(clr.sulf.all.bi)
 
@@ -776,45 +773,45 @@ sulf.bi.hm1a<-ggplot(clr.sulf.all.bi, aes(SampleID, KO_Function.KEGG, fill=facto
 
 ggsave(sulf.bi.hm1a,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_by_Function_Binary_heatmap.png", width=18, height=13, dpi=600)
 
-sulf.bi.hm1b<-ggplot(clr.sulf.all.bi, aes(SampleID, KO_Function.KEGG, fill=factor(PresAb))) +
+# sulf.bi.hm1b<-ggplot(clr.sulf.all.bi, aes(SampleID, KO_Function.KEGG, fill=factor(PresAb))) +
+#   geom_tile(colour="black",size=0.25) +
+#   scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater Metagenomes",fill="Presence/Absence") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+#
+# ggsave(sulf.bi.hm1b,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_by_Function_Pathway_Binary_heatmap.png", width=17, height=15, dpi=600)
+
+sulf.bi.hm1b2<-ggplot(clr.sulf.all.bi, aes(Depth_m, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater Metagenomes",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+
+ggsave(sulf.bi.hm1b2,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Depth_by_Function_Pathway_Binary_heatmap.png", width=17, height=15, dpi=600)
+
+sulf.bi.hm1c<-ggplot(clr.sulf.all.bi, aes(SampleID, KO_Function.KEGG, fill=factor(PresAb))) +
   geom_tile(colour="black",size=0.25) +
   scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater Metagenomes",fill="Presence/Absence") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
 
-ggsave(sulf.bi.hm1b,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_by_Function_Pathway_Binary_heatmap.png", width=17, height=15, dpi=600)
+ggsave(sulf.bi.hm1c,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_by_Function_SampDate_Binary_best_heatmap.png", width=20, height=13, dpi=600)
 
-sulf.bi.hm1b2<-ggplot(clr.sulf.all.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
+sulf.bi.hm1c2<-ggplot(clr.sulf.all.bi, aes(Depth_m, KO_Function.KEGG, fill=factor(PresAb))) +
   geom_tile(colour="black",size=0.25) +
   scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater Metagenomes",fill="Presence/Absence") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
-        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
 
-ggsave(sulf.bi.hm1b2,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Genus_by_Function_Pathway_Binary_heatmap.png", width=17, height=15, dpi=600)
-
-sulf.bi.hm1c2<-ggplot(clr.sulf.all.bi, aes(SampleID, KO_Function.KEGG, fill=factor(PresAb))) +
-  geom_tile(colour="black",size=0.25) +
-  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",fill="Presence/Absence") +
-  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
-        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
-        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathwaySpecific~SampDate, scales="free", space = "free")
-
-ggsave(sulf.bi.hm1c2,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_by_Function_SampDate_PathwaySpecific_Binary_best_heatmap.png", width=20, height=20, dpi=600)
-
-sulf.bi.hm1c3<-ggplot(clr.sulf.all.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
-  geom_tile(colour="black",size=0.25) +
-  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",fill="Presence/Absence") +
-  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
-        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
-        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathwaySpecific~SampDate, scales="free", space = "free")
-
-ggsave(sulf.bi.hm1c3,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Genus_by_Function_SampDate_PathwaySpecific_Binary_best_heatmap.png", width=20, height=20, dpi=600)
+ggsave(sulf.bi.hm1c2,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_Binary_best_heatmap.png", width=20, height=13, dpi=600)
 
 sulf.bi.hm1d<-ggplot(clr.sulf.all.bi, aes(SampleID, KO_Function.KEGG, fill=factor(PresAb))) +
   geom_tile(colour="black",size=0.25) +
@@ -822,41 +819,11 @@ sulf.bi.hm1d<-ggplot(clr.sulf.all.bi, aes(SampleID, KO_Function.KEGG, fill=facto
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
-
-ggsave(sulf.bi.hm1d,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_by_Function_SampDate_Binary_best_heatmap.png", width=20, height=13, dpi=600)
-
-sulf.bi.hm1d2<-ggplot(clr.sulf.all.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
-  geom_tile(colour="black",size=0.25) +
-  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater Metagenomes",fill="Presence/Absence") +
-  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
-        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
-        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
-
-ggsave(sulf.bi.hm1d2,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Genus_by_Function_SampDate_Binary_best_heatmap.png", width=20, height=13, dpi=600)
-
-sulf.bi.hm1e<-ggplot(clr.sulf.all.bi, aes(SampleID, KO_Function.KEGG, fill=factor(PresAb))) +
-  geom_tile(colour="black",size=0.25) +
-  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater Metagenomes",fill="Presence/Absence") +
-  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
-        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
-        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
 
-ggsave(sulf.bi.hm1e,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
+ggsave(sulf.bi.hm1d,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
 
-sulf.bi.hm1e2<-ggplot(clr.sulf.all.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
-  geom_tile(colour="black",size=0.25) +
-  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater Metagenomes",fill="Presence/Absence") +
-  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
-        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
-        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
-
-ggsave(sulf.bi.hm1e,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Genus_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
-
-sulf.bi.hm1e2<-ggplot(clr.sulf.all.bi, aes(Depth_m, KO_Function.KEGG, fill=factor(PresAb))) +
+sulf.bi.hm1d2<-ggplot(clr.sulf.all.bi, aes(Depth_m, KO_Function.KEGG, fill=factor(PresAb))) +
   geom_tile(colour="black",size=0.25) +
   scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater Metagenomes",fill="Presence/Absence") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
@@ -864,7 +831,27 @@ sulf.bi.hm1e2<-ggplot(clr.sulf.all.bi, aes(Depth_m, KO_Function.KEGG, fill=facto
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
 
-ggsave(sulf.bi.hm1e,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
+ggsave(sulf.bi.hm1d2,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
+
+# sulf.bi.hm1c2<-ggplot(clr.sulf.all.bi, aes(SampleID, KO_Function.KEGG, fill=factor(PresAb))) +
+#   geom_tile(colour="black",size=0.25) +
+#   scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",fill="Presence/Absence") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathwaySpecific~SampDate, scales="free", space = "free")
+#
+# ggsave(sulf.bi.hm1c2,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_by_Function_SampDate_PathwaySpecific_Binary_best_heatmap.png", width=20, height=20, dpi=600)
+
+sulf.bi.hm1e<-ggplot(clr.sulf.all.bi, aes(Depth_m, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathSpecShort~SampDate, scales="free", space = "free")
+
+ggsave(sulf.bi.hm1e,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_PathwaySpecific_Binary_best_heatmap.png", width=20, height=20, dpi=600)
 
 # sulf.bi.hm1e0<-ggplot(clr.sulf.all.bi[clr.sulf.all.bi$Depth_m==0,], aes(PathShort, KO_Function.KEGG, fill=factor(PresAb))) +
 #   geom_tile(colour="black",size=0.25) +
@@ -1319,14 +1306,14 @@ unique(clr.carb.all$Pathway)
 clr.carb.all<-subset(clr.carb.all, clr.carb.all$Pathway!="Multiple Pathways")
 "Multiple Pathways" %in% clr.carb.all$Pathway
 clr.carb.all$PathShort<-clr.carb.all$Pathway
-clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Reductive Citrate Cycle"] <- "Red.Citrate"
-clr.carb.all$PathShort[(clr.carb.all$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3HOP BC"
+clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Reductive Citrate Cycle"] <- "rTCA"
+clr.carb.all$PathShort[(clr.carb.all$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3HOP-BC"
 clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Phosphate acetyltransferase-acetate kinase Pathway"] <- "PAAK"
-clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Reductive acetyl-CoA Pathway"] <- "Red.a-CoA"
+clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Reductive acetyl-CoA Pathway"] <- "R.a-CoA"
 clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Calvin Cycle"] <- "Calvin"
 
 clr.carb.all$Pathway<-factor(clr.carb.all$Pathway,levels=c("3-Hydroxypropionate Bi-cycle","Reductive Citrate Cycle","Phosphate acetyltransferase-acetate kinase Pathway","Reductive acetyl-CoA Pathway","Calvin Cycle"))
-clr.carb.all$PathShort<-factor(clr.carb.all$PathShort,levels=c("3HOP BC","Red.Citrate","PAAK","Red.a-CoA","Calvin"))
+clr.carb.all$PathShort<-factor(clr.carb.all$PathShort,levels=c("3HOP-BC","rTCA","PAAK","R.a-CoA","Calvin"))
 
 clr.carb.all$KO_Function.KEGG = factor(clr.carb.all$KO_Function.KEGG, levels=unique(clr.carb.all$KO_Function.KEGG[order(clr.carb.all$Pathway)]), ordered=TRUE)
 
@@ -1519,14 +1506,14 @@ unique(clr.carb.all.bi$Pathway)
 clr.carb.all.bi<-subset(clr.carb.all.bi, clr.carb.all.bi$Pathway!="Multiple Pathways")
 "Multiple Pathways" %in% clr.carb.all.bi$Pathway
 clr.carb.all.bi$PathShort<-clr.carb.all.bi$Pathway
-clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "Reductive Citrate Cycle"] <- "Red.Citrate"
-clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3HOP BC"
+clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "Reductive Citrate Cycle"] <- "rTCA"
+clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3HOP-BC"
 clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "Phosphate acetyltransferase-acetate kinase Pathway"] <- "PAAK"
-clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "Reductive acetyl-CoA Pathway"] <- "Red.a-CoA"
+clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "Reductive acetyl-CoA Pathway"] <- "R.a-CoA"
 clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "Calvin Cycle"] <- "Calvin"
 
 clr.carb.all.bi$Pathway<-factor(clr.carb.all.bi$Pathway,levels=c("3-Hydroxypropionate Bi-cycle","Reductive Citrate Cycle","Phosphate acetyltransferase-acetate kinase Pathway","Reductive acetyl-CoA Pathway","Calvin Cycle"))
-clr.carb.all.bi$PathShort<-factor(clr.carb.all.bi$PathShort,levels=c("3HOP BC","Red.Citrate","PAAK","Red.a-CoA","Calvin"))
+clr.carb.all.bi$PathShort<-factor(clr.carb.all.bi$PathShort,levels=c("3HOP-BC","rTCA","PAAK","R.a-CoA","Calvin"))
 
 clr.carb.all.bi$KO_Function.KEGG = factor(clr.carb.all.bi$KO_Function.KEGG, levels=unique(clr.carb.all.bi$KO_Function.KEGG[order(clr.carb.all.bi$Pathway)]), ordered=TRUE)
 
