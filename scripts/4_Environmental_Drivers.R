@@ -1,6 +1,6 @@
 #### Set WD & Load Libraries ####
 getwd() # use setwd("path/to/files") if you are not in the right directory
-setwd("/Volumes/HLF_SSD/Aronson_Lab_Data/Salton_Sea/SaltonSeaWater")
+#setwd("/Volumes/HLF_SSD/Aronson_Lab_Data/Salton_Sea/SaltonSeaWater")
 suppressPackageStartupMessages({ # load packages quietly
   library(phyloseq)
   library(ggplot2)
@@ -36,7 +36,7 @@ suppressPackageStartupMessages({ # load packages quietly
 #### Load Global Env to Import Count/ASV Tables ####
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
 #load("data/SSW_Amplicon_EnvDriver.Rdata")
-load("data/SSW_Amplicon_EnvDriver_RDAsOnly.Rdata")
+#load("data/SSW_Amplicon_EnvDriver_RDAsOnly.Rdata")
 
 bac.dat.all[1:4,1:4]
 bac.ASV_table[,1:4]
