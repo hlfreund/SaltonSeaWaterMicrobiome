@@ -60,9 +60,6 @@ head(bin.clr.ars)
 # Gene coverage was then added together for each KO ID, since multiple genes were assigned the same KO ID
 # Summed coverage per KO was then transformed via median-ratio, vst, and clr
 
-# create color palette for binary heat maps
-binary.cols<-c("1"="red","0"="white")
-
 #### Functional Beta Diversity - CLR data ####
 bin.clr[1:4,1:4] # sample IDs are rows, genes are columns
 bin.ko.cov.sum_table[1:4,1:4] # sanity check
@@ -1042,14 +1039,16 @@ unique(clr.carb.all.bin$Pathway)
 clr.carb.all.bin<-subset(clr.carb.all.bin, clr.carb.all.bin$Pathway!="Multiple Pathways")
 "Multiple Pathways" %in% clr.carb.all.bin$Pathway
 clr.carb.all.bin$PathShort<-clr.carb.all.bin$Pathway
-clr.carb.all.bin$PathShort[(clr.carb.all.bin$PathShort) == "Reductive Citrate Cycle"] <- "Red.Citrate"
-clr.carb.all.bin$PathShort[(clr.carb.all.bin$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3HOP BC"
+clr.carb.all.bin$PathShort[(clr.carb.all.bin$PathShort) == "Reductive Citrate Cycle"] <- "rTCA"
+clr.carb.all.bin$PathShort[(clr.carb.all.bin$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3HOP-BC"
 clr.carb.all.bin$PathShort[(clr.carb.all.bin$PathShort) == "Phosphate acetyltransferase-acetate kinase Pathway"] <- "PAAK"
-clr.carb.all.bin$PathShort[(clr.carb.all.bin$PathShort) == "Reductive acetyl-CoA Pathway"] <- "Red.a-CoA"
+clr.carb.all.bin$PathShort[(clr.carb.all.bin$PathShort) == "Reductive acetyl-CoA Pathway"] <- "R.a-CoA"
 clr.carb.all.bin$PathShort[(clr.carb.all.bin$PathShort) == "Calvin Cycle"] <- "Calvin"
+#clr.carb.all.bin$PathShort[(clr.carb.all.bin$PathShort) == "TCA Cycle"] <- "TCA"
+
 
 clr.carb.all.bin$Pathway<-factor(clr.carb.all.bin$Pathway,levels=c("3-Hydroxypropionate Bi-cycle","Reductive Citrate Cycle","Phosphate acetyltransferase-acetate kinase Pathway","Reductive acetyl-CoA Pathway","Calvin Cycle"))
-clr.carb.all.bin$PathShort<-factor(clr.carb.all.bin$PathShort,levels=c("3HOP BC","Red.Citrate","PAAK","Red.a-CoA","Calvin"))
+clr.carb.all.bin$PathShort<-factor(clr.carb.all.bin$PathShort,levels=c("3HOP-BC","rTCA","PAAK","R.a-CoA","Calvin"))
 
 clr.carb.all.bin$KO_Function.KEGG = factor(clr.carb.all.bin$KO_Function.KEGG, levels=unique(clr.carb.all.bin$KO_Function.KEGG[order(clr.carb.all.bin$Pathway)]), ordered=TRUE)
 
@@ -1069,7 +1068,7 @@ carb.hm1a<-ggplot(clr.carb.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumC
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
-ggsave(carb.hm1a,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_BinID_by_Function_heatmap.png", width=18, height=13, dpi=600)
+ggsave(carb.hm1a,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_BinID_by_Function_heatmap.png", width=18, height=16, dpi=600)
 
 carb.hm1b<-ggplot(clr.carb.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -1079,38 +1078,38 @@ carb.hm1b<-ggplot(clr.carb.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumC
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(carb.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_Bins_BinID_by_Function_Pathway_heatmap.png", width=17, height=20, dpi=600)
+ggsave(carb.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_Bins_BinID_by_Function_Pathway_heatmap.png", width=22, height=20, dpi=600)
 
 carb.hm1b1<-ggplot(clr.carb.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs by Genus",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(carb.hm1b1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_Bins_Genus_by_Function_Pathway_heatmap.png", width=17, height=20, dpi=600)
+ggsave(carb.hm1b1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_Bins_Genus_by_Function_Pathway_heatmap.png", width=22, height=20, dpi=600)
 
-carb.hm1d<-ggplot(clr.carb.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+carb.hm1d<-ggplot(clr.carb.all.bin, aes(Bin_ID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs by Depth",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
-        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
-        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
-
-ggsave(carb.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=18, dpi=600)
-
-carb.hm1e<-ggplot(clr.carb.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
-  geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs by Depth",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
-  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
-        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
 
-ggsave(carb.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_Bins_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=18, dpi=600)
-#
+ggsave(carb.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_Bins_BinID_by_Function_SampDate_Pathway_best_heatmap.png", width=24, height=20, dpi=600)
+
+carb.hm1e<-ggplot(clr.carb.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs by Genus",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
+
+ggsave(carb.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_Bins_Genus_by_Function_SampDate_Pathway_best_heatmap.png", width=24, height=20, dpi=600)
+
 # carb.hm1f<-ggplot(clr.carb.all.bin, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
 #   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
@@ -1196,14 +1195,15 @@ unique(clr.carb.all.bin.bi$Pathway)
 clr.carb.all.bin.bi<-subset(clr.carb.all.bin.bi, clr.carb.all.bin.bi$Pathway!="Multiple Pathways")
 "Multiple Pathways" %in% clr.carb.all.bin.bi$Pathway
 clr.carb.all.bin.bi$PathShort<-clr.carb.all.bin.bi$Pathway
-clr.carb.all.bin.bi$PathShort[(clr.carb.all.bin.bi$PathShort) == "Reductive Citrate Cycle"] <- "Red.Citrate"
-clr.carb.all.bin.bi$PathShort[(clr.carb.all.bin.bi$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3HOP BC"
+clr.carb.all.bin.bi$PathShort[(clr.carb.all.bin.bi$PathShort) == "Reductive Citrate Cycle"] <- "rTCA"
+clr.carb.all.bin.bi$PathShort[(clr.carb.all.bin.bi$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3HOP-BC"
 clr.carb.all.bin.bi$PathShort[(clr.carb.all.bin.bi$PathShort) == "Phosphate acetyltransferase-acetate kinase Pathway"] <- "PAAK"
-clr.carb.all.bin.bi$PathShort[(clr.carb.all.bin.bi$PathShort) == "Reductive acetyl-CoA Pathway"] <- "Red.a-CoA"
+clr.carb.all.bin.bi$PathShort[(clr.carb.all.bin.bi$PathShort) == "Reductive acetyl-CoA Pathway"] <- "R.a-CoA"
 clr.carb.all.bin.bi$PathShort[(clr.carb.all.bin.bi$PathShort) == "Calvin Cycle"] <- "Calvin"
+#clr.carb.all.bin.bi$PathShort[(clr.carb.all.bin.bi$PathShort) == "TCA Cycle"] <- "TCA"
 
 clr.carb.all.bin.bi$Pathway<-factor(clr.carb.all.bin.bi$Pathway,levels=c("3-Hydroxypropionate Bi-cycle","Reductive Citrate Cycle","Phosphate acetyltransferase-acetate kinase Pathway","Reductive acetyl-CoA Pathway","Calvin Cycle"))
-clr.carb.all.bin.bi$PathShort<-factor(clr.carb.all.bin.bi$PathShort,levels=c("3HOP BC","Red.Citrate","PAAK","Red.a-CoA","Calvin"))
+clr.carb.all.bin.bi$PathShort<-factor(clr.carb.all.bin.bi$PathShort,levels=c("3HOP-BC","rTCA","PAAK","R.a-CoA","Calvin"))
 
 clr.carb.all.bin.bi$KO_Function.KEGG = factor(clr.carb.all.bin.bi$KO_Function.KEGG, levels=unique(clr.carb.all.bin.bi$KO_Function.KEGG[order(clr.carb.all.bin.bi$Pathway)]), ordered=TRUE)
 
@@ -1228,7 +1228,7 @@ carb.bi.hm1b<-ggplot(clr.carb.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=fa
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(carb.bi.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_BinID_by_Function_Pathway_Binary_heatmap.png", width=17, height=15, dpi=600)
+ggsave(carb.bi.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_BinID_by_Function_Pathway_Binary_heatmap.png", width=20, height=20, dpi=600)
 
 carb.bi.hm1b2<-ggplot(clr.carb.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
   geom_tile(colour="black",size=0.25) +
@@ -1238,7 +1238,7 @@ carb.bi.hm1b2<-ggplot(clr.carb.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=fac
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(carb.bi.hm1b2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_Genus_by_Function_Pathway_Binary_heatmap.png", width=17, height=15, dpi=600)
+ggsave(carb.bi.hm1b2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_Genus_by_Function_Pathway_Binary_heatmap.png", width=20, height=20, dpi=600)
 
 carb.bi.hm1d<-ggplot(clr.carb.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
   geom_tile(colour="black",size=0.25) +
@@ -1248,7 +1248,7 @@ carb.bi.hm1d<-ggplot(clr.carb.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=fa
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
 
-ggsave(carb.bi.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_BinID_by_Function_SampDate_Binary_best_heatmap.png", width=20, height=13, dpi=600)
+ggsave(carb.bi.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_BinID_by_Function_SampDate_Binary_best_heatmap.png", width=20, height=20, dpi=600)
 
 carb.bi.hm1d2<-ggplot(clr.carb.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
   geom_tile(colour="black",size=0.25) +
@@ -1258,7 +1258,7 @@ carb.bi.hm1d2<-ggplot(clr.carb.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=fac
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
 
-ggsave(carb.bi.hm1d2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_Genus_by_Function_SampDate_Binary_best_heatmap.png", width=20, height=13, dpi=600)
+ggsave(carb.bi.hm1d2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_Genus_by_Function_SampDate_Binary_best_heatmap.png", width=20, height=20, dpi=600)
 
 carb.bi.hm1e<-ggplot(clr.carb.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
   geom_tile(colour="black",size=0.25) +
@@ -1268,7 +1268,7 @@ carb.bi.hm1e<-ggplot(clr.carb.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=fa
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
 
-ggsave(carb.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_BinID_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
+ggsave(carb.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_BinID_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=22, height=20, dpi=600)
 
 carb.bi.hm1e2<-ggplot(clr.carb.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=factor(PresAb))) +
   geom_tile(colour="black",size=0.25) +
@@ -1278,18 +1278,8 @@ carb.bi.hm1e2<-ggplot(clr.carb.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=fac
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
 
-ggsave(carb.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_Genus_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
+ggsave(carb.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_Genus_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=20, dpi=600)
 
-carb.bi.hm1e2<-ggplot(clr.carb.all.bin.bi, aes(Depth_m, KO_Function.KEGG, fill=factor(PresAb))) +
-  geom_tile(colour="black",size=0.25) +
-  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Carbon Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
-  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
-        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
-        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
-
-ggsave(carb.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_Binary_best_heatmap.png", width=20, height=15, dpi=600)
-#
 # carb.bi.hm1e0<-ggplot(clr.carb.all.bin.bi[clr.carb.all.bin.bi$Depth_m==0,], aes(PathShort, KO_Function.KEGG, fill=factor(PresAb))) +
 #   geom_tile(colour="black",size=0.25) +
 #   scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Carbon Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
