@@ -82,7 +82,7 @@ b.phy_RA<-ggplot(b.phyla_RA_meta, aes(x=SampleID, y=Count, fill=Phylum))+geom_ba
   labs(title = "Microbial Phylum Relative Abundance", x="SampleID", y="Relative Abundance", fill="Phylum")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+guides(fill=guide_legend(ncol=2))+scale_y_continuous(expand = c(0,0),limits = c(0,1))
 
-ggsave(b.phy_RA,filename = "figures/RelativeAbundance/16S_Phyla.RA_barplot.png", width=12, height=10, dpi=600)
+ggsave(b.phy_RA,filename = "figures/RelativeAbundance/Phylum/16S_Phyla.RA_barplot.png", width=12, height=10, dpi=600)
 
 ggplot(b.phyla_RA_meta[b.phyla_RA_meta$Count>0.1,], aes(x=SampleID, y=Count, fill=Phylum))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
   labs(title = "Microbial Phylum Relative Abundance", x="SampleID", y="Relative Abundance", fill="Phylum")+
@@ -95,7 +95,7 @@ p.h1<-ggplot(b.phyla_RA_meta, aes(SampleID, Phylum, fill= Count)) +geom_tile()+s
   theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Sample ID", y="Microbial Phyla", title="Microbial Phyla & Sample Type",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
 
-ggsave(p.h1,filename = "figures/RelativeAbundance/16S_Phyla.RA_heatmap.png", width=12, height=10, dpi=600)
+ggsave(p.h1,filename = "figures/RelativeAbundance/Phylum/16S_Phyla.RA_heatmap.png", width=12, height=10, dpi=600)
 
 bac.dat.all[1:4,1:4]
 
@@ -129,7 +129,7 @@ tp1<-ggplot(b.phy.dep_m, aes(Phylum, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Phyla", y="Relative Abundance", title="Microbial Phyla & Depth",color="Depth (m)")
 
-ggsave(tp1,filename = "figures/RelativeAbundance/SSW_16S_Phyla.RA_depth_taxasum.png", width=15, height=10, dpi=600)
+ggsave(tp1,filename = "figures/RelativeAbundance/Phylum/SSW_16S_Phyla.RA_depth_taxasum.png", width=15, height=10, dpi=600)
 
 tp1a<-ggplot(b.phy.dep_m[b.phy.dep_m$Count>0.05,], aes(Phylum, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
@@ -138,7 +138,7 @@ tp1a<-ggplot(b.phy.dep_m[b.phy.dep_m$Count>0.05,], aes(Phylum, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Phyla", y="Relative Abundance", title="Microbial Phyla & Depth",color="Depth (m)")
 
-ggsave(tp1a,filename = "figures/RelativeAbundance/SSW_16S_Phyla.RA_depth_taxasum_5percent.png", width=15, height=10, dpi=600)
+ggsave(tp1a,filename = "figures/RelativeAbundance/Phylum/SSW_16S_Phyla.RA_depth_taxasum_5percent.png", width=15, height=10, dpi=600)
 
 # by Phylum + Sampling Date
 bac.phy.date <- as.data.frame(dcast(bac.dat.all,SampDate~Phylum, value.var="Count", fun.aggregate=sum)) ###
@@ -169,7 +169,7 @@ psd0<-ggplot(b.phy.date_m, aes(x=SampDate, y=Count, fill=Phylum))+geom_bar(stat=
   guides(fill=guide_legend(ncol=2))+
   scale_y_continuous(expand = c(0,0),limits = c(0,1))+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(psd0,filename = "figures/RelativeAbundance/16S_Phyla.RA_barplot_sampdate.png", width=12, height=10, dpi=600)
+ggsave(psd0,filename = "figures/RelativeAbundance/Phylum/16S_Phyla.RA_barplot_sampdate.png", width=12, height=10, dpi=600)
 
 # Taxonomic Summary by Sample Date
 
@@ -184,7 +184,7 @@ psd1<-ggplot(b.phy.date_m, aes(Phylum, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=0.5,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Phyla", y="Relative Abundance", title="Microbial Phyla & Sample Date")
 
-ggsave(psd1,filename = "figures/RelativeAbundance/SSW_16S_Phyla.RA_date_taxasum.png", width=15, height=10, dpi=600)
+ggsave(psd1,filename = "figures/RelativeAbundance/Phylum/SSW_16S_Phyla.RA_date_taxasum.png", width=15, height=10, dpi=600)
 
 psd1a<-ggplot(b.phy.date_m[b.phy.date_m$Count>0.05,], aes(Phylum, Count)) +
   geom_jitter(aes(color=factor(SampDate)), size=2, width=0.15, height=0) +
@@ -193,7 +193,7 @@ psd1a<-ggplot(b.phy.date_m[b.phy.date_m$Count>0.05,], aes(Phylum, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=0.5,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Phyla", y="Relative Abundance", title="Microbial Phyla & Sample Date")
 
-ggsave(psd1a,filename = "figures/RelativeAbundance/SSW_16S_Phyla.RA_date_taxasum_5percent.png", width=15, height=10, dpi=600)
+ggsave(psd1a,filename = "figures/RelativeAbundance/Phylum/SSW_16S_Phyla.RA_date_taxasum_5percent.png", width=15, height=10, dpi=600)
 
 #### Class Relative Abundance ####
 
@@ -230,7 +230,7 @@ b.cls_RA<-ggplot(b.class_RA_meta, aes(x=SampleID, y=Count, fill=Class))+geom_bar
   labs(title = "Relative Abundance of Microbial Classes", x="SampleID", y="Relative Abundance", fill="Class")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+guides(fill=guide_legend(ncol=2))+scale_y_continuous(expand = c(0,0),limits = c(0,1))
 
-ggsave(b.cls_RA,filename = "figures/RelativeAbundance/16S_Class.RA_barplot.png", width=12, height=10, dpi=600)
+ggsave(b.cls_RA,filename = "figures/RelativeAbundance/Class/16S_Class.RA_barplot.png", width=12, height=10, dpi=600)
 
 ggplot(b.class_RA_meta[b.class_RA_meta$Count>0.1,], aes(x=SampleID, y=Count, fill=Class))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
   labs(title = "Relative Abundance of Microbial Classes", x="SampleID", y="Relative Abundance", fill="Class")+
@@ -243,7 +243,7 @@ c.h1<-ggplot(b.class_RA_meta, aes(SampleID, Class, fill= Count)) +geom_tile()+sc
   theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Sample ID", y="Microbial Class", title="Microbial Class & Sample Type",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
 
-ggsave(c.h1,filename = "figures/RelativeAbundance/16S_class.RA_heatmap.png", width=12, height=10, dpi=600)
+ggsave(c.h1,filename = "figures/RelativeAbundance/Class/16S_class.RA_heatmap.png", width=12, height=10, dpi=600)
 
 bac.dat.all[1:4,1:4]
 
@@ -280,7 +280,7 @@ labs(title = "Relative Abundance of Microbial Classes", x="Depth (m)", y="Relati
   scale_y_continuous(expand = c(0,0),limits = c(0,1))
 #+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(cd1,filename = "figures/RelativeAbundance/SSW_16S_class.RA_barplot_depth.png", width=12, height=10, dpi=600)
+ggsave(cd1,filename = "figures/RelativeAbundance/Class/SSW_16S_class.RA_barplot_depth.png", width=12, height=10, dpi=600)
 
 cd1a<-ggplot(b.cls.dep_m[b.cls.dep_m$Count>0.05,], aes(x=Depth_m, y=Count, fill=Class))+geom_bar(stat="identity",colour="black")+theme_classic()+
   labs(title = "Relative Abundance of Microbial Classes", x="SampleID", y="Relative Abundance", fill="Class",subtitle="Only Relative Abundance > 5%")+
@@ -288,7 +288,7 @@ cd1a<-ggplot(b.cls.dep_m[b.cls.dep_m$Count>0.05,], aes(x=Depth_m, y=Count, fill=
   scale_y_continuous(expand = c(0,0),limits = c(0,1))
 #+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(cd1a,filename = "figures/RelativeAbundance/SSW_16S_class.RA_barplot_depth_5percent.png", width=12, height=10, dpi=600)
+ggsave(cd1a,filename = "figures/RelativeAbundance/Class/SSW_16S_class.RA_barplot_depth_5percent.png", width=12, height=10, dpi=600)
 
 # Taxonomic Summary by Depth
 
@@ -299,7 +299,7 @@ cd2<-ggplot(b.cls.dep_m, aes(Class, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Class", y="Relative Abundance", title="Microbial Class & Depth",color="Depth (m)")
 
-ggsave(cd2,filename = "figures/RelativeAbundance/SSW_16S_class.RA_depth_taxasum.png", width=15, height=10, dpi=600)
+ggsave(cd2,filename = "figures/RelativeAbundance/Class/SSW_16S_class.RA_depth_taxasum.png", width=15, height=10, dpi=600)
 
 cd2a<-ggplot(b.cls.dep_m[b.cls.dep_m$Count>0.05,], aes(Class, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
@@ -308,7 +308,7 @@ cd2a<-ggplot(b.cls.dep_m[b.cls.dep_m$Count>0.05,], aes(Class, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Class", y="Relative Abundance", title="Microbial Class & Depth",color="Depth (m)")
 
-ggsave(cd2a,filename = "figures/RelativeAbundance/SSW_16S_class.RA_depth_5percent_taxasum.png", width=15, height=10, dpi=600)
+ggsave(cd2a,filename = "figures/RelativeAbundance/Class/SSW_16S_class.RA_depth_5percent_taxasum.png", width=15, height=10, dpi=600)
 
 # by Class + Sampling Date
 bac.cls.date <- as.data.frame(dcast(bac.dat.all,SampDate~Class, value.var="Count", fun.aggregate=sum)) ###
@@ -340,14 +340,14 @@ csd1<-ggplot(b.cls.date_m, aes(x=SampDate, y=Count, fill=Class))+geom_bar(stat="
   guides(fill=guide_legend(ncol=3))+
   scale_y_continuous(expand = c(0,0),limits = c(0,1))+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(csd1,filename = "figures/RelativeAbundance/SSW_16S_class.RA_barplot_sampdate.png", width=12, height=10, dpi=600)
+ggsave(csd1,filename = "figures/RelativeAbundance/Class/SSW_16S_class.RA_barplot_sampdate.png", width=12, height=10, dpi=600)
 
 csd1<-ggplot(b.cls.date_m[b.cls.date_m$Count>0.05,], aes(x=SampDate, y=Count, fill=Class))+geom_bar(stat="identity",colour="black")+theme_classic()+
   labs(title = "Relative Abundance of Microbial Classes", x="SampleID", y="Relative Abundance", fill="Class",subtitle="Only Relative Abundance > 5%")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
   scale_y_continuous(expand = c(0,0),limits = c(0,1))+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(csd1,filename = "figures/RelativeAbundance/SSW_16S_class.RA_barplot_sampdate_5percent.png", width=12, height=10, dpi=600)
+ggsave(csd1,filename = "figures/RelativeAbundance/Class/SSW_16S_class.RA_barplot_sampdate_5percent.png", width=12, height=10, dpi=600)
 
 # Taxonomic Summary by Sample Date
 
@@ -362,7 +362,7 @@ csd2<-ggplot(b.cls.date_m, aes(Class, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=0.5,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Class", y="Relative Abundance", title="Microbial Class & Sample Date")
 
-ggsave(csd2,filename = "figures/RelativeAbundance/SSW_16S_class_RA_date_taxasum.png", width=15, height=10, dpi=600)
+ggsave(csd2,filename = "figures/RelativeAbundance/Class/SSW_16S_class_RA_date_taxasum.png", width=15, height=10, dpi=600)
 
 csd3<-ggplot(unique(b.cls.date_m[b.cls.date_m$Count>0.1,]), aes(Class, Count)) +
   geom_jitter(aes(color=factor(SampDate)), size=2, width=0.15, height=0) +
@@ -371,7 +371,186 @@ csd3<-ggplot(unique(b.cls.date_m[b.cls.date_m$Count>0.1,]), aes(Class, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=0.5,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Class", y="Relative Abundance", title="Microbial Class & Sample Date")
 
-ggsave(csd3,filename = "figures/RelativeAbundance/SSW_16S_class.RA_date_taxasum_5percent.png", width=15, height=10, dpi=600)
+ggsave(csd3,filename = "figures/RelativeAbundance/Class/SSW_16S_class.RA_date_taxasum_5percent.png", width=15, height=10, dpi=600)
+
+#### Order Relative Abundance ####
+
+# use dcast to count up ASVs within each Order across all of the samples
+b.ord_counts <- as.data.frame(dcast(bac.dat.all, SampleID~Order, value.var="Count", fun.aggregate=sum)) ###
+head(b.ord_counts) # counts by class per sample
+dim(b.ord_counts)
+rownames(b.ord_counts)<-b.ord_counts$SampleID
+b.ord_counts<-subset(b.ord_counts, select=-c(Unknown))
+
+b.ord_RelAb<-data.frame(decostand(b.ord_counts[,-1], method="total", MARGIN=1, na.rm=TRUE))
+# relative abundance of taxa data where everything is divided by col total (b/c Margin=1 meaning rows == SAMPLES in this case)
+rowSums(b.ord_RelAb) # sanity check to make sure the transformation worked!
+
+b.ord_RelAb$SampleID<-rownames(b.ord_RelAb)
+head(b.ord_RelAb)
+#write.csv(b.ord_RelAb,"16S_order_Relative_Abundance.csv",row.names=TRUE) # good to save just in case
+
+# melt down relativized data to merge with metadata
+b.ord_m<-melt(b.ord_RelAb)
+
+head(b.ord_m)
+colnames(b.ord_m)[which(names(b.ord_m) == "variable")] <- "Order"
+colnames(b.ord_m)[which(names(b.ord_m) == "value")] <- "Count"
+head(b.ord_m) ## relative abundance based on sum of counts by class!
+
+b.ord_RA_meta<-merge(b.ord_m,metadata, by="SampleID")
+head(b.ord_RA_meta) ## relative abundance based on sum of counts by class!
+b.ord_RA_meta$SampleID = factor(b.ord_RA_meta$SampleID, levels=unique(b.ord_RA_meta$SampleID[order(b.ord_RA_meta$SampDate,b.ord_RA_meta$Depth_m)]), ordered=TRUE)
+
+# Barplot by SampleID
+
+b.ord_RA<-ggplot(b.ord_RA_meta, aes(x=SampleID, y=Count, fill=Order))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
+  labs(title = "Relative Abundance of Microbial Orders", x="SampleID", y="Relative Abundance", fill="Order")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+guides(fill=guide_legend(ncol=2))+scale_y_continuous(expand = c(0,0),limits = c(0,1))
+
+ggsave(b.ord_RA,filename = "figures/RelativeAbundance/Order/16S_Order.RA_barplot.png", width=12, height=10, dpi=600)
+
+ggplot(b.ord_RA_meta[b.ord_RA_meta$Count>0.1,], aes(x=SampleID, y=Count, fill=Order))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
+  labs(title = "Relative Abundance of Microbial Orders", x="SampleID", y="Relative Abundance", fill="Order")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+guides(fill=guide_legend(ncol=2))+scale_y_continuous(expand = c(0,0),limits = c(0,1))
+
+head(b.ord_RA_meta)
+
+# Heatmap by SampleID
+o.h1<-ggplot(b.ord_RA_meta, aes(SampleID, Order, fill= Count)) +geom_tile()+scale_fill_gradient2(low="blue3",mid="white",high="red",midpoint=0.3)+
+  theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  labs(x="Sample ID", y="Microbial Order", title="Microbial Order & Sample Type",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
+
+ggsave(o.h1,filename = "figures/RelativeAbundance/Order/16S_order.RA_heatmap.png", width=12, height=10, dpi=600)
+
+bac.dat.all[1:4,1:4]
+
+# by Order + depth
+bac.ord.dep <- as.data.frame(dcast(bac.dat.all,Depth_m~Order, value.var="Count", fun.aggregate=sum)) ###
+head(bac.ord.dep) # counts by Order + sample depe
+rownames(bac.ord.dep)<-bac.ord.dep$Depth_m
+bac.ord.dep<-subset(bac.ord.dep, select=-c(Unknown))
+
+b.RA_ord.dep<-data.frame(decostand(bac.ord.dep[,-1], method="total", MARGIN=1, na.rm=TRUE))
+# relative abundance of taxa data where everything is divided by margin total (default MARGIN = 1 = rows) -- rows = samples
+rowSums(b.RA_ord.dep) # sanity check
+b.RA_ord.dep$Depth_m<-rownames(b.RA_ord.dep) # Depth_m is now a character, not a factor!
+head(b.RA_ord.dep)
+
+#melt down relativized data to merge with metadata
+b.ord.dep_m<-melt(b.RA_ord.dep, by="Depth_m")
+
+head(b.ord.dep_m)
+colnames(b.ord.dep_m)[which(names(b.ord.dep_m) == "variable")] <- "Order"
+colnames(b.ord.dep_m)[which(names(b.ord.dep_m) == "value")] <- "Count"
+head(b.ord.dep_m) ## relative abundance based on sum of counts by Order!
+
+b.ord.dep_m$Depth_m<-factor(b.ord.dep_m$Depth_m)
+#dep_meta<-unique(data.frame("Depth_m"=metadata$Depth_m, "Sample_Color"=metadata$Sample_Color))
+#p_dep_meta<-merge(dep_meta,b.ord.dep_m, by="Depth_m")
+
+# Barplot by Depth
+
+od1<-ggplot(b.ord.dep_m, aes(x=Depth_m, y=Count, fill=Order))+geom_bar(stat="identity",colour="black")+theme_classic()+
+  labs(title = "Relative Abundance of Microbial Orders", x="Depth (m)", y="Relative Abundance", fill="Order")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
+  guides(fill=guide_legend(ncol=3))+
+  scale_y_continuous(expand = c(0,0),limits = c(0,1))
+#+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
+
+ggsave(od1,filename = "figures/RelativeAbundance/Order/SSW_16S_order.RA_barplot_depth.png", width=12, height=10, dpi=600)
+
+od1a<-ggplot(b.ord.dep_m[b.ord.dep_m$Count>0.05,], aes(x=Depth_m, y=Count, fill=Order))+geom_bar(stat="identity",colour="black")+theme_classic()+
+  labs(title = "Relative Abundance of Microbial Orders", x="SampleID", y="Relative Abundance", fill="Order",subtitle="Only Relative Abundance > 5%")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
+  scale_y_continuous(expand = c(0,0),limits = c(0,1))
+#+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
+
+ggsave(od1a,filename = "figures/RelativeAbundance/Order/SSW_16S_order.RA_barplot_depth_5percent.png", width=12, height=10, dpi=600)
+
+# Taxonomic Summary by Depth
+
+od2<-ggplot(b.ord.dep_m, aes(Order, Count)) +
+  geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
+  scale_colour_gradient2(high="blue3",low="red",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
+  geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  labs(x="Microbial Order", y="Relative Abundance", title="Microbial Order & Depth",color="Depth (m)")
+
+ggsave(od2,filename = "figures/RelativeAbundance/Order/SSW_16S_order.RA_depth_taxasum.png", width=15, height=10, dpi=600)
+
+od2a<-ggplot(b.ord.dep_m[b.ord.dep_m$Count>0.05,], aes(Order, Count)) +
+  geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
+  scale_colour_gradient2(low="red",high="blue3",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
+  geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  labs(x="Microbial Order", y="Relative Abundance", title="Microbial Order & Depth",color="Depth (m)")
+
+ggsave(od2a,filename = "figures/RelativeAbundance/Order/SSW_16S_order.RA_depth_5percent_taxasum.png", width=15, height=10, dpi=600)
+
+# by Order + Sampling Date
+bac.ord.date <- as.data.frame(dcast(bac.dat.all,SampDate~Order, value.var="Count", fun.aggregate=sum)) ###
+head(bac.ord.date) # counts by Order + sample depe
+rownames(bac.ord.date)<-bac.ord.date$SampDate
+bac.ord.date<-subset(bac.ord.date, select=-c(Unknown))
+
+b.RA_ord.date<-data.frame(decostand(bac.ord.date[,-1], method="total", MARGIN=1, na.rm=TRUE))
+# relative abundance of taxa data where everything is divided by margin total (default MARGIN = 1 = rows) -- rows = samples
+rowSums(b.RA_ord.date) # sanity check
+b.RA_ord.date$SampDate<-rownames(b.RA_ord.date)
+head(b.RA_ord.date)
+
+#melt down relativized data to merge with metadata
+b.ord.date_m<-melt(b.RA_ord.date, by="SampDate")
+
+head(b.ord.date_m)
+colnames(b.ord.date_m)[which(names(b.ord.date_m) == "variable")] <- "Order"
+colnames(b.ord.date_m)[which(names(b.ord.date_m) == "value")] <- "Count"
+head(b.ord.date_m) ## relative abundance based on sum of counts by Order!
+
+b.ord.date_m$SampDate<-factor(b.ord.date_m$SampDate, levels=c("August.2021","December.2021","April.2022"))
+
+# Barplot by Sample Date
+
+osd1<-ggplot(b.ord.date_m, aes(x=SampDate, y=Count, fill=Order))+geom_bar(stat="identity",colour="black")+theme_classic()+
+  labs(title = "Relative Abundance of Microbial Orders", x="SampleID", y="Relative Abundance", fill="Order")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
+  guides(fill=guide_legend(ncol=3))+
+  scale_y_continuous(expand = c(0,0),limits = c(0,1))+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
+
+ggsave(osd1,filename = "figures/RelativeAbundance/Order/SSW_16S_order.RA_barplot_sampdate.png", width=12, height=10, dpi=600)
+
+osd1<-ggplot(b.ord.date_m[b.ord.date_m$Count>0.05,], aes(x=SampDate, y=Count, fill=Order))+geom_bar(stat="identity",colour="black")+theme_classic()+
+  labs(title = "Relative Abundance of Microbial Orders", x="SampleID", y="Relative Abundance", fill="Order",subtitle="Only Relative Abundance > 5%")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
+  scale_y_continuous(expand = c(0,0),limits = c(0,1))+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
+
+ggsave(osd1,filename = "figures/RelativeAbundance/Order/SSW_16S_order.RA_barplot_sampdate_5percent.png", width=12, height=10, dpi=600)
+
+# Taxonomic Summary by Sample Date
+
+#b.ord.date_m2<-merge(b.ord.date_m, metadata, by="SampDate")
+
+colorset1 # remember which date goes with each color
+
+osd2<-ggplot(b.ord.date_m, aes(Order, Count)) +
+  geom_jitter(aes(color=factor(SampDate)), size=2, width=0.15, height=0) +
+  scale_color_manual(name ="Sample Date", values=c("#ef781c","#03045e","#059c3f"), labels=c("August 2021","December 2021","April 2022")) +
+  geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=0.5,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  labs(x="Microbial Order", y="Relative Abundance", title="Microbial Order & Sample Date")
+
+ggsave(osd2,filename = "figures/RelativeAbundance/Order/SSW_16S_order_RA_date_taxasum.png", width=15, height=10, dpi=600)
+
+osd3<-ggplot(unique(b.ord.date_m[b.ord.date_m$Count>0.1,]), aes(Order, Count)) +
+  geom_jitter(aes(color=factor(SampDate)), size=2, width=0.15, height=0) +
+  scale_color_manual(name ="Sample Date", values=c("#ef781c","#03045e","#059c3f"), labels=c("August 2021","December 2021","April 2022")) +
+  geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=0.5,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  labs(x="Microbial Order", y="Relative Abundance", title="Microbial Order & Sample Date")
+
+ggsave(osd3,filename = "figures/RelativeAbundance/Order/SSW_16S_order.RA_date_taxasum_5percent.png", width=15, height=10, dpi=600)
+
 
 #### Family Relative Abundance ####
 
@@ -413,7 +592,7 @@ b.fam_RA<-ggplot(b.fam_RA_meta, aes(x=SampleID, y=Count, fill=Family))+geom_bar(
   labs(title = "Relative Abundance of Microbial Families", x="SampleID", y="Relative Abundance", fill="Family")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+guides(fill=guide_legend(ncol=2))+scale_y_continuous(expand = c(0,0),limits = c(0,1))
 
-ggsave(b.fam_RA,filename = "figures/RelativeAbundance/16S_fam.RA_barplot.png", width=12, height=10, dpi=600)
+ggsave(b.fam_RA,filename = "figures/RelativeAbundance/Family/16S_fam.RA_barplot.png", width=12, height=10, dpi=600)
 
 ggplot(b.fam_RA_meta[b.fam_RA_meta$Count>0.1,], aes(x=SampleID, y=Count, fill=Family))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
   labs(title = "Relative Abundance of Microbial Families", x="SampleID", y="Relative Abundance", fill="Family")+
@@ -427,7 +606,7 @@ f.h1<-ggplot(b.fam_RA_meta, aes(SampleID, Family, fill= Count)) +geom_tile()+sca
   theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Sample ID", y="Microbial Family", title="Microbial Families & Sample Type",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
 
-ggsave(f.h1,filename = "figures/RelativeAbundance/16S_fam.RA_heatmap.png", width=12, height=10, dpi=600)
+ggsave(f.h1,filename = "figures/RelativeAbundance/Family/16S_fam.RA_heatmap.png", width=12, height=10, dpi=600)
 
 bac.dat.all.f[1:4,1:4]
 
@@ -464,7 +643,7 @@ bac.dat.all.f[1:4,1:4]
 #   scale_y_continuous(expand = c(0,0),limits = c(0,1))
 # #+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 #
-# ggsave(fd1,filename = "figures/RelativeAbundance/SSW_16S_fam.RA_barplot_depth.png", width=12, height=10, dpi=600)
+# ggsave(fd1,filename = "figures/RelativeAbundance/Family/SSW_16S_fam.RA_barplot_depth.png", width=12, height=10, dpi=600)
 #
 # fd1a<-ggplot(b.fam.dep_m[b.fam.dep_m$Count>0.05,], aes(x=Depth_m, y=Count, fill=Family))+geom_bar(stat="identity",colour="black")+theme_classic()+
 #   labs(title = "Relative Abundance of Microbial Classes", x="SampleID", y="Relative Abundance", fill="Class",subtitle="Only Relative Abundance > 5%")+
@@ -472,7 +651,7 @@ bac.dat.all.f[1:4,1:4]
 #   scale_y_continuous(expand = c(0,0),limits = c(0,1))
 # #+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 #
-# ggsave(fd1a,filename = "figures/RelativeAbundance/SSW_16S_fam.RA_barplot_depth_5percent.png", width=12, height=10, dpi=600)
+# ggsave(fd1a,filename = "figures/RelativeAbundance/Family/SSW_16S_fam.RA_barplot_depth_5percent.png", width=12, height=10, dpi=600)
 #
 # # Taxonomic Summary by Depth
 #
@@ -483,7 +662,7 @@ bac.dat.all.f[1:4,1:4]
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
 #   labs(x="Microbial Family", y="Relative Abundance", title="Microbial Families & Depth",color="Depth (m)")
 #
-# ggsave(fd2,filename = "figures/RelativeAbundance/SSW_16S_fam.RA_depth_taxasum.png", width=15, height=10, dpi=600)
+# ggsave(fd2,filename = "figures/RelativeAbundance/Family/SSW_16S_fam.RA_depth_taxasum.png", width=15, height=10, dpi=600)
 #
 # fd2a<-ggplot(b.fam.dep_m[b.fam.dep_m$Count>0.05,], aes(Family, Count)) +
 #   geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
@@ -492,7 +671,7 @@ bac.dat.all.f[1:4,1:4]
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
 #   labs(x="Microbial Family", y="Relative Abundance", title="Microbial Families & Depth",color="Depth (m)")
 #
-# ggsave(fd2a,filename = "figures/RelativeAbundance/SSW_16S_fam.RA_depth_5percent_taxasum.png", width=15, height=10, dpi=600)
+# ggsave(fd2a,filename = "figures/RelativeAbundance/Family/SSW_16S_fam.RA_depth_5percent_taxasum.png", width=15, height=10, dpi=600)
 
 # by Family + Sampling Date
 bac.fam.date <- as.data.frame(dcast(bac.dat.all.f,SampDate~Family, value.var="Count", fun.aggregate=sum)) ###
@@ -525,7 +704,7 @@ fsd1<-ggplot(b.fam.date_m, aes(x=SampDate, y=Count, fill=Family))+geom_bar(stat=
   guides(fill=guide_legend(ncol=3))+
   scale_y_continuous(expand = c(0,0),limits = c(0,1))+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(fsd1,filename = "figures/RelativeAbundance/SSW_16S_fam.RA_barplot_sampdate.png", width=12, height=10, dpi=600)
+ggsave(fsd1,filename = "figures/RelativeAbundance/Family/SSW_16S_fam.RA_barplot_sampdate.png", width=12, height=10, dpi=600)
 
 fsd1a<-ggplot(b.fam.date_m[b.fam.date_m$Count>0.01,], aes(x=SampDate, y=Count, fill=Family))+geom_bar(stat="identity",colour="black")+theme_classic()+
   labs(title = "Relative Abundance of Microbial Families", x="SampleID", y="Relative Abundance", fill="Family",subtitle="Only Relative Abundance > 1%")+
@@ -533,7 +712,7 @@ fsd1a<-ggplot(b.fam.date_m[b.fam.date_m$Count>0.01,], aes(x=SampDate, y=Count, f
   guides(fill=guide_legend(ncol=2))+
   scale_y_continuous(expand = c(0,0),limits = c(0,1))+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(fsd1a,filename = "figures/RelativeAbundance/SSW_16S_fam.RA_barplot_sampdate_1percent.png", width=12, height=10, dpi=600)
+ggsave(fsd1a,filename = "figures/RelativeAbundance/Family/SSW_16S_fam.RA_barplot_sampdate_1percent.png", width=12, height=10, dpi=600)
 
 # Taxonomic Summary by Sample Date
 
@@ -548,7 +727,7 @@ fsd2<-ggplot(b.fam.date_m, aes(Family, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=0.5,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Family", y="Relative Abundance", title="Microbial Families & Sample Date")
 
-ggsave(fsd2,filename = "figures/RelativeAbundance/SSW_16S_fam.RA_date_taxasum.png", width=15, height=10, dpi=600)
+ggsave(fsd2,filename = "figures/RelativeAbundance/Family/SSW_16S_fam.RA_date_taxasum.png", width=15, height=10, dpi=600)
 
 fsd3<-ggplot(b.fam.date_m[b.fam.date_m$Count>0.1,], aes(Family, Count)) +
   geom_jitter(aes(color=factor(SampDate)), size=2, width=0.15, height=0) +
@@ -557,7 +736,7 @@ fsd3<-ggplot(b.fam.date_m[b.fam.date_m$Count>0.1,], aes(Family, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=0.5,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Family", y="Relative Abundance", title="Microbial Families & Sample Date")
 
-ggsave(fsd3,filename = "figures/RelativeAbundance/SSW_16S_fam.RA_date_taxasum_5percent.png", width=15, height=10, dpi=600)
+ggsave(fsd3,filename = "figures/RelativeAbundance/Family/SSW_16S_fam.RA_date_taxasum_5percent.png", width=15, height=10, dpi=600)
 
 # by Family + Sampling Date + Depth
 
@@ -601,14 +780,14 @@ f.sd.d.h1<-ggplot(b.fam.date.dep_m2[b.fam.date.dep_m2$Count>0.01,], aes(SampDate
   labs(x="Sampling Date - Depth (m)", y="Microbial Families", title="Microbial Families by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 1%",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
 #+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(f.sd.d.h1,filename = "figures/RelativeAbundance/16S_Families.RA_heatmap_date_depth_1perc.png", width=20, height=15, dpi=600)
+ggsave(f.sd.d.h1,filename = "figures/RelativeAbundance/Family/16S_Families.RA_heatmap_date_depth_1perc.png", width=20, height=15, dpi=600)
 
 f.sd.d.h2<-ggplot(b.fam.date.dep_m2[b.fam.date.dep_m2$Count>0.05,], aes(SampDate_Depth, Family, fill= Count)) +geom_tile()+scale_fill_gradient2(low="orange",mid="white",high="purple",midpoint=0.18)+
   theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Sampling Date - Depth (m)", y="Microbial Families", title="Microbial Families by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 1%",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
 #+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(f.sd.d.h2,filename = "figures/RelativeAbundance/16S_Families.RA_heatmap_date_depth_5perc.png", width=20, height=15, dpi=600)
+ggsave(f.sd.d.h2,filename = "figures/RelativeAbundance/Family/16S_Families.RA_heatmap_date_depth_5perc.png", width=20, height=15, dpi=600)
 
 # Taxonomic Summaries
 f.sd.d.hm.1<-ggplot(b.fam.date.dep_m2[b.fam.date.dep_m2$Count>0.01,], aes(Family, Count)) +
@@ -618,7 +797,7 @@ f.sd.d.hm.1<-ggplot(b.fam.date.dep_m2[b.fam.date.dep_m2$Count>0.01,], aes(Family
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Families", y="Relative Abundance", title="Microbial Families by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 1%",color="Depth (m)", shape="Sample Date")
 
-ggsave(f.sd.d.hm.1,filename = "figures/RelativeAbundance/SSW_16S_Families.RA_date_depth_taxasum_1perc.png", width=18, height=10, dpi=600)
+ggsave(f.sd.d.hm.1,filename = "figures/RelativeAbundance/Family/SSW_16S_Families.RA_date_depth_taxasum_1perc.png", width=18, height=10, dpi=600)
 ## ^ this figure includes the relative abundance of each organism by depth & date!!!
 
 f.sd.d.hm.2<-ggplot(b.fam.date.dep_m2[b.fam.date.dep_m2$Count>0.025,], aes(Family, Count)) +
@@ -628,7 +807,7 @@ f.sd.d.hm.2<-ggplot(b.fam.date.dep_m2[b.fam.date.dep_m2$Count>0.025,], aes(Famil
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Families", y="Relative Abundance", title="Microbial Families by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 2.5%",color="Depth (m)", shape="Sample Date")
 
-ggsave(f.sd.d.hm.2,filename = "figures/RelativeAbundance/SSW_16S_Families.RA_date_depth_taxasum_2.5perc.png", width=18, height=10, dpi=600)
+ggsave(f.sd.d.hm.2,filename = "figures/RelativeAbundance/Family/SSW_16S_Families.RA_date_depth_taxasum_2.5perc.png", width=18, height=10, dpi=600)
 
 f.sd.d.hm.3<-ggplot(b.fam.date.dep_m2[b.fam.date.dep_m2$Count>0.05,], aes(Family, Count)) +
   geom_jitter(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate), size=3, width=0.15, height=0) +
@@ -637,7 +816,7 @@ f.sd.d.hm.3<-ggplot(b.fam.date.dep_m2[b.fam.date.dep_m2$Count>0.05,], aes(Family
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Families", y="Relative Abundance", title="Microbial Families by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 5%",color="Depth (m)", shape="Sample Date")
 
-ggsave(f.sd.d.hm.3,filename = "figures/RelativeAbundance/SSW_16S_Families.RA_date_depth_taxasum_5perc.png", width=15, height=10, dpi=600)
+ggsave(f.sd.d.hm.3,filename = "figures/RelativeAbundance/Family/SSW_16S_Families.RA_date_depth_taxasum_5perc.png", width=15, height=10, dpi=600)
 
 #### Genus Relative Abundance ####
 # use dcast to count up ASVs within each Genus across all of the samples
@@ -686,35 +865,35 @@ b.gen_RA0<-ggplot(b.genus_RA_meta[b.genus_RA_meta$Count>0.01,], aes(x=PlotID, y=
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
   guides(fill=guide_legend(ncol=2))
 
-ggsave(b.gen_RA0,filename = "figures/RelativeAbundance/SSW_16S_Genera.Spec.RA_barplot_1perc.png", width=12, height=10, dpi=600)
+ggsave(b.gen_RA0,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.Spec.RA_barplot_1perc.png", width=12, height=10, dpi=600)
 
 b.gen_RA1<-ggplot(b.genus_RA_meta[b.genus_RA_meta$Count>0.05,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
   labs(title = "Microbial Genus Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes Taxa with Relative Abundance > 5%",fill="Genus")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
   guides(fill=guide_legend(ncol=1))
 
-ggsave(b.gen_RA1,filename = "figures/RelativeAbundance/SSW_16S_Genera.Spec.RA_barplot_5perc.png", width=12, height=10, dpi=600)
+ggsave(b.gen_RA1,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.Spec.RA_barplot_5perc.png", width=12, height=10, dpi=600)
 
 b.gen_RA2<-ggplot(b.genus_RA_meta[b.genus_RA_meta$Count>0.10,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
   labs(title = "Microbial Genus Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes Taxa with Relative Abundance > 10%",fill="Genus")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
   guides(fill=guide_legend(ncol=1))
 
-ggsave(b.gen_RA2,filename = "figures/RelativeAbundance/SSW_16S_Genera.Spec.RA_barplot_10perc.png", width=12, height=10, dpi=600)
+ggsave(b.gen_RA2,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.Spec.RA_barplot_10perc.png", width=12, height=10, dpi=600)
 
 b.gen_RA3<-ggplot(b.genus_RA_meta[b.genus_RA_meta$Count>0.25,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
   labs(title = "Microbial Genus Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes Taxa with Relative Abundance > 25%",fill="Genus")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
   guides(fill=guide_legend(ncol=1))
 
-ggsave(b.gen_RA3,filename = "figures/RelativeAbundance/SSW_16S_Genera.Spec.RA_barplot_25perc.png", width=12, height=10, dpi=600)
+ggsave(b.gen_RA3,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.Spec.RA_barplot_25perc.png", width=12, height=10, dpi=600)
 
 b.gen_RA4<-ggplot(b.genus_RA_meta[b.genus_RA_meta$Count>0.35,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
   labs(title = "Microbial Genus Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes taxa with Relative Abundance > 35%",fill="Genus")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
   guides(fill=guide_legend(ncol=1))
 
-ggsave(b.gen_RA4,filename = "figures/RelativeAbundance/SSW_16S_Genera.Spec.RA_barplot_35perc.png", width=12, height=10, dpi=600)
+ggsave(b.gen_RA4,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.Spec.RA_barplot_35perc.png", width=12, height=10, dpi=600)
 
 # prep for heatmap
 max(b.genus_RA_meta$Count)
@@ -728,13 +907,13 @@ g.h1<-ggplot(b.genus_RA_meta[b.genus_RA_meta$Count>0.01,], aes(PlotID, Genus_spe
   theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Sample ID", y="Microbial Genera", title="Microbial Genera & Sample Type",subtitle="Includes taxa with Relative Abundance > 1%",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
 
-ggsave(g.h1,filename = "figures/RelativeAbundance/16S_Genera.RA_heatmap_A_1perc.png", width=20, height=15, dpi=600)
+ggsave(g.h1,filename = "figures/RelativeAbundance/Genus/16S_Genera.RA_heatmap_A_1perc.png", width=20, height=15, dpi=600)
 
 g.h2<-ggplot(b.genus_RA_meta[b.genus_RA_meta$Count>0.05,], aes(PlotID, Genus_species, fill= Count)) +geom_tile()+scale_fill_gradient2(low="orange",mid="white",high="purple",midpoint=0.3)+
   theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Sample ID", y="Microbial Genera", title="Microbial Genera & Sample Type",subtitle="Includes taxa with Relative Abundance > 5%",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
 
-ggsave(g.h2,filename = "figures/RelativeAbundance/16S_Genera.RA_heatmap_B_5perc.png", width=16, height=10, dpi=600)
+ggsave(g.h2,filename = "figures/RelativeAbundance/Genus/16S_Genera.RA_heatmap_B_5perc.png", width=16, height=10, dpi=600)
 
 bac.dat.all[1:4,1:4]
 #
@@ -770,7 +949,7 @@ gsd1<-ggplot(b.gen.date_m[b.gen.date_m$Count>0.01,], aes(x=SampDate, y=Count, fi
   guides(fill=guide_legend(ncol=2))+
   scale_y_continuous(expand = c(0,0),limits = c(0,1))+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(gsd1,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_barplot.png", width=15, height=10, dpi=600)
+ggsave(gsd1,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.RA_date_barplot.png", width=15, height=10, dpi=600)
 
 # Taxonomic Summary by Sample Date
 
@@ -785,7 +964,7 @@ gsd1<-ggplot(b.gen.date_m[b.gen.date_m$Count>0.01,], aes(Genus, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=0.5,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Sample Date",subtitle="Includes taxa with Relative Abundance > 1%")
 
-ggsave(gsd1,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_taxasum_1perc.png", width=15, height=10, dpi=600)
+ggsave(gsd1,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.RA_date_taxasum_1perc.png", width=15, height=10, dpi=600)
 
 gsd1a<-ggplot(b.gen.date_m[b.gen.date_m$Count>0.01,], aes(Genus, Count)) +
   geom_jitter(aes(color=factor(SampDate)), size=3, width=0.15, height=0) +
@@ -794,7 +973,7 @@ gsd1a<-ggplot(b.gen.date_m[b.gen.date_m$Count>0.01,], aes(Genus, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Sample Date",subtitle="Includes taxa with Relative Abundance > 1%")+coord_flip()
 
-ggsave(gsd1a,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_taxasum_1perc_v2.png", width=15, height=10, dpi=600)
+ggsave(gsd1a,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.RA_date_taxasum_1perc_v2.png", width=15, height=10, dpi=600)
 
 gsd1b<-ggplot(b.gen.date_m[b.gen.date_m$Count>0.05,], aes(Genus, Count)) +
   geom_jitter(aes(color=factor(SampDate)), size=3, width=0.15, height=0) +
@@ -803,7 +982,7 @@ gsd1b<-ggplot(b.gen.date_m[b.gen.date_m$Count>0.05,], aes(Genus, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=0.5,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Sample Date")
 
-ggsave(gsd1b,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_taxasum_5percent.png", width=15, height=10, dpi=600)
+ggsave(gsd1b,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.RA_date_taxasum_5percent.png", width=15, height=10, dpi=600)
 
 gsd1c<-ggplot(b.gen.date_m[b.gen.date_m$Count>0.05,], aes(Genus, Count)) +
   geom_jitter(aes(color=factor(SampDate)), size=3, width=0.15, height=0) +
@@ -812,7 +991,7 @@ gsd1c<-ggplot(b.gen.date_m[b.gen.date_m$Count>0.05,], aes(Genus, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Sample Date")+coord_flip()
 
-ggsave(gsd1c,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_taxasum_5percent_v2.png", width=15, height=10, dpi=600)
+ggsave(gsd1c,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.RA_date_taxasum_5percent_v2.png", width=15, height=10, dpi=600)
 
 # by Genus + Sampling Date + Depth
 bac.gen.date.dep <- as.data.frame(dcast(bac.dat.all.g,SampDate+Depth_m~Genus, value.var="Count", fun.aggregate=sum)) ###
@@ -855,14 +1034,14 @@ g.sd.d.h1<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.01,], aes(SampDate
   labs(x="Sampling Date - Depth (m)", y="Microbial Genera", title="Microbial Genera by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 1%",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
 #+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(g.sd.d.h1,filename = "figures/RelativeAbundance/16S_Genera.RA_heatmap_date_depth_1perc.png", width=20, height=15, dpi=600)
+ggsave(g.sd.d.h1,filename = "figures/RelativeAbundance/Genus/16S_Genera.RA_heatmap_date_depth_1perc.png", width=20, height=15, dpi=600)
 
 g.sd.d.h2<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.05,], aes(SampDate_Depth, Genus, fill= Count)) +geom_tile()+scale_fill_gradient2(low="orange",mid="white",high="purple",midpoint=0.3)+
   theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Sampling Date - Depth (m)", y="Microbial Genera", title="Microbial Genera by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 1%",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
 #+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(g.sd.d.h2,filename = "figures/RelativeAbundance/16S_Genera.RA_heatmap_date_depth_5perc.png", width=20, height=15, dpi=600)
+ggsave(g.sd.d.h2,filename = "figures/RelativeAbundance/Genus/16S_Genera.RA_heatmap_date_depth_5perc.png", width=20, height=15, dpi=600)
 
 # Taxonomic Summaries
 g.sd.d.hm.1<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.01,], aes(Genus, Count)) +
@@ -872,7 +1051,7 @@ g.sd.d.hm.1<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.01,], aes(Genus,
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 1%",color="Depth (m)", shape="Sample Date")
 
-ggsave(g.sd.d.hm.1,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_depth_taxasum_1perc.png", width=18, height=10, dpi=600)
+ggsave(g.sd.d.hm.1,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.RA_date_depth_taxasum_1perc.png", width=18, height=10, dpi=600)
 ## ^ this figure includes the relative abundance of each organism by depth & date!!!
 
 g.sd.d.hm.2<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.025,], aes(Genus, Count)) +
@@ -882,7 +1061,7 @@ g.sd.d.hm.2<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.025,], aes(Genus
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 2.5%",color="Depth (m)", shape="Sample Date")
 
-ggsave(g.sd.d.hm.2,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_depth_taxasum_2.5perc.png", width=18, height=10, dpi=600)
+ggsave(g.sd.d.hm.2,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.RA_date_depth_taxasum_2.5perc.png", width=18, height=10, dpi=600)
 
 g.sd.d.hm.3<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.05,], aes(Genus, Count)) +
   geom_jitter(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate), size=3, width=0.15, height=0) +
@@ -891,7 +1070,7 @@ g.sd.d.hm.3<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.05,], aes(Genus,
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 5%",color="Depth (m)", shape="Sample Date")
 
-ggsave(g.sd.d.hm.3,filename = "figures/RelativeAbundance/SSW_16S_Genera.RA_date_depth_taxasum_5perc.png", width=15, height=10, dpi=600)
+ggsave(g.sd.d.hm.3,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.RA_date_depth_taxasum_5perc.png", width=15, height=10, dpi=600)
 
 #### Genus Relative Abundance - August ####
 # use dcast to count up ASVs within each Genus across aug of the samples
@@ -941,14 +1120,14 @@ b.gen_RA0<-ggplot(aug.genus_RA_meta[aug.genus_RA_meta$Count>0.01,], aes(x=PlotID
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
   guides(fill=guide_legend(ncol=2))
 
-ggsave(b.gen_RA0,filename = "figures/RelativeAbundance/August2021/SSW_16S_Genera.Spec.RA_barplot_1perc.png", width=12, height=10, dpi=600)
+ggsave(b.gen_RA0,filename = "figures/RelativeAbundance/Genus/August2021/SSW_16S_Genera.Spec.RA_barplot_1perc.png", width=12, height=10, dpi=600)
 
 b.gen_RA1<-ggplot(aug.genus_RA_meta[aug.genus_RA_meta$Count>0.05,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
   labs(title = "Microbial Genus Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes Taxa with Relative Abundance > 5%",fill="Genus")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
   guides(fill=guide_legend(ncol=1))
 
-ggsave(b.gen_RA1,filename = "figures/RelativeAbundance/August2021/SSW_16S_Genera.Spec.RA_barplot_5perc.png", width=12, height=10, dpi=600)
+ggsave(b.gen_RA1,filename = "figures/RelativeAbundance/Genus/August2021/SSW_16S_Genera.Spec.RA_barplot_5perc.png", width=12, height=10, dpi=600)
 
 # by Genus + depth
 aug.gen.dep <- as.data.frame(dcast(bac.dat.aug.g,Depth_m~Genus, value.var="Count", fun.aggregate=sum)) ###
@@ -982,7 +1161,7 @@ gd1<-ggplot(aug.gen.dep_m[aug.gen.dep_m$Count>0.01,], aes(x=Depth_m, y=Count, fi
   scale_y_continuous(expand = c(0,0),limits = c(0,1))+coord_flip() + scale_x_discrete(limits = rev(levels(aug.gen.dep_m$Depth_m)))
 #+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(gd1,filename = "figures/RelativeAbundance/August2021/SSW_16S_Aug21_Genus.RA_barplot_depth_1percent_B.png", width=12, height=10, dpi=600)
+ggsave(gd1,filename = "figures/RelativeAbundance/Genus/August2021/SSW_16S_Aug21_Genus.RA_barplot_depth_1percent_B.png", width=12, height=10, dpi=600)
 
 gd1a<-ggplot(aug.gen.dep_m[aug.gen.dep_m$Count>0.05,], aes(x=Depth_m, y=Count, fill=Genus))+geom_bar(stat="identity",colour="black")+theme_classic()+
   labs(title = "Relative Abundance of Microbial Genera - August 2021", x="Depth (m)", y="Relative Abundance", fill="Class",subtitle="Only Relative Abundance > 5%")+
@@ -990,14 +1169,14 @@ gd1a<-ggplot(aug.gen.dep_m[aug.gen.dep_m$Count>0.05,], aes(x=Depth_m, y=Count, f
   scale_y_continuous(expand = c(0,0),limits = c(0,1))
 #+ scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(gd1a,filename = "figures/RelativeAbundance/August2021/SSW_16S_Aug21_Genus.RA_barplot_depth_5percent_A.png", width=12, height=10, dpi=600)
+ggsave(gd1a,filename = "figures/RelativeAbundance/Genus/August2021/SSW_16S_Aug21_Genus.RA_barplot_depth_5percent_A.png", width=12, height=10, dpi=600)
 
 gd1b<-ggplot(aug.gen.dep_m[aug.gen.dep_m$Count>0.05,], aes(x=Depth_m, y=Count, fill=Genus))+geom_bar(stat="identity",colour="black")+theme_classic()+
   labs(title = "Relative Abundance of Microbial Genera - August 2021", x="Depth (m)", y="Relative Abundance", fill="Class",subtitle="Only Relative Abundance > 5%")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
   scale_y_continuous(expand = c(0,0),limits = c(0,1))+coord_flip() + scale_x_discrete(limits = rev(levels(aug.gen.dep_m$Depth_m)))
 
-ggsave(gd1b,filename = "figures/RelativeAbundance/August2021/SSW_16S_Aug21_Genus.RA_barplot_depth_5percent_B.png", width=12, height=10, dpi=600)
+ggsave(gd1b,filename = "figures/RelativeAbundance/Genus/August2021/SSW_16S_Aug21_Genus.RA_barplot_depth_5percent_B.png", width=12, height=10, dpi=600)
 
 # Taxonomic Summary by Depth
 
@@ -1010,7 +1189,7 @@ tg1<-ggplot(aug.gen.dep_m[aug.gen.dep_m$Count>0.01,], aes(Genus, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Depth - August 2021", subtitle="Includes taxa with Relative Abundance > 1%",color="Depth (m)")
 
-ggsave(tg1,filename = "figures/RelativeAbundance/August2021/SSW_16S_Aug21_Genera.RA_depth_taxasum_1perc.png", width=15, height=10, dpi=600)
+ggsave(tg1,filename = "figures/RelativeAbundance/Genus/August2021/SSW_16S_Aug21_Genera.RA_depth_taxasum_1perc.png", width=15, height=10, dpi=600)
 
 tg1a<-ggplot(aug.gen.dep_m[aug.gen.dep_m$Count>0.01,], aes(Genus, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=3, width=0.15, height=0) +
@@ -1019,7 +1198,7 @@ tg1a<-ggplot(aug.gen.dep_m[aug.gen.dep_m$Count>0.01,], aes(Genus, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Depth - August 2021", subtitle="Includes taxa with Relative Abundance > 1%",color="Depth (m)")+coord_flip()
 
-ggsave(tg1a,filename = "figures/RelativeAbundance/August2021/SSW_16S_Aug21_Genera.RA_depth_taxasum_1perc_v2.png", width=15, height=10, dpi=600)
+ggsave(tg1a,filename = "figures/RelativeAbundance/Genus/August2021/SSW_16S_Aug21_Genera.RA_depth_taxasum_1perc_v2.png", width=15, height=10, dpi=600)
 
 tg1b<-ggplot(aug.gen.dep_m[aug.gen.dep_m$Count>0.05,], aes(Genus, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=3, width=0.15, height=0) +
@@ -1028,7 +1207,7 @@ tg1b<-ggplot(aug.gen.dep_m[aug.gen.dep_m$Count>0.05,], aes(Genus, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Depth - August 2021", subtitle="Includes taxa with Relative Abundance > 5%",color="Depth (m)")
 
-ggsave(tg1b,filename = "figures/RelativeAbundance/August2021/SSW_16S_Aug21_Genera.RA_depth_taxasum_5percent.png", width=15, height=10, dpi=600)
+ggsave(tg1b,filename = "figures/RelativeAbundance/Genus/August2021/SSW_16S_Aug21_Genera.RA_depth_taxasum_5percent.png", width=15, height=10, dpi=600)
 
 tg1c<-ggplot(aug.gen.dep_m[aug.gen.dep_m$Count>0.05,], aes(Genus, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=3, width=0.15, height=0) +
@@ -1037,7 +1216,7 @@ tg1c<-ggplot(aug.gen.dep_m[aug.gen.dep_m$Count>0.05,], aes(Genus, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Depth - August 2021", subtitle="Includes taxa with Relative Abundance > 5%",color="Depth (m)")+coord_flip()
 
-ggsave(tg1c,filename = "figures/RelativeAbundance/August2021/SSW_16S_Aug21_Genera.RA_depth_taxasum_5percent_v2.png", width=15, height=10, dpi=600)
+ggsave(tg1c,filename = "figures/RelativeAbundance/Genus/August2021/SSW_16S_Aug21_Genera.RA_depth_taxasum_5percent_v2.png", width=15, height=10, dpi=600)
 
 
 
@@ -1089,35 +1268,35 @@ dec.genus_RA_meta$PlotID = factor(dec.genus_RA_meta$PlotID, levels=unique(dec.ge
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
 #   guides(fill=guide_legend(ncol=2))
 #
-# ggsave(b.gen_RA0,filename = "figures/RelativeAbundance/SSW_16S_Genera.Spec.RA_barplot_1perc.png", width=12, height=10, dpi=600)
+# ggsave(b.gen_RA0,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.Spec.RA_barplot_1perc.png", width=12, height=10, dpi=600)
 #
 # b.gen_RA1<-ggplot(dec.genus_RA_meta[dec.genus_RA_meta$Count>0.05,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
 #   labs(title = "Microbial Genus Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes Taxa with Relative Abundance > 5%",fill="Genus")+
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
 #   guides(fill=guide_legend(ncol=1))
 #
-# ggsave(b.gen_RA1,filename = "figures/RelativeAbundance/SSW_16S_Genera.Spec.RA_barplot_5perc.png", width=12, height=10, dpi=600)
+# ggsave(b.gen_RA1,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.Spec.RA_barplot_5perc.png", width=12, height=10, dpi=600)
 #
 # b.gen_RA2<-ggplot(dec.genus_RA_meta[dec.genus_RA_meta$Count>0.10,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
 #   labs(title = "Microbial Genus Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes Taxa with Relative Abundance > 10%",fill="Genus")+
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
 #   guides(fill=guide_legend(ncol=1))
 #
-# ggsave(b.gen_RA2,filename = "figures/RelativeAbundance/SSW_16S_Genera.Spec.RA_barplot_10perc.png", width=12, height=10, dpi=600)
+# ggsave(b.gen_RA2,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.Spec.RA_barplot_10perc.png", width=12, height=10, dpi=600)
 #
 # b.gen_RA3<-ggplot(dec.genus_RA_meta[dec.genus_RA_meta$Count>0.25,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
 #   labs(title = "Microbial Genus Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes Taxa with Relative Abundance > 25%",fill="Genus")+
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
 #   guides(fill=guide_legend(ncol=1))
 #
-# ggsave(b.gen_RA3,filename = "figures/RelativeAbundance/SSW_16S_Genera.Spec.RA_barplot_25perc.png", width=12, height=10, dpi=600)
+# ggsave(b.gen_RA3,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.Spec.RA_barplot_25perc.png", width=12, height=10, dpi=600)
 #
 # b.gen_RA4<-ggplot(dec.genus_RA_meta[dec.genus_RA_meta$Count>0.35,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
 #   labs(title = "Microbial Genus Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes taxa with Relative Abundance > 35%",fill="Genus")+
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
 #   guides(fill=guide_legend(ncol=1))
 #
-# ggsave(b.gen_RA4,filename = "figures/RelativeAbundance/SSW_16S_Genera.Spec.RA_barplot_35perc.png", width=12, height=10, dpi=600)
+# ggsave(b.gen_RA4,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.Spec.RA_barplot_35perc.png", width=12, height=10, dpi=600)
 #
 # # prep for heatmap
 # max(dec.genus_RA_meta$Count)
@@ -1131,13 +1310,13 @@ dec.genus_RA_meta$PlotID = factor(dec.genus_RA_meta$PlotID, levels=unique(dec.ge
 #   theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
 #   labs(x="Sample ID", y="Microbial Genera", title="Microbial Genera & Sample Type",subtitle="Includes taxa with Relative Abundance > 1%",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
 #
-# ggsave(g.h1,filename = "figures/RelativeAbundance/16S_Genera.RA_heatmap_A_1perc.png", width=20, height=15, dpi=600)
+# ggsave(g.h1,filename = "figures/RelativeAbundance/Genus/16S_Genera.RA_heatmap_A_1perc.png", width=20, height=15, dpi=600)
 #
 # g.h2<-ggplot(dec.genus_RA_meta[dec.genus_RA_meta$Count>0.05,], aes(PlotID, Genus_species, fill= Count)) +geom_tile()+scale_fill_gradient2(low="orange",mid="white",high="purple",midpoint=0.3)+
 #   theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
 #   labs(x="Sample ID", y="Microbial Genera", title="Microbial Genera & Sample Type",subtitle="Includes taxa with Relative Abundance > 5%",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
 #
-# ggsave(g.h2,filename = "figures/RelativeAbundance/16S_Genera.RA_heatmap_B_5perc.png", width=16, height=10, dpi=600)
+# ggsave(g.h2,filename = "figures/RelativeAbundance/Genus/16S_Genera.RA_heatmap_B_5perc.png", width=16, height=10, dpi=600)
 #
 # bac.dat.dec[1:4,1:4]
 
@@ -1172,21 +1351,21 @@ gd1<-ggplot(dec.gen.dep_m[dec.gen.dep_m$Count>0.01,], aes(x=Depth_m, y=Count, fi
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
   scale_y_continuous(expand = c(0,0),limits = c(0,1))+coord_flip() + scale_x_discrete(limits = rev(levels(dec.gen.dep_m$Depth_m)))
 
-ggsave(gd1,filename = "figures/RelativeAbundance/December2021/SSW_16S_Dec21_Genus.RA_barplot_depth_1percent_B.png", width=12, height=10, dpi=600)
+ggsave(gd1,filename = "figures/RelativeAbundance/Genus/December2021/SSW_16S_Dec21_Genus.RA_barplot_depth_1percent_B.png", width=12, height=10, dpi=600)
 
 gd1a<-ggplot(dec.gen.dep_m[dec.gen.dep_m$Count>0.05,], aes(x=Depth_m, y=Count, fill=Genus))+geom_bar(stat="identity",colour="black")+theme_classic()+
   labs(title = "Relative Abundance of Microbial Genera - December 2021", x="Depth (m)", y="Relative Abundance", fill="Class",subtitle="Only Relative Abundance > 5%")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
   scale_y_continuous(expand = c(0,0),limits = c(0,1))
 
-ggsave(gd1a,filename = "figures/RelativeAbundance/December2021/SSW_16S_Dec21_Genus.RA_barplot_depth_5percent_A.png", width=12, height=10, dpi=600)
+ggsave(gd1a,filename = "figures/RelativeAbundance/Genus/December2021/SSW_16S_Dec21_Genus.RA_barplot_depth_5percent_A.png", width=12, height=10, dpi=600)
 
 gd1b<-ggplot(dec.gen.dep_m[dec.gen.dep_m$Count>0.05,], aes(x=Depth_m, y=Count, fill=Genus))+geom_bar(stat="identity",colour="black")+theme_classic()+
   labs(title = "Relative Abundance of Microbial Genera - December 2021", x="Depth (m)", y="Relative Abundance", fill="Class",subtitle="Only Relative Abundance > 5%")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
   scale_y_continuous(expand = c(0,0),limits = c(0,1))+coord_flip() + scale_x_discrete(limits = rev(levels(dec.gen.dep_m$Depth_m)))
 
-ggsave(gd1b,filename = "figures/RelativeAbundance/December2021/SSW_16S_Dec21_Genus.RA_barplot_depth_5percent_B.png", width=12, height=10, dpi=600)
+ggsave(gd1b,filename = "figures/RelativeAbundance/Genus/December2021/SSW_16S_Dec21_Genus.RA_barplot_depth_5percent_B.png", width=12, height=10, dpi=600)
 
 # Taxonomic Summary by Depth
 
@@ -1199,7 +1378,7 @@ tg1<-ggplot(dec.gen.dep_m[dec.gen.dep_m$Count>0.01,], aes(Genus, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Depth - December 2021", subtitle="Includes taxa with Relative Abundance > 1%",color="Depth (m)")
 
-ggsave(tg1,filename = "figures/RelativeAbundance/December2021/SSW_16S_Dec21_Genera.RA_depth_taxasum_1perc.png", width=15, height=10, dpi=600)
+ggsave(tg1,filename = "figures/RelativeAbundance/Genus/December2021/SSW_16S_Dec21_Genera.RA_depth_taxasum_1perc.png", width=15, height=10, dpi=600)
 
 tg1a<-ggplot(dec.gen.dep_m[dec.gen.dep_m$Count>0.01,], aes(Genus, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=3, width=0.15, height=0) +
@@ -1208,7 +1387,7 @@ tg1a<-ggplot(dec.gen.dep_m[dec.gen.dep_m$Count>0.01,], aes(Genus, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Depth - December 2021", subtitle="Includes taxa with Relative Abundance > 1%",color="Depth (m)")+coord_flip()
 
-ggsave(tg1a,filename = "figures/RelativeAbundance/December2021/SSW_16S_Dec21_Genera.RA_depth_taxasum_1perc_v2.png", width=15, height=10, dpi=600)
+ggsave(tg1a,filename = "figures/RelativeAbundance/Genus/December2021/SSW_16S_Dec21_Genera.RA_depth_taxasum_1perc_v2.png", width=15, height=10, dpi=600)
 
 tg1b<-ggplot(dec.gen.dep_m[dec.gen.dep_m$Count>0.05,], aes(Genus, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=3, width=0.15, height=0) +
@@ -1217,7 +1396,7 @@ tg1b<-ggplot(dec.gen.dep_m[dec.gen.dep_m$Count>0.05,], aes(Genus, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Depth - December 2021", subtitle="Includes taxa with Relative Abundance > 5%",color="Depth (m)")
 
-ggsave(tg1b,filename = "figures/RelativeAbundance/December2021/SSW_16S_Dec21_Genera.RA_depth_taxasum_5percent.png", width=15, height=10, dpi=600)
+ggsave(tg1b,filename = "figures/RelativeAbundance/Genus/December2021/SSW_16S_Dec21_Genera.RA_depth_taxasum_5percent.png", width=15, height=10, dpi=600)
 
 tg1c<-ggplot(dec.gen.dep_m[dec.gen.dep_m$Count>0.05,], aes(Genus, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=3, width=0.15, height=0) +
@@ -1226,7 +1405,7 @@ tg1c<-ggplot(dec.gen.dep_m[dec.gen.dep_m$Count>0.05,], aes(Genus, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Depth - December 2021", subtitle="Includes taxa with Relative Abundance > 5%",color="Depth (m)")+coord_flip()
 
-ggsave(tg1c,filename = "figures/RelativeAbundance/December2021/SSW_16S_Dec21_Genera.RA_depth_taxasum_5percent_v2.png", width=15, height=10, dpi=600)
+ggsave(tg1c,filename = "figures/RelativeAbundance/Genus/December2021/SSW_16S_Dec21_Genera.RA_depth_taxasum_5percent_v2.png", width=15, height=10, dpi=600)
 
 
 #### Genus Relative Abundance - April ####
@@ -1277,35 +1456,35 @@ apr.genus_RA_meta$PlotID = factor(apr.genus_RA_meta$PlotID, levels=unique(apr.ge
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
 #   guides(fill=guide_legend(ncol=2))
 #
-# ggsave(b.gen_RA0,filename = "figures/RelativeAbundance/SSW_16S_Genera.Spec.RA_barplot_1perc.png", width=12, height=10, dpi=600)
+# ggsave(b.gen_RA0,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.Spec.RA_barplot_1perc.png", width=12, height=10, dpi=600)
 #
 # b.gen_RA1<-ggplot(apr.genus_RA_meta[apr.genus_RA_meta$Count>0.05,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
 #   labs(title = "Microbial Genus Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes Taxa with Relative Abundance > 5%",fill="Genus")+
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
 #   guides(fill=guide_legend(ncol=1))
 #
-# ggsave(b.gen_RA1,filename = "figures/RelativeAbundance/SSW_16S_Genera.Spec.RA_barplot_5perc.png", width=12, height=10, dpi=600)
+# ggsave(b.gen_RA1,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.Spec.RA_barplot_5perc.png", width=12, height=10, dpi=600)
 #
 # b.gen_RA2<-ggplot(apr.genus_RA_meta[apr.genus_RA_meta$Count>0.10,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
 #   labs(title = "Microbial Genus Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes Taxa with Relative Abundance > 10%",fill="Genus")+
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
 #   guides(fill=guide_legend(ncol=1))
 #
-# ggsave(b.gen_RA2,filename = "figures/RelativeAbundance/SSW_16S_Genera.Spec.RA_barplot_10perc.png", width=12, height=10, dpi=600)
+# ggsave(b.gen_RA2,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.Spec.RA_barplot_10perc.png", width=12, height=10, dpi=600)
 #
 # b.gen_RA3<-ggplot(apr.genus_RA_meta[apr.genus_RA_meta$Count>0.25,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
 #   labs(title = "Microbial Genus Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes Taxa with Relative Abundance > 25%",fill="Genus")+
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
 #   guides(fill=guide_legend(ncol=1))
 #
-# ggsave(b.gen_RA3,filename = "figures/RelativeAbundance/SSW_16S_Genera.Spec.RA_barplot_25perc.png", width=12, height=10, dpi=600)
+# ggsave(b.gen_RA3,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.Spec.RA_barplot_25perc.png", width=12, height=10, dpi=600)
 #
 # b.gen_RA4<-ggplot(apr.genus_RA_meta[apr.genus_RA_meta$Count>0.35,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
 #   labs(title = "Microbial Genus Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes taxa with Relative Abundance > 35%",fill="Genus")+
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
 #   guides(fill=guide_legend(ncol=1))
 #
-# ggsave(b.gen_RA4,filename = "figures/RelativeAbundance/SSW_16S_Genera.Spec.RA_barplot_35perc.png", width=12, height=10, dpi=600)
+# ggsave(b.gen_RA4,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.Spec.RA_barplot_35perc.png", width=12, height=10, dpi=600)
 #
 # # prep for heatmap
 # max(apr.genus_RA_meta$Count)
@@ -1319,13 +1498,13 @@ apr.genus_RA_meta$PlotID = factor(apr.genus_RA_meta$PlotID, levels=unique(apr.ge
 #   theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
 #   labs(x="Sample ID", y="Microbial Genera", title="Microbial Genera & Sample Type",subtitle="Includes taxa with Relative Abundance > 1%",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
 #
-# ggsave(g.h1,filename = "figures/RelativeAbundance/16S_Genera.RA_heatmap_A_1perc.png", width=20, height=15, dpi=600)
+# ggsave(g.h1,filename = "figures/RelativeAbundance/Genus/16S_Genera.RA_heatmap_A_1perc.png", width=20, height=15, dpi=600)
 #
 # g.h2<-ggplot(apr.genus_RA_meta[apr.genus_RA_meta$Count>0.05,], aes(PlotID, Genus_species, fill= Count)) +geom_tile()+scale_fill_gradient2(low="orange",mid="white",high="purple",midpoint=0.3)+
 #   theme_classic()+theme(axis.title.x = element_text(size=13,vjust=-0.5),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
 #   labs(x="Sample ID", y="Microbial Genera", title="Microbial Genera & Sample Type",subtitle="Includes taxa with Relative Abundance > 5%",fill="Relative Abundance")+scale_x_discrete(expand = c(0,0))
 #
-# ggsave(g.h2,filename = "figures/RelativeAbundance/16S_Genera.RA_heatmap_B_5perc.png", width=16, height=10, dpi=600)
+# ggsave(g.h2,filename = "figures/RelativeAbundance/Genus/16S_Genera.RA_heatmap_B_5perc.png", width=16, height=10, dpi=600)
 #
 # bac.dat.apr[1:4,1:4]
 
@@ -1360,21 +1539,21 @@ gd1<-ggplot(apr.gen.dep_m[apr.gen.dep_m$Count>0.01,], aes(x=Depth_m, y=Count, fi
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
   scale_y_continuous(expand = c(0,0),limits = c(0,1))+coord_flip() + scale_x_discrete(limits = rev(levels(apr.gen.dep_m$Depth_m)))
 
-ggsave(gd1,filename = "figures/RelativeAbundance/April2022/SSW_16S_Apr22_Genus.RA_barplot_depth_1percent_B.png", width=12, height=10, dpi=600)
+ggsave(gd1,filename = "figures/RelativeAbundance/Genus/April2022/SSW_16S_Apr22_Genus.RA_barplot_depth_1percent_B.png", width=12, height=10, dpi=600)
 
 gd1a<-ggplot(apr.gen.dep_m[apr.gen.dep_m$Count>0.05,], aes(x=Depth_m, y=Count, fill=Genus))+geom_bar(stat="identity",colour="black")+theme_classic()+
   labs(title = "Relative Abundance of Microbial Genera - April 2022", x="Depth (m)", y="Relative Abundance", fill="Class",subtitle="Only Relative Abundance > 5%")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
   scale_y_continuous(expand = c(0,0),limits = c(0,1))
 
-ggsave(gd1a,filename = "figures/RelativeAbundance/April2022/SSW_16S_Apr22_Genus.RA_barplot_depth_5percent_A.png", width=12, height=10, dpi=600)
+ggsave(gd1a,filename = "figures/RelativeAbundance/Genus/April2022/SSW_16S_Apr22_Genus.RA_barplot_depth_5percent_A.png", width=12, height=10, dpi=600)
 
 gd1b<-ggplot(apr.gen.dep_m[apr.gen.dep_m$Count>0.05,], aes(x=Depth_m, y=Count, fill=Genus))+geom_bar(stat="identity",colour="black")+theme_classic()+
   labs(title = "Relative Abundance of Microbial Genera - April 2022", x="Depth (m)", y="Relative Abundance", fill="Class",subtitle="Only Relative Abundance > 5%")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
   scale_y_continuous(expand = c(0,0),limits = c(0,1))+coord_flip() + scale_x_discrete(limits = rev(levels(apr.gen.dep_m$Depth_m)))
 
-ggsave(gd1b,filename = "figures/RelativeAbundance/April2022/SSW_16S_Apr22_Genus.RA_barplot_depth_5percent_B.png", width=12, height=10, dpi=600)
+ggsave(gd1b,filename = "figures/RelativeAbundance/Genus/April2022/SSW_16S_Apr22_Genus.RA_barplot_depth_5percent_B.png", width=12, height=10, dpi=600)
 
 # Taxonomic Summary by Depth
 
@@ -1387,7 +1566,7 @@ tg1<-ggplot(apr.gen.dep_m[apr.gen.dep_m$Count>0.01,], aes(Genus, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Depth - April 2022", subtitle="Includes taxa with Relative Abundance > 1%",color="Depth (m)")
 
-ggsave(tg1,filename = "figures/RelativeAbundance/April2022/SSW_16S_Apr22_Genera.RA_depth_taxasum_1perc.png", width=15, height=10, dpi=600)
+ggsave(tg1,filename = "figures/RelativeAbundance/Genus/April2022/SSW_16S_Apr22_Genera.RA_depth_taxasum_1perc.png", width=15, height=10, dpi=600)
 
 tg1a<-ggplot(apr.gen.dep_m[apr.gen.dep_m$Count>0.01,], aes(Genus, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=3, width=0.15, height=0) +
@@ -1396,7 +1575,7 @@ tg1a<-ggplot(apr.gen.dep_m[apr.gen.dep_m$Count>0.01,], aes(Genus, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Depth - April 2022", subtitle="Includes taxa with Relative Abundance > 1%",color="Depth (m)")+coord_flip()
 
-ggsave(tg1a,filename = "figures/RelativeAbundance/April2022/SSW_16S_Apr22_Genera.RA_depth_taxasum_1perc_v2.png", width=15, height=10, dpi=600)
+ggsave(tg1a,filename = "figures/RelativeAbundance/Genus/April2022/SSW_16S_Apr22_Genera.RA_depth_taxasum_1perc_v2.png", width=15, height=10, dpi=600)
 
 tg1b<-ggplot(apr.gen.dep_m[apr.gen.dep_m$Count>0.05,], aes(Genus, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=3, width=0.15, height=0) +
@@ -1405,7 +1584,7 @@ tg1b<-ggplot(apr.gen.dep_m[apr.gen.dep_m$Count>0.05,], aes(Genus, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Depth - April 2022", subtitle="Includes taxa with Relative Abundance > 5%",color="Depth (m)")
 
-ggsave(tg1b,filename = "figures/RelativeAbundance/April2022/SSW_16S_Apr22_Genera.RA_depth_taxasum_5percent.png", width=15, height=10, dpi=600)
+ggsave(tg1b,filename = "figures/RelativeAbundance/Genus/April2022/SSW_16S_Apr22_Genera.RA_depth_taxasum_5percent.png", width=15, height=10, dpi=600)
 
 tg1c<-ggplot(apr.gen.dep_m[apr.gen.dep_m$Count>0.05,], aes(Genus, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=3, width=0.15, height=0) +
@@ -1414,7 +1593,7 @@ tg1c<-ggplot(apr.gen.dep_m[apr.gen.dep_m$Count>0.05,], aes(Genus, Count)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera & Depth - April 2022", subtitle="Includes taxa with Relative Abundance > 5%",color="Depth (m)")+coord_flip()
 
-ggsave(tg1c,filename = "figures/RelativeAbundance/April2022/SSW_16S_Apr22_Genera.RA_depth_taxasum_5percent_v2.png", width=15, height=10, dpi=600)
+ggsave(tg1c,filename = "figures/RelativeAbundance/Genus/April2022/SSW_16S_Apr22_Genera.RA_depth_taxasum_5percent_v2.png", width=15, height=10, dpi=600)
 
 
 
@@ -1499,7 +1678,7 @@ ds001.date.ts1<-ggplot(ds001_meta, aes(SampDate, DS001)) +
   labs(x="Sample Date", y="Relative Abundance", title="Genus DS001 & Sample Date")+
   scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(ds001.date.ts1,filename = "figures/RelativeAbundance/SSW_16S_DS001_RA_bydate_taxasum.png", width=15, height=10, dpi=600)
+ggsave(ds001.date.ts1,filename = "figures/RelativeAbundance/Genus/DS001/SSW_16S_DS001_RA_bydate_taxasum.png", width=15, height=10, dpi=600)
 
 ds001.date.ts2<-ggplot(ds001_meta, aes(SampDate, DS001)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
@@ -1508,7 +1687,7 @@ ds001.date.ts2<-ggplot(ds001_meta, aes(SampDate, DS001)) +
   theme(axis.title.x = element_text(size=14),axis.title.y = element_text(size=14),axis.text = element_text(size=12),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=14),legend.text = element_text(size=13),plot.title = element_text(size=16)) +
   labs(x="Sample Date", y="Relative Abundance", title="Genus DS001 & Sample Date", color="Depth (m)")+scale_x_discrete(labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022"))
 
-ggsave(ds001.date.ts2,filename = "figures/RelativeAbundance/SSW_16S_DS001_RA_bydate_depth_taxasum.png", width=15, height=10, dpi=600)
+ggsave(ds001.date.ts2,filename = "figures/RelativeAbundance/Genus/DS001/SSW_16S_DS001_RA_bydate_depth_taxasum.png", width=15, height=10, dpi=600)
 
 # does RelAb of DS001 change with depth??
 # Kruskal-Wallis test = nonparametric one-way ANOVA
@@ -1537,7 +1716,7 @@ plot(DS001 ~ SampDate, data=ds001_meta)
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
 #   labs(x="Depth (m)", y="Relative Abundance", title="Genus DS001 & Depth", color="Depth (m)")
 #
-# ggsave(ds001.dep.ts1,filename = "figures/RelativeAbundance/SSW_16S_DS001_RA_bydepth_taxasum.png", width=15, height=10, dpi=600)
+# ggsave(ds001.dep.ts1,filename = "figures/RelativeAbundance/Genus/DS001/SSW_16S_DS001_RA_bydepth_taxasum.png", width=15, height=10, dpi=600)
 
 ds001.dep.ts2<-ggplot(ds001_meta, aes(Depth_m, DS001)) +
   geom_jitter(aes(color=factor(SampDate)), size=2, width=0.15, height=0) +
@@ -1546,7 +1725,7 @@ ds001.dep.ts2<-ggplot(ds001_meta, aes(Depth_m, DS001)) +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Depth (m)", y="Relative Abundance", title="Genus DS001 by Depth & Sample Date", color="Sample Date")
 
-ggsave(ds001.dep.ts2,filename = "figures/RelativeAbundance/SSW_16S_DS001_RA_bydepth_date_taxasum.png", width=15, height=10, dpi=600)
+ggsave(ds001.dep.ts2,filename = "figures/RelativeAbundance/Genus/DS001/SSW_16S_DS001_RA_bydepth_date_taxasum.png", width=15, height=10, dpi=600)
 
 ggplot(metadata, aes(x=Depth_m, y=Sulfate_milliM,color=SampDate,group=SampDate)) + geom_point(size=3) + geom_line()
 
@@ -1556,7 +1735,7 @@ ds001.dep.ts3<-ggplot(ds001_meta, aes(x=Depth_m,y=DS001,color=SampDate,group=Sam
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Depth (m)", y="Relative Abundance", title="Genus DS001 by Depth & Sample Date", color="Sample Date")+coord_flip()+ scale_x_discrete(limits=rev)
 
-ggsave(ds001.dep.ts3,filename = "figures/RelativeAbundance/SSW_16S_DS001_RA_bydepth_date_scatterplot.png", width=15, height=10, dpi=600)
+ggsave(ds001.dep.ts3,filename = "figures/RelativeAbundance/Genus/DS001/SSW_16S_DS001_RA_bydepth_date_scatterplot.png", width=15, height=10, dpi=600)
 
 # can we use env variables to predict RelAb of DS001?!
 ## correlation gives us the status of their relationship, but linear regression will tell us if these env variables predict DS001 relative abundance
@@ -1644,7 +1823,7 @@ fig.ds001.dom.fit1<-ggplot(ds001_meta, aes(x = Dissolved_OrganicMatter_RFU, y = 
   stat_regline_equation(aes(label=paste(after_stat(adj.rr.label))),label.y = 0.55,label.x=0.8)
 
 ## use summary(ds001.so4.fit1) to double check that stat_cor gives same p value as linear regression! it does here :)
-ggsave(fig.ds001.dom.fit1,filename = "figures/RelativeAbundance/DS001_Genus_RelAb_vs_DOM_scatterplot.pdf", width=10, height=8, dpi=600)
+ggsave(fig.ds001.dom.fit1,filename = "figures/RelativeAbundance/Genus/DS001/DS001_Genus_RelAb_vs_DOM_scatterplot.pdf", width=10, height=8, dpi=600)
 
 fig.ds001.dom.fit1a<-ggplot(ds001_meta, aes(x = Dissolved_OrganicMatter_RFU, y = DS001)) +
   geom_point(aes(color=SampDate), size=3) + theme_classic() +
@@ -1654,7 +1833,7 @@ fig.ds001.dom.fit1a<-ggplot(ds001_meta, aes(x = Dissolved_OrganicMatter_RFU, y =
   stat_regline_equation(aes(label=paste(after_stat(adj.rr.label))),label.y = 0.55,label.x=0.8)
 
 ## use summary(ds001.so4.fit1) to double check that stat_cor gives same p value as linear regression! it does here :)
-ggsave(fig.ds001.dom.fit1a,filename = "figures/RelativeAbundance/DS001_Genus_RelAb_vs_DOM_scatterplot_noline.pdf", width=10, height=8, dpi=600)
+ggsave(fig.ds001.dom.fit1a,filename = "figures/RelativeAbundance/Genus/DS001/DS001_Genus_RelAb_vs_DOM_scatterplot_noline.pdf", width=10, height=8, dpi=600)
 
 ## next Sulfate
 
@@ -1683,7 +1862,7 @@ fig.ds001.so4.fit1<-ggplot(ds001_meta, aes(x = Sulfate_milliM, y = DS001)) +
   stat_regline_equation(aes(label=paste(after_stat(adj.rr.label))),label.y = 0.53,label.x=0.6)
 
 ## use summary(ds001.so4.fit1) to double check that stat_cor gives same p value as linear regression! it does here :)
-ggsave(fig.ds001.so4.fit1,filename = "figures/RelativeAbundance/DS001_Genus_RelAb_vs_Sulfate_scatterplot.pdf", width=10, height=8, dpi=600)
+ggsave(fig.ds001.so4.fit1,filename = "figures/RelativeAbundance/Genus/DS001/DS001_Genus_RelAb_vs_Sulfate_scatterplot.pdf", width=10, height=8, dpi=600)
 
 #### Shared Genus Relative Abundance ####
 head(bac.dat.all)
