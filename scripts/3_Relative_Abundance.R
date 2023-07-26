@@ -84,6 +84,10 @@ b.phy_RA<-ggplot(b.phyla_RA_meta, aes(x=SampleID, y=Count, fill=Phylum))+geom_ba
 
 ggsave(b.phy_RA,filename = "figures/RelativeAbundance/16S_Phyla.RA_barplot.png", width=12, height=10, dpi=600)
 
+ggplot(b.phyla_RA_meta[b.phyla_RA_meta$Count>0.1,], aes(x=SampleID, y=Count, fill=Phylum))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
+  labs(title = "Microbial Phylum Relative Abundance", x="SampleID", y="Relative Abundance", fill="Phylum")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+guides(fill=guide_legend(ncol=2))+scale_y_continuous(expand = c(0,0),limits = c(0,1))
+
 head(b.phyla_RA_meta)
 
 # Heatmap by SampleID
@@ -218,6 +222,7 @@ head(b.class_m) ## relative abundance based on sum of counts by class!
 
 b.class_RA_meta<-merge(b.class_m,metadata, by="SampleID")
 head(b.class_RA_meta) ## relative abundance based on sum of counts by class!
+b.class_RA_meta$SampleID = factor(b.class_RA_meta$SampleID, levels=unique(b.class_RA_meta$SampleID[order(b.class_RA_meta$SampDate,b.class_RA_meta$Depth_m)]), ordered=TRUE)
 
 # Barplot by SampleID
 
@@ -226,6 +231,10 @@ b.cls_RA<-ggplot(b.class_RA_meta, aes(x=SampleID, y=Count, fill=Class))+geom_bar
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+guides(fill=guide_legend(ncol=2))+scale_y_continuous(expand = c(0,0),limits = c(0,1))
 
 ggsave(b.cls_RA,filename = "figures/RelativeAbundance/16S_Class.RA_barplot.png", width=12, height=10, dpi=600)
+
+ggplot(b.class_RA_meta[b.class_RA_meta$Count>0.1,], aes(x=SampleID, y=Count, fill=Class))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
+  labs(title = "Relative Abundance of Microbial Classes", x="SampleID", y="Relative Abundance", fill="Class")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+guides(fill=guide_legend(ncol=2))+scale_y_continuous(expand = c(0,0),limits = c(0,1))
 
 head(b.class_RA_meta)
 
@@ -396,6 +405,7 @@ head(b.fam_m) ## relative abundance based on sum of counts by fam!
 
 b.fam_RA_meta<-merge(b.fam_m,metadata, by="SampleID")
 head(b.fam_RA_meta) ## relative abundance based on sum of counts by fam!
+b.fam_RA_meta$SampleID = factor(b.fam_RA_meta$SampleID, levels=unique(b.fam_RA_meta$SampleID[order(b.fam_RA_meta$SampDate,b.fam_RA_meta$Depth_m)]), ordered=TRUE)
 
 # Barplot by SampleID
 
@@ -404,6 +414,10 @@ b.fam_RA<-ggplot(b.fam_RA_meta, aes(x=SampleID, y=Count, fill=Family))+geom_bar(
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+guides(fill=guide_legend(ncol=2))+scale_y_continuous(expand = c(0,0),limits = c(0,1))
 
 ggsave(b.fam_RA,filename = "figures/RelativeAbundance/16S_fam.RA_barplot.png", width=12, height=10, dpi=600)
+
+ggplot(b.fam_RA_meta[b.fam_RA_meta$Count>0.1,], aes(x=SampleID, y=Count, fill=Family))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
+  labs(title = "Relative Abundance of Microbial Families", x="SampleID", y="Relative Abundance", fill="Family")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+guides(fill=guide_legend(ncol=2))+scale_y_continuous(expand = c(0,0),limits = c(0,1))
 
 head(b.fam_RA_meta)
 
