@@ -1,6 +1,6 @@
 #### Set WD & Load Libraries ####
 getwd() # use setwd("path/to/files") if you are not in the right directory
-setwd("/Volumes/HLF_SSD/Aronson_Lab_Data/Salton_Sea/SaltonSeaWater")
+#setwd("/Volumes/HLF_SSD/Aronson_Lab_Data/Salton_Sea/SaltonSeaWater")
 suppressPackageStartupMessages({ # load packages quietly
   library(devtools)
   library(phyloseq)
@@ -39,7 +39,7 @@ suppressPackageStartupMessages({ # load packages quietly
 
 #### Load Global Env to Import Count/ASV Tables ####
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
-load("data/SSeawater_AlphaDiv_Data.Rdata")
+#load("data/SSeawater_AlphaDiv_Data.Rdata")
 #load("data/ssw_clr.euc.dist_2.21.23.Rdata")
 
 #save.image("data/Env_Seqs_All/env.seq_analysis.Rdata") # save global env to Rdata file
@@ -119,59 +119,6 @@ bac.div.metadat$Depth.num<-as.numeric(as.character(bac.div.metadat$Depth_m))
 # save diversity data
 save.image("data/SSeawater_AlphaDiv_Data.Rdata")
 
-#### Visualize Alpha Diversity & Species Richness ####
-## Shannon Diversity by Sample Month & Depth
-bac.a.div<-ggplot(bac.div.metadat, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
-  scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
-  geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
-  labs(title = "Bacterial Shannon Diversity by Sample Date & Depth", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3)), method="t.test", hide.ns = TRUE,label = "p.format")
-
-ggsave(bac.a.div,filename = "figures/AlphaDiversity/SSW_16S_alpha_diversity_sampledate_depth_boxplot.png", width=13, height=10, dpi=600)
-
-bac.div.metadat$Depth_m=as.numeric(levels(bac.div.metadat$Depth_m))[bac.div.metadat$Depth_m]
-# ^ note: cannot turn numbers that are factors in R into numeric values...
-## have to convert factor levels into numeric, then use the numeric "levels" to pull out numbers from Depth_m column in df to make sure the Depth_m columns is now numeric, not a factor
-
-# bac.a.div2<-ggplot(bac.div.metadat, aes(x=as.factor(Depth_m), y=Bac_Shannon_Diversity)) +geom_boxplot(aes(fill=Depth_m),color="black")+
-#   labs(title = "Bacterial Shannon Diversity by Sampling Depth", x="Depth (m)", y="Shannon Diversity", fill="Depth (m)")+
-#   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
-#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-#   coord_flip() + scale_x_discrete(limits=rev)
-#
-# ggsave(bac.a.div2,filename = "figures/AlphaDiversity/SSW_Bacterial_alpha_diversity_depth_boxplot_v1.png", width=13, height=10, dpi=600)
-#
-# bac.a.div3<-ggplot(bac.div.metadat, aes(x=as.factor(Depth_m), y=Bac_Shannon_Diversity)) +geom_boxplot(aes(fill=Depth_m),color="black")+
-#   labs(title = "Bacterial Shannon Diversity by Sampling Depth", x="Depth (m)", y="Shannon Diversity", fill="Depth (m)")+
-#   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
-#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
-#
-# ggsave(bac.a.div3,filename = "figures/AlphaDiversity/SSW_Bacterial_alpha_diversity_depth_boxplot_v2.png", width=13, height=10, dpi=600)
-
-## Species Richness by Sample Type
-bac.a.sr<-ggplot(bac.div.metadat, aes(x=SampDate, y=Bac_Species_Richness)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
-  scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
-  geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
-  labs(title = "Bacterial Species Richness by Sample Date & Depth", x="Sample Date", y="Species Richness", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3)), method="t.test", hide.ns = TRUE,label = "p.format")
-
-ggsave(bac.a.sr,filename = "figures/AlphaDiversity/SSW_Bacterial_species_richness_samplemonth_depth_boxplot.png", width=13, height=10, dpi=600)
-
-# bac.a.sr2<-ggplot(bac.div.metadat, aes(x=as.factor(Depth_m), y=Bac_Species_Richness,fill=bac.div.metadat$Depth_m)) +geom_boxplot(aes(fill=as.numeric(bac.div.metadat$Depth_m)),color="black")+
-#   labs(title = "Bacterial Species Richness by Sampling Depth", x="Depth (m)", y="Species Richness", fill="Depth (m)")+
-#   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
-#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-#   coord_flip() + scale_x_discrete(limits=rev)
-#
-# ggsave(bac.a.sr2,filename = "figures/AlphaDiversity/SSW_Bacterial_species_richness_depth_boxplot_v1.png", width=13, height=10, dpi=600)
-#
-# bac.a.sr3<-ggplot(bac.div.metadat, aes(x=as.factor(Depth_m), y=Bac_Species_Richness,fill=Depth_m)) +geom_boxplot(aes(fill=as.numeric(bac.div.metadat$Depth_m)),color="black")+
-#   labs(title = "Bacterial Species Richness by Sampling Depth", x="Depth (m)", y="Species Richness", fill="Depth (m)")+
-#   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
-#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
-#
-# ggsave(bac.a.sr3,filename = "figures/AlphaDiversity/SSW_Bacterial_species_richness_depth_boxplot_v2.png", width=13, height=10, dpi=600)
-
 #### Using Shapiro-Wilk test for Normality ####
 shapiro.test(bac.div.metadat$Bac_Shannon_Diversity) # what is the p-value?
 # p-value = 0.5816
@@ -236,7 +183,60 @@ hist(bac.div.metadat$Sulfide_microM, col="blue")
 qqnorm(bac.div.metadat$Sulfide_microM, pch = 1, frame = FALSE) # with outliars
 qqline(bac.div.metadat$Sulfide_microM, col = "red", lwd = 2)
 
-#### Linear Regression Comparisons - Shannon Diversity ####
+#### Visualize Alpha Diversity & Species Richness ####
+## Shannon Diversity by Sample Month & Depth
+bac.a.div<-ggplot(bac.div.metadat, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
+  scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
+  geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
+  labs(title = "Bacterial Shannon Diversity by Sample Date & Depth", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3)), method="t.test", hide.ns = TRUE,label = "p.format")
+
+ggsave(bac.a.div,filename = "figures/AlphaDiversity/SSW_16S_alpha_diversity_sampledate_depth_boxplot.png", width=13, height=10, dpi=600)
+
+bac.div.metadat$Depth_m=as.numeric(levels(bac.div.metadat$Depth_m))[bac.div.metadat$Depth_m]
+# ^ note: cannot turn numbers that are factors in R into numeric values...
+## have to convert factor levels into numeric, then use the numeric "levels" to pull out numbers from Depth_m column in df to make sure the Depth_m columns is now numeric, not a factor
+
+# bac.a.div2<-ggplot(bac.div.metadat, aes(x=as.factor(Depth_m), y=Bac_Shannon_Diversity)) +geom_boxplot(aes(fill=Depth_m),color="black")+
+#   labs(title = "Bacterial Shannon Diversity by Sampling Depth", x="Depth (m)", y="Shannon Diversity", fill="Depth (m)")+
+#   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+#   coord_flip() + scale_x_discrete(limits=rev)
+#
+# ggsave(bac.a.div2,filename = "figures/AlphaDiversity/SSW_Bacterial_alpha_diversity_depth_boxplot_v1.png", width=13, height=10, dpi=600)
+#
+# bac.a.div3<-ggplot(bac.div.metadat, aes(x=as.factor(Depth_m), y=Bac_Shannon_Diversity)) +geom_boxplot(aes(fill=Depth_m),color="black")+
+#   labs(title = "Bacterial Shannon Diversity by Sampling Depth", x="Depth (m)", y="Shannon Diversity", fill="Depth (m)")+
+#   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
+#
+# ggsave(bac.a.div3,filename = "figures/AlphaDiversity/SSW_Bacterial_alpha_diversity_depth_boxplot_v2.png", width=13, height=10, dpi=600)
+
+## Species Richness by Sample Type
+bac.a.sr<-ggplot(bac.div.metadat, aes(x=SampDate, y=Bac_Species_Richness)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
+  scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
+  geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
+  labs(title = "Bacterial Species Richness by Sample Date & Depth", x="Sample Date", y="Species Richness", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3)), method="t.test", hide.ns = TRUE,label = "p.format")
+
+ggsave(bac.a.sr,filename = "figures/AlphaDiversity/SSW_Bacterial_species_richness_samplemonth_depth_boxplot.png", width=13, height=10, dpi=600)
+
+# bac.a.sr2<-ggplot(bac.div.metadat, aes(x=as.factor(Depth_m), y=Bac_Species_Richness,fill=bac.div.metadat$Depth_m)) +geom_boxplot(aes(fill=as.numeric(bac.div.metadat$Depth_m)),color="black")+
+#   labs(title = "Bacterial Species Richness by Sampling Depth", x="Depth (m)", y="Species Richness", fill="Depth (m)")+
+#   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+#   coord_flip() + scale_x_discrete(limits=rev)
+#
+# ggsave(bac.a.sr2,filename = "figures/AlphaDiversity/SSW_Bacterial_species_richness_depth_boxplot_v1.png", width=13, height=10, dpi=600)
+#
+# bac.a.sr3<-ggplot(bac.div.metadat, aes(x=as.factor(Depth_m), y=Bac_Species_Richness,fill=Depth_m)) +geom_boxplot(aes(fill=as.numeric(bac.div.metadat$Depth_m)),color="black")+
+#   labs(title = "Bacterial Species Richness by Sampling Depth", x="Depth (m)", y="Species Richness", fill="Depth (m)")+
+#   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
+#
+# ggsave(bac.a.sr3,filename = "figures/AlphaDiversity/SSW_Bacterial_species_richness_depth_boxplot_v2.png", width=13, height=10, dpi=600)
+
+#### Linear Regression/ANOVA Comparisons - Shannon Diversity ####
 ## here the focus is comparing dust complexity to alpha diversity, species richness, & elevation
 head(bac.div.metadat)
 
@@ -304,12 +304,15 @@ plot(Bac_Shannon_Diversity ~ Sulfide_microM, data=bac.div.metadat,col=SampDate_C
 plot(Bac_Shannon_Diversity ~ Depth.num, data=bac.div.metadat,col=SampDate_Color)
 
 fit1<-aov(Bac_Shannon_Diversity ~ SampDate, data=bac.div.metadat)
+# ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/
 #pairwise.adonis(bac.div.metadat$Bac_Shannon_Diversity, bac.div.metadat$SampDate, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 
 summary(fit1)
 #Df           Sum Sq Mean Sq    F value   Pr(>F)
 #SampDate     2   3214  1607.1   5.317 0.0135 *
 #Residuals   21   6347   302.2
+
+p.adjust(summary(fit1)[[1]][["Pr(>F)"]][1],method="bonferroni")
 
 # Tukey test - tells us which groups are significantly different from each other (more here: https://www.r-bloggers.com/2013/06/anova-and-tukeys-test-on-r/)
 Tuk1<-TukeyHSD(fit1)
@@ -333,7 +336,7 @@ fligner.test(Bac_Shannon_Diversity ~ SampDate, data = bac.div.metadat)
 # Which shows that the data do not deviate significantly from homogeneity.
 compare_means(Bac_Shannon_Diversity ~ SampDate, data=bac.div.metadat, method="anova",p.adjust.method = "bonferroni") # won't take as.factor(Elevation) as input
 
-#### Linear Regression Comparisons - Species Richness ####
+#### Linear Regression/ANOVA Comparisons - Species Richness ####
 ## here the focus is comparing dust complexity to alpha diversity, species richness, & elevation
 head(bac.div.metadat) # bac.div.metadat - excludes outliar with very high Shannon diversity
 
@@ -387,6 +390,7 @@ plot(Bac_Species_Richness ~ Sulfide_microM, data=bac.div.metadat,col=SampDate_Co
 plot(Bac_Species_Richness ~ Depth.num, data=bac.div.metadat,col=SampDate_Color)
 
 fit2<-aov(Bac_Species_Richness ~ SampDate, data=bac.div.metadat)
+# ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/
 #pairwise.adonis(bac.div.metadat$Bac_Species_Richness, bac.div.metadat$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 
 summary(fit2)
@@ -394,6 +398,7 @@ summary(fit2)
 #            Df Sum Sq Mean Sq F value  Pr(>F)
 #SampDate     2 378899  189450   6.465 0.00649 **
 #Residuals   21 615429   29306
+p.adjust(summary(fit2)[[1]][["Pr(>F)"]][1],method="bonferroni")
 
 # Tukey test - tells us which groups are significantly different from each other (more here: https://www.r-bloggers.com/2013/06/anova-and-tukeys-test-on-r/)
 Tuk2<-TukeyHSD(fit2)
@@ -487,6 +492,7 @@ summary(aug21.div.glm.fit6)
 #Sulfide_microM 0.0002944  0.0005160    0.57    0.572
 
 fit1<-aov(Bac_Shannon_Diversity ~ as.factor(Depth_m), data=aug21.div)
+# ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/
 #pairwise.adonis(aug21.div$Bac_Shannon_Diversity, aug21.div$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 
 summary(fit1)
@@ -578,6 +584,7 @@ summary(aug21.sr.glm.fit6)
 #Sulfide_microM 0.0002944  0.0005160    0.57    0.572
 
 fit1<-aov(Bac_Species_Richness ~ as.factor(Depth_m), data=aug21.div)
+# ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/
 #pairwise.adonis(aug21.div$Bac_Species_Richness, aug21.div$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 
 summary(fit1)
@@ -669,6 +676,7 @@ summary(dec21.div.glm.fit6)
 #Sulfide_microM 0.0002944  0.0005160    0.57    0.572
 
 fit1<-aov(Bac_Shannon_Diversity ~ as.factor(Depth_m), data=dec21.div)
+# ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/
 #pairwise.adonis(dec21.div$Bac_Shannon_Diversity, dec21.div$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 
 summary(fit1)
@@ -759,6 +767,7 @@ summary(dec21.sr.glm.fit6)
 #Sulfide_microM 0.0002944  0.0005160    0.57    0.572
 
 fit1<-aov(Bac_Species_Richness ~ as.factor(Depth_m), data=dec21.div)
+# ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/
 #pairwise.adonis(dec21.div$Bac_Species_Richness, dec21.div$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 
 summary(fit1)
@@ -852,6 +861,7 @@ summary(apr22.div.glm.fit6)
 #Sulfide_microM 0.0002944  0.0005160    0.57    0.572
 
 fit1<-aov(Bac_Shannon_Diversity ~ as.factor(Depth_m), data=apr22.div)
+# ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/
 #pairwise.adonis(apr22.div$Bac_Shannon_Diversity, apr22.div$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 
 summary(fit1)
@@ -944,6 +954,7 @@ summary(apr22.sr.glm.fit6)
 #Sulfide_microM 0.0002944  0.0005160    0.57    0.572
 
 fit1<-aov(Bac_Species_Richness ~ as.factor(Depth_m), data=apr22.div)
+# ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/
 #pairwise.adonis(apr22.div$Bac_Species_Richness, apr22.div$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 
 summary(fit1)
