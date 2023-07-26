@@ -116,6 +116,32 @@ bac.div.metadat$Depth_m<-factor(bac.div.metadat$Depth_m, levels=c("0","3","4","5
 # create numeric variable for depth to be used for models later
 bac.div.metadat$Depth.num<-as.numeric(as.character(bac.div.metadat$Depth_m))
 
+# Find highest/lowest values of Shannon div per sample date
+max(bac.div.metadat$Bac_Shannon_Diversity[bac.div.metadat$SampDate=="August.2021"]) # max div August 2021
+min(bac.div.metadat$Bac_Shannon_Diversity[bac.div.metadat$SampDate=="August.2021"]) # min div August 2021
+bac.div.metadat[bac.div.metadat$SampDate=="August.2021",]
+
+max(bac.div.metadat$Bac_Shannon_Diversity[bac.div.metadat$SampDate=="December.2021"]) # max div Dec 21
+min(bac.div.metadat$Bac_Shannon_Diversity[bac.div.metadat$SampDate=="December.2021"]) # min div Dec 21
+bac.div.metadat[bac.div.metadat$SampDate=="December.2021",]
+
+max(bac.div.metadat$Bac_Shannon_Diversity[bac.div.metadat$SampDate=="April.2022"]) # max div Apr 22
+min(bac.div.metadat$Bac_Shannon_Diversity[bac.div.metadat$SampDate=="April.2022"]) # min div Apr 22
+bac.div.metadat[bac.div.metadat$SampDate=="April.2022",]
+
+# Find highest/lowest values of Species richness per sample date
+max(bac.div.metadat$Bac_Species_Richness[bac.div.metadat$SampDate=="August.2021"]) # max sr August 2021
+min(bac.div.metadat$Bac_Species_Richness[bac.div.metadat$SampDate=="August.2021"]) # min sr August 2021
+bac.div.metadat[bac.div.metadat$SampDate=="August.2021",]
+
+max(bac.div.metadat$Bac_Species_Richness[bac.div.metadat$SampDate=="December.2021"]) # max sr Dec 2021
+min(bac.div.metadat$Bac_Species_Richness[bac.div.metadat$SampDate=="December.2021"]) # min sr Dec 2021
+bac.div.metadat[bac.div.metadat$SampDate=="December.2021",]
+
+max(bac.div.metadat$Bac_Species_Richness[bac.div.metadat$SampDate=="April.2022"]) # max sr April 2022
+min(bac.div.metadat$Bac_Species_Richness[bac.div.metadat$SampDate=="April.2022"]) # min sr April 2022
+bac.div.metadat[bac.div.metadat$SampDate=="April.2022",]
+
 # save diversity data
 save.image("data/SSeawater_AlphaDiv_Data.Rdata")
 
@@ -217,7 +243,7 @@ bac.a.sr<-ggplot(bac.div.metadat, aes(x=SampDate, y=Bac_Species_Richness)) +geom
   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
   labs(title = "Bacterial Species Richness by Sample Date & Depth", x="Sample Date", y="Species Richness", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  geom_pwc(method = "t_test", label = "p.adj.format",p.adjust.method = "bonferroni")
+  stat_compare_means(method="anova")
 
 ggsave(bac.a.sr,filename = "figures/AlphaDiversity/SSW_Bacterial_species_richness_samplemonth_depth_boxplot.png", width=13, height=10, dpi=600)
 
