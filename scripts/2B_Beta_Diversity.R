@@ -148,6 +148,7 @@ permutest(b.disper1, pairwise=TRUE) # compare dispersions to each other via perm
 # December.2021   0.0073988                    0.115
 # April.2022      0.0012603     0.1201286
 
+# anova used to check null hypothesis of group dispersion: "Null hypothesis of no difference in dispersion between groups"
 anova(b.disper1) # p = 0.0003451 --> reject the Null H, spatial medians (a measure of dispersion) are significantly difference across sample dates
 
 TukeyHSD(b.disper1) # tells us which Sample Dates/category's dispersion MEANS are significantly different than each other
@@ -162,6 +163,7 @@ TukeyHSD(b.disper1) # tells us which Sample Dates/category's dispersion MEANS ar
 
 pnova1<-adonis2(b.clr ~ SampDate,data=meta_scaled,method = "euclidean",by="terms",permutations=1000)
 pnova1 # p-value = 0.000999
+p.adjust(pnova1[["Pr(>F)"]],method="bonferroni",n=3)
 
 ##one issue with adonis is that it doesn't do multiple comparisons *******
 # tells us that something is different, but what is different? Which sample/plot/location?
