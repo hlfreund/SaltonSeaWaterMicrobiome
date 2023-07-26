@@ -552,6 +552,26 @@ sulf.bi.hm1b2<-ggplot(clr.sulf.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=fac
 
 ggsave(sulf.bi.hm1b2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Genus_by_Function_Pathway_Binary_heatmap.png", width=17, height=15, dpi=600)
 
+sulf.bi.hm1b3<-ggplot(clr.sulf.all.bin.bi[clr.sulf.all.bin.bi$Genus=="HIMB30",], aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in HIMB30 MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+
+ggsave(sulf.bi.hm1b3,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_HIMB30_Bins_Only_by_Function_Pathway_Binary_heatmap.png", width=17, height=15, dpi=600)
+
+sulf.bi.hm1b3<-ggplot(clr.sulf.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in Salton Seawater MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
+
+ggsave(sulf.bi.hm1b3,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Genus_by_Function_Pathway_Binary_heatmap.png", width=17, height=15, dpi=600)
+
 sulf.bi.hm1c2<-ggplot(clr.sulf.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
   geom_tile(colour="black",size=0.25) +
   scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",fill="Presence/Absence") +
@@ -571,6 +591,16 @@ sulf.bi.hm1c3<-ggplot(clr.sulf.all.bin.bi, aes(Genus, KO_Function.KEGG, fill=fac
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathwaySpecific~SampDate, scales="free", space = "free")
 
 ggsave(sulf.bi.hm1c3,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_Bins_Genus_by_Function_SampDate_PathwaySpecific_Binary_best_heatmap.png", width=20, height=20, dpi=600)
+
+sulf.bi.hm1c4<-ggplot(clr.sulf.all.bin.bi[clr.sulf.all.bin.bi$Genus=="HIMB30",], aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Sulfur Fixation in HIMB30 MAGs",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathwaySpecific~.,scales="free_y", space = "free")
+
+ggsave(sulf.bi.hm1c4,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_MGMs_HIMB30_Bins_Only_by_Function_PathwaySpecific_Binary_heatmap.png", width=17, height=15, dpi=600)
 
 sulf.bi.hm1d<-ggplot(clr.sulf.all.bin.bi, aes(PlotBin, KO_Function.KEGG, fill=factor(PresAb))) +
   geom_tile(colour="black",size=0.25) +
