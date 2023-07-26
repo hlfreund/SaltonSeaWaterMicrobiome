@@ -296,7 +296,7 @@ adonis2(b.clr ~ ORP_mV*DO_Percent_Local*Dissolved_OrganicMatter_RFU*Sulfate_mill
 
 pnova4b<-adonis2(b.clr ~ DO_Percent_Local*Dissolved_OrganicMatter_RFU*ORP_mV,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova4b
-#                                   Df SumOfSqs      R2       F   Pr(>F)
+#                                                       Df SumOfSqs   R2       F   Pr(>F)
 # DO_Percent_Local                                     1   5830.3 0.23006 12.2377 0.000999 ***
 #Dissolved_OrganicMatter_RFU                          1   6344.6 0.25036 13.3172 0.000999 ***
 # ORP_mV                                               1   1112.7 0.04391  2.3355 0.027972 *
