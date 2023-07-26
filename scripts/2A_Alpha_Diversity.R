@@ -39,7 +39,7 @@ suppressPackageStartupMessages({ # load packages quietly
 
 #### Load Global Env to Import Count/ASV Tables ####
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
-#load("data/SSeawater_AlphaDiv_Data.Rdata")
+load("data/SSeawater_AlphaDiv_Data.Rdata")
 #load("data/ssw_clr.euc.dist_2.21.23.Rdata")
 
 #save.image("data/Env_Seqs_All/env.seq_analysis.Rdata") # save global env to Rdata file
@@ -189,7 +189,7 @@ bac.a.div<-ggplot(bac.div.metadat, aes(x=SampDate, y=Bac_Shannon_Diversity)) +ge
   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
   labs(title = "Bacterial Shannon Diversity by Sample Date & Depth", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3)), method="t.test", hide.ns = TRUE,label = "p.format")
+  geom_pwc(method = "t_test", label = "p.adj.format",p.adjust.method = "bonferroni")
 
 ggsave(bac.a.div,filename = "figures/AlphaDiversity/SSW_16S_alpha_diversity_sampledate_depth_boxplot.png", width=13, height=10, dpi=600)
 
@@ -217,7 +217,7 @@ bac.a.sr<-ggplot(bac.div.metadat, aes(x=SampDate, y=Bac_Species_Richness)) +geom
   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
   labs(title = "Bacterial Species Richness by Sample Date & Depth", x="Sample Date", y="Species Richness", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  stat_compare_means(comparisons = list(c(1,2), c(2,3),  c(1,3)), method="t.test", hide.ns = TRUE,label = "p.format")
+  geom_pwc(method = "t_test", label = "p.adj.format",p.adjust.method = "bonferroni")
 
 ggsave(bac.a.sr,filename = "figures/AlphaDiversity/SSW_Bacterial_species_richness_samplemonth_depth_boxplot.png", width=13, height=10, dpi=600)
 
