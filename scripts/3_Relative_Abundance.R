@@ -77,6 +77,19 @@ head(b.phyla_m) ## relative abundance based on sum of counts by phyla!
 b.phyla_RA_meta<-merge(b.phyla_m,metadata, by="SampleID")
 head(b.phyla_RA_meta) ## relative abundance based on sum of counts by phyla!
 
+# Find most abundant phyla per sample per timepoint
+aug.phy<-b.phyla_RA_meta[b.phyla_RA_meta$SampDate=="August.2021",]
+aug.phy[which.max(aug.phy$Count),] # 48.86%, Actinobacteriota; 7m in Aug 2021
+aug.phy[order(aug.phy$Count,decreasing=TRUE),]
+
+dec.phy<-b.phyla_RA_meta[b.phyla_RA_meta$SampDate=="December.2021",]
+dec.phy[which.max(dec.phy$Count),] #
+dec.phy[order(dec.phy$Count,decreasing=TRUE),]
+
+apr.phy<-b.phyla_RA_meta[b.phyla_RA_meta$SampDate=="April.2022",]
+apr.phy[which.max(apr.phy$Count),] #
+apr.phy[order(apr.phy$Count,decreasing=TRUE),]
+
 # Barplot by SampleID
 b.phy_RA<-ggplot(b.phyla_RA_meta, aes(x=SampleID, y=Count, fill=Phylum))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
   labs(title = "Microbial Phylum Relative Abundance", x="SampleID", y="Relative Abundance", fill="Phylum")+
@@ -161,6 +174,19 @@ head(b.phy.date_m) ## relative abundance based on sum of counts by Phylum!
 
 b.phy.date_m$SampDate<-factor(b.phy.date_m$SampDate, levels=c("August.2021","December.2021","April.2022"))
 
+# Find most abundant phyla per time point
+aug.phy.d<-b.phy.date_m[b.phy.date_m$SampDate=="August.2021",]
+#aug.phy.d[which.max(aug.phy.d$Count),]
+aug.phy.d[order(aug.phy.d$Count,decreasing=TRUE),]
+
+dec.phy.d<-b.phy.date_m[b.phy.date_m$SampDate=="December.2021",]
+#dec.phy.d[which.max(dec.phy.d$Count),] #
+dec.phy.d[order(dec.phy.d$Count,decreasing=TRUE),]
+
+apr.phy.d<-b.phy.date_m[b.phy.date_m$SampDate=="April.2022",]
+#apr.phy.d[which.max(apr.phy.d$Count),] #
+apr.phy.d[order(apr.phy.d$Count,decreasing=TRUE),]
+
 # Barplot by Sample Date
 
 psd0<-ggplot(b.phy.date_m, aes(x=SampDate, y=Count, fill=Phylum))+geom_bar(stat="identity",colour="black")+theme_classic()+
@@ -223,6 +249,19 @@ head(b.class_m) ## relative abundance based on sum of counts by class!
 b.class_RA_meta<-merge(b.class_m,metadata, by="SampleID")
 head(b.class_RA_meta) ## relative abundance based on sum of counts by class!
 b.class_RA_meta$SampleID = factor(b.class_RA_meta$SampleID, levels=unique(b.class_RA_meta$SampleID[order(b.class_RA_meta$SampDate,b.class_RA_meta$Depth_m)]), ordered=TRUE)
+
+# Find most abundant class per sample per time point
+aug.cls<-b.class_RA_meta[b.class_RA_meta$SampDate=="August.2021",]
+aug.cls[which.max(aug.cls$Count),] # 47.08%, Actinobacteria; 7m in Aug 2021
+aug.cls[order(aug.cls$Count,decreasing=TRUE),]
+
+dec.cls<-b.class_RA_meta[b.class_RA_meta$SampDate=="December.2021",]
+dec.cls[which.max(dec.cls$Count),] # 60.11%, Actinobacteria; m in Dec 2021
+dec.cls[order(dec.cls$Count,decreasing=TRUE),]
+
+apr.cls<-b.class_RA_meta[b.class_RA_meta$SampDate=="April.2022",]
+apr.cls[which.max(apr.cls$Count),] #
+apr.cls[order(apr.cls$Count,decreasing=TRUE),]
 
 # Barplot by SampleID
 
@@ -332,6 +371,19 @@ head(b.cls.date_m) ## relative abundance based on sum of counts by Class!
 
 b.cls.date_m$SampDate<-factor(b.cls.date_m$SampDate, levels=c("August.2021","December.2021","April.2022"))
 
+# Find most abundant class per time point
+aug.cls.d<-b.cls.date_m[b.cls.date_m$SampDate=="August.2021",]
+#aug.cls.d[which.max(aug.cls.d$Count),]
+aug.cls.d[order(aug.cls.d$Count,decreasing=TRUE),]
+
+dec.cls.d<-b.cls.date_m[b.cls.date_m$SampDate=="December.2021",]
+#dec.cls.d[which.max(dec.cls.d$Count),] #
+dec.cls.d[order(dec.cls.d$Count,decreasing=TRUE),]
+
+apr.cls.d<-b.cls.date_m[b.cls.date_m$SampDate=="April.2022",]
+#apr.cls.d[which.max(apr.cls.d$Count),] #
+apr.cls.d[order(apr.cls.d$Count,decreasing=TRUE),]
+
 # Barplot by Sample Date
 
 csd1<-ggplot(b.cls.date_m, aes(x=SampDate, y=Count, fill=Class))+geom_bar(stat="identity",colour="black")+theme_classic()+
@@ -401,6 +453,19 @@ head(b.ord_m) ## relative abundance based on sum of counts by class!
 b.ord_RA_meta<-merge(b.ord_m,metadata, by="SampleID")
 head(b.ord_RA_meta) ## relative abundance based on sum of counts by class!
 b.ord_RA_meta$SampleID = factor(b.ord_RA_meta$SampleID, levels=unique(b.ord_RA_meta$SampleID[order(b.ord_RA_meta$SampDate,b.ord_RA_meta$Depth_m)]), ordered=TRUE)
+
+# Find most abundant order per sample per time point
+aug.ord<-b.ord_RA_meta[b.ord_RA_meta$SampDate=="August.2021",]
+aug.ord[which.max(aug.ord$Count),] # 32.81%, Micrococcales; 9m in Aug 2021
+aug.ord[order(aug.ord$Count,decreasing=TRUE),]
+
+dec.ord<-b.ord_RA_meta[b.ord_RA_meta$SampDate=="December.2021",]
+dec.ord[which.max(dec.ord$Count),] # 36.63%, Micrococcales, 9m
+dec.ord[order(dec.ord$Count,decreasing=TRUE),]
+
+apr.ord<-b.ord_RA_meta[b.ord_RA_meta$SampDate=="April.2022",]
+apr.ord[which.max(apr.ord$Count),] # Nitriliruptorales
+apr.ord[order(apr.ord$Count,decreasing=TRUE),]
 
 # Barplot by SampleID
 
@@ -510,6 +575,19 @@ head(b.ord.date_m) ## relative abundance based on sum of counts by Order!
 
 b.ord.date_m$SampDate<-factor(b.ord.date_m$SampDate, levels=c("August.2021","December.2021","April.2022"))
 
+# Find most abundant order per time point
+aug.ord.d<-b.ord.date_m[b.ord.date_m$SampDate=="August.2021",]
+#aug.ord.d[which.max(aug.ord.d$Count),]
+head(aug.ord.d[order(aug.ord.d$Count,decreasing=TRUE),])
+
+dec.ord.d<-b.ord.date_m[b.ord.date_m$SampDate=="December.2021",]
+#dec.ord.d[which.max(dec.ord.d$Count),] #
+head(dec.ord.d[order(dec.ord.d$Count,decreasing=TRUE),])
+
+apr.ord.d<-b.ord.date_m[b.ord.date_m$SampDate=="April.2022",]
+#apr.ord.d[which.max(apr.ord.d$Count),] #
+head(apr.ord.d[order(apr.ord.d$Count,decreasing=TRUE),])
+
 # Barplot by Sample Date
 
 osd1<-ggplot(b.ord.date_m, aes(x=SampDate, y=Count, fill=Order))+geom_bar(stat="identity",colour="black")+theme_classic()+
@@ -585,6 +663,19 @@ head(b.fam_m) ## relative abundance based on sum of counts by fam!
 b.fam_RA_meta<-merge(b.fam_m,metadata, by="SampleID")
 head(b.fam_RA_meta) ## relative abundance based on sum of counts by fam!
 b.fam_RA_meta$SampleID = factor(b.fam_RA_meta$SampleID, levels=unique(b.fam_RA_meta$SampleID[order(b.fam_RA_meta$SampDate,b.fam_RA_meta$Depth_m)]), ordered=TRUE)
+
+# Find most abundant family per sample per time point
+aug.fam<-b.fam_RA_meta[b.fam_RA_meta$SampDate=="August.2021",]
+aug.fam[which.max(aug.fam$Count),] # 32.81%, Micrococcales; 9m in Aug 2021
+aug.fam[order(aug.fam$Count,decreasing=TRUE),]
+
+dec.fam<-b.fam_RA_meta[b.fam_RA_meta$SampDate=="December.2021",]
+dec.fam[which.max(dec.fam$Count),] # 36.63%, Micrococcales, 9m
+dec.fam[order(dec.fam$Count,decreasing=TRUE),]
+
+apr.fam<-b.fam_RA_meta[b.fam_RA_meta$SampDate=="April.2022",]
+apr.fam[which.max(apr.fam$Count),] # Nitriliruptorales
+apr.fam[order(apr.fam$Count,decreasing=TRUE),]
 
 # Barplot by SampleID
 
@@ -695,6 +786,19 @@ colnames(b.fam.date_m)[which(names(b.fam.date_m) == "value")] <- "Count"
 head(b.fam.date_m) ## relative abundance based on sum of counts by Family!
 
 b.fam.date_m$SampDate<-factor(b.fam.date_m$SampDate, levels=c("August.2021","December.2021","April.2022"))
+
+# Find most abundant family per time point
+aug.fam.d<-b.fam.date_m[b.fam.date_m$SampDate=="August.2021",]
+#aug.fam.d[which.max(aug.fam.d$Count),]
+head(aug.fam.d[order(aug.fam.d$Count,decreasing=TRUE),])
+
+dec.fam.d<-b.fam.date_m[b.fam.date_m$SampDate=="December.2021",]
+#dec.fam.d[which.max(dec.fam.d$Count),] #
+head(dec.fam.d[order(dec.fam.d$Count,decreasing=TRUE),])
+
+apr.fam.d<-b.fam.date_m[b.fam.date_m$SampDate=="April.2022",]
+#apr.fam.d[which.max(apr.fam.d$Count),] #
+head(apr.fam.d[order(apr.fam.d$Count,decreasing=TRUE),])
 
 # Barplot by Sample Date
 
@@ -858,6 +962,19 @@ max(b.genus_RA_meta$Count)
 b.genus_RA_meta$PlotID = gsub("^SSW.","",b.genus_RA_meta$SampleID)
 b.genus_RA_meta$PlotID = factor(b.genus_RA_meta$PlotID, levels=unique(b.genus_RA_meta$PlotID[order(b.genus_RA_meta$SampDate,b.genus_RA_meta$Depth_m)]), ordered=TRUE)
 
+# Find most abundant family per sample per time point
+aug.gen<-b.genus_RA_meta[b.genus_RA_meta$SampDate=="August.2021",]
+aug.gen[which.max(aug.gen$Count),] #
+aug.gen[order(aug.gen$Count,decreasing=TRUE),]
+
+dec.gen<-b.genus_RA_meta[b.genus_RA_meta$SampDate=="December.2021",]
+dec.gen[which.max(dec.gen$Count),] #
+dec.gen[order(dec.gen$Count,decreasing=TRUE),]
+
+apr.gen<-b.genus_RA_meta[b.genus_RA_meta$SampDate=="April.2022",]
+apr.gen[which.max(apr.gen$Count),] #
+apr.gen[order(apr.gen$Count,decreasing=TRUE),]
+
 # Barplot by PlotID
 
 b.gen_RA0<-ggplot(b.genus_RA_meta[b.genus_RA_meta$Count>0.01,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
@@ -940,6 +1057,19 @@ b.gen.date_m$Genus<-gsub("\\.\\."," ",b.gen.date_m$Genus) # get rid of .. in spe
 head(b.gen.date_m) ## relative abundance based on sum of counts by genus!
 
 b.gen.date_m$SampDate<-factor(b.gen.date_m$SampDate, levels=c("August.2021","December.2021","April.2022"))
+
+# Find most abundant genus per time point
+aug.gen.d<-b.gen.date_m[b.gen.date_m$SampDate=="August.2021",]
+#aug.gen.d[which.max(aug.gen.d$Count),]
+head(aug.gen.d[order(aug.gen.d$Count,decreasing=TRUE),])
+
+dec.gen.d<-b.gen.date_m[b.gen.date_m$SampDate=="December.2021",]
+#dec.gen.d[which.max(dec.gen.d$Count),] #
+head(dec.gen.d[order(dec.gen.d$Count,decreasing=TRUE),])
+
+apr.gen.d<-b.gen.date_m[b.gen.date_m$SampDate=="April.2022",]
+#apr.gen.d[which.max(apr.gen.d$Count),] #
+head(apr.gen.d[order(apr.gen.d$Count,decreasing=TRUE),])
 
 # Barplot by Sample Date
 
