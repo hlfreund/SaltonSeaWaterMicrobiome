@@ -38,7 +38,7 @@ suppressPackageStartupMessages({ # load packages quietly
 
 #### Load Global Env to Import Count/ASV Tables ####
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
-load("data/SSeawater_BetaDiv_Data.Rdata")
+#load("data/SSeawater_BetaDiv_Data.Rdata")
 #load("data/SSW_16S_CLR_EucDist_PCoA_Ready.Rdata")
 
 
@@ -85,7 +85,7 @@ b.pcoa <- pcoa(b.euc_dist) # pcoa of euclidean distance matrix = PCA of euclidea
 #save.image("data/SSW_16S_CLR_EucDist_PCoA_Ready.Rdata")
 
 # The proportion of variances explained is in its element values$Relative_eig
-b.pcoa$values
+head(b.pcoa$values)
 
 # extract principal coordinates
 b.pcoa.vectors<-data.frame(b.pcoa$vectors)
@@ -229,9 +229,10 @@ dev.off()
 ##  evaluating differences in the centroids of groups in multivariate space.
 ##  The vegan functions “adonis” and “adonis2” are used to compute PERMANOVA in R.
 
-## PERMANOVA NOT W/ ADONIS2
-# The adonis2 tests are identical to anova.cca of dbrda.
-# With Euclidean distances, the tests are also identical to anova.cca of rda ****
+## NOTE: ADONIS2 & Continuous Variables!
+## Variation explained is directly analogous to that of general linear models.
+## With a continuous variable, it acts like simple linear regression, where each point is associated with its own "centroid" which is the best fit linear approximation
+# More info here: https://uw.pressbooks.pub/appliedmultivariatestatistics/chapter/permanova/
 help(adonis)
 
 ## can specify dataframes for analysis, or we can alternatively specify a dissimilarity matrix:
@@ -303,9 +304,13 @@ pnova4b
 # DO_Percent_Local:Dissolved_OrganicMatter_RFU:ORP_mV  1    719.5 0.02839  1.5103 0.159840
 # Residual                                            16   7622.8 0.30079
 # Total                                               23  25342.6 1.00000
+pnova4$`Pr(>F)`
 p.adjust(pnova4$`Pr(>F)`,method="bonferroni",n=length(pnova4$`Pr(>F)`)) # adjusted pval
 
 adonis2(b.clr ~ DO_Percent_Local*Dissolved_OrganicMatter_RFU*ORP_mV,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+pnova4a<-adonis2(b.clr ~ DO_Percent_Local*Dissolved_OrganicMatter_RFU*ORP_mV,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+pnova4a$`Pr(>F)`
+p.adjust(pnova4a$`Pr(>F)`,method="bonferroni",n=length(pnova4a$`Pr(>F)`)) # adjusted pval
 
 pnova5<-adonis2(b.clr ~ DO_Percent_Local*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova5
