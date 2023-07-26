@@ -864,6 +864,9 @@ anova(rda.all, by = "terms", permutations = how(nperm=999))
 aov.rda.all<-anova(rda.all, by = "terms", permutations = how(nperm=999))
 p.adjust(aov.rda.all$`Pr(>F)`,method="bonferroni",n=3) # adjusted pvalues
 
+aov.rda.all2<-anova(rda.all, by = NULL, permutations = how(nperm=999))
+p.adjust(aov.rda.all2$`Pr(>F)`,method="bonferroni",n=3) # adjusted pvalues
+
 # August 2021
 #rda.aug2021.4$call # best model
 
