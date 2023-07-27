@@ -1121,6 +1121,30 @@ ggsave(b.gen.a22_RA,filename = "figures/RelativeAbundance/Genus/16S_April2022_Ge
 all.g.bymo<-ggarrange(b.gen.a21_RA, b.gen.d21_RA, b.gen.a22_RA,ncol = 3, nrow = 1)
 ggsave(all.g.bymo,filename = "figures/RelativeAbundance/Genus/16S_MonthComparison_Genera.RA_1perc_barplot.png", width=25, height=10, dpi=600)
 
+b.gen.a21_RA2<-ggplot(aug.gen[aug.gen$Count>0.05,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
+  labs(title = "Microbial Genera Relative Abundance - August 2021", x="SampleID", y="Relative Abundance", subtitle="Includes taxa with Relative Abundance > 5%",fill="Genus")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
+  guides(fill=guide_legend(ncol=1))+scale_y_continuous(expand = c(0,0),limits = c(0,1))
+
+ggsave(b.gen.a21_RA2,filename = "figures/RelativeAbundance/Genus/16S_August2021_Genera.RA_5perc_barplot.png", width=12, height=10, dpi=600)
+
+b.gen.d21_RA2<-ggplot(dec.gen[dec.gen$Count>0.05,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
+  labs(title = "Microbial Genera Relative Abundance - December 2021", x="SampleID", y="Relative Abundance", subtitle="Includes taxa with Relative Abundance > 5%",fill="Genus")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
+  guides(fill=guide_legend(ncol=1))+scale_y_continuous(expand = c(0,0),limits = c(0,1))
+
+ggsave(b.gen.d21_RA2,filename = "figures/RelativeAbundance/Genus/16S_December2021_Genera.RA_5perc_barplot.png", width=12, height=10, dpi=600)
+
+b.gen.a22_RA2<-ggplot(apr.gen[apr.gen$Count>0.05,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
+  labs(title = "Microbial Genera Relative Abundance - April 2022", x="SampleID", y="Relative Abundance", subtitle="Includes taxa with Relative Abundance > 5%",fill="Genus")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
+  guides(fill=guide_legend(ncol=1))+scale_y_continuous(expand = c(0,0),limits = c(0,1))
+
+ggsave(b.gen.a22_RA2,filename = "figures/RelativeAbundance/Genus/16S_April2022_Genera.RA_5perc_barplot.png", width=12, height=10, dpi=600)
+
+all.g.bymo2<-ggarrange(b.gen.a21_RA2, b.gen.d21_RA2, b.gen.a22_RA2,ncol = 3, nrow = 1)
+ggsave(all.g.bymo2,filename = "figures/RelativeAbundance/Genus/16S_MonthComparison_Genera.RA_5perc_barplot.png", width=25, height=10, dpi=600)
+
 # prep for heatmap
 max(b.genus_RA_meta$Count)
 mean(b.genus_RA_meta$Count)
