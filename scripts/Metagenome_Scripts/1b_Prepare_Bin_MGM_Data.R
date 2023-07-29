@@ -276,7 +276,7 @@ rownames(bin_meta_scaled)<-bin_meta$Bin_ID
 
 #### Import Gene Info from KEGG ####
 
-dom.kegg<-read.table("data/Metagenomes/Analysis/DOM_KOs_Pathway_Cycle_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
+all_goi.kegg<-read.table("data/Metagenomes/Analysis/Genes_of_Interest_All_KOs_Pathway_Cycle_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 carb.kegg<-read.table("data/Metagenomes/Analysis/CarbonFixation_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 sulf.kegg<-read.table("data/Metagenomes/Analysis/Sulfur_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 nitro.kegg<-read.table("data/Metagenomes/Analysis/N_KOs_Pathway_Cycle_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
@@ -285,6 +285,7 @@ heatshock.kegg<-read.table("data/Metagenomes/Analysis/HeatShock_KOs_KEGG.txt", h
 osmo.kegg<-read.table("data/Metagenomes/Analysis/Osmoprot_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 selen.kegg<-read.table("data/Metagenomes/Analysis/Selenium_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 metal.re.kegg<-read.table("data/Metagenomes/Analysis/MetalResistance_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
+photo.kegg<-read.table("data/Metagenomes/Analysis/Photo_KO_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 
 #### Check Gene Distribution in MAGs ####
 bin_fxn.cov_table[,1:4] # sanity check
@@ -496,7 +497,7 @@ head(bin.ko_fxns)
 
 ## pull out functions of interest
 carb.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% carb.kegg$KO_ID),]
-DOM.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% dom.kegg$KO_ID),]
+All_GOI.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% all_goi.kegg$KO_ID),]
 sulfur.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% sulf.kegg$KO_ID),]
 nitro.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% nitro.kegg$KO_ID),]
 osmo.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% osmo.kegg$KO_ID),]
@@ -504,6 +505,7 @@ selen.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% selen.kegg$KO_ID),]
 arsen.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% arsen.kegg$KO_ID),]
 HS.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% heatshock.kegg$KO_ID),]
 metal.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% metal.re.kegg$KO_ID),]
+photo.fxn.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% photo.kegg$KO_ID),]
 
 ### Merge Metadata & Contig Count Data & Taxa Data Together ####
 bin.clr[1:4,1:4]
