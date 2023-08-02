@@ -1674,9 +1674,18 @@ clr.photo.all$PathShort<-clr.photo.all$Pathway
 clr.photo.all$PathShort[(clr.photo.all$PathShort) == "Proteorhodopsin"] <- "PR"
 clr.photo.all$PathShort[(clr.photo.all$PathShort) == "Photosystem II"] <- "PS II"
 clr.photo.all$PathShort[(clr.photo.all$PathShort) == "Photosystem I"] <- "PS I"
+clr.photo.all$PathShort[(clr.photo.all$PathShort) == "Anoxygenic Photosystem II"] <- "AnOx PS"
 
-clr.photo.all$Pathway<-factor(clr.photo.all$Pathway,levels=c("Proteorhodopsin","Photosystem II","Photosystem I"))
-clr.photo.all$PathShort<-factor(clr.photo.all$PathShort,levels=c("PR","PS II","PS I"))
+clr.photo.all$Pathway<-factor(clr.photo.all$Pathway,levels=c("Proteorhodopsin","Photosystem II","Photosystem I","Anoxygenic Photosystem II"))
+clr.photo.all$PathShort<-factor(clr.photo.all$PathShort,levels=c("PR","PS II","PS I","AnOx PS"))
+
+clr.photo.all$MethShort<-clr.photo.all$Method
+clr.photo.all$MethShort[(clr.photo.all$MethShort) == "Proteorhodopsin"] <- "PR"
+clr.photo.all$MethShort[(clr.photo.all$MethShort) == "Anoxygenic Photosynthesis"] <- "AnOx PS"
+clr.photo.all$MethShort[(clr.photo.all$MethShort) == "Oxygenic Photosynthesis"] <- "Ox PS"
+
+clr.photo.all$Method<-factor(clr.photo.all$Method,levels=c("Proteorhodopsin","Oxygenic Photosynthesis","Anoxygenic Photosynthesis"))
+clr.photo.all$MethShort<-factor(clr.photo.all$MethShort,levels=c("PR","Ox PS","AnOx PS"))
 
 unique(clr.photo.all$Phototrophy)
 clr.photo.all$Phototrophy<-factor(clr.photo.all$Phototrophy,levels=c("Hetero","Auto"))
@@ -1698,7 +1707,7 @@ photo.hm1a<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovP
 
 ggsave(photo.hm1a,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_SampID_by_Function_heatmap.png", width=18, height=13, dpi=600)
 
-photo.hm1a2<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+photo.hm1b<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
@@ -1706,9 +1715,9 @@ photo.hm1a2<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCov
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Phototrophy~.,scales="free_y", space = "free")
 
-ggsave(photo.hm1a2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_SampID_by_Function_Phototrophy_heatmap.png", width=17, height=15, dpi=600)
+ggsave(photo.hm1b,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_SampID_by_Function_Phototrophy_heatmap.png", width=17, height=15, dpi=600)
 
-photo.hm1a3<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+photo.hm1c<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
@@ -1716,9 +1725,9 @@ photo.hm1a3<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCov
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
 
-ggsave(photo.hm1a3,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_SampleID_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
+ggsave(photo.hm1c,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_SampleID_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
 
-photo.hm1a4<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+photo.hm1d<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
@@ -1726,9 +1735,9 @@ photo.hm1a4<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCov
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(photo.hm1a4,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_SampID_by_Function_Phototrophy_System_heatmap2.png", width=17, height=15, dpi=600)
+ggsave(photo.hm1d,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_SampID_by_Function_Phototrophy_System_heatmap2.png", width=17, height=15, dpi=600)
 
-photo.hm1a5<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+photo.hm1e<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
@@ -1736,9 +1745,9 @@ photo.hm1a5<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCov
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Phototrophy~SampDate, scales="free", space = "free")
 
-ggsave(photo.hm1a5,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_SampleID_by_Function_SampDate_Phototrophy_best_heatmap.png", width=20, height=15, dpi=600)
+ggsave(photo.hm1e,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_SampleID_by_Function_SampDate_Phototrophy_best_heatmap.png", width=20, height=15, dpi=600)
 
-photo.hm1a6<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+photo.hm1f<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
@@ -1746,18 +1755,28 @@ photo.hm1a6<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCov
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
 
-ggsave(photo.hm1a6,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_SampleID_by_Function_SampDate_Phototrophy_System_best_heatmap2.png", width=20, height=15, dpi=600)
+ggsave(photo.hm1f,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_SampleID_by_Function_SampDate_Phototrophy_System_best_heatmap2.png", width=20, height=15, dpi=600)
 
-# by Depth
-photo.hm1b<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+photo.hm1g<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
-        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
-        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
-  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(MethShort~SampDate, scales="free", space = "free")
 
-ggsave(photo.hm1b,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_Depth_by_Function_heatmap.png", width=18, height=13, dpi=600)
+ggsave(photo.hm1g,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_SampleID_by_Function_SampDate_Phototrophy_Method_best_heatmap.png", width=20, height=15, dpi=600)
+
+# by Depth
+# photo.hm1b<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+#   geom_tile(colour="white",size=0.25) +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+#         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
+#
+# ggsave(photo.hm1b,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_Depth_by_Function_heatmap.png", width=18, height=13, dpi=600)
 
 photo.hm1b2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -1769,7 +1788,7 @@ photo.hm1b2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCo
 
 ggsave(photo.hm1b2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_Depth_by_Function_Phototrophy_heatmap.png", width=17, height=15, dpi=600)
 
-photo.hm1b3<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+photo.hm1c2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
@@ -1777,9 +1796,9 @@ photo.hm1b3<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCo
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
 
-ggsave(photo.hm1b3,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
+ggsave(photo.hm1c2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
 
-photo.hm1b4<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+photo.hm1d2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
@@ -1787,9 +1806,9 @@ photo.hm1b4<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCo
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~.,scales="free_y", space = "free")
 
-ggsave(photo.hm1b4,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_Depth_by_Function_Phototrophy_System_heatmap2.png", width=17, height=15, dpi=600)
+ggsave(photo.hm1d2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_Depth_by_Function_Phototrophy_System_heatmap2.png", width=17, height=15, dpi=600)
 
-photo.hm1b5<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+photo.hm1e2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
@@ -1797,9 +1816,9 @@ photo.hm1b5<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCo
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Phototrophy~SampDate, scales="free", space = "free")
 
-ggsave(photo.hm1b5,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_Depth_by_Function_SampDate_Phototrophy_best_heatmap.png", width=20, height=15, dpi=600)
+ggsave(photo.hm1e2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_Depth_by_Function_SampDate_Phototrophy_best_heatmap.png", width=20, height=15, dpi=600)
 
-photo.hm1b6<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+photo.hm1f2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
@@ -1807,37 +1826,17 @@ photo.hm1b6<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCo
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
 
-ggsave(photo.hm1b6,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_Depth_by_Function_SampDate_Phototrophy_System_best_heatmap2.png", width=20, height=15, dpi=600)
+ggsave(photo.hm1f2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_Depth_by_Function_SampDate_Phototrophy_System_best_heatmap2.png", width=20, height=15, dpi=600)
 
-# photo.hm1e<-ggplot(clr.photo.all[clr.photo.all$Depth_m==0,], aes(Phototrophy, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
-#   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
-#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
-#         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
-#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
-#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
-#
-# ggsave(photo.hm1e,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_Phototrophys_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
-#
-# photo.hm1f<-ggplot(clr.photo.all[clr.photo.all$Depth_m==5,], aes(Phototrophy, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
-#   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
-#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
-#         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
-#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
-#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
-#
-# ggsave(photo.hm1f,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_Phototrophys_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
-#
-# photo.hm1g<-ggplot(clr.photo.all[clr.photo.all$Depth_m==10,], aes(Phototrophy, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
-#   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
-#   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
-#         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
-#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
-#   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
-#
-# ggsave(photo.hm1g,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_Phototrophys_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
+photo.hm1e2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(MethShort~SampDate, scales="free", space = "free")
+
+ggsave(photo.hm1e2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_Depth_by_Function_SampDate_Phototrophy_Method_best_heatmap.png", width=20, height=15, dpi=600)
 
 #### Pull out Phototrophy Metabolic Fxns from Binary Data ####
 photo.ko.bi<-mgm_fxn.binary[,which(colnames(mgm_fxn.binary) %in% photo.fxn$KO_ID)] # merge CLR data w/ N fxns found in contigs from KOFamScan
@@ -1872,9 +1871,18 @@ clr.photo.all.bi$PathShort<-clr.photo.all.bi$Pathway
 clr.photo.all.bi$PathShort[(clr.photo.all.bi$PathShort) == "Proteorhodopsin"] <- "PR"
 clr.photo.all.bi$PathShort[(clr.photo.all.bi$PathShort) == "Photosystem II"] <- "PS II"
 clr.photo.all.bi$PathShort[(clr.photo.all.bi$PathShort) == "Photosystem I"] <- "PS I"
+clr.photo.all.bi$PathShort[(clr.photo.all.bi$PathShort) == "Anoxygenic Photosystem II"] <- "AnOx PS"
 
-clr.photo.all.bi$Pathway<-factor(clr.photo.all.bi$Pathway,levels=c("Proteorhodopsin","Photosystem II","Photosystem I"))
-clr.photo.all.bi$PathShort<-factor(clr.photo.all.bi$PathShort,levels=c("PR","PS II","PS I"))
+clr.photo.all.bi$Pathway<-factor(clr.photo.all.bi$Pathway,levels=c("Proteorhodopsin","Photosystem II","Photosystem I","Anoxygenic Photosystem II"))
+clr.photo.all.bi$PathShort<-factor(clr.photo.all.bi$PathShort,levels=c("PR","PS II","PS I","AnOx PS"))
+
+clr.photo.all.bi$MethShort<-clr.photo.all.bi$Method
+clr.photo.all.bi$MethShort[(clr.photo.all.bi$MethShort) == "Proteorhodopsin"] <- "PR"
+clr.photo.all.bi$MethShort[(clr.photo.all.bi$MethShort) == "Anoxygenic Photosynthesis"] <- "AnOx PS"
+clr.photo.all.bi$MethShort[(clr.photo.all.bi$MethShort) == "Oxygenic Photosynthesis"] <- "Ox PS"
+
+clr.photo.all.bi$Method<-factor(clr.photo.all.bi$Method,levels=c("Proteorhodopsin","Oxygenic Photosynthesis","Anoxygenic Photosynthesis"))
+clr.photo.all.bi$MethShort<-factor(clr.photo.all.bi$MethShort,levels=c("PR","Ox PS","AnOx PS"))
 
 clr.photo.all.bi$Phototrophy<-factor(clr.photo.all.bi$Phototrophy,levels=c("Hetero","Auto"))
 
@@ -1945,6 +1953,16 @@ photo.bi.hm1f<-ggplot(clr.photo.all.bi, aes(PlotID, KO_Function.KEGG, fill=facto
 
 ggsave(photo.bi.hm1f,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/PresenceAbsence/Phototrophy_KOFxns_MGMs_by_Function_SampDate_Phototrophy_Binary_best_heatmap.png", width=20, height=15, dpi=600)
 
+photo.bi.hm1g<-ggplot(clr.photo.all.bi, aes(PlotID, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Phototrophy Fixation in Salton Seawater Metagenomes",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(MethShort~SampDate, scales="free", space = "free")
+
+ggsave(photo.bi.hm1g,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/PresenceAbsence/Phototrophy_KOFxns_MGMs_by_Function_SampDate_Photo_Method_Binary_heatmap.png", width=20, height=15, dpi=600)
+
 # By depth
 
 photo.bi.hm1b2<-ggplot(clr.photo.all.bi, aes(Depth_m, KO_Function.KEGG, fill=factor(PresAb))) +
@@ -1996,6 +2014,16 @@ photo.bi.hm1f2<-ggplot(clr.photo.all.bi, aes(Depth_m, KO_Function.KEGG, fill=fac
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Phototrophy~SampDate, scales="free", space = "free")
 
 ggsave(photo.bi.hm1f2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/PresenceAbsence/Phototrophy_KOFxns_MGMs_Depth_by_Function_SampDate_Phototrophy_Binary_best_heatmap.png", width=20, height=15, dpi=600)
+
+photo.bi.hm1g2<-ggplot(clr.photo.all.bi, aes(Depth_m, KO_Function.KEGG, fill=factor(PresAb))) +
+  geom_tile(colour="black",size=0.25) +
+  scale_fill_manual(values=binary.cols,labels=c("Present","Absent"),breaks=c(1,0)) + labs(title="Phototrophy Fixation in Salton Seawater Metagenomes",fill="Presence/Absence") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(MethShort~SampDate, scales="free", space = "free")
+
+ggsave(photo.bi.hm1g2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/PresenceAbsence/Phototrophy_KOFxns_MGMs_Depth_by_Function_SampDate_Photo_Method_Binary_best_heatmap.png", width=20, height=15, dpi=600)
 
 # photo.bi.hm1e0<-ggplot(clr.photo.all.bi[clr.photo.all.bi$Depth_m==0,], aes(PathShort, KO_Function.KEGG, fill=factor(PresAb))) +
 #   geom_tile(colour="black",size=0.25) +
