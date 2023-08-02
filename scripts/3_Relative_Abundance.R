@@ -1482,7 +1482,6 @@ tg1c<-ggplot(aug.gen.dep_m[aug.gen.dep_m$Count>0.05,], aes(Genus, Count)) +
 ggsave(tg1c,filename = "figures/RelativeAbundance/Genus/August2021/SSW_16S_Aug21_Genera.RA_depth_taxasum_5percent_v2.png", width=15, height=10, dpi=600)
 
 
-
 #### Genus Relative Abundance - December ####
 # use dcast to count up ASVs within each Genus across dec of the samples
 head(bac.dat.all)
@@ -1524,6 +1523,8 @@ max(dec.genus_RA_meta$Count)
 dec.genus_RA_meta$PlotID = gsub("^SSW.","",dec.genus_RA_meta$SampleID)
 dec.genus_RA_meta$PlotID = factor(dec.genus_RA_meta$PlotID, levels=unique(dec.genus_RA_meta$PlotID[order(dec.genus_RA_meta$SampDate,dec.genus_RA_meta$Depth_m)]), ordered=TRUE)
 #
+dec.genus_RA_meta[which.max(dec.genus_RA_meta$Count),] #
+dec.gen[order(dec.genus_RA_meta$Count,decreasing=TRUE),]
 # # Barplot by PlotID
 #
 # b.gen_RA0<-ggplot(dec.genus_RA_meta[dec.genus_RA_meta$Count>0.01,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
