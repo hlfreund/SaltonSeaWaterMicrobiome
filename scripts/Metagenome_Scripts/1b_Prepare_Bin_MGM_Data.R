@@ -273,6 +273,7 @@ rownames(bin_meta)<-bin_meta$Bin_ID
 
 bin_meta_scaled<-merge(meta_scaled,bin_list,by="SampleID")
 rownames(bin_meta_scaled)<-bin_meta$Bin_ID
+bin_meta_scaled$PlotBin<-gsub("^SSW.","",bin_meta_scaled$Bin_ID)
 
 #### Import Gene Info from KEGG ####
 
@@ -338,7 +339,7 @@ rownames(bin.ko.cov.sum_table)<-bin.ko.cov.sum_table$Bin_ID
 bin.ko.cov.sum_table[1:4,1:5]
 
 # check rownames of summed CLR transformed feature coverage data & metadata
-bin.ko.cov.sum_table$SampleID %in% rownames(meta_scaled)
+bin.ko.cov.sum_table$SampleID %in% rownames(bin_meta_scaled)
 
 bin.ko.cov.sum_table[1:4,1:4] # contains the sum of coverages per gene per KO -- featureCounts was normalized by gene length across samples first
 
