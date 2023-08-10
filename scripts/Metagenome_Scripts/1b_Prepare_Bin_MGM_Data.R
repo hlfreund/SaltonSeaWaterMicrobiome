@@ -287,6 +287,7 @@ osmo.kegg<-read.table("data/Metagenomes/Analysis/Osmoprot_KOs_KEGG.txt", header 
 selen.kegg<-read.table("data/Metagenomes/Analysis/Selenium_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 metal.re.kegg<-read.table("data/Metagenomes/Analysis/MetalResistance_KOs_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 photo.kegg<-read.table("data/Metagenomes/Analysis/Photo_KO_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
+aero.kegg<-read.table("data/Metagenomes/Analysis/OxidativePhosphorylation_KO_KEGG.txt", header = TRUE, sep = "\t", dec = ".")
 
 #### Check Gene Distribution in MAGs ####
 bin_fxn.cov_table[,1:4] # sanity check
@@ -507,6 +508,7 @@ arsen.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% arsen.kegg$KO_ID),]
 HS.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% heatshock.kegg$KO_ID),]
 metal.fxns.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% metal.re.kegg$KO_ID),]
 photo.fxn.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% photo.kegg$KO_ID),]
+aero.fxn.bins<-bin.ko_fxns[which(bin.ko_fxns$KO_ID %in% aero.kegg$KO_ID),]
 
 ### Merge Metadata & Contig Count Data & Taxa Data Together ####
 bin.clr[1:4,1:4]
