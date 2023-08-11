@@ -1841,30 +1841,30 @@ min(clr.aero.all.bin$CLR_SumCovPerKO)
 # First by Plot Bin
 aero.hm1a<-ggplot(clr.aero.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.70","0.35","-0.1"),breaks=c(0.70,0.35,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
-        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+        axis.ticks=element_line(size=0.35),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))
 
 ggsave(aero.hm1a,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Aerobic_Respiration/Aerobic_Respiration_KOFxns_MGMs_BinID_by_Function_heatmap.png", width=18, height=16, dpi=600)
 
 aero.hm1b<-ggplot(clr.aero.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.70","0.35","-0.1"),breaks=c(0.70,0.35,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
-        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
+        axis.ticks=element_line(size=0.35),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(EnzShort~.,scales="free_y", space = "free")
 
 ggsave(aero.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Aerobic_Respiration/Aerobic_Respiration_KOFxns_MGMs_Bins_BinID_by_Function_Enzyme_heatmap.png", width=22, height=20, dpi=600)
 
 aero.hm1c<-ggplot(clr.aero.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.70","0.35","-0.1"),breaks=c(0.70,0.35,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
-        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
+        axis.ticks=element_line(size=0.35),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(EnzShort~SampDate, scales="free", space = "free")
 
 ggsave(aero.hm1c,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Aerobic_Respiration/Aerobic_Respiration_KOFxns_MGMs_Bins_BinID_by_Function_SampDate_Enzyme_best_heatmap.png", width=24, height=20, dpi=600)
@@ -1872,77 +1872,77 @@ ggsave(aero.hm1c,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Aerobic_Respiratio
 # by Genus
 aero.hm1b1<-ggplot(clr.aero.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs by Genus",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.70","0.35","-0.1"),breaks=c(0.70,0.35,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs by Genus",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
-        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
+        axis.ticks=element_line(size=0.35),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(EnzShort~.,scales="free_y", space = "free")
 
 ggsave(aero.hm1b1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Aerobic_Respiration/Aerobic_Respiration_KOFxns_MGMs_Bins_Genus_by_Function_Enzyme_heatmap.png", width=22, height=20, dpi=600)
 
 aero.hm1c1<-ggplot(clr.aero.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs by Genus",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.70","0.35","-0.1"),breaks=c(0.70,0.35,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs by Genus",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
-        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
+        axis.ticks=element_line(size=0.35),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(EnzShort~SampDate, scales="free", space = "free")
 
 ggsave(aero.hm1c1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Aerobic_Respiration/Aerobic_Respiration_KOFxns_MGMs_Bins_Genus_by_Function_SampDate_Enzyme_best_heatmap.png", width=24, height=20, dpi=600)
 
 # aero.hm1f<-ggplot(clr.aero.all.bin, aes(Enzyme, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.70","0.35","-0.1"),breaks=c(0.70,0.35,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
-#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
+#         axis.ticks=element_line(size=0.35),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Depth_m~SampDate,scales="free", space = "free")
 #
 # ggsave(aero.hm1f,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Aerobic_Respiration/Aerobic_Respiration_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
 #
 # aero.hm1g<-ggplot(clr.aero.all.bin, aes(Enzyme, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.70","0.35","-0.1"),breaks=c(0.70,0.35,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
-#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
+#         axis.ticks=element_line(size=0.35),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_wrap(.~SampDate)
 #
 # ggsave(aero.hm1g,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Aerobic_Respiration/Aerobic_Respiration_KOFxns_MGMs_heatmap1d.png", width=18, height=18, dpi=600)
 #
 # aero.hm1e<-ggplot(clr.aero.all.bin[clr.aero.all.bin$Depth_m==0,], aes(Enzyme, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.70","0.35","-0.1"),breaks=c(0.70,0.35,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
-#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
+#         axis.ticks=element_line(size=0.35),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 #
 # ggsave(aero.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Aerobic_Respiration/Aerobic_Respiration_KOFxns_Bins_Enzymes_MGMs_0m_heatmap.png", width=18, height=18, dpi=600)
 #
 # aero.hm1f<-ggplot(clr.aero.all.bin[clr.aero.all.bin$Depth_m==5,], aes(Enzyme, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.70","0.35","-0.1"),breaks=c(0.70,0.35,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
-#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+#         axis.ticks=element_line(size=0.35),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 #
 # ggsave(aero.hm1f,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Aerobic_Respiration/Aerobic_Respiration_KOFxns_Bins_Enzymes_MGMs_5m_heatmap.png", width=18, height=18, dpi=600)
 #
 # aero.hm1g<-ggplot(clr.aero.all.bin[clr.aero.all.bin$Depth_m==10,], aes(Enzyme, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.70","0.35","-0.1"),breaks=c(0.70,0.35,-0.1)) + labs(title="Aerobic Respiration in Salton Seawater MAGs - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
-#         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
+#         axis.ticks=element_line(size=0.35),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(.~SampDate)
 #
 # ggsave(aero.hm1g,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Aerobic_Respiration/Aerobic_Respiration_KOFxns_Bins_Enzymes_MGMs_10m_heatmap.png", width=18, height=18, dpi=600)
 
 
 #### Pull out Aerobic Respiration Fxns from Binary Data ####
-aero.ko.bin.bi<-bin_fxn.binary[,which(colnames(bin_fxn.binary) %in% aero.fxns.bins$KO_ID)] # merge CLR data w/ N fxns found in contigs from KOFamScan
+aero.ko.bin.bi<-bin_fxn.binary[,which(colnames(bin_fxn.binary) %in% aero.fxn.bins$KO_ID)] # merge CLR data w/ N fxns found in contigs from KOFamScan
 aero.ko.bin.bi$Bin_ID<-rownames(aero.ko.bin.bi)
 aero.ko.bin.bi.melt<-melt(aero.ko.bin.bi, by="Bin_ID")
 colnames(aero.ko.bin.bi.melt)[which(names(aero.ko.bin.bi.melt) == "variable")] <- "KO_ID"
