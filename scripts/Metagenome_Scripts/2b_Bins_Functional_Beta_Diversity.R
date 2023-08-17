@@ -47,9 +47,9 @@ arsen.kegg[1:4,]
 bin.ko.cov.sum_table[1:4,1:4]
 head(bin.clr.ars)
 
-# fixing some col names in meta_scaled
-#colnames(meta_scaled)[which(names(meta_scaled) == "DO_Percent_Local")] <- "DO_Percent_Local"
-#colnames(meta_scaled)[which(names(meta_scaled) == "Dissolved_Organic Matter_RFU")] <- "Dissolved_OrganicMatter_RFU"
+# fixing some col names in bin_meta_scaled
+#colnames(bin_meta_scaled)[which(names(bin_meta_scaled) == "DO_Percent_Local")] <- "DO_Percent_Local"
+#colnames(bin_meta_scaled)[which(names(bin_meta_scaled) == "Dissolved_Organic Matter_RFU")] <- "Dissolved_OrganicMatter_RFU"
 
 #bin_meta_scaled$SampDate<-gsub("\\."," ",bin_meta_scaled$SampDate) # drop period between month & year in SampDate col
 #bin_meta_scaled$SampDate<-factor(bin_meta_scaled$SampDate,levels=c("August 2021","December 2021","April 2022"))
@@ -76,7 +76,7 @@ bin.euc.clr_clust <- hclust(bin.euc.clr_dist, method="ward.D2")
 
 # let's make it a little nicer...
 bin.euc.clr_dend <- as.dendrogram(bin.euc.clr_clust, hang=0.2)
-bin.dend_cols <- as.character(meta_scaled$SampDate_Color[order.dendrogram(bin.euc.clr_dend)])
+bin.dend_cols <- as.character(bin_meta_scaled$SampDate_Color[order.dendrogram(bin.euc.clr_dend)])
 labels_colors(bin.euc.clr_dend) <- bin.dend_cols
 
 plot(bin.euc.clr_dend, ylab="CLR Euclidean Distance",cex = 0.5) + title(main = "Bacteria/Archaea Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 3)
@@ -333,7 +333,7 @@ ggsave(sulf.hm1d2a,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KO
 
 # sulf.hm1c<-ggplot(clr.sulf.all.bin, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -363,7 +363,7 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFx
 
 # sulf.hm1f<-ggplot(clr.sulf.all.bin, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
@@ -373,7 +373,7 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFx
 #
 # sulf.hm1g<-ggplot(clr.sulf.all.bin, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
@@ -383,7 +383,7 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFx
 
 # sulf.hm1e<-ggplot(clr.sulf.all.bin[clr.sulf.all.bin$Depth_m==0,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
@@ -393,7 +393,7 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFx
 #
 # sulf.hm1f<-ggplot(clr.sulf.all.bin[clr.sulf.all.bin$Depth_m==5,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -403,7 +403,7 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFx
 #
 # sulf.hm1g<-ggplot(clr.sulf.all.bin[clr.sulf.all.bin$Depth_m==10,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Sulfur Metabolism in Salton Seawater MAGs - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -421,7 +421,7 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFx
 #
 # s.sox.hm<-ggplot(clr.Sox, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25)  +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="SOX Functions in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO, Grouped by Bin Assigment",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="SOX Functions in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO, Grouped by Bin Assigment",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=15),
 #         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
@@ -438,7 +438,7 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFx
 #
 # s.R.hm1<-ggplot(clr.as.S.redox, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25)  +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Assimilatory Sulfuate Reduction in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO, Grouped by Bin Assigment",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Assimilatory Sulfuate Reduction in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO, Grouped by Bin Assigment",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=15),
 #         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
@@ -455,13 +455,311 @@ ggsave(sulf.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Sulfur_KOFx
 #
 # s.RO.hm1<-ggplot(clr.dis.S.redox, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25)  +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Dissimilarity Sulfuate RedOx in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO, Grouped by Bin Assigment",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",na.value="grey50",labels=c("1","0.5","-0.1"),breaks=c(1,0.5,-0.1)) + labs(title="Dissimilarity Sulfuate RedOx in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO, Grouped by Bin Assigment",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=15),
 #         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.border=element_blank(),panel.background = element_rect(fill = "white", colour = NA)) +
 #   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0)) + facet_grid(.~SampDate)
 #
 # ggsave(s.RO.hm1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/SSW_S_DissSO4_RedOx_Contigs_bySampDate_Depth_heatmap.png", width=15, height=10, dpi=600)
+
+#### Look at Specific S Gene Coverage Across Samples ####
+
+head(clr.cov.sum.sulf.ko.bin) # columns are genes in this df
+
+# merge with scaled metadata and prep for scatterplots of traits across samples
+clr.sulf.trait.table.bin1<-merge(clr.cov.sum.sulf.ko.bin,bin_meta_scaled,by="Bin_ID")
+clr.sulf.trait.table.bin<-merge(clr.sulf.trait.table.bin1,mag_tax,by=c("Bin_ID","PlotBin"))
+
+head(clr.sulf.trait.table.bin)
+clr.sulf.trait.table.bin$PlotBin = factor(clr.sulf.trait.table.bin$PlotBin, levels=unique(clr.sulf.trait.table.bin$PlotBin[order(clr.sulf.trait.table.bin$SampDate,clr.sulf.trait.table.bin$Depth_m)]), ordered=TRUE)
+clr.sulf.trait.table.bin$SampDate<-gsub("\\."," ",clr.sulf.trait.table.bin$SampDate)
+clr.sulf.trait.table.bin$SampDate<-factor(clr.sulf.trait.table.bin$SampDate, levels=c("August 2021","December 2021","April 2022"))
+
+head(clr.sulf.trait.table.bin)
+
+# Note: not looking at every S cycling gene included in this project but looking at ones that appear to have noticeable trends in heat maps
+
+# First by Bin ID
+
+### SOX genes
+# `soxY; sulfur-oxidizing protein SoxY`
+soxy.bin.fs<-ggplot(clr.sulf.trait.table.bin, aes(x=PlotBin, y=`soxY; sulfur-oxidizing protein SoxY`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="SoxY Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Bin ID") + ylab("CLR-Transformed Coverage")
+
+ggsave(soxy.bin.fs,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/SoxY_CLR_Coverage_BinID_fxn.sum.png", width=12, height=10, dpi=600)
+
+# `soxA; L-cysteine S-thiosulfotransferase [EC:2.8.5.2]`
+soxa.bin.fs<-ggplot(clr.sulf.trait.table.bin, aes(x=PlotBin, y=`soxA; L-cysteine S-thiosulfotransferase [EC:2.8.5.2]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="SoxA Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Bin ID") + ylab("CLR-Transformed Coverage")
+
+ggsave(soxa.bin.fs,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/SoxA_CLR_Coverage_BinID_fxn.sum.png", width=12, height=10, dpi=600)
+
+#`soxD; S-disulfanyl-L-cysteine oxidoreductase SoxD [EC:1.8.2.6]`
+soxd.bin.fs<-ggplot(clr.sulf.trait.table.bin, aes(x=PlotBin, y=`soxD; S-disulfanyl-L-cysteine oxidoreductase SoxD [EC:1.8.2.6]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="SoxD Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Bin ID") + ylab("CLR-Transformed Coverage")
+
+ggsave(soxd.bin.fs,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/SoxD_CLR_Coverage_BinID_fxn.sum.png", width=12, height=10, dpi=600)
+
+# `soxB; S-sulfosulfanyl-L-cysteine sulfohydrolase [EC:3.1.6.20]`
+soxb.bin.fs<-ggplot(clr.sulf.trait.table.bin, aes(x=PlotBin, y=`soxB; S-sulfosulfanyl-L-cysteine sulfohydrolase [EC:3.1.6.20]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="SoxB Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Bin ID") + ylab("CLR-Transformed Coverage")
+
+ggsave(soxb.bin.fs,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/SoxB_CLR_Coverage_BinID_fxn.sum.png", width=12, height=10, dpi=600)
+
+#### H2S --> S oxidation genes
+# `sqr; sulfide:quinone oxidoreductase [EC:1.8.5.4]`
+sqr.bin.fs<-ggplot(clr.sulf.trait.table.bin, aes(x=PlotBin, y=`sqr; sulfide:quinone oxidoreductase [EC:1.8.5.4]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="sqr Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Bin ID") + ylab("CLR-Transformed Coverage")
+
+ggsave(sqr.bin.fs,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/sqr_CLR_Coverage_BinID_fxn.sum.png", width=12, height=10, dpi=600)
+
+# `fccB; sulfide dehydrogenase [flavocytochrome c] flavoprotein chain [EC:1.8.2.3]`
+fccB.bin.fs<-ggplot(clr.sulf.trait.table.bin, aes(x=PlotBin, y=`fccB; sulfide dehydrogenase [flavocytochrome c] flavoprotein chain [EC:1.8.2.3]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="fccB Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Bin ID") + ylab("CLR-Transformed Coverage")
+
+ggsave(fccB.bin.fs,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/fccB_CLR_Coverage_BinID_fxn.sum.png", width=12, height=10, dpi=600)
+
+#### Dissimilatory SO4 RedOx genes
+# `aprA; adenylylsulfate reductase, subunit A [EC:1.8.99.2]`
+# aprA.bin.fs<-ggplot(clr.sulf.trait.table.bin, aes(x=PlotBin, y=`aprA; adenylylsulfate reductase, subunit A [EC:1.8.99.2]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+#   labs(title="aprA Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+#   guides(shape = guide_legend(override.aes = list(size = 5)))+
+#   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+#   xlab("Bin ID") + ylab("CLR-Transformed Coverage")
+#
+# ggsave(aprA.bin.fs,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/aprA_CLR_Coverage_BinID_fxn.sum.png", width=12, height=10, dpi=600)
+
+# `dsrB; dissimilatory sulfite reductase beta subunit [EC:1.8.99.5]`
+dsrB.bin.fs<-ggplot(clr.sulf.trait.table.bin, aes(x=PlotBin, y=`dsrB; dissimilatory sulfite reductase beta subunit [EC:1.8.99.5]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="dsrB Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Bin ID") + ylab("CLR-Transformed Coverage")
+
+ggsave(dsrB.bin.fs,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/dsrB_CLR_Coverage_BinID_fxn.sum.png", width=12, height=10, dpi=600)
+
+#### Assimilatory SO4 Reduction
+
+# `cysNC; bifunctional enzyme CysN/CysC [EC:2.7.7.4 2.7.1.25]`
+cysNC.bin.fs<-ggplot(clr.sulf.trait.table.bin, aes(x=PlotBin, y=`cysNC; bifunctional enzyme CysN/CysC [EC:2.7.7.4 2.7.1.25]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="CysNC Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Bin ID") + ylab("CLR-Transformed Coverage")
+
+ggsave(cysNC.bin.fs,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/CysNC_CLR_Coverage_BinID_fxn.sum.png", width=12, height=10, dpi=600)
+
+# `cysD; sulfate adenylyltransferase subunit 2 [EC:2.7.7.4]`
+cysD.bin.fs<-ggplot(clr.sulf.trait.table.bin, aes(x=PlotBin, y=`cysD; sulfate adenylyltransferase subunit 2 [EC:2.7.7.4]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="CysD Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Bin ID") + ylab("CLR-Transformed Coverage")
+
+ggsave(cysD.bin.fs,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/CysD_CLR_Coverage_BinID_fxn.sum.png", width=12, height=10, dpi=600)
+
+# `cysH; phosphoadenosine phosphosulfate reductase [EC:1.8.4.8 1.8.4.10]`
+cysH.bin.fs<-ggplot(clr.sulf.trait.table.bin, aes(x=PlotBin, y=`cysH; phosphoadenosine phosphosulfate reductase [EC:1.8.4.8 1.8.4.10]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="CysH Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Bin ID") + ylab("CLR-Transformed Coverage")
+
+ggsave(cysH.bin.fs,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/CysH_CLR_Coverage_BinID_fxn.sum.png", width=12, height=10, dpi=600)
+
+# `sir; sulfite reductase (ferredoxin) [EC:1.8.7.1]`
+# sir.bin.fs<-ggplot(clr.sulf.trait.table.bin, aes(x=PlotBin, y=`sir; sulfite reductase (ferredoxin) [EC:1.8.7.1]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+#   labs(title="sir Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+#   guides(shape = guide_legend(override.aes = list(size = 5)))+
+#   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+#   xlab("Bin ID") + ylab("CLR-Transformed Coverage")
+#
+# ggsave(sir.bin.fs,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/sir_CLR_Coverage_BinID_fxn.sum.png", width=12, height=10, dpi=600)
+
+#### S Disproportionation
+#
+# # `phsA,psrA; thiosulfate reductase / polysulfide reductase chain A [EC:1.8.5.5]`
+# phsA.psrA.bin.fs<-ggplot(clr.sulf.trait.table.bin, aes(x=PlotBin, y=`phsA,psrA; thiosulfate reductase / polysulfide reductase chain A [EC:1.8.5.5]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+#   labs(title="phsA Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+#   guides(shape = guide_legend(override.aes = list(size = 5)))+
+#   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+#   xlab("Bin ID") + ylab("CLR-Transformed Coverage")
+#
+# ggsave(phsA.psrA.bin.fs,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/phsA.psrA_CLR_Coverage_BinID_fxn.sum.png", width=12, height=10, dpi=600)
+
+
+## By Genus
+
+# Note: not looking at every S cycling gene included in this project but looking at ones that appear to have noticeable trends in heat maps
+### SOX genes
+# `soxY; sulfur-oxidizing protein SoxY`
+soxy.bin.fs1<-ggplot(clr.sulf.trait.table.bin, aes(x=Genus, y=`soxY; sulfur-oxidizing protein SoxY`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="SoxY Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Genus") + ylab("CLR-Transformed Coverage")
+
+ggsave(soxy.bin.fs1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/SoxY_CLR_Coverage_Genus_fxn.sum.png", width=12, height=10, dpi=600)
+
+# `soxA; L-cysteine S-thiosulfotransferase [EC:2.8.5.2]`
+soxa.bin.fs1<-ggplot(clr.sulf.trait.table.bin, aes(x=Genus, y=`soxA; L-cysteine S-thiosulfotransferase [EC:2.8.5.2]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="SoxA Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Genus") + ylab("CLR-Transformed Coverage")
+
+ggsave(soxa.bin.fs1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/SoxA_CLR_Coverage_Genus_fxn.sum.png", width=12, height=10, dpi=600)
+
+#`soxD; S-disulfanyl-L-cysteine oxidoreductase SoxD [EC:1.8.2.6]`
+soxd.bin.fs1<-ggplot(clr.sulf.trait.table.bin, aes(x=Genus, y=`soxD; S-disulfanyl-L-cysteine oxidoreductase SoxD [EC:1.8.2.6]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="SoxD Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Genus") + ylab("CLR-Transformed Coverage")
+
+ggsave(soxd.bin.fs1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/SoxD_CLR_Coverage_Genus_fxn.sum.png", width=12, height=10, dpi=600)
+
+# `soxB; S-sulfosulfanyl-L-cysteine sulfohydrolase [EC:3.1.6.20]`
+soxb.bin.fs1<-ggplot(clr.sulf.trait.table.bin, aes(x=Genus, y=`soxB; S-sulfosulfanyl-L-cysteine sulfohydrolase [EC:3.1.6.20]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="SoxB Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Genus") + ylab("CLR-Transformed Coverage")
+
+ggsave(soxb.bin.fs1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/SoxB_CLR_Coverage_Genus_fxn.sum.png", width=12, height=10, dpi=600)
+
+#### H2S --> S oxidation genes
+# `sqr; sulfide:quinone oxidoreductase [EC:1.8.5.4]`
+sqr.bin.fs1<-ggplot(clr.sulf.trait.table.bin, aes(x=Genus, y=`sqr; sulfide:quinone oxidoreductase [EC:1.8.5.4]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="sqr Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Genus") + ylab("CLR-Transformed Coverage")
+
+ggsave(sqr.bin.fs1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/sqr_CLR_Coverage_Genus_fxn.sum.png", width=12, height=10, dpi=600)
+
+# `fccB; sulfide dehydrogenase [flavocytochrome c] flavoprotein chain [EC:1.8.2.3]`
+fccB.bin.fs1<-ggplot(clr.sulf.trait.table.bin, aes(x=Genus, y=`fccB; sulfide dehydrogenase [flavocytochrome c] flavoprotein chain [EC:1.8.2.3]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="fccB Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Genus") + ylab("CLR-Transformed Coverage")
+
+ggsave(fccB.bin.fs1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/fccB_CLR_Coverage_Genus_fxn.sum.png", width=12, height=10, dpi=600)
+
+#### Dissimilatory SO4 RedOx genes
+# `aprA; adenylylsulfate reductase, subunit A [EC:1.8.99.2]`
+# aprA.bin.fs1<-ggplot(clr.sulf.trait.table.bin, aes(x=Genus, y=`aprA; adenylylsulfate reductase, subunit A [EC:1.8.99.2]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+#   labs(title="aprA Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+#   guides(shape = guide_legend(override.aes = list(size = 5)))+
+#   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+#   xlab("Genus") + ylab("CLR-Transformed Coverage")
+#
+# ggsave(aprA.bin.fs1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/aprA_CLR_Coverage_Genus_fxn.sum.png", width=12, height=10, dpi=600)
+
+# `dsrB; dissimilatory sulfite reductase beta subunit [EC:1.8.99.5]`
+dsrB.bin.fs1<-ggplot(clr.sulf.trait.table.bin, aes(x=Genus, y=`dsrB; dissimilatory sulfite reductase beta subunit [EC:1.8.99.5]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="dsrB Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Genus") + ylab("CLR-Transformed Coverage")
+
+ggsave(dsrB.bin.fs1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/dsrB_CLR_Coverage_Genus_fxn.sum.png", width=12, height=10, dpi=600)
+
+#### Assimilatory SO4 Reduction
+
+# `cysNC; bifunctional enzyme CysN/CysC [EC:2.7.7.4 2.7.1.25]`
+cysNC.bin.fs1<-ggplot(clr.sulf.trait.table.bin, aes(x=Genus, y=`cysNC; bifunctional enzyme CysN/CysC [EC:2.7.7.4 2.7.1.25]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="CysNC Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Genus") + ylab("CLR-Transformed Coverage")
+
+ggsave(cysNC.bin.fs1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/CysNC_CLR_Coverage_Genus_fxn.sum.png", width=12, height=10, dpi=600)
+
+# `cysD; sulfate adenylyltransferase subunit 2 [EC:2.7.7.4]`
+cysD.bin.fs1<-ggplot(clr.sulf.trait.table.bin, aes(x=Genus, y=`cysD; sulfate adenylyltransferase subunit 2 [EC:2.7.7.4]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="CysD Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Genus") + ylab("CLR-Transformed Coverage")
+
+ggsave(cysD.bin.fs1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/CysD_CLR_Coverage_Genus_fxn.sum.png", width=12, height=10, dpi=600)
+
+# `cysH; phosphoadenosine phosphosulfate reductase [EC:1.8.4.8 1.8.4.10]`
+cysH.bin.fs1<-ggplot(clr.sulf.trait.table.bin, aes(x=Genus, y=`cysH; phosphoadenosine phosphosulfate reductase [EC:1.8.4.8 1.8.4.10]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+  labs(title="CysH Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Genus") + ylab("CLR-Transformed Coverage")
+
+ggsave(cysH.bin.fs1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/CysH_CLR_Coverage_Genus_fxn.sum.png", width=12, height=10, dpi=600)
+
+# `sir; sulfite reductase (ferredoxin) [EC:1.8.7.1]`
+# sir.bin.fs1<-ggplot(clr.sulf.trait.table.bin, aes(x=Genus, y=`sir; sulfite reductase (ferredoxin) [EC:1.8.7.1]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+#   labs(title="sir Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+#   guides(shape = guide_legend(override.aes = list(size = 5)))+
+#   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+#   xlab("Genus") + ylab("CLR-Transformed Coverage")
+#
+# ggsave(sir.bin.fs1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/sir_CLR_Coverage_Genus_fxn.sum.png", width=12, height=10, dpi=600)
+
+#### S Disproportionation
+
+# `phsA,psrA; thiosulfate reductase / polysulfide reductase chain A [EC:1.8.5.5]`
+# phsA.psrA.bin.fs1<-ggplot(clr.sulf.trait.table.bin, aes(x=Genus, y=`phsA,psrA; thiosulfate reductase / polysulfide reductase chain A [EC:1.8.5.5]`,color=SampDate,group=SampDate)) + geom_jitter(aes(color=SampDate), size=3, width=0.15, height=0) + theme_bw()+
+#   labs(title="phsA Depth of Coverage in MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+#   guides(shape = guide_legend(override.aes = list(size = 5)))+
+#   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table.bin$SampDate_Color[order(clr.sulf.trait.table.bin$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+#   xlab("Genus") + ylab("CLR-Transformed Coverage")
+#
+# ggsave(phsA.psrA.bin.fs1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/phsA.psrA_CLR_Coverage_Genus_fxn.sum.png", width=12, height=10, dpi=600)
+
 
 #### Pull out Sulfur Metabolic Fxns from Binary Data ####
 
@@ -752,7 +1050,7 @@ min(clr.nitro.all.bin$CLR_SumCovPerKO)
 # Figures
 nitro.hm1a<-ggplot(clr.nitro.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -762,7 +1060,7 @@ ggsave(nitro.hm1a,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 
 nitro.hm1b<-ggplot(clr.nitro.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -772,7 +1070,7 @@ ggsave(nitro.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 
 # nitro.hm1c<-ggplot(clr.nitro.all.bin, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -782,7 +1080,7 @@ ggsave(nitro.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 
 nitro.hm1d<-ggplot(clr.nitro.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
@@ -792,7 +1090,7 @@ ggsave(nitro.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 
 nitro.hm1e<-ggplot(clr.nitro.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -802,7 +1100,7 @@ ggsave(nitro.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 #
 # nitro.hm1f<-ggplot(clr.nitro.all.bin, aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
@@ -812,7 +1110,7 @@ ggsave(nitro.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 #
 # nitro.hm1g<-ggplot(clr.nitro.all.bin, aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
@@ -822,7 +1120,7 @@ ggsave(nitro.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 
 nitro.hm1e<-ggplot(clr.nitro.all.bin[clr.nitro.all.bin$Depth_m==0,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
@@ -832,7 +1130,7 @@ ggsave(nitro.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 
 nitro.hm1f<-ggplot(clr.nitro.all.bin[clr.nitro.all.bin$Depth_m==5,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -842,7 +1140,7 @@ ggsave(nitro.hm1f,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 
 nitro.hm1g<-ggplot(clr.nitro.all.bin[clr.nitro.all.bin$Depth_m==10,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -2105,7 +2403,7 @@ bin.clr[1:4,1:4] # sample IDs are rows, genes are columns
 bin.ko.cov.sum_table[1:4,1:4] # sanity check
 
 # check rownames of CLR & VST transformed feature count data & metadata
-rownames(meta_scaled) %in% rownames(bin.clr) #bin.clr was used to make the distance matrix b.euc_dist
+rownames(bin_meta_scaled) %in% rownames(bin.clr) #bin.clr was used to make the distance matrix b.euc_dist
 
 # calculate our Euclidean distance matrix using CLR data
 mgm.euc.clr_dist <- dist(bin.clr, method = "euclidean")
@@ -2186,82 +2484,82 @@ help(adonis)
 ## w/ distance matrices - The adonis2 tests are identical to anova.cca of dbrda. With Euclidean distances, the tests are also identical to anova.cca of rda.
 
 # First make sure your data frames you're comparing are in the same exact order!!
-rownames(bin.clr) %in% rownames(meta_scaled)
-meta_scaled=meta_scaled[rownames(bin.clr),] ## reorder metadata to match order of CLR data
-perm <- with(meta_scaled, how(nperm = 1000, blocks = SampDate))
+rownames(bin.clr) %in% rownames(bin_meta_scaled)
+bin_meta_scaled=bin_meta_scaled[rownames(bin.clr),] ## reorder metadata to match order of CLR data
+perm <- with(bin_meta_scaled, how(nperm = 1000, blocks = SampDate))
 
-pnova1<-adonis2(bin.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova1<-adonis2(bin.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m*Sulfate_milliM*Sulfide_microM,data=bin_meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova1
 ## none are significant
 
-adonis2(bin.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+adonis2(bin.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Depth_m*Sulfate_milliM*Sulfide_microM,data=bin_meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 #         Df SumOfSqs     R2    F Pr(>F)
 #Model    23    34412 0.73114 1.8918 0.4825
 #Residual 16    12654 0.26886
 #Total    39    47066 1.00000
 
 # remove categorical variables
-pnova2<-adonis2(bin.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova2<-adonis2(bin.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=bin_meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova2
 # nothing significant
 
-adonis2(bin.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+adonis2(bin.clr ~ DO_Percent_Local*ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=bin_meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 #         Df SumOfSqs      R2      F   Pr(>F)
 #Model    23    34412 0.73114 1.8918 0.4615
 #Residual 16    12654 0.26886
 #Total    39    47066 1.00000
 
-pnova3<-adonis2(bin.clr ~ DO_Percent_Local*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova3<-adonis2(bin.clr ~ DO_Percent_Local*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=bin_meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova3
 #                                   Df SumOfSqs      R2       F   Pr(>F)
 #Sulfide_microM                                               1     1165 0.02474  1.4725 0.006993 **
 #Temp_DegC:Dissolved_OrganicMatter_RFU                        1     1349 0.02865  1.7052 0.045954 *
 #DO_Percent_Local:Sulfide_microM                              1      944 0.02006  1.1935 0.061938 .
 
-adonis2(bin.clr ~ DO_Percent_Local*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+adonis2(bin.clr ~ DO_Percent_Local*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfate_milliM*Sulfide_microM,data=bin_meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 #         Df SumOfSqs      R2      F   Pr(>F)
 #Model    23    34412 0.73114 1.8918 0.4775
 #Residual 16    12654 0.26886
 #Total    39    47066 1.00000
 
-pnova4<-adonis2(bin.clr ~ DO_Percent_Local*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova4<-adonis2(bin.clr ~ DO_Percent_Local*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfide_microM,data=bin_meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova4
 #                                         Df SumOfSqs      R2       F   Pr(>F)
 #Sulfide_microM                           1     1122 0.02383  1.5127 0.004995 **
 #Temp_DegC:Dissolved_OrganicMatter_RFU    1     1256 0.02669  1.6944 0.052947 .
 
-adonis2(bin.clr ~ DO_Percent_Local*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+adonis2(bin.clr ~ DO_Percent_Local*Temp_DegC*Dissolved_OrganicMatter_RFU*Sulfide_microM,data=bin_meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 #         Df SumOfSqs      R2      F   Pr(>F)
 #Model   15    29270 0.62189 2.6316 0.1339
 #Residual 24    17796 0.37811
 #Total    39    47066 1.00000
 
-pnova4b<-adonis2(bin.clr ~ Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova4b<-adonis2(bin.clr ~ Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=bin_meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova4b
 #                                   Df SumOfSqs      R2       F   Pr(>F)
 #Sulfide_microM                                        1     1355 0.02880 1.7221 0.003996 **
 #Dissolved_OrganicMatter_RFU:Temp_DegC                 1     3882 0.08249 4.9329 0.055944 .
 
-pnova4c<-adonis2(bin.clr ~ Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova4c<-adonis2(bin.clr ~ Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=bin_meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova4c
 #                                   Df SumOfSqs      R2       F   Pr(>F)
 #Sulfide_microM                                        1     1355 0.02880 1.7221 0.003996 **
 #Dissolved_OrganicMatter_RFU:Temp_DegC                 1     3882 0.08249 4.9329 0.047952 *
 
-pnova5<-adonis2(bin.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova5<-adonis2(bin.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=bin_meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova5
 #                                               Df SumOfSqs      R2       F   Pr(>F)
 #ORP_mV                                         1     4239 0.09006 5.5903 0.03397 *
 #Dissolved_OrganicMatter_RFU:Temp_DegC          1     1545 0.03283 2.0378 0.05295 .
 #ORP_mV:Dissolved_OrganicMatter_RFU:Temp_DegC   1     1519 0.03227 2.0033 0.06993 .
 
-adonis2(bin.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+adonis2(bin.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC*Sulfide_microM,data=bin_meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 #         Df SumOfSqs      R2      F   Pr(>F)
 #Model    15    28868 0.61336 2.5383 0.1748
 #Residual 24    18197 0.38664
 #Total    39    47066 1.00000
 
-pnova6a<-adonis2(bin.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova6a<-adonis2(bin.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC,data=bin_meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova6a
 #                                             Df SumOfSqs      R2      F   Pr(>F)
 #ORP_mV                                        1     4239 0.09006 5.7372 0.003996 **
@@ -2272,29 +2570,29 @@ pnova6a
 #Dissolved_OrganicMatter_RFU:Temp_DegC         1     1521 0.03231 2.0584 0.040959 *
 #ORP_mV:Dissolved_OrganicMatter_RFU:Temp_DegC  1     1409 0.02994 1.9075 0.059940 .
 
-adonis2(bin.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm) #significant
+adonis2(bin.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU*Temp_DegC,data=bin_meta_scaled,method = "euclidean",by=NULL,permutations=perm) #significant
 #         Df SumOfSqs      R2      F  Pr(>F)
 #Model     7    23424 0.49768 4.5292 0.01698 *
 #Residual 32    23642 0.50232
 #Total    39    47066 1.00000
 
-pnova6b<-adonis2(bin.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova6b<-adonis2(bin.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU,data=bin_meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova6b # only ORP is significant
-adonis2(bin.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm) # significant
+adonis2(bin.clr ~ ORP_mV*Dissolved_OrganicMatter_RFU,data=bin_meta_scaled,method = "euclidean",by=NULL,permutations=perm) # significant
 # ^ model explains 23.15% of R^2 aka variation
 
-pnova6c<-adonis2(bin.clr ~ ORP_mV*Temp_DegC,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova6c<-adonis2(bin.clr ~ ORP_mV*Temp_DegC,data=bin_meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova6c  # only ORP is significant
-adonis2(bin.clr ~ ORP_mV*Temp_DegC,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm) # insignificant
+adonis2(bin.clr ~ ORP_mV*Temp_DegC,data=bin_meta_scaled,method = "euclidean",by=NULL,permutations=perm) # insignificant
 # ^ model explains 37.8% of R^2 aka variation
 
-pnova6d<-adonis2(bin.clr ~ ORP_mV*Sulfide_microM,data=meta_scaled,method = "euclidean",by="terms",permutations=perm)
+pnova6d<-adonis2(bin.clr ~ ORP_mV*Sulfide_microM,data=bin_meta_scaled,method = "euclidean",by="terms",permutations=perm)
 pnova6d # only ORP is significant
-adonis2(bin.clr ~ ORP_mV*Sulfide_microM,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm) #insignificant
+adonis2(bin.clr ~ ORP_mV*Sulfide_microM,data=bin_meta_scaled,method = "euclidean",by=NULL,permutations=perm) #insignificant
 # ^ model explains 16.14% of R^2 aka variation
 
 ## BEST MODEL as of 5/11/23: explains 49.77% of variation in composition, p=0.023
-adonis2(bin.clr ~ ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU,data=meta_scaled,method = "euclidean",by=NULL,permutations=perm)
+adonis2(bin.clr ~ ORP_mV*Temp_DegC*Dissolved_OrganicMatter_RFU,data=bin_meta_scaled,method = "euclidean",by=NULL,permutations=perm)
 #         Df SumOfSqs      R2      F  Pr(>F)
 #Model    7    23424 0.49768 4.5292 0.02298 *
 #Residual 32    23642 0.50232
@@ -2335,47 +2633,47 @@ qqline(clr.ars.ko$Bac_Species_Richness, col = "red", lwd = 2)
 
 ### NOTE: sulf.ko.bin.clr.all has dropped outliers based on Shannon Diversity!
 
-shapiro.test(meta_scaled$DO_Percent_Local) # p-value = 0.3369
-hist(meta_scaled$DO_Percent_Local, col="blue")
+shapiro.test(bin_meta_scaled$DO_Percent_Local) # p-value = 0.3369
+hist(bin_meta_scaled$DO_Percent_Local, col="blue")
 # visualize Q-Q plot for species richness
-qqnorm(meta_scaled$DO_Percent_Local, pch = 1, frame = FALSE) # with outliars
-qqline(meta_scaled$DO_Percent_Local, col = "red", lwd = 2)
+qqnorm(bin_meta_scaled$DO_Percent_Local, pch = 1, frame = FALSE) # with outliars
+qqline(bin_meta_scaled$DO_Percent_Local, col = "red", lwd = 2)
 
-shapiro.test(meta_scaled$ORP_mV) # p-value = 9.373e-06
-hist(meta_scaled$ORP_mV, col="blue")
+shapiro.test(bin_meta_scaled$ORP_mV) # p-value = 9.373e-06
+hist(bin_meta_scaled$ORP_mV, col="blue")
 # visualize Q-Q plot for species richness
-qqnorm(meta_scaled$ORP_mV, pch = 1, frame = FALSE) # with outliars
-qqline(meta_scaled$ORP_mV, col = "red", lwd = 2)
+qqnorm(bin_meta_scaled$ORP_mV, pch = 1, frame = FALSE) # with outliars
+qqline(bin_meta_scaled$ORP_mV, col = "red", lwd = 2)
 
-shapiro.test(meta_scaled$Temp_DegC) # p-value = 5.39e-06
-hist(meta_scaled$Temp_DegC, col="blue")
+shapiro.test(bin_meta_scaled$Temp_DegC) # p-value = 5.39e-06
+hist(bin_meta_scaled$Temp_DegC, col="blue")
 # visualize Q-Q plot for species richness
-qqnorm(meta_scaled$Temp_DegC, pch = 1, frame = FALSE) # with outliars
-qqline(meta_scaled$Temp_DegC, col = "red", lwd = 2)
+qqnorm(bin_meta_scaled$Temp_DegC, pch = 1, frame = FALSE) # with outliars
+qqline(bin_meta_scaled$Temp_DegC, col = "red", lwd = 2)
 
-shapiro.test(meta_scaled$Dissolved_OrganicMatter_RFU) #  p-value = 0.0003007
-hist(meta_scaled$Dissolved_OrganicMatter_RFU, col="blue")
+shapiro.test(bin_meta_scaled$Dissolved_OrganicMatter_RFU) #  p-value = 0.0003007
+hist(bin_meta_scaled$Dissolved_OrganicMatter_RFU, col="blue")
 # visualize Q-Q plot for species richness
-qqnorm(meta_scaled$Dissolved_OrganicMatter_RFU, pch = 1, frame = FALSE) # with outliars
-qqline(meta_scaled$Dissolved_OrganicMatter_RFU, col = "red", lwd = 2)
+qqnorm(bin_meta_scaled$Dissolved_OrganicMatter_RFU, pch = 1, frame = FALSE) # with outliars
+qqline(bin_meta_scaled$Dissolved_OrganicMatter_RFU, col = "red", lwd = 2)
 
-shapiro.test(meta_scaled$Sulfate_milliM) # p-value = 0.4055
-hist(meta_scaled$Sulfate_milliM, col="blue")
+shapiro.test(bin_meta_scaled$Sulfate_milliM) # p-value = 0.4055
+hist(bin_meta_scaled$Sulfate_milliM, col="blue")
 # visualize Q-Q plot for species richness
-qqnorm(meta_scaled$Sulfate_milliM, pch = 1, frame = FALSE) # with outliars
-qqline(meta_scaled$Sulfate_milliM, col = "red", lwd = 2)
+qqnorm(bin_meta_scaled$Sulfate_milliM, pch = 1, frame = FALSE) # with outliars
+qqline(bin_meta_scaled$Sulfate_milliM, col = "red", lwd = 2)
 
-shapiro.test(meta_scaled$Sulfide_microM) # p-value =  3.462e-06
-hist(meta_scaled$Sulfide_microM, col="blue")
+shapiro.test(bin_meta_scaled$Sulfide_microM) # p-value =  3.462e-06
+hist(bin_meta_scaled$Sulfide_microM, col="blue")
 # visualize Q-Q plot for species richness
-qqnorm(meta_scaled$Sulfide_microM, pch = 1, frame = FALSE) # with outliars
-qqline(meta_scaled$Sulfide_microM, col = "red", lwd = 2)
+qqnorm(bin_meta_scaled$Sulfide_microM, pch = 1, frame = FALSE) # with outliars
+qqline(bin_meta_scaled$Sulfide_microM, col = "red", lwd = 2)
 
 #### Prep Data for Linear Regressions ####
 
-sulf.ko.bin.clr.all<-merge(clr.sulf.ko.bin,meta_scaled,by=c("SampleID"))
-ars.ko.clr.all<-merge(clr.ars.ko,meta_scaled,by=c("SampleID"))
-osmo.ko.clr.all<-merge(clr.osmo.ko,meta_scaled,by=c("SampleID"))
+sulf.ko.bin.clr.all<-merge(clr.sulf.ko.bin,bin_meta_scaled,by=c("SampleID"))
+ars.ko.clr.all<-merge(clr.ars.ko,bin_meta_scaled,by=c("SampleID"))
+osmo.ko.clr.all<-merge(clr.osmo.ko,bin_meta_scaled,by=c("SampleID"))
 
 #### Linear Regression Comparisons ####
 head(sulf.ko.bin.clr.all)
