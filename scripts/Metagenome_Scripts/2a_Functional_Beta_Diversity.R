@@ -721,6 +721,7 @@ ggsave(sulf.hm1b8,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 
 #### Look at Specific S Gene Coverage Across Samples ####
 
+# Note: Must run section "Pull Out Sulfur Metabolic Fxns from CLR data" before running this section
 head(clr.cov.sum.sulf.ko) # columns are genes in this df
 
 # merge with scaled metadata and prep for scatterplots of traits across samples
