@@ -133,7 +133,7 @@ metadata<-merge(metadata, colorset1, by="SampDate")
 head(metadata)
 metadata$SampDate_Color <- as.character(metadata$SampDate_Color)
 
-rownames(metadata)<-metadata$SampleName
+rownames(metadata)<-metadata$SampleID
 # save.image("data/SSW_analysis.Rdata")
 
 #### Scale Environmental Metadata ####
