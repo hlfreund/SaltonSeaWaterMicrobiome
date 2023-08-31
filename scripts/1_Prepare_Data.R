@@ -1,6 +1,6 @@
 #### Set WD & Load Libraries ####
 getwd() # use setwd("path/to/files") if you are not in the right directory
-setwd("/Volumes/HLF_SSD/Aronson_Lab_Data/Salton_Sea/SaltonSeaWater")
+#setwd("/Volumes/HLF_SSD/Aronson_Lab_Data/Salton_Sea/SaltonSeaWater")
 suppressPackageStartupMessages({ # load packages quietly
   library(phyloseq)
   library(ggplot2)
@@ -34,6 +34,7 @@ suppressPackageStartupMessages({ # load packages quietly
 #load("data/SSW_analysis.Rdata") # load Rdata to global env
 #save.image("data/SSW_analysis.Rdata") # save global env to Rdata file
 
+#### Import and Prepare Data for Analyses ####
 #### Import and Prepare Data for Analyses ####
 
 ## NOTES ABOUT DATA:
@@ -132,7 +133,7 @@ metadata<-merge(metadata, colorset1, by="SampDate")
 head(metadata)
 metadata$SampDate_Color <- as.character(metadata$SampDate_Color)
 
-rownames(metadata)<-metadata$SampleID
+rownames(metadata)<-metadata$SampleName
 # save.image("data/SSW_analysis.Rdata")
 
 #### Scale Environmental Metadata ####
