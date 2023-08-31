@@ -1,6 +1,6 @@
 #### Set WD & Load Libraries ####
 getwd() # use setwd("path/to/files") if you are not in the right directory
-setwd("/Volumes/HLF_SSD/Aronson_Lab_Data/Salton_Sea/SaltonSeaWater")
+#setwd("/Volumes/HLF_SSD/Aronson_Lab_Data/Salton_Sea/SaltonSeaWater")
 suppressPackageStartupMessages({ # load packages quietly
   library(devtools)
   library(phyloseq)
