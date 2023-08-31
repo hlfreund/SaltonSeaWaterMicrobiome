@@ -735,15 +735,6 @@ head(clr.sulf.trait.table)
 
 # Note: not looking at every S cycling gene included in this project but looking at ones that appear to have noticeable trends in heat maps
 ### SOX genes
-# `soxY; sulfur-oxidizing protein SoxY`
-soxy.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxY; sulfur-oxidizing protein SoxY`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
-  labs(title="SoxY Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
-  guides(shape = guide_legend(override.aes = list(size = 5)))+
-  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("SampleID") + ylab("CLR-Transformed Coverage")
-
-ggsave(soxy.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/SoxY_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `soxA; L-cysteine S-thiosulfotransferase [EC:2.8.5.2]`
 soxa.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxA; L-cysteine S-thiosulfotransferase [EC:2.8.5.2]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -755,6 +746,46 @@ soxa.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxA; L-cysteine S-thio
 
 ggsave(soxa.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/SoxA_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
+# `soxB; S-sulfosulfanyl-L-cysteine sulfohydrolase [EC:3.1.6.20]`
+soxb.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxB; S-sulfosulfanyl-L-cysteine sulfohydrolase [EC:3.1.6.20]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="SoxB Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("SampleID") + ylab("CLR-Transformed Coverage")
+
+ggsave(soxb.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/SoxB_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+
+# `soxX; L-cystein S-thiosulfotransferase`
+soxx.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxX; L-cysteine S-thiosulfotransferase [EC:2.8.5.2]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="SoxX Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("SampleID") + ylab("CLR-Transformed Coverage")
+
+ggsave(soxx.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/SoxX_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+
+# `soxY; sulfur-oxidizing protein SoxY`
+soxy.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxY; sulfur-oxidizing protein SoxY`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="SoxY Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("SampleID") + ylab("CLR-Transformed Coverage")
+
+ggsave(soxy.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/SoxY_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+
+#`soxZ; sulfur-oxidizing protein SoxZ`
+soxz.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxZ; sulfur-oxidizing protein SoxZ`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="SoxZ Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("SampleID") + ylab("CLR-Transformed Coverage")
+
+ggsave(soxz.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/SoxZ_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+
 #`soxD; S-disulfanyl-L-cysteine oxidoreductase SoxD [EC:1.8.2.6]`
 soxd.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxD; S-disulfanyl-L-cysteine oxidoreductase SoxD [EC:1.8.2.6]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
   labs(title="SoxD Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
@@ -765,15 +796,26 @@ soxd.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxD; S-disulfanyl-L-cy
 
 ggsave(soxd.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/SoxD_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
-# `soxB; S-sulfosulfanyl-L-cysteine sulfohydrolase [EC:3.1.6.20]`
-soxb.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxB; S-sulfosulfanyl-L-cysteine sulfohydrolase [EC:3.1.6.20]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
-  labs(title="SoxB Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+#`soxC; sulfane dehydrogenase subunit SoxC`
+soxc.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxC; sulfane dehydrogenase subunit SoxC`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="SoxC Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(soxb.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/SoxB_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(soxc.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/SoxC_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+
+#### SO3 Oxidation genes
+# `soeA; sulfite dehydrogenase (quinone) subunit SoeA [EC:1.8.5.6]`
+soeA.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soeA; sulfite dehydrogenase (quinone) subunit SoeA [EC:1.8.5.6]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="soeA Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("SampleID") + ylab("CLR-Transformed Coverage")
+
+ggsave(soeA.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/soeA_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 #### H2S --> S oxidation genes
 # `sqr; sulfide:quinone oxidoreductase [EC:1.8.5.4]`
@@ -816,6 +858,26 @@ dsrB.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`dsrB; dissimilatory sul
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
 ggsave(dsrB.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/dsrB_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+
+# `dsrA; dissimilatory sulfite reductase alpha subunit [EC:1.8.99.5]`
+dsrA.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`dsrA; dissimilatory sulfite reductase alpha subunit [EC:1.8.99.5]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="dsrA Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("SampleID") + ylab("CLR-Transformed Coverage")
+
+ggsave(dsrA.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/dsrA_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+
+# `aprB; adenylylsulfate reductase, subunit B [EC:1.8.99.2]`
+aprB.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`aprB; adenylylsulfate reductase, subunit B [EC:1.8.99.2]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="aprB Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("SampleID") + ylab("CLR-Transformed Coverage")
+
+ggsave(aprB.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/aprB_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 #### Assimilatory SO4 Reduction
 
@@ -863,7 +925,7 @@ ggsave(sir.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/sir_CLR_Coverage_Samp
 
 # `phsA,psrA; thiosulfate reductase / polysulfide reductase chain A [EC:1.8.5.5]`
 phsA.psrA.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`phsA,psrA; thiosulfate reductase / polysulfide reductase chain A [EC:1.8.5.5]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
-  labs(title="phsA Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  labs(title="phsA/psrA Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
@@ -871,8 +933,21 @@ phsA.psrA.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`phsA,psrA; thiosul
 
 ggsave(phsA.psrA.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/phsA.psrA_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
+#### Genes in Multiple S Pathways
+
+# `sat, met3; sulfate adenylyltransferase [EC:2.7.7.4]`
+sat.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`sat, met3; sulfate adenylyltransferase [EC:2.7.7.4]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="sat/met3 Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("SampleID") + ylab("CLR-Transformed Coverage")
+
+ggsave(sat.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/sat_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 #### Pull out Sulfur Metabolic Fxns from Binary Data ####
+
+# mgm_fxn.binary --> ran counts_to_binary() custom function on ko.cov.sum_table to determine if KO appears at all in samples or not
 
 sulf.ko.bi<-mgm_fxn.binary[,which(colnames(mgm_fxn.binary) %in% sulfur.fxns$KO_ID)] # merge CLR data w/ S fxns found in contigs from KOFamScan
 sulf.ko.bi$SampleID<-rownames(sulf.ko.bi)
@@ -3642,7 +3717,7 @@ s.pnov5<-adonis2(clr.cov.sum.sulf.ko[,-1] ~ Dissolved_OrganicMatter_RFU*Sulfate_
 s.pnov5
 
 #### Sulfur Pathway PERMANOVA ####
-## what about by S metabolic pathway?
+## what about genes by S metabolic pathway?
 
 # check rownames to make sure sub-dfs of S genes are in same order as meta_scaled
 rownames(sox.ko.cov) %in% rownames(meta_scaled)
