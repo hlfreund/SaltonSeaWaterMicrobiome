@@ -39,7 +39,7 @@ suppressPackageStartupMessages({ # load packages quietly
 
 #### Load Global Env to Import Count/ASV Tables ####
 load("data/SSeawater_Data_Ready.Rdata") # save global env to Rdata file
-load("data/SSeawater_AlphaDiv_Data_Rarefied.Rdata")
+load("data/SSeawater_AlphaDiv_Data.Rdata")
 #load("data/ssw_clr.euc.dist_2.21.23.Rdata")
 
 #save.image("data/Env_Seqs_All/env.seq_analysis.Rdata") # save global env to Rdata file
@@ -122,7 +122,7 @@ plot(sizeFactors(b_dds), colSums(counts(b_dds)))
 
 ### Variance Stabilizing Transformation
 # you should be able to use matrix or DESeq2 object for this next function, but matrix was not working?
-b_vst1 <- varianceStabilizingTransformation(b_dds) # add pseudocount
+b_vst1 <- varianceStabilizingTransformation(bac.ASV_matrix2+1) # add pseudocount
 assay(b_vst1) #see output of VST
 
 b.vst<-assay(b_vst1)
@@ -140,7 +140,7 @@ ggplot(data=total_rar_asvs, aes(x=SampleID, y=ASV_Total,fill=Sample_Type)) +
   geom_bar(stat="identity",colour="black")+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 # Calculate VST ASVs per Sample
-total_vst_asvs<-data.frame(ASV_Total=colSums(b.vst),metadata)
+total_vst_asvs<-data.frame(ASV_Total=colSums(b_vst1),metadata)
 
 ggplot(data=total_vst_asvs, aes(x=SampleID, y=ASV_Total,fill=Sample_Type)) +
   geom_bar(stat="identity",colour="black")+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
@@ -148,6 +148,72 @@ ggplot(data=total_vst_asvs, aes(x=SampleID, y=ASV_Total,fill=Sample_Type)) +
 ## average ASV per sample month & depth
 aggregate(bac.ASV_all$Count, list(bac.ASV_all$SampleMonth), FUN=mean)
 aggregate(bac.ASV_all$Count, list(bac.ASV_all$Depth_m), FUN=mean)
+
+#### Alpha Diversity & Species Richness - Raw Data ####
+
+## Calculate Shannon Diversity (abundance + richness considered in diversity calculation)
+# if you have another package loaded that has a diversity function, you can specify that you want to use vegan's diversity function as shown below
+Shan_ent.16s<-vegan::diversity(bac.ASV_table[,-1], index="shannon") # Shannon entropy
+Shan_div.16s<- exp(Shan_ent.16s) # Shannon Diversity aka Hill number 1
+
+# create data frame with Shannon entropy and Shannon diversity values
+div_16s<-data.frame(Bac_Shannon_Entropy=Shan_ent.16s,Bac_Shannon_Diversity=Shan_div.16s)
+class(div_16s)
+div_16s$SampleID<-rownames(div_16s)
+head(div_16s)
+
+# Calculate species richness (number of species per sample)
+specnumber(bac.ASV_table[,-1])
+
+# Create a DF with Species Richness
+S_16s<-data.frame(Bac_Species_Richness=specnumber(bac.ASV_table[,-1]), SampleID=rownames(bac.ASV_table)) # finds # of species per sample using RAW count data; if MARGIN = 2 it finds frequencies of species
+
+# merge richness and diversity dataframes together
+d.r_16s<-merge(div_16s, S_16s, by.x="SampleID", by.y="SampleID")
+
+# merge w/ metadata
+bac.div.metadat <- merge(d.r_16s,meta_scaled, by.x="SampleID", by.y="SampleID")
+head(bac.div.metadat)
+class(bac.div.metadat) # want data frame
+
+unique(bac.div.metadat$SampleMonth) # see how many elements there are in the Group variable
+unique(bac.div.metadat$Depth_m) # see how many elements there are in the Group variable
+bac.div.metadat$Depth_m<-factor(bac.div.metadat$Depth_m, levels=c("0","3","4","5","7","9","10","10.5"))
+
+# drop the outliers
+#bac.div.metadat<-bac.div.metadat[bac.div.metadat$Bac_Shannon_Diversity<300 & bac.div.metadat$Bac_Species_Richness>100,]
+
+# create numeric variable for depth to be used for models later
+bac.div.metadat$Depth.num<-as.numeric(as.character(bac.div.metadat$Depth_m))
+
+# Find highest/lowest values of Shannon div per sample date
+max(bac.div.metadat$Bac_Shannon_Diversity[bac.div.metadat$SampDate=="August.2021"]) # max div August 2021
+min(bac.div.metadat$Bac_Shannon_Diversity[bac.div.metadat$SampDate=="August.2021"]) # min div August 2021
+bac.div.metadat[bac.div.metadat$SampDate=="August.2021",]
+
+max(bac.div.metadat$Bac_Shannon_Diversity[bac.div.metadat$SampDate=="December.2021"]) # max div Dec 21
+min(bac.div.metadat$Bac_Shannon_Diversity[bac.div.metadat$SampDate=="December.2021"]) # min div Dec 21
+bac.div.metadat[bac.div.metadat$SampDate=="December.2021",]
+
+max(bac.div.metadat$Bac_Shannon_Diversity[bac.div.metadat$SampDate=="April.2022"]) # max div Apr 22
+min(bac.div.metadat$Bac_Shannon_Diversity[bac.div.metadat$SampDate=="April.2022"]) # min div Apr 22
+bac.div.metadat[bac.div.metadat$SampDate=="April.2022",]
+
+# Find highest/lowest values of Species richness per sample date
+max(bac.div.metadat$Bac_Species_Richness[bac.div.metadat$SampDate=="August.2021"]) # max sr August 2021
+min(bac.div.metadat$Bac_Species_Richness[bac.div.metadat$SampDate=="August.2021"]) # min sr August 2021
+bac.div.metadat[bac.div.metadat$SampDate=="August.2021",]
+
+max(bac.div.metadat$Bac_Species_Richness[bac.div.metadat$SampDate=="December.2021"]) # max sr Dec 2021
+min(bac.div.metadat$Bac_Species_Richness[bac.div.metadat$SampDate=="December.2021"]) # min sr Dec 2021
+bac.div.metadat[bac.div.metadat$SampDate=="December.2021",]
+
+max(bac.div.metadat$Bac_Species_Richness[bac.div.metadat$SampDate=="April.2022"]) # max sr April 2022
+min(bac.div.metadat$Bac_Species_Richness[bac.div.metadat$SampDate=="April.2022"]) # min sr April 2022
+bac.div.metadat[bac.div.metadat$SampDate=="April.2022",]
+
+# save diversity data
+save.image("data/SSeawater_AlphaDiv_Data.Rdata")
 
 #### Alpha Diversity & Species Richness - Rarefied Data ####
 
@@ -213,7 +279,71 @@ min(bac.div.metadat.rar$Bac_Species_Richness[bac.div.metadat.rar$SampDate=="Apri
 bac.div.metadat.rar[bac.div.metadat.rar$SampDate=="April.2022",]
 
 # save diversity data
-save.image("data/SSeawater_AlphaDiv_Data_Rarefied.Rdata")
+save.image("data/SSeawater_AlphaDiv_Data.Rdata")
+
+#### Using Shapiro-Wilk test for Normality ####
+shapiro.test(bac.div.metadat$Bac_Shannon_Diversity) # what is the p-value?
+# p-value = 0.5816
+# p > 0.05 states distribution of data are not significantly different from normal distribution
+# p < 0.05 means that data is significantly different from a normal distribution
+hist(bac.div.metadat$Bac_Shannon_Diversity, col="blue") # with outliars
+
+# visualize Q-Q plot for alpha div
+# The Q-Q plot, or quantile-quantile plot, is a graphical tool to help us assess if a set of data plausibly came from some theoretical distribution such as a normal or exponential.
+# For example, if we run a statistical analysis that assumes our residuals are normally distributed, we can use a normal Q-Q plot to check that assumption
+# more on Q-Q plots here: https://data.library.virginia.edu/understanding-q-q-plots/
+# more here too: https://grodri.github.io/glms/notes/c2s9#:~:text=8%20The%20Q%2DQ%20Plot,versus%20quantiles%20of%20a%20distribution.
+qqnorm(bac.div.metadat$Bac_Shannon_Diversity, pch = 1, frame = FALSE)
+qqline(bac.div.metadat$Bac_Shannon_Diversity, col = "red", lwd = 2)
+
+shapiro.test(bac.div.metadat$Bac_Species_Richness) # what is the p-value?
+# p-value = 0.6063
+# p > 0.05 states distribution of data are not significantly different from normal distribution
+# p < 0.05 means that data is significantly different from a normal distribution
+hist(bac.div.metadat$Bac_Species_Richness, col="blue")
+
+# visualize Q-Q plot for species richness
+qqnorm(bac.div.metadat$Bac_Species_Richness, pch = 1, frame = FALSE) # with outliars
+qqline(bac.div.metadat$Bac_Species_Richness, col = "red", lwd = 2)
+
+qqnorm(bac.div.metadat$Bac_Species_Richness, pch = 1, frame = FALSE) # without outliars
+qqline(bac.div.metadat$Bac_Species_Richness, col = "red", lwd = 2)
+
+shapiro.test(bac.div.metadat$DO_Percent_Local) # p-value = 0.02586
+hist(bac.div.metadat$DO_Percent_Local, col="blue")
+# visualize Q-Q plot for species richness
+qqnorm(bac.div.metadat$DO_Percent_Local, pch = 1, frame = FALSE) # with outliars
+qqline(bac.div.metadat$DO_Percent_Local, col = "red", lwd = 2)
+
+shapiro.test(bac.div.metadat$ORP_mV) # p-value = 1.731e-08
+hist(bac.div.metadat$ORP_mV, col="blue")
+# visualize Q-Q plot for species richness
+qqnorm(bac.div.metadat$ORP_mV, pch = 1, frame = FALSE) # with outliars
+qqline(bac.div.metadat$ORP_mV, col = "red", lwd = 2)
+
+shapiro.test(bac.div.metadat$Temp_DegC) # p-value = 0.0002829
+hist(bac.div.metadat$Temp_DegC, col="blue")
+# visualize Q-Q plot for species richness
+qqnorm(bac.div.metadat$Temp_DegC, pch = 1, frame = FALSE) # with outliars
+qqline(bac.div.metadat$Temp_DegC, col = "red", lwd = 2)
+
+shapiro.test(bac.div.metadat$Dissolved_OrganicMatter_RFU) #  p-value = 0.05411
+hist(bac.div.metadat$Dissolved_OrganicMatter_RFU, col="blue")
+# visualize Q-Q plot for species richness
+qqnorm(bac.div.metadat$Dissolved_OrganicMatter_RFU, pch = 1, frame = FALSE) # with outliars
+qqline(bac.div.metadat$Dissolved_OrganicMatter_RFU, col = "red", lwd = 2)
+
+shapiro.test(bac.div.metadat$Sulfate_milliM) # p-value = 0.1912
+hist(bac.div.metadat$Sulfate_milliM, col="blue")
+# visualize Q-Q plot for species richness
+qqnorm(bac.div.metadat$Sulfate_milliM, pch = 1, frame = FALSE) # with outliars
+qqline(bac.div.metadat$Sulfate_milliM, col = "red", lwd = 2)
+
+shapiro.test(bac.div.metadat$Sulfide_microM) # p-value = 3.813e-08
+hist(bac.div.metadat$Sulfide_microM, col="blue")
+# visualize Q-Q plot for species richness
+qqnorm(bac.div.metadat$Sulfide_microM, pch = 1, frame = FALSE) # with outliars
+qqline(bac.div.metadat$Sulfide_microM, col = "red", lwd = 2)
 
 #### Using Shapiro-Wilk test for Normality - Rarefied Data ####
 shapiro.test(bac.div.metadat.rar$Bac_Shannon_Diversity) # what is the p-value?
@@ -279,6 +409,59 @@ hist(bac.div.metadat.rar$Sulfide_microM, col="blue")
 qqnorm(bac.div.metadat.rar$Sulfide_microM, pch = 1, frame = FALSE) # with outliars
 qqline(bac.div.metadat.rar$Sulfide_microM, col = "red", lwd = 2)
 
+#### Visualize Alpha Diversity & Species Richness - from Raw Data ####
+## Shannon Diversity by Sample Month & Depth
+bac.a.div<-ggplot(bac.div.metadat, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
+  scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
+  geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
+  labs(title = "Bacterial Shannon Diversity by Sample Date & Depth", subtitle="Using Raw Counts", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  geom_pwc(method = "t_test", label = "p.adj.format",p.adjust.method = "bonferroni")
+
+ggsave(bac.a.div,filename = "figures/AlphaDiversity/RawCounts/SSW_16S_alpha_diversity_sampledate_depth_boxplot.png", width=13, height=10, dpi=600)
+
+bac.div.metadat$Depth_m=as.numeric(levels(bac.div.metadat$Depth_m))[bac.div.metadat$Depth_m]
+# ^ note: cannot turn numbers that are factors in R into numeric values...
+## have to convert factor levels into numeric, then use the numeric "levels" to pull out numbers from Depth_m column in df to make sure the Depth_m columns is now numeric, not a factor
+
+# bac.a.div2<-ggplot(bac.div.metadat, aes(x=as.factor(Depth_m), y=Bac_Shannon_Diversity)) +geom_boxplot(aes(fill=Depth_m),color="black")+
+#   labs(title = "Bacterial Shannon Diversity by Sampling Depth", subtitle="Using Raw Counts", x="Depth (m)", y="Shannon Diversity", fill="Depth (m)")+
+#   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+#   coord_flip() + scale_x_discrete(limits=rev)
+#
+# ggsave(bac.a.div2,filename = "figures/AlphaDiversity/RawCounts/SSW_Bacterial_alpha_diversity_depth_boxplot_v1.png", width=13, height=10, dpi=600)
+#
+# bac.a.div3<-ggplot(bac.div.metadat, aes(x=as.factor(Depth_m), y=Bac_Shannon_Diversity)) +geom_boxplot(aes(fill=Depth_m),color="black")+
+#   labs(title = "Bacterial Shannon Diversity by Sampling Depth", x="Depth (m)", y="Shannon Diversity", fill="Depth (m)")+
+#   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
+#
+# ggsave(bac.a.div3,filename = "figures/AlphaDiversity/RawCounts/SSW_Bacterial_alpha_diversity_depth_boxplot_v2.png", width=13, height=10, dpi=600)
+
+## Species Richness by Sample Type
+bac.a.sr<-ggplot(bac.div.metadat, aes(x=SampDate, y=Bac_Species_Richness)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
+  scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
+  geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
+  labs(title = "Bacterial Species Richness by Sample Date & Depth", subtitle="Using Raw Counts",x="Sample Date", y="Species Richness", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  stat_compare_means(method="anova")
+
+ggsave(bac.a.sr,filename = "figures/AlphaDiversity/RawCounts/SSW_Bacterial_species_richness_samplemonth_depth_boxplot.png", width=13, height=10, dpi=600)
+
+# bac.a.sr2<-ggplot(bac.div.metadat, aes(x=as.factor(Depth_m), y=Bac_Species_Richness,fill=bac.div.metadat$Depth_m)) +geom_boxplot(aes(fill=as.numeric(bac.div.metadat$Depth_m)),color="black")+
+#   labs(title = "Bacterial Species Richness by Sampling Depth", subtitle="Using Raw Counts", x="Depth (m)", y="Species Richness", fill="Depth (m)")+
+#   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+#   coord_flip() + scale_x_discrete(limits=rev)
+#
+# ggsave(bac.a.sr2,filename = "figures/AlphaDiversity/RawCounts/SSW_Bacterial_species_richness_depth_boxplot_v1.png", width=13, height=10, dpi=600)
+#
+# bac.a.sr3<-ggplot(bac.div.metadat, aes(x=as.factor(Depth_m), y=Bac_Species_Richness,fill=Depth_m)) +geom_boxplot(aes(fill=as.numeric(bac.div.metadat$Depth_m)),color="black")+
+#   labs(title = "Bacterial Species Richness by Sampling Depth", subtitle="Using Raw Counts", x="Depth (m)", y="Species Richness", fill="Depth (m)")+
+#   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
+#
+# ggsave(bac.a.sr3,filename = "figures/AlphaDiversity/RawCounts/SSW_Bacterial_species_richness_depth_boxplot_v2.png", width=13, height=10, dpi=600)
+
 #### Visualize Alpha Diversity & Species Richness - from Rarefied Data ####
 ## Shannon Diversity by Sample Month & Depth
 bac.a.div.rar<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
@@ -336,17 +519,14 @@ ggsave(bac.a.sr.rar,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_Bacter
 
 #### Linear Regression/ANOVA Comparisons - Shannon Diversity ####
 ## here the focus is comparing env variables of interest to see if they can predict diversity and richness
-head(bac.div.metadat.rar)
+head(bac.div.metadat)
 
 # just look at everything at once in step-wise fashion
 step1<-step(glm(formula = Bac_Shannon_Diversity ~ ., data=bac.div.metadat.rar[,c(3,11,13:14,18:20)]))
-summary(step1)
-# Coefficients:
-#   Estimate Std. Error t value Pr(>|t|)
-# (Intercept)      86.842      3.002  28.926  < 2e-16 ***
-#   ORP_mV           -6.478      3.664  -1.768 0.092285 .
-# Temp_DegC       -21.212      4.471  -4.744 0.000124 ***
-#   Sulfate_milliM  -10.994      3.886  -2.829 0.010374 *
+#                 Estimate Std. Error t value Pr(>|t|)
+# ORP_mV           -7.049      3.865  -1.824 0.083128 .
+# Temp_DegC       -20.691      4.716  -4.387 0.000285 ***
+# Sulfate_milliM  -10.211      4.099  -2.491 0.021651 *
 
 div.glm.all<-glm(formula = Bac_Shannon_Diversity ~ ., data=bac.div.metadat.rar[,c(3,11,13:14,18:20)])
 summary(div.glm.all)
@@ -354,64 +534,64 @@ summary(div.glm.all)
 div.glm.p<-coef(summary(div.glm.all))[,4] # p-values
 Div.GLM.Pval<-data.frame(Div.GLM.AdjPval=p.adjust(div.glm.p, method="bonferroni",n=length(div.glm.p)),Div.GLM.Pval=div.glm.p)
 #                               Div.GLM.AdjPval Div.GLM.Pval
-# (Intercept)                    8.353610e-15 1.193373e-15
-# DO_Percent_Local               1.000000e+00 6.614790e-01
-# ORP_mV                         1.000000e+00 3.249102e-01
-# Temp_DegC                      4.793721e-02 6.848173e-03 *
-# Dissolved_OrganicMatter_RFU    1.000000e+00 6.835361e-01
-# Sulfate_milliM                 2.762433e-01 3.946333e-02
-# Sulfide_microM                 1.000000e+00 6.239275e-01
+# (Intercept)                    1.209565e-14 1.727951e-15
+# DO_Percent_Local               1.000000e+00 5.749260e-01
+# ORP_mV                         1.000000e+00 3.469644e-01
+# Temp_DegC                      7.803731e-02 1.114819e-02 -- near sig after adjustment
+# Dissolved_OrganicMatter_RFU    1.000000e+00 9.064130e-01
+# Sulfate_milliM                 3.569710e-01 5.099586e-02
+# Sulfide_microM                 1.000000e+00 6.472779e-01
 
 # [Example Code for Different Models]
 
-s.div.glm.fit1<-glm(formula = Bac_Shannon_Diversity ~ DO_Percent_Local, data=bac.div.metadat.rar)%>%
+s.div.glm.fit1<-glm(formula = Bac_Shannon_Diversity ~ DO_Percent_Local, data=bac.div.metadat)%>%
   adjust_pvalue(method="bonferroni")
 
 # model form is response ~ terms (y ~ x) where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response.
 summary(s.div.glm.fit1)
 
 # sanity check that lm() vs glm(familiy=Gaussian) is the same thing - and it is!
-summary(lm(formula = Bac_Shannon_Diversity ~ DO_Percent_Local, data=bac.div.metadat.rar)%>%
+summary(lm(formula = Bac_Shannon_Diversity ~ DO_Percent_Local, data=bac.div.metadat)%>%
           adjust_pvalue(method="bonferroni"))
 
 # code for mixed effects model
-mixed1 = lmer(Bac_Shannon_Diversity ~ DO_Percent_Local+ (1 | Depth_m), data = bac.div.metadat.rar)
+mixed1 = lmer(Bac_Shannon_Diversity ~ DO_Percent_Local+ (1 | Depth_m), data = bac.div.metadat)
 summary(mixed1)
 
 # Shan Div ~ DO%
-plot(Bac_Shannon_Diversity ~ DO_Percent_Local, data=bac.div.metadat.rar,col=SampDate_Color)
+plot(Bac_Shannon_Diversity ~ DO_Percent_Local, data=bac.div.metadat,col=SampDate_Color)
 
 # Shan Div ~ ORP
 
-plot(Bac_Shannon_Diversity ~ ORP_mV, data=bac.div.metadat.rar,col=SampDate_Color)
+plot(Bac_Shannon_Diversity ~ ORP_mV, data=bac.div.metadat,col=SampDate_Color)
 
 # Shan Div ~ Temp (C)
 
-plot(Bac_Shannon_Diversity ~ Temp_DegC, data=bac.div.metadat.rar,col=SampDate_Color)
+plot(Bac_Shannon_Diversity ~ Temp_DegC, data=bac.div.metadat,col=SampDate_Color)
 
 # Shan Div ~ DOM
 
-plot(Bac_Shannon_Diversity ~ Dissolved_OrganicMatter_RFU, data=bac.div.metadat.rar,col=SampDate_Color)
+plot(Bac_Shannon_Diversity ~ Dissolved_OrganicMatter_RFU, data=bac.div.metadat,col=SampDate_Color)
 
 # Shan Div ~ Sulfate
 
-plot(Bac_Shannon_Diversity ~ Sulfate_milliM, data=bac.div.metadat.rar,col=SampDate_Color)
+plot(Bac_Shannon_Diversity ~ Sulfate_milliM, data=bac.div.metadat,col=SampDate_Color)
 
 # Shan Div ~ Sulfide
 
-plot(Bac_Shannon_Diversity ~ Sulfide_microM, data=bac.div.metadat.rar,col=SampDate_Color)
+plot(Bac_Shannon_Diversity ~ Sulfide_microM, data=bac.div.metadat,col=SampDate_Color)
 
 # Shan Div ~ Depth
-plot(Bac_Shannon_Diversity ~ Depth.num, data=bac.div.metadat.rar,col=SampDate_Color)
+plot(Bac_Shannon_Diversity ~ Depth.num, data=bac.div.metadat,col=SampDate_Color)
 
-fit1<-aov(Bac_Shannon_Diversity ~ SampDate, data=bac.div.metadat.rar)
+fit1<-aov(Bac_Shannon_Diversity ~ SampDate, data=bac.div.metadat)
 # ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/
-#pairwise.adonis(bac.div.metadat.rar$Bac_Shannon_Diversity, bac.div.metadat.rar$SampDate, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
+#pairwise.adonis(bac.div.metadat$Bac_Shannon_Diversity, bac.div.metadat$SampDate, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 
 summary(fit1)
 #Df           Sum Sq Mean Sq    F value   Pr(>F)
-#SampDate     2   3648  1824.0   6.677 0.0057 **
-# Residuals   21   5737   273.2
+#SampDate     2   3214  1607.1   5.317 0.0135 *
+#Residuals   21   6347   302.2
 
 p.adjust(summary(fit1)[[1]][["Pr(>F)"]][1],method="bonferroni")
 
@@ -419,11 +599,11 @@ p.adjust(summary(fit1)[[1]][["Pr(>F)"]][1],method="bonferroni")
 Tuk1<-TukeyHSD(fit1)
 Tuk1$SampDate
 #                             diff        lwr      upr      p adj
-# December.2021-August.2021 25.076433   4.245680 45.90719 0.016639615 *
-# April.2022-August.2021    27.111615   6.280862 47.94237 0.009571804 **
-# April.2022-December.2021   2.035182 -18.795571 22.86593 0.967173383
+# December.2021-August.2021 24.7566611   2.846671 46.66665 0.02503300 *
+# April.2022-August.2021    24.3365005   2.426510 46.24649 0.02778694 *
+# April.2022-December.2021  -0.4201606 -22.330151 21.48983 0.99871280
 
-# fit.0<-aov(DustComplexity ~ as.factor(Elevation), data=bac.div.metadat.rar)
+# fit.0<-aov(DustComplexity ~ as.factor(Elevation), data=bac.div.metadat)
 # summary(fit.0)
 # TukeyHSD(fit.0)
 # Levene's test with one independent variable
@@ -432,83 +612,82 @@ Tuk1$SampDate
 ## t test assumes that variances are the same, so Levene's test needs to be non significant
 ## Fligner's test is a Levene's test for data that are not normally distributed
 ## more here: https://www.geeksforgeeks.org/fligner-killeen-test-in-r-programming/
-fligner.test(Bac_Shannon_Diversity ~ SampDate, data = bac.div.metadat.rar)
-# Fligner-Killeen:med chi-squared = 1.9504, df = 2, p-value = 0.3771
+fligner.test(Bac_Shannon_Diversity ~ SampDate, data = bac.div.metadat)
+# Fligner-Killeen:med chi-squared = 1.1963, df = 7, p-value = 0.991
 # Which shows that the data do not deviate significantly from homogeneity.
-compare_means(Bac_Shannon_Diversity ~ SampDate, data=bac.div.metadat.rar, method="anova",p.adjust.method = "bonferroni") # won't take as.factor(Elevation) as input
+compare_means(Bac_Shannon_Diversity ~ SampDate, data=bac.div.metadat, method="anova",p.adjust.method = "bonferroni") # won't take as.factor(Elevation) as input
 
 #### Linear Regression/ANOVA Comparisons - Species Richness ####
 ## here the focus is comparing dust complexity to alpha diversity, species richness, & elevation
-head(bac.div.metadat.rar) # bac.div.metadat.rar - excludes outliar with very high Shannon diversity
+head(bac.div.metadat) # bac.div.metadat - excludes outliar with very high Shannon diversity
 
 # just look at everything at once in step-wise fashion
-step2<-step(glm(formula = Bac_Species_Richness ~ ., data=bac.div.metadat.rar[,c(4,11,13:14,18:20)]))
+step2<-step(glm(formula = Bac_Species_Richness ~ ., data=bac.div.metadat[,c(4,11,13:14,18:20)]))
 summary(step2)
 #                               Estimate Std. Error t value Pr(>|t|)
-# (Intercept)      720.46      19.00  37.928   <2e-16 ***
-# ORP_mV          -234.80      95.83  -2.450   0.0236 *
-# Sulfate_milliM   -33.65      19.91  -1.690   0.1066
-# Sulfide_microM  -222.28      96.33  -2.307   0.0319 *
+# Temp_DegC                     114.82      62.20   1.846   0.0798 .
+# Dissolved_OrganicMatter_RFU   128.54      52.69   2.439   0.0241 *
 
-sr.glm.all<-glm(formula = Bac_Species_Richness ~ ., data=bac.div.metadat.rar[,c(4,11,13:14,18:20)])
+sr.glm.all<-glm(formula = Bac_Species_Richness ~ ., data=bac.div.metadat[,c(4,11,13:14,18:20)])
 summary(sr.glm.all)
 
 sr.glm.p<-coef(summary(sr.glm.all))[,4] # p-values
 SR.GLM.Pval<-data.frame(SR.GLM.AdjPval=p.adjust(sr.glm.p, method="bonferroni",n=length(sr.glm.p)),SR.GLM.Pval=sr.glm.p)
 #                               SR.GLM.AdjPval  SR.GLM.Pval
-# (Intercept)                   9.032213e-17 1.290316e-17
-# DO_Percent_Local              1.000000e+00 6.008282e-01
-# ORP_mV                        4.753271e-01 6.790388e-02
-# Temp_DegC                     1.000000e+00 3.950656e-01
-# Dissolved_OrganicMatter_RFU   1.000000e+00 3.652658e-01
-# Sulfate_milliM                5.244600e-01 7.492285e-02
-# Sulfide_microM                8.091316e-01 1.155902e-01
+# (Intercept)                   1.388731e-14 1.983901e-15
+# DO_Percent_Local              1.000000e+00 1.836612e-01
+# ORP_mV                        1.000000e+00 2.813919e-01
+# Temp_DegC                     1.000000e+00 1.847486e-01
+# Dissolved_OrganicMatter_RFU   5.309113e-01 7.584447e-02
+# Sulfate_milliM                1.000000e+00 4.890501e-01
+# Sulfide_microM                1.000000e+00 3.932963e-01
 
 # Species Richness ~ DO%
 
-plot(Bac_Species_Richness ~ DO_Percent_Local, data=bac.div.metadat.rar,col=SampDate_Color)
+plot(Bac_Species_Richness ~ DO_Percent_Local, data=bac.div.metadat,col=SampDate_Color)
 
 # Species Richness ~ ORP
 
-plot(Bac_Species_Richness ~ ORP_mV, data=bac.div.metadat.rar,col=SampDate_Color)
+plot(Bac_Species_Richness ~ ORP_mV, data=bac.div.metadat,col=SampDate_Color)
 
 # Species Richness ~ Temp
 
-plot(Bac_Species_Richness ~ Temp_DegC, data=bac.div.metadat.rar,col=SampDate_Color)
+plot(Bac_Species_Richness ~ Temp_DegC, data=bac.div.metadat,col=SampDate_Color)
 
 # Species Richness ~ DOM
 
-plot(Bac_Species_Richness ~ Dissolved_OrganicMatter_RFU, data=bac.div.metadat.rar,col=SampDate_Color)
+plot(Bac_Species_Richness ~ Dissolved_OrganicMatter_RFU, data=bac.div.metadat,col=SampDate_Color)
 
 # Species Richness ~ Sulfate
 
-plot(Bac_Species_Richness ~ Sulfate_milliM, data=bac.div.metadat.rar,col=SampDate_Color)
+plot(Bac_Species_Richness ~ Sulfate_milliM, data=bac.div.metadat,col=SampDate_Color)
 
 # Species Richness ~ Sulfide
 
-plot(Bac_Species_Richness ~ Sulfide_microM, data=bac.div.metadat.rar,col=SampDate_Color)
+plot(Bac_Species_Richness ~ Sulfide_microM, data=bac.div.metadat,col=SampDate_Color)
 
 # Species Richness ~ Depth
 
-plot(Bac_Species_Richness ~ Depth.num, data=bac.div.metadat.rar,col=SampDate_Color)
+plot(Bac_Species_Richness ~ Depth.num, data=bac.div.metadat,col=SampDate_Color)
 
-fit2<-aov(Bac_Species_Richness ~ SampDate, data=bac.div.metadat.rar)
+fit2<-aov(Bac_Species_Richness ~ SampDate, data=bac.div.metadat)
 # ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/
-#pairwise.adonis(bac.div.metadat.rar$Bac_Species_Richness, bac.div.metadat.rar$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
+#pairwise.adonis(bac.div.metadat$Bac_Species_Richness, bac.div.metadat$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 
 summary(fit2)
 #Df           Sum Sq Mean Sq    F value   Pr(>F)
-# SampDate     2   1783     891   0.077  0.926
-# Residuals   21 242367   11541
+#            Df Sum Sq Mean Sq F value  Pr(>F)
+#SampDate     2 378899  189450   6.465 0.00649 **
+#Residuals   21 615429   29306
 p.adjust(summary(fit2)[[1]][["Pr(>F)"]][1],method="bonferroni")
 
 # Tukey test - tells us which groups are significantly different from each other (more here: https://www.r-bloggers.com/2013/06/anova-and-tukeys-test-on-r/)
 Tuk2<-TukeyHSD(fit2)
 Tuk2$SampDate
 #                               diff       lwr       upr       p adj
-# December.2021-August.2021 -18.875 -154.268 116.518 0.9344133
-# April.2022-August.2021    -17.625 -153.018 117.768 0.9425413
-# April.2022-December.2021    1.250 -134.143 136.643 0.9997015
+# December.2021-August.2021 -182.500 -398.2486  33.24863 0.107382247
+# April.2022-August.2021    -305.875 -521.6236 -90.12637 0.004886271 **
+# April.2022-December.2021  -123.375 -339.1236  92.37363 0.338647759
 
 # Levene's test with one independent variable
 ## Levene's tests whether variances of 2 samples are equal
@@ -516,19 +695,19 @@ Tuk2$SampDate
 ## t test assumes that variances are the same, so Levene's test needs to be non significant
 ## Fligner's test is a Levene's test for data that are not normally distributed
 ## more here: https://www.geeksforgeeks.org/fligner-killeen-test-in-r-programming/
-fligner.test(Bac_Species_Richness ~ SampDate, data = bac.div.metadat.rar)
-# Fligner-Killeen:med chi-squared = 6.1181, df = 2, p-value = 0.04693
-# Which shows that the data DO deviate significantly from homogeneity.
-compare_means(Bac_Species_Richness ~ SampDate, data=bac.div.metadat.rar, method="anova",p.adjust.method = "bonferroni")
+fligner.test(Bac_Species_Richness ~ SampDate, data = bac.div.metadat)
+# Fligner-Killeen:med chi-squared = 0.45636, df = 2, p-value = 0.796
+# Which shows that the data do not deviate significantly from homogeneity.
+compare_means(Bac_Species_Richness ~ SampDate, data=bac.div.metadat, method="anova",p.adjust.method = "bonferroni")
 
 #### Prep Data for Linear Regressions within Timepoints ####
 ## here the focus is comparing dust complexity to alpha diversity, species richness, & elevation
-head(bac.div.metadat.rar)
+head(bac.div.metadat)
 
 # create the dataframes
-aug21.div<-subset(bac.div.metadat.rar, bac.div.metadat.rar$SampDate=="August.2021")
-dec21.div<-subset(bac.div.metadat.rar, bac.div.metadat.rar$SampDate=="December.2021")
-apr22.div<-subset(bac.div.metadat.rar, bac.div.metadat.rar$SampDate=="April.2022")
+aug21.div<-subset(bac.div.metadat, bac.div.metadat$SampDate=="August.2021")
+dec21.div<-subset(bac.div.metadat, bac.div.metadat$SampDate=="December.2021")
+apr22.div<-subset(bac.div.metadat, bac.div.metadat$SampDate=="April.2022")
 
 #### August - Shannon Diversity ####
 # August 2021
@@ -1091,7 +1270,7 @@ compare_means(Bac_Species_Richness ~ Depth_m, data=apr22.div, method="anova",p.a
 ## Shannon Diversity & Environmental Variables
 # note: R (correlation coefficient) vs R^2 (coefficient of determination): https://towardsdatascience.com/r%C2%B2-or-r%C2%B2-when-to-use-what-4968eee68ed3
 
-ggplot(bac.div.metadat.rar, aes(x = DO_Percent_Local, y = Bac_Shannon_Diversity)) +
+ggplot(bac.div.metadat, aes(x = DO_Percent_Local, y = Bac_Shannon_Diversity)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() +
   stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(title="Dissolved Oxygen x 16S Shannon Diversity", color="Depth (m)")+ylab("Shannon Diversity")+xlab("Dissolved Oxygen (%)")+
   scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
@@ -1100,14 +1279,14 @@ ggplot(bac.div.metadat.rar, aes(x = DO_Percent_Local, y = Bac_Shannon_Diversity)
   stat_cor(label.y = 150, label.x=3) +
   stat_regline_equation(aes(label=paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),label.y = 160,label.x=3)
 
-ggplot(bac.div.metadat.rar, aes(x = DO_Percent_Local, y = Bac_Shannon_Diversity)) +
+ggplot(bac.div.metadat, aes(x = DO_Percent_Local, y = Bac_Shannon_Diversity)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() +
   labs(title="Dissolved Oxygen x 16S Shannon Diversity", color="Depth (m)")+ylab("Shannon Diversity")+xlab("Dissolved Oxygen (%)")+
   scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
   scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))
 
-ggplot(bac.div.metadat.rar, aes(x = ORP_mV, y = Bac_Shannon_Diversity)) +
+ggplot(bac.div.metadat, aes(x = ORP_mV, y = Bac_Shannon_Diversity)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() +
   stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(title="Oxidation-Reduction Potential x 16S Shannon Diversity", color="Depth (m)")+ylab("Shannon Diversity")+xlab("Redox Potential (mV)")+
   scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
@@ -1116,7 +1295,7 @@ ggplot(bac.div.metadat.rar, aes(x = ORP_mV, y = Bac_Shannon_Diversity)) +
   stat_cor(label.y = 3, label.x=1) +
   stat_regline_equation(aes(label=paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),label.y = 3.2,label.x=1)
 
-ggplot(bac.div.metadat.rar, aes(x = Temp_DegC, y = Bac_Shannon_Diversity)) +
+ggplot(bac.div.metadat, aes(x = Temp_DegC, y = Bac_Shannon_Diversity)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() + labs(title="Temperature x 16S Shannon Diversity", color="Depth (m)")+ylab("16S Shannon Diversity")+xlab("Temperature (C)")+
   scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
   scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
@@ -1125,7 +1304,7 @@ ggplot(bac.div.metadat.rar, aes(x = Temp_DegC, y = Bac_Shannon_Diversity)) +
 ## Species Richness & Environmental Variables
 # note: R (correlation coefficient) vs R^2 (coefficient of determination): https://towardsdatascience.com/r%C2%B2-or-r%C2%B2-when-to-use-what-4968eee68ed3
 
-ggplot(bac.div.metadat.rar, aes(x = DO_Percent_Local, y = Bac_Species_Richness)) +
+ggplot(bac.div.metadat, aes(x = DO_Percent_Local, y = Bac_Species_Richness)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() +
   stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(title="Dissolved Oxygen x 16S Species Richness", color="Depth (m)")+ylab("Species Richness")+xlab("Dissolved Oxygen (%)")+
   scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
@@ -1134,7 +1313,7 @@ ggplot(bac.div.metadat.rar, aes(x = DO_Percent_Local, y = Bac_Species_Richness))
   stat_cor(label.y = 3, label.x=1) +
   stat_regline_equation(aes(label=paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),label.y = 3.1,label.x=1)
 
-ggplot(bac.div.metadat.rar, aes(x = ORP_mV, y = Bac_Species_Richness)) +
+ggplot(bac.div.metadat, aes(x = ORP_mV, y = Bac_Species_Richness)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() +
   stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(title="Oxidation-Reduction Potential x 16S Species Richness", color="Depth (m)")+ylab("Species Richness")+xlab("Redox Potential (mV)")+
   scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
@@ -1143,7 +1322,7 @@ ggplot(bac.div.metadat.rar, aes(x = ORP_mV, y = Bac_Species_Richness)) +
   stat_cor(label.y = 3, label.x=1) +
   stat_regline_equation(aes(label=paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),label.y = 3.2,label.x=1)
 
-ggplot(bac.div.metadat.rar, aes(x = Temp_DegC, y = Bac_Species_Richness)) +
+ggplot(bac.div.metadat, aes(x = Temp_DegC, y = Bac_Species_Richness)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() + labs(title="Temperature x 16S Species Richness", color="Depth (m)")+ylab("16S Species Richness")+xlab("Temperature (C)")+
   scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
   scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
@@ -1151,4 +1330,4 @@ ggplot(bac.div.metadat.rar, aes(x = Temp_DegC, y = Bac_Species_Richness)) +
 
 
 #### Save Everything ####
-save.image("data/SSeawater_AlphaDiv_Data_Rarefied.Rdata")
+save.image("data/SSeawater_AlphaDiv_Data.Rdata")
