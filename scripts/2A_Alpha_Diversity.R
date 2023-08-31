@@ -69,6 +69,29 @@ rarecurve(as.matrix(bac.ASV_table[,-1]),col=metadata$SampDate_Color, step=1000, 
 # to show sampel labels per curve, change label=T
 dev.off()
 
+#### Good's Coverage ####
+
+# Good's coverage is defined as 1 - (F1/N) where F1 is the number of singleton OTUs and N is the sum of counts for all OTUs.
+# If a sample has a Good's coverage == . 98, this means that 2% of reads in that sample are from OTUs that appear only once in that sample.
+
+bac.ASV.melt<-melt(bac.ASV_table,by="SampleID")
+colnames(bac.ASV.melt)[which(colnames(bac.ASV.melt) == "variable")] <- "ASV_ID"
+colnames(bac.ASV.melt)[which(colnames(bac.ASV.melt) == "value")] <- "Count"
+
+# calculate # of singletons per sample
+sings<-data.frame(Singletons=rowSums(bac.ASV_table[,-1]==1),SampleID=bac.ASV_table$SampleID) # how many ASVs have a count of only 1
+
+# find total counts per sample
+totseq<-data.frame(TotalSeqs=rowSums(bac.ASV_table[,-1]),SampleID=bac.ASV_table$SampleID) # total # of counts per sample
+
+# Calculate Good's Coverage
+good.cov<-data.frame(GoodsCov=(100*(1-(sings$Singletons/totseq$TotalSeqs))),SampleID=sings$SampleID)
+
+# Merge Total Seqs and Goods DFs together for plotting
+good.df<-merge(good.cov,totseq,by="SampleID")
+
+ggplot(good.df, aes(x=TotalSeqs,y=GoodsCov))+geom_point()+xlab("Total Seqs per Sample")+ylab("Good's Coverage (%)")
+
 #### Different Transformations for Alpha Div Comparisons ####
 
 # Rarefaction of Raw Counts first
