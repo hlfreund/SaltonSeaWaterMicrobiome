@@ -147,7 +147,7 @@ head(mgm_fxns.cov)
 gene_KOs<-unique(data.frame(Gene_ID=mgm_fxns.cov$Gene_ID, KO_ID=mgm_fxns.cov$KO_ID))
 dim(gene_KOs)
 
-# create Sample ID x Gene ID count table, using reads per gene that were divided by gene length
+# create Sample ID x Gene ID count table, using coverage aka reads per gene that were divided by gene length
 mgm_fxn.cov_table1<-as.data.frame(dcast(mgm_fxns.cov, SampleID~Gene_ID, value.var="CovPerGene"))
 mgm_fxn.cov_table1[,1:4] # sanity check
 rownames(mgm_fxn.cov_table1)<-mgm_fxn.cov_table1$SampleID
@@ -295,7 +295,7 @@ ggplot(df) +
 
 #### Sum Gene Coverage by KO ID in Contigs Before Transformations ####
 mgm_fxns.cov[1:4,]
-mgm_fxns.cov_noNA<-as.data.frame(mgm_fxns.cov[!is.na(mgm_fxns.cov$KO_ID),]) # drop KOs with NA as assignment
+mgm_fxns.cov_noNA<-as.data.frame(mgm_fxns.cov[!is.na(mgm_fxns.cov$KO_ID),]) # drop genes with KOs given NA as assignment (aka no KO ID assigned at all)
 
 ko.cov.sum_table<-as.data.frame(dcast(mgm_fxns.cov_noNA, SampleID~KO_ID, value.var="CovPerGene", fun.aggregate=sum)) ###
 ko.cov.sum_table[1:4,1:4]
@@ -422,11 +422,30 @@ ko.cov.sum_table[1:4,1:4]
 # ^ table contains gene coverage, Sample IDs as rows & genes as columns
 
 # df must have rownames are SampleIDs, columns are ASV IDs for vegan functions below\
-mgm.clr<-decostand(ko.cov.sum_table[,-1],method = "clr", pseudocount = 1) #CLR transformation
+mgm.clr<-decostand(ko.cov.sum_table[,-1],method = "clr",pseudocount=1) #CLR transformation
 mgm.clr[1:4,1:4]
+# NOTE: CLR transformation does not treat all 0s equally, it has to do with the pseudocount that's added before transformation
+# The method can operate only with positive data; a common way to deal with zeroes is to add pseudocount, either by adding it manually to the input data, or by using the argument pseudocount as in decostand(x, method = "clr", pseudocount = 1).
+# Adding pseudocount will inevitably introduce some bias; see the rclr method for one available solution
 
 # check rownames of CLR transformed ASV data & metadata
 rownames(mgm.clr) %in% rownames(meta_scaled)
+
+#### Robust Centered Log Ratio Transformation - Gene in Contigs ####
+ko.cov.sum_table[1:4,1:4]
+# ^ table contains gene coverage, Sample IDs as rows & genes as columns
+
+# df must have rownames are SampleIDs, columns are ASV IDs for vegan functions below\
+mgm.Rclr<-decostand(ko.cov.sum_table[,-1],method = "rclr") #CLR transformation
+mgm.Rclr[1:4,1:4]
+# NOTE: Robust CLR just excludes 0s and performs CLR transformation without pseudocount
+# robust clr ("rclr") is similar to regular clr (see above) but allows data that contains zeroes.
+# This method does not use pseudocounts, unlike the standard clr. Robust clr divides the values by geometric mean of the observed features; zero values are kept as zeroes, and not taken into account.
+#In high dimensional data, the geometric mean of rclr is a good approximation of the true geometric mean
+
+# check rownames of CLR transformed ASV data & metadata
+rownames(mgm.Rclr) %in% rownames(meta_scaled)
+
 
 #### Copies Per Million Transformation - Gene in Contigs ####
 ko.cov.sum_table[1:4,1:4] # sanity check
@@ -446,6 +465,39 @@ mgm_fxn.binary<-counts_to_binary(ko.cov.sum_table[,-1]) # custom function to con
 # sanity check that function worked below
 mgm_fxn.binary[1:5,1:5]
 ko.cov.sum_table[,-c(1)][1:5,1:5]
+
+#### Create CLR-transformed Coveraged Table w/ NAs for Absent Functions ####
+
+# are NA table and mgm.clr in the same order?
+rownames(mgm_fxn.binary)
+rownames(mgm.clr)
+
+colnames(mgm_fxn.binary)
+colnames(mgm.clr)
+colnames(mgm_fxn.binary)[which(colnames(mgm_fxn.binary) %in% colnames(mgm.clr) == FALSE)] # mgm_fxn.binary does not have SampleID column
+
+identical(mgm.clr,mgm_fxn.binary) # SampleID columns are in different places in these two data frames...
+
+# then create logical table saying which functions are NA in this ko.cov.na table AND have a negative coverage value in mgm.clr
+# TRUE means they are absent, FALSE means they are present
+NA.fxns <- (mgm_fxn.binary==0)
+
+# create data frame that will be CLR transformed sum coverages + NA values
+mgm.clr.na<-mgm.clr
+mgm.clr.na[NA.fxns] <- NA
+#mgm.clr.na[NA.fxns == TRUE]<- NA
+
+# did this work?
+mgm.clr[1:4,1:4]
+mgm.clr.na[1:4,1:4]
+mgm_fxn.binary[1:4,1:4]
+
+# create sample ID column
+mgm.clr.na$SampleID<-rownames(mgm.clr.na)
+# * use mgm.clr.na for heatmaps of functions and coverage!
+# to get rid of sampleID column later for mgm.clr.na, use the following code
+## mgm.clr.na[,!names(mgm.clr.na) %in% c("SampleID")]
+
 
 #### Compare Sequencing Depth Across Samples ####
 mgm.mr[1:4,(ncol(mgm.mr)-4):(ncol(mgm.mr))]
