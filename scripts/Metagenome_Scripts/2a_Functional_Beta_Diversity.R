@@ -1256,13 +1256,13 @@ ggsave(sulf.bi.hm1e,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/S
 #
 # ggsave(sulf.bi.hm1e6,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_Pathways_Binary_10m_heatmap.png", width=18, height=18, dpi=600)
 
-#### Pull Out Nitrogen Metabolic Fxns from CLR data ####
+#### Pull Out Nitrogen Metabolic Fxns from CLR data - NO NAs ####
 ## heatmaps of traits of interest
 
-mgm.clr.na[1:4,1:4]
+mgm.clr[1:4,1:4]
 
 # pull out nitro functions from CLR transformed, summed coverages (summed coverage per KO)
-nitro.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% nitro.fxns$KO_ID)] # merge CLR data w/ S fxns found in contigs from KOFamScan
+nitro.ko<-mgm.clr[,which(colnames(mgm.clr) %in% nitro.fxns$KO_ID)] # merge CLR data w/ S fxns found in contigs from KOFamScan
 nitro.ko$SampleID<-rownames(nitro.ko)
 nitro.ko.melt<-melt(nitro.ko, by="SampleID")
 colnames(nitro.ko.melt)[which(names(nitro.ko.melt) == "variable")] <- "KO_ID"
@@ -1280,6 +1280,31 @@ clr.cov.sum.nitro.ko[1:4,]
 clr.cov.sum.nitro.ko$`nirK; nitrite reductase (NO-forming) [EC:1.7.2.1]`[1:4]
 head(clr.nitro.ko)
 
+
+#### Pull Out Nitrogen Metabolic Fxns from CLR data - with NAs ####
+## heatmaps of traits of interest
+
+mgm.clr.na[1:4,1:4]
+
+# pull out nitro functions from CLR transformed, summed coverages (summed coverage per KO)
+nitro.ko.na<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% nitro.fxns$KO_ID)] # merge CLR data w/ S fxns found in contigs from KOFamScan
+nitro.ko.na$SampleID<-rownames(nitro.ko.na)
+nitro.ko.na.melt<-melt(nitro.ko.na, by="SampleID")
+colnames(nitro.ko.na.melt)[which(names(nitro.ko.na.melt) == "variable")] <- "KO_ID"
+colnames(nitro.ko.na.melt)[which(names(nitro.ko.na.melt) == "value")] <- "CLR_SumCovPerKO"
+head(nitro.ko.na.melt) #sanity check
+
+clr.nitro.ko.na<-merge(nitro.ko.na.melt,nitro.kegg,by.x=c("KO_ID"),by.y=c("KO_ID")) # merge data w/ KO assignments from KEGG db
+head(clr.nitro.ko.na)
+colnames(clr.nitro.ko.na)[which(names(clr.nitro.ko.na) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
+clr.cov.sum.nitro.ko.na<-as.data.frame(dcast(clr.nitro.ko.na, SampleID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###just dcast, nothing is being added here!
+rownames(clr.cov.sum.nitro.ko.na)<-clr.cov.sum.nitro.ko.na$SampleID
+clr.cov.sum.nitro.ko.na[1:4,]
+
+# sanity check
+clr.cov.sum.nitro.ko.na$`nirK; nitrite reductase (NO-forming) [EC:1.7.2.1]`[1:4]
+head(clr.nitro.ko.na)
+
 ### Nitrogen Heat Maps ####
 # see max & mean of summed
 max(clr.cov.sum.nitro.ko[,-1])
@@ -1294,8 +1319,8 @@ colSums(clr.cov.sum.nitro.ko[,-1])
 heatmap(as.matrix(clr.cov.sum.nitro.ko[,-1]), scale = "none")
 
 # prep for ggplot2 heatmap
-clr.nitro.ko[1:4,]
-clr.nitro.all<-merge(clr.nitro.ko,meta_scaled,by="SampleID")
+clr.nitro.ko.na[1:4,]
+clr.nitro.all<-merge(clr.nitro.ko.na,meta_scaled,by="SampleID")
 head(clr.nitro.all)
 clr.nitro.all$PlotID = factor(clr.nitro.all$PlotID, levels=unique(clr.nitro.all$PlotiD[order(clr.nitro.all$SampDate,clr.nitro.all$Depth_m)]), ordered=TRUE)
 clr.nitro.all$SampDate<-gsub("\\."," ",clr.nitro.all$SampDate)
@@ -1635,13 +1660,13 @@ ggsave(nitro.bi.hm1e,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/PresenceAbsenc
 #
 # ggsave(nitro.bi.hm1e6,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/PresenceAbsence/Nitrogen_KOFxns_Pathways_Binary_10m_heatmap.png", width=18, height=18, dpi=600)
 
-#### Pull Out Carbon Metabolic Fxns from CLR data ####
+#### Pull Out Carbon Metabolic Fxns from CLR data - NO NAs ####
 ## heatmaps of traits of interest
 
-mgm.clr.na[1:4,1:4]
+mgm.clr[1:4,1:4]
 
 # pull out Carbon metabolism functions from CLR transformed, summed coverages (summed coverage per KO)
-carb.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% carb.fxns$KO_ID)] # merge CLR data w/ carbon-related fxns found in contigs from KOFamScan
+carb.ko<-mgm.clr[,which(colnames(mgm.clr) %in% carb.fxns$KO_ID)] # merge CLR data w/ carbon-related fxns found in contigs from KOFamScan
 carb.ko$SampleID<-rownames(carb.ko)
 carb.ko.melt<-melt(carb.ko, by="SampleID")
 colnames(carb.ko.melt)[which(names(carb.ko.melt) == "variable")] <- "KO_ID"
@@ -1654,6 +1679,27 @@ colnames(clr.carb.ko)[which(names(clr.carb.ko) == "KO_Function")] <- "KO_Functio
 clr.cov.sum.carb.ko<-as.data.frame(dcast(clr.carb.ko, SampleID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
 rownames(clr.cov.sum.carb.ko)<-clr.cov.sum.carb.ko$SampleID
 clr.cov.sum.carb.ko[1:4,1:4]
+
+#### Pull Out Carbon Metabolic Fxns from CLR data - with NAs ####
+## heatmaps of traits of interest
+
+mgm.clr.na[1:4,1:4]
+
+# pull out Carbon metabolism functions from CLR transformed, summed coverages (summed coverage per KO)
+carb.ko.na<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% carb.fxns$KO_ID)] # merge CLR data w/ carbon-related fxns found in contigs from KOFamScan
+carb.ko.na$SampleID<-rownames(carb.ko.na)
+carb.ko.na.melt<-melt(carb.ko.na, by="SampleID")
+colnames(carb.ko.na.melt)[which(names(carb.ko.na.melt) == "variable")] <- "KO_ID"
+colnames(carb.ko.na.melt)[which(names(carb.ko.na.melt) == "value")] <- "CLR_SumCovPerKO"
+head(carb.ko.na.melt) #sanity check
+
+clr.carb.ko.na<-merge(carb.ko.na.melt,carb.kegg,by.x=c("KO_ID"),by.y=c("KO_ID"))
+head(clr.carb.ko.na)
+colnames(clr.carb.ko.na)[which(names(clr.carb.ko.na) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
+clr.cov.sum.carb.ko.na<-as.data.frame(dcast(clr.carb.ko.na, SampleID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
+rownames(clr.cov.sum.carb.ko.na)<-clr.cov.sum.carb.ko.na$SampleID
+clr.cov.sum.carb.ko.na[1:4,1:4]
+
 
 ### Carbon Heat Maps ####
 # see max & mean of summed
@@ -1668,8 +1714,8 @@ colSums(clr.cov.sum.carb.ko[,-1])
 heatmap(as.matrix(clr.cov.sum.carb.ko[,-1]), scale = "none")
 
 # prep for ggplot2 heatmap
-clr.carb.ko[1:4,]
-clr.carb.all<-merge(clr.carb.ko,meta_scaled,by="SampleID")
+clr.carb.ko.na[1:4,]
+clr.carb.all<-merge(clr.carb.ko.na,meta_scaled,by="SampleID")
 head(clr.carb.all)
 clr.carb.all$PlotID = factor(clr.carb.all$PlotID, levels=unique(clr.carb.all$PlotID[order(clr.carb.all$SampDate,clr.carb.all$Depth_m)]), ordered=TRUE)
 clr.carb.all$SampDate<-gsub("\\."," ",clr.carb.all$SampDate)
@@ -2003,13 +2049,13 @@ ggsave(carb.bi.hm1e,filename = "figures/MGM_Figs/FxnDiv/Carbon/PresenceAbsence/C
 #
 # ggsave(carb.bi.hm1e6,filename = "figures/MGM_Figs/FxnDiv/Carbon/PresenceAbsence/Carbon_KOFxns_Pathways_Binary_10m_heatmap.png", width=18, height=18, dpi=600)
 
-#### Pull Out Phototrophy Fxns from CLR data ####
+#### Pull Out Phototrophy Fxns from CLR data - NO NAs ####
 ## heatmaps of traits of interest
 
-mgm.clr.na[1:4,1:4]
+mgm.clr[1:4,1:4]
 
 # pull out Phototrophy functions from CLR transformed, summed coverages (summed coverage per KO)
-photo.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% photo.fxn$KO_ID)] # merge CLR data w/ photoon-related fxns found in contigs from KOFamScan
+photo.ko<-mgm.clr[,which(colnames(mgm.clr) %in% photo.fxn$KO_ID)] # merge CLR data w/ photoon-related fxns found in contigs from KOFamScan
 photo.ko$SampleID<-rownames(photo.ko)
 photo.ko.melt<-melt(photo.ko, by="SampleID")
 colnames(photo.ko.melt)[which(names(photo.ko.melt) == "variable")] <- "KO_ID"
@@ -2022,6 +2068,27 @@ colnames(clr.photo.ko)[which(names(clr.photo.ko) == "KO_Function")] <- "KO_Funct
 clr.cov.sum.photo.ko<-as.data.frame(dcast(clr.photo.ko, SampleID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
 rownames(clr.cov.sum.photo.ko)<-clr.cov.sum.photo.ko$SampleID
 clr.cov.sum.photo.ko[1:4,1:4]
+
+#### Pull Out Phototrophy Fxns from CLR data - with NAs ####
+## heatmaps of traits of interest
+
+mgm.clr.na[1:4,1:4]
+
+# pull out Phototrophy functions from CLR transformed, summed coverages (summed coverage per KO)
+photo.ko.na<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% photo.fxn$KO_ID)] # merge CLR data w/ photoon-related fxns found in contigs from KOFamScan
+photo.ko.na$SampleID<-rownames(photo.ko.na)
+photo.ko.na.melt<-melt(photo.ko.na, by="SampleID")
+colnames(photo.ko.na.melt)[which(names(photo.ko.na.melt) == "variable")] <- "KO_ID"
+colnames(photo.ko.na.melt)[which(names(photo.ko.na.melt) == "value")] <- "CLR_SumCovPerKO"
+head(photo.ko.na.melt) #sanity check
+
+clr.photo.ko.na<-merge(photo.ko.na.melt,photo.kegg,by.x=c("KO_ID"),by.y=c("KO_ID"))
+head(clr.photo.ko.na)
+colnames(clr.photo.ko.na)[which(names(clr.photo.ko.na) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
+clr.cov.sum.photo.ko.na<-as.data.frame(dcast(clr.photo.ko.na, SampleID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
+rownames(clr.cov.sum.photo.ko.na)<-clr.cov.sum.photo.ko.na$SampleID
+clr.cov.sum.photo.ko.na[1:4,1:4]
+
 
 ### Phototrophy Heat Maps ####
 # see max & mean of summed
@@ -2036,8 +2103,8 @@ colSums(clr.cov.sum.photo.ko[,-1])
 heatmap(as.matrix(clr.cov.sum.photo.ko[,-1]), scale = "none")
 
 # prep for ggplot2 heatmap
-clr.photo.ko[1:4,]
-clr.photo.all<-merge(clr.photo.ko,meta_scaled,by="SampleID")
+clr.photo.ko.na[1:4,]
+clr.photo.all<-merge(clr.photo.ko.na,meta_scaled,by="SampleID")
 head(clr.photo.all)
 clr.photo.all$PlotID = factor(clr.photo.all$PlotID, levels=unique(clr.photo.all$PlotID[order(clr.photo.all$SampDate,clr.photo.all$Depth_m)]), ordered=TRUE)
 clr.photo.all$SampDate<-gsub("\\."," ",clr.photo.all$SampDate)
