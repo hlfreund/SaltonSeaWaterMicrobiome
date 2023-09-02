@@ -56,6 +56,10 @@ head(mgm.clr.ars)
 ## For pathway analyses -- after gene coverage was calculated and added together per KO ID, they were added together for each pathway
 ## summed coverages per KO ID, then per pathway were transformed by CLR
 
+# NOTE about CLR transformation:
+## uses a pseudocount of 1 to replace 0s, which is why not all 0s are treated equally
+## need to look into robustCLR, which uses CLR transformation without 0s. Need more info on this methodology...
+
 #### Clustering by Features Across Samples ####
 
 # using CLR data first
@@ -129,7 +133,7 @@ pcoa3<-ggplot(mgm.pcoa.mr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=f
   scale_color_manual(name ="Sample Date",values=unique(mgm.pcoa.mr.meta$SampDate_Color[order(mgm.pcoa.mr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [33.04%]") + ylab("PC2 [29.24%]")
 
-ggsave(pcoa3,filename = "figures/MGM_Figs/FxnDiv/SSW_MGM_pcoa_MR_sampdate.png", width=12, height=10, dpi=600)
+ggsave(pcoa3,filename = "figures/MGM_Figs/FxnDiv/PCoAs/MedianRatioTransformation/SSW_MGM_pcoa_MR_sampdate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
 pcoa4<-ggplot(mgm.pcoa.mr.meta, aes(x=Axis.1, y=Axis.2)) +
@@ -139,7 +143,7 @@ pcoa4<-ggplot(mgm.pcoa.mr.meta, aes(x=Axis.1, y=Axis.2)) +
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("PC1 [33.04%]") + ylab("PC2 [29.24%]")
 
-ggsave(pcoa4,filename = "figures/MGM_Figs/FxnDiv/SSW_MGM_pcoa_MR.traits_depth.png", width=12, height=10, dpi=600)
+ggsave(pcoa4,filename = "figures/MGM_Figs/FxnDiv/PCoAs/MedianRatioTransformation/SSW_MGM_pcoa_MR.traits_depth.png", width=12, height=10, dpi=600)
 
 ## betadisper to look at homogeneity of group dispersions (aka variance) when considering multiple variables
 # multivariate analogue to Levene's test of homogeneity of variances
@@ -176,11 +180,11 @@ TukeyHSD(mgm.disper1) # tells us which Sample Dates/category's dispersion MEANS 
 #April.2022-December.2021    5.327857 -115.4751 126.13081 0.9987814
 
 # Visualize dispersions
-png('figures/MGM_Figs/FxnDiv/SSW_MGM_pcoa_MR_betadispersion_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FxnDiv/PCoAs/MedianRatioTransformation/SSW_MGM_pcoa_MR_betadispersion_sampledate.png',width = 700, height = 600, res=100)
 plot(mgm.disper1,main = "Centroids and Dispersion (Median-Ratio Data)", col=colorset1$SampDate_Color)
 dev.off()
 
-png('figures/MGM_Figs/FxnDiv/SSW_MGM_boxplot_MR_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FxnDiv/PCoAs/MedianRatioTransformation/SSW_MGM_boxplot_MR_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
 boxplot(mgm.disper1,xlab="Sample Collection Date", main = "Distance to Centroid by Category (Median-Ratio Data)", sub="Euclidean Distance of Median-Ratio Transformed Data", col=colorset1$SampDate_Color)
 dev.off()
 
@@ -202,11 +206,11 @@ colfunc <- colorRampPalette(c("red", "blue"))
 colfunc(3)
 
 # Visualize dispersions
-png('figures/MGM_Figs/FxnDiv/ssw_mgm_pcoa_MR_betadispersion_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FxnDiv/PCoAs/MedianRatioTransformation/ssw_mgm_pcoa_MR_betadispersion_depth.png',width = 700, height = 600, res=100)
 plot(mgm.disper2,main = "Centroids and Dispersion (Median-Ratio Data)", col=colfunc(3))
 dev.off()
 
-png('figures/MGM_Figs/FxnDiv/ssw_mgm_boxplot_MR_centroid_distance_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FxnDiv/PCoAs/MedianRatioTransformation/ssw_mgm_boxplot_MR_centroid_distance_depth.png',width = 700, height = 600, res=100)
 boxplot(mgm.disper2,xlab="Sample Collection Depth", main = "Distance to Centroid by Category (Median-Ratio Data)", sub="Euclidean Distance of Median-Ratio Transformed Data", col=colfunc(3))
 dev.off()
 
@@ -262,7 +266,7 @@ pcoa3<-ggplot(mgm.pcoa.vst.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=
   scale_color_manual(name ="Sample Date",values=unique(mgm.pcoa.vst.meta$SampDate_Color[order(mgm.pcoa.vst.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [25.06%]") + ylab("PC2 [21.98%]")
 
-ggsave(pcoa3,filename = "figures/MGM_Figs/FxnDiv/SSW_MGM_pcoa_VST_sampdate.png", width=12, height=10, dpi=600)
+ggsave(pcoa3,filename = "figures/MGM_Figs/FxnDiv/PCoAs/VarianceStabilizingTransformation/SSW_MGM_pcoa_VST_sampdate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
 pcoa4<-ggplot(mgm.pcoa.vst.meta, aes(x=Axis.1, y=Axis.2)) +
@@ -272,7 +276,7 @@ pcoa4<-ggplot(mgm.pcoa.vst.meta, aes(x=Axis.1, y=Axis.2)) +
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("PC1 [25.06%]") + ylab("PC2 [21.98%]")
 
-ggsave(pcoa4,filename = "figures/MGM_Figs/FxnDiv/SSW_MGM_pcoa_VST.traits_depth.png", width=12, height=10, dpi=600)
+ggsave(pcoa4,filename = "figures/MGM_Figs/FxnDiv/PCoAs/VarianceStabilizingTransformation/SSW_MGM_pcoa_VST.traits_depth.png", width=12, height=10, dpi=600)
 
 ## betadisper to look at within group variance
 
@@ -302,11 +306,11 @@ TukeyHSD(mgm.disper3) # tells us which Sample Dates/category's dispersion MEANS 
 #April.2022-December.2021  -0.23133564 -1.0501572 0.5874859 0.7879737
 
 # Visualize dispersions
-png('figures/MGM_Figs/FxnDiv/SSW_MGM_pcoa_vst_betadispersion_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FxnDiv/PCoAs/VarianceStabilizingTransformation/SSW_MGM_pcoa_vst_betadispersion_sampledate.png',width = 700, height = 600, res=100)
 plot(mgm.disper3,main = "Centroids and Dispersion (VST Data)", col=colorset1$SampDate_Color)
 dev.off()
 
-png('figures/MGM_Figs/FxnDiv/SSW_MGM_boxplot_vst_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FxnDiv/PCoAs/VarianceStabilizingTransformation/SSW_MGM_boxplot_vst_centroid_distance_sampledate.png',width = 700, height = 600, res=100)
 boxplot(mgm.disper3,xlab="Sample Collection Date", main = "Distance to Centroid by Category (VST Data)", sub="Euclidean Distance of VST Data", col=colorset1$SampDate_Color)
 dev.off()
 
@@ -328,11 +332,11 @@ colfunc <- colorRampPalette(c("red", "blue"))
 colfunc(3)
 
 # Visualize dispersions
-png('figures/MGM_Figs/FxnDiv/ssw_mgm_pcoa_VST_betadispersion_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FxnDiv/PCoAs/VarianceStabilizingTransformation/ssw_mgm_pcoa_VST_betadispersion_depth.png',width = 700, height = 600, res=100)
 plot(mgm.disper2,main = "Centroids and Dispersion (VST Data)", col=colfunc(3))
 dev.off()
 
-png('figures/MGM_Figs/FxnDiv/ssw_mgm_boxplot_VST_centroid_distance_depth.png',width = 700, height = 600, res=100)
+png('figures/MGM_Figs/FxnDiv/PCoAs/VarianceStabilizingTransformation/ssw_mgm_boxplot_VST_centroid_distance_depth.png',width = 700, height = 600, res=100)
 boxplot(mgm.disper2,xlab="Sample Collection Depth", main = "Distance to Centroid by Category (VST Data)", sub="Euclidean Distance of VST Data", col=colfunc(3))
 dev.off()
 
@@ -387,7 +391,7 @@ pcoa5<-ggplot(mgm.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=
   scale_color_manual(name ="Sample Date",values=unique(mgm.pcoa.clr.meta$SampDate_Color[order(mgm.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [34.06%]") + ylab("PC2 [22.48%]")
 
-ggsave(pcoa5,filename = "figures/MGM_Figs/FxnDiv/SSW_MGM_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
+ggsave(pcoa5,filename = "figures/MGM_Figs/FxnDiv/PCoAs/CenterLogRatioTransformation/SSW_MGM_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
 
 # sample month shape, depth color
 pcoa6<-ggplot(mgm.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
@@ -397,9 +401,73 @@ pcoa6<-ggplot(mgm.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("PC1 [34.06%]") + ylab("PC2 [22.48%]")
 
-ggsave(pcoa6,filename = "figures/MGM_Figs/FxnDiv/SSW_MGM_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
+ggsave(pcoa6,filename = "figures/MGM_Figs/FxnDiv/PCoAs/CenterLogRatioTransformation/SSW_MGM_pcoa_CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
 
-#### Pull Out Sulfur Metabolic Fxns from CLR data ####
+#### Functional Beta Diversity - Robust CLR data ####
+mgm.Rclr[1:4,1:4] # sample IDs are rows, genes are columns
+ko.cov.sum_table[1:4,1:4] # sanity check
+
+# check rownames of Robust CLR & VST transformed feature count data & metadata
+rownames(mgm.Rclr) %in% rownames(meta_scaled)
+
+## PCOA with Robust CLR transformed data first
+# calculate our Euclidean distance matrix using Robust CLR data
+mgm.euc.Rclr_dist <- dist(mgm.Rclr, method = "euclidean")
+
+# creating our hierarcical clustering dendrogram
+mgm.euc.Rclr_clust <- hclust(mgm.euc.Rclr_dist, method="ward.D2")
+
+# let's make it a little nicer...
+mgm.euc.Rclr_dend <- as.dendrogram(mgm.euc.Rclr_clust, hang=0.2)
+mgm.dend_cols <- as.character(meta_scaled$SampDate_Color[order.dendrogram(mgm.euc.Rclr_dend)])
+labels_colors(mgm.euc.Rclr_dend) <- mgm.dend_cols
+
+plot(mgm.euc.Rclr_dend, ylab="Robust CLR Euclidean Distance",cex = 0.5) + title(main = "Bacteria/Archaea Clustering Dendrogram", cex.main = 1, font.main= 1, cex.sub = 0.8, font.sub = 3)
+legend("topright",legend = c("August 2021","December 2021","April 2022"),cex=.8,col = c("#ef781c","#03045e","#059c3f"),pch = 15, bty = "n")
+# Control is dark blue ("#218380"), #Alternaria is light blue ("#73d2de")
+dev.off()
+
+# let's use our Euclidean distance matrix from before
+mgm.pcoa.Rclr <- pcoa(mgm.euc.Rclr_dist) # pcoa of euclidean distance matrix = PCA of euclidean distance matrix
+##save.image("data/ssw_clr.euc.dist1_3.7.23.Rdata")
+
+# The proportion of variances explained is in its element values$Relative_eig
+mgm.pcoa.Rclr$values
+
+# extract principal coordinates
+mgm.pcoa.Rclr.vectors<-data.frame(mgm.pcoa.Rclr$vectors)
+mgm.pcoa.Rclr.vectors$SampleID<-rownames(mgm.pcoa.Rclr$vectors)
+
+# merge pcoa coordinates w/ metadata
+mgm.pcoa.Rclr.meta<-merge(mgm.pcoa.Rclr.vectors, mgm_meta, by.x="SampleID", by.y="SampleID")
+mgm.pcoa.Rclr.meta$SampleMonth
+mgm.pcoa.Rclr.meta$SampDate
+
+head(mgm.pcoa.Rclr.meta)
+
+mgm.pcoa.Rclr$values # pull out Relative (Relative_eig) variation % to add to axes labels
+
+# create PCoA ggplot fig
+pcoa5<-ggplot(mgm.pcoa.Rclr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
+  labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using Robust CLR Transformed, Summed Gene Coverage per KO Function",xlab="PC1 [41.14%]", ylab="PC2 [9.04%]",color="Sample Date")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(mgm.pcoa.Rclr.meta$SampDate_Color[order(mgm.pcoa.Rclr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("PC1 [34.00%]") + ylab("PC2 [16.63%]")
+
+ggsave(pcoa5,filename = "figures/MGM_Figs/FxnDiv/PCoAs/RobustCenterLogRatioTransformation/SSW_MGM_pcoa_Robust CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600)
+
+# sample month shape, depth color
+pcoa6<-ggplot(mgm.pcoa.Rclr.meta, aes(x=Axis.1, y=Axis.2)) +
+  geom_point(aes(color=as.numeric(Depth_m),shape=SampleMonth), size=5)+theme_bw()+
+  labs(title="PCoA: Metagenome Functions in Salton Seawater",subtitle="Using Robust CLR Transformed, Summed Gene Coverage per KO Function",xlab="PC1", ylab="PC2",color="Depth (m)")+
+  theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
+  scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
+  xlab("PC1 [34.00%]") + ylab("PC2 [16.63%]")
+
+ggsave(pcoa6,filename = "figures/MGM_Figs/FxnDiv/PCoAs/RobustCenterLogRatioTransformation/SSW_MGM_pcoa_Robust CLR_SummedCoverage_Per_KO.traits_depth.png", width=12, height=10, dpi=600)
+
+
+#### Pull Out Sulfur Metabolic Fxns from CLR data - NO NAs ####
 ## heatmaps of traits of interest
 
 mgm.clr[1:4,1:4]
@@ -436,6 +504,30 @@ apr.sulf<-clr.sulf.ko[grep("4.13.22.",clr.sulf.ko$SampleID),]
 apr.sulf[which.max(apr.sulf$CLR_SumCovPerKO),] # Apr 22, 5m, 1.853456 sqr; sulfide:quinone oxidoreductase [EC:1.8.5.4] Sulfide Oxidation
 apr.sulf[order(apr.sulf$CLR_SumCovPerKO,decreasing=TRUE),]
 
+#### Pull Out Sulfur Metabolic Fxns from CLR data - with NAs ####
+## heatmaps of traits of interest
+
+mgm.clr.na[1:4,1:4]
+
+# pull out sulfur functions from CLR transformed, summed coverages (summed gene coverage per KO)
+sulf.ko.na<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% sulfur.fxns$KO_ID)] # merge CLR data w/ S fxns found in contigs from KOFamScan
+sulf.ko.na$SampleID<-rownames(sulf.ko.na)
+sulf.ko.na.melt<-melt(sulf.ko.na, by="SampleID")
+colnames(sulf.ko.na.melt)[which(names(sulf.ko.na.melt) == "variable")] <- "KO_ID"
+colnames(sulf.ko.na.melt)[which(names(sulf.ko.na.melt) == "value")] <- "CLR_SumCovPerKO"
+head(sulf.ko.na.melt) #sanity check
+
+clr.sulf.ko.na<-merge(sulf.ko.na.melt,sulf.kegg,by.x=c("KO_ID"),by.y=c("KO_ID")) # merge data w/ KO assignments from KEGG db
+head(clr.sulf.ko.na)
+colnames(clr.sulf.ko.na)[which(names(clr.sulf.ko.na) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
+clr.cov.sum.sulf.ko.na<-as.data.frame(dcast(clr.sulf.ko.na, SampleID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###just dcast, nothing is being added here!
+rownames(clr.cov.sum.sulf.ko.na)<-clr.cov.sum.sulf.ko.na$SampleID
+clr.cov.sum.sulf.ko.na[1:4,]
+
+# sanity check
+clr.cov.sum.sulf.ko.na$`cysJ; sulfite reductase (NADPH) flavoprotein alpha-component [EC:1.8.1.2]`[1:4]
+head(clr.sulf.ko.na)
+
 #### Pull out CLR Cov Per S Genes in S Pathways ####
 ko.cov.sum_table[1:4,1:4] # contains the sum of coverages per gene per KO -- featureCounts was normalized by gene length across samples first to get coverage, then summed up per KO ID
 
@@ -471,9 +563,9 @@ colSums(clr.cov.sum.sulf.ko[,-1])
 
 heatmap(as.matrix(clr.cov.sum.sulf.ko[,-1]), scale = "none")
 
-# prep for ggplot2 heatmap
-clr.sulf.ko[1:4,]
-clr.sulf.all<-merge(clr.sulf.ko,meta_scaled,by="SampleID")
+# prep for ggplot2 heatmap -- using CLR data that includes NAs so they are blocked out on heatmaps
+clr.sulf.ko.na[1:4,]
+clr.sulf.all<-merge(clr.sulf.ko.na,meta_scaled,by="SampleID")
 head(clr.sulf.all)
 clr.sulf.all$PlotID = factor(clr.sulf.all$PlotID, levels=unique(clr.sulf.all$PlotID[order(clr.sulf.all$SampDate,clr.sulf.all$Depth_m)]), ordered=TRUE)
 clr.sulf.all$SampDate<-gsub("\\."," ",clr.sulf.all$SampDate)
@@ -722,10 +814,10 @@ ggsave(sulf.hm1b8,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 #### Look at Specific S Gene Coverage Across Samples ####
 
 # Note: Must run section "Pull Out Sulfur Metabolic Fxns from CLR data" before running this section
-head(clr.cov.sum.sulf.ko) # columns are genes in this df
+head(clr.cov.sum.sulf.ko.na) # columns are genes in this df
 
 # merge with scaled metadata and prep for scatterplots of traits across samples
-clr.sulf.trait.table<-merge(clr.cov.sum.sulf.ko,meta_scaled,by="SampleID")
+clr.sulf.trait.table<-merge(clr.cov.sum.sulf.ko.na,meta_scaled,by="SampleID")
 head(clr.sulf.trait.table)
 clr.sulf.trait.table$PlotID = factor(clr.sulf.trait.table$PlotID, levels=unique(clr.sulf.trait.table$PlotID[order(clr.sulf.trait.table$SampDate,clr.sulf.trait.table$Depth_m)]), ordered=TRUE)
 clr.sulf.trait.table$SampDate<-gsub("\\."," ",clr.sulf.trait.table$SampDate)
@@ -881,6 +973,16 @@ ggsave(aprB.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/aprB_CLR_Coverage_Sa
 
 #### Assimilatory SO4 Reduction
 
+# `sir; sulfite reductase (ferredoxin) [EC:1.8.7.1]`
+sir.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`sir; sulfite reductase (ferredoxin) [EC:1.8.7.1]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="sir Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("SampleID") + ylab("CLR-Transformed Coverage")
+
+ggsave(sir.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/sir_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+
 # `cysNC; bifunctional enzyme CysN/CysC [EC:2.7.7.4 2.7.1.25]`
 cysNC.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysNC; bifunctional enzyme CysN/CysC [EC:2.7.7.4 2.7.1.25]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
   labs(title="CysNC Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
@@ -891,15 +993,15 @@ cysNC.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysNC; bifunctional en
 
 ggsave(cysNC.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/CysNC_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
-# `cysD; sulfate adenylyltransferase subunit 2 [EC:2.7.7.4]`
-cysD.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysD; sulfate adenylyltransferase subunit 2 [EC:2.7.7.4]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
-  labs(title="CysD Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+# `cysN; sulfate adenylyltransferase subunit 1 [EC:2.7.7.4]`
+CysN.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysN; sulfate adenylyltransferase subunit 1 [EC:2.7.7.4]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="CysN Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(cysD.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/CysD_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(CysN.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/CysN_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `cysH; phosphoadenosine phosphosulfate reductase [EC:1.8.4.8 1.8.4.10]`
 cysH.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysH; phosphoadenosine phosphosulfate reductase [EC:1.8.4.8 1.8.4.10]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -910,6 +1012,36 @@ cysH.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysH; phosphoadenosine 
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
 ggsave(cysH.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/CysH_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+
+# `cysC; adenylylsulfate kinase [EC:2.7.1.25]`
+cysC.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysC; adenylylsulfate kinase [EC:2.7.1.25]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="CysC Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("SampleID") + ylab("CLR-Transformed Coverage")
+
+ggsave(cysC.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/CysC_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+
+#`cysI; sulfite reductase (NADPH) hemoprotein beta-component [EC:1.8.1.2]`
+cysI.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysI; sulfite reductase (NADPH) hemoprotein beta-component [EC:1.8.1.2]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="CysI Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("SampleID") + ylab("CLR-Transformed Coverage")
+
+ggsave(cysI.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/CysI_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+
+# `cysD; sulfate adenylyltransferase subunit 2 [EC:2.7.7.4]`
+cysD.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysD; sulfate adenylyltransferase subunit 2 [EC:2.7.7.4]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="CysD Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("SampleID") + ylab("CLR-Transformed Coverage")
+
+ggsave(cysD.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/CysD_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `sir; sulfite reductase (ferredoxin) [EC:1.8.7.1]`
 sir.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`sir; sulfite reductase (ferredoxin) [EC:1.8.7.1]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -1127,10 +1259,10 @@ ggsave(sulf.bi.hm1e,filename = "figures/MGM_Figs/FxnDiv/Sulfur/PresenceAbsence/S
 #### Pull Out Nitrogen Metabolic Fxns from CLR data ####
 ## heatmaps of traits of interest
 
-mgm.clr[1:4,1:4]
+mgm.clr.na[1:4,1:4]
 
 # pull out nitro functions from CLR transformed, summed coverages (summed coverage per KO)
-nitro.ko<-mgm.clr[,which(colnames(mgm.clr) %in% nitro.fxns$KO_ID)] # merge CLR data w/ S fxns found in contigs from KOFamScan
+nitro.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% nitro.fxns$KO_ID)] # merge CLR data w/ S fxns found in contigs from KOFamScan
 nitro.ko$SampleID<-rownames(nitro.ko)
 nitro.ko.melt<-melt(nitro.ko, by="SampleID")
 colnames(nitro.ko.melt)[which(names(nitro.ko.melt) == "variable")] <- "KO_ID"
@@ -1506,10 +1638,10 @@ ggsave(nitro.bi.hm1e,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/PresenceAbsenc
 #### Pull Out Carbon Metabolic Fxns from CLR data ####
 ## heatmaps of traits of interest
 
-mgm.clr[1:4,1:4]
+mgm.clr.na[1:4,1:4]
 
 # pull out Carbon metabolism functions from CLR transformed, summed coverages (summed coverage per KO)
-carb.ko<-mgm.clr[,which(colnames(mgm.clr) %in% carb.fxns$KO_ID)] # merge CLR data w/ carbon-related fxns found in contigs from KOFamScan
+carb.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% carb.fxns$KO_ID)] # merge CLR data w/ carbon-related fxns found in contigs from KOFamScan
 carb.ko$SampleID<-rownames(carb.ko)
 carb.ko.melt<-melt(carb.ko, by="SampleID")
 colnames(carb.ko.melt)[which(names(carb.ko.melt) == "variable")] <- "KO_ID"
@@ -1874,10 +2006,10 @@ ggsave(carb.bi.hm1e,filename = "figures/MGM_Figs/FxnDiv/Carbon/PresenceAbsence/C
 #### Pull Out Phototrophy Fxns from CLR data ####
 ## heatmaps of traits of interest
 
-mgm.clr[1:4,1:4]
+mgm.clr.na[1:4,1:4]
 
 # pull out Phototrophy functions from CLR transformed, summed coverages (summed coverage per KO)
-photo.ko<-mgm.clr[,which(colnames(mgm.clr) %in% photo.fxn$KO_ID)] # merge CLR data w/ photoon-related fxns found in contigs from KOFamScan
+photo.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% photo.fxn$KO_ID)] # merge CLR data w/ photoon-related fxns found in contigs from KOFamScan
 photo.ko$SampleID<-rownames(photo.ko)
 photo.ko.melt<-melt(photo.ko, by="SampleID")
 colnames(photo.ko.melt)[which(names(photo.ko.melt) == "variable")] <- "KO_ID"
@@ -2299,10 +2431,10 @@ ggsave(photo.bi.hm1g2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/PresenceAb
 #### Pull Out Aerobic Respiration Fxns from CLR data ####
 ## heatmaps of traits of interest
 
-mgm.clr[1:4,1:4]
+mgm.clr.na[1:4,1:4]
 
 # pull out Aerobic Respiration functions from CLR transformed, summed coverages (summed coverage per KO)
-aero.ko<-mgm.clr[,which(colnames(mgm.clr) %in% aero.fxn$KO_ID)] # merge CLR data w/ aeroon-related fxns found in contigs from KOFamScan
+aero.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% aero.fxn$KO_ID)] # merge CLR data w/ aeroon-related fxns found in contigs from KOFamScan
 aero.ko$SampleID<-rownames(aero.ko)
 aero.ko.melt<-melt(aero.ko, by="SampleID")
 colnames(aero.ko.melt)[which(names(aero.ko.melt) == "variable")] <- "KO_ID"
@@ -2705,10 +2837,10 @@ ggsave(aero.bi.hm1e2,filename = "figures/MGM_Figs/FxnDiv/Aerobic_Respiration/Pre
 #### Pull Out ALL Genes of Interest per Pathway/Cycle from CLR data ####
 ## heatmaps of traits of interest
 
-mgm.clr[1:4,1:4]
+mgm.clr.na[1:4,1:4]
 
 # pull out sulfur functions from CLR transformed, summed coverages (summed coverage per KO)
-All_GOI.ko<-mgm.clr[,which(colnames(mgm.clr) %in% All_GOI.fxns$KO_ID)] # merge CLR data w/ All_GOI-related fxns found in contigs from KOFamScan
+All_GOI.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% All_GOI.fxns$KO_ID)] # merge CLR data w/ All_GOI-related fxns found in contigs from KOFamScan
 All_GOI.ko$SampleID<-rownames(All_GOI.ko)
 All_GOI.ko.melt<-melt(All_GOI.ko, by="SampleID")
 colnames(All_GOI.ko.melt)[which(names(All_GOI.ko.melt) == "variable")] <- "KO_ID"
@@ -2843,7 +2975,7 @@ All_GOI.hm1c1<-ggplot(clr.All_GOI.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_S
 ggsave(All_GOI.hm1c1,filename = "figures/MGM_Figs/FxnDiv/All_GOI/All_GOI_KOFxns_MGMs_Depth_by_Function_Pathway_SampDate_heatmap.png", width=17, height=15, dpi=600)
 
 #### Pull Out Arsenic Metabolic Fxns from CLR data ####
-ars.ko<-mgm.clr[,which(colnames(mgm.clr) %in% arsen.fxns$KO_ID)]
+ars.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% arsen.fxns$KO_ID)]
 ars.ko$SampleID<-rownames(ars.ko)
 ars.ko.melt<-melt(ars.ko, by="SampleID")
 colnames(ars.ko.melt)[which(names(ars.ko.melt) == "variable")] <- "KO_ID"
@@ -2896,7 +3028,7 @@ ars.hm2<-ggplot(clr.ars.all, aes(Depth_m, KO_Function, fill=CLR_SumCovPerKO)) +
 ggsave(ars.hm2,filename = "figures/MGM_Figs/FxnDiv/Arsenic/Arsenic_KOFxns_MGMs_heatmap_better.png", width=18, height=12, dpi=600)
 
 #### Pull Out Selenium Metabolism Fxns from CLR data ####
-sel.ko<-mgm.clr[,which(colnames(mgm.clr) %in% selen.fxns$KO_ID)]
+sel.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% selen.fxns$KO_ID)]
 sel.ko$SampleID<-rownames(sel.ko)
 sel.ko.melt<-melt(sel.ko, by="SampleID")
 colnames(sel.ko.melt)[which(names(sel.ko.melt) == "variable")] <- "KO_ID"
@@ -2950,7 +3082,7 @@ sel.hm2<-ggplot(clr.sel.all, aes(Depth_m, KO_Function, fill=CLR_SumCovPerKO)) +
 ggsave(sel.hm2,filename = "figures/MGM_Figs/FxnDiv/Selenium/Selenium_KOFxns_MGMs_heatmap_better.png", width=18, height=12, dpi=600)
 
 #### Pull Out Osmoprotectant/tolerance Fxns from CLR data ####
-osmo.ko<-mgm.clr[,which(colnames(mgm.clr) %in% osmo.fxns$KO_ID)]
+osmo.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% osmo.fxns$KO_ID)]
 osmo.ko$SampleID<-rownames(osmo.ko)
 osmo.ko.melt<-melt(osmo.ko, by="SampleID")
 colnames(osmo.ko.melt)[which(names(osmo.ko.melt) == "variable")] <- "KO_ID"
@@ -3004,7 +3136,7 @@ osmo.hm2<-ggplot(clr.osmo.all, aes(Depth_m, KO_Function, fill=CLR_SumCovPerKO)) 
 ggsave(osmo.hm2,filename = "figures/MGM_Figs/FxnDiv/OsmoProctection_Tolerance/OsmoProtectant_KOFxns_MGMs_heatmap_better.png", width=18, height=12, dpi=600)
 
 #### Pull Out Metal Resistance/Tolerance Fxns from CLR data ####
-met.ko<-mgm.clr[,which(colnames(mgm.clr) %in% metal.fxns$KO_ID)]
+met.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% metal.fxns$KO_ID)]
 met.ko$SampleID<-rownames(met.ko)
 met.ko.melt<-melt(met.ko, by="SampleID")
 colnames(met.ko.melt)[which(names(met.ko.melt) == "variable")] <- "KO_ID"
@@ -3062,7 +3194,7 @@ ggsave(met.hm2,filename = "figures/MGM_Figs/FxnDiv/MetalResist_Tolerance/Metal_R
 # calculate our Euclidean distance matrix using CLR data
 
 # pull out sulfur functions from CLR transformed, summed coverages (summed coverage per KO)
-sulf.ko<-mgm.clr[,which(colnames(mgm.clr) %in% sulfur.fxns$KO_ID)] # merge CLR data w/ S fxns found in contigs from KOFamScan
+sulf.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% sulfur.fxns$KO_ID)] # merge CLR data w/ S fxns found in contigs from KOFamScan
 sulf.ko$SampleID<-rownames(sulf.ko)
 sulf.ko.melt<-melt(sulf.ko, by="SampleID")
 colnames(sulf.ko.melt)[which(names(sulf.ko.melt) == "variable")] <- "KO_ID"
@@ -3167,10 +3299,10 @@ fligner.test(`soxC; sulfane dehydrogenase subunit SoxC` ~ SampDate, data = clr.s
 # calculate our Euclidean distance matrix using CLR data
 
 
-mgm.clr[1:4,1:4]
+mgm.clr.na[1:4,1:4]
 
 # pull out sulfur functions from CLR transformed, summed coverages (summed coverage per KO)
-DOM.ko<-mgm.clr[,which(colnames(mgm.clr) %in% DOM.fxns$KO_ID)] # merge CLR data w/ DOM-related fxns found in contigs from KOFamScan
+DOM.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% DOM.fxns$KO_ID)] # merge CLR data w/ DOM-related fxns found in contigs from KOFamScan
 DOM.ko$SampleID<-rownames(DOM.ko)
 DOM.ko.melt<-melt(DOM.ko, by="SampleID")
 colnames(DOM.ko.melt)[which(names(DOM.ko.melt) == "variable")] <- "KO_ID"
@@ -3244,10 +3376,10 @@ ggsave(pcoa.s2,filename = "figures/MGM_Figs/FxnDiv/DOM/SSW_DOMOnly_pcoa_CLR_Summ
 # calculate our Euclidean distance matrix using CLR data
 
 
-mgm.clr[1:4,1:4]
+mgm.clr.na[1:4,1:4]
 
 # pull out sulfur functions from CLR transformed, summed coverages (summed coverage per KO)
-carb.ko<-mgm.clr[,which(colnames(mgm.clr) %in% carb.fxns$KO_ID)] # merge CLR data w/ DOM-related fxns found in contigs from KOFamScan
+carb.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% carb.fxns$KO_ID)] # merge CLR data w/ DOM-related fxns found in contigs from KOFamScan
 carb.ko$SampleID<-rownames(carb.ko)
 carb.ko.melt<-melt(carb.ko, by="SampleID")
 colnames(carb.ko.melt)[which(names(carb.ko.melt) == "variable")] <- "KO_ID"
@@ -3318,7 +3450,7 @@ ggsave(pcoa.s2,filename = "figures/MGM_Figs/FxnDiv/Carbon/SSW_CarbonFixationOnly
 #### Arsenic Metabolism PCoA ####
 ## PCOA with CLR transformed data first
 # calculate our Euclidean distance matrix using CLR data
-ars.ko<-mgm.clr[,which(colnames(mgm.clr) %in% arsen.kegg$KO_ID)]
+ars.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% arsen.kegg$KO_ID)]
 ars.ko[1:4,1:4]
 
 ars.euc.clr_dist <- dist(ars.ko, method = "euclidean")
@@ -3379,7 +3511,7 @@ ggsave(pcoa.a2,filename = "figures/MGM_Figs/FxnDiv/Arsenic/SSW_ArsenicOnly_pcoa_
 #### Metal Resistance/Tolerance PCoA ####
 ## PCOA with CLR transformed data first
 # calculate our Euclidean distance matrix using CLR data
-met.ko<-mgm.clr[,which(colnames(mgm.clr) %in% metal.fxns$KO_ID)]
+met.ko<-mgm.clr.na[,which(colnames(mgm.clr.na) %in% metal.fxns$KO_ID)]
 met.ko[1:4,1:4]
 
 met.euc.clr_dist <- dist(met.ko, method = "euclidean")
