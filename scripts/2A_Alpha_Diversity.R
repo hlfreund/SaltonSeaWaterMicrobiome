@@ -151,6 +151,7 @@ b.vst<-assay(b_vst1)
 
 #### Compare Transformed ASVs vs Raw Counts ####
 total_asvs<-data.frame(ASV_Total=rowSums(bac.ASV_table[,-1]),metadata)
+total_asvs$SampleID = factor(total_asvs$SampleID, levels=unique(total_asvs$SampleID[order(total_asvs$ASV_Total)]), ordered=TRUE)
 
 ggplot(data=total_asvs, aes(x=SampleID, y=ASV_Total,fill=Sample_Type)) +
   geom_bar(stat="identity",colour="black")+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
@@ -163,6 +164,7 @@ ggplot(data=total_rar_asvs, aes(x=SampleID, y=ASV_Total,fill=Sample_Type)) +
 
 # Calculate VST ASVs per Sample
 total_vst_asvs<-data.frame(ASV_Total=colSums(b.vst),metadata)
+total_vst_asvs$SampleID = factor(total_vst_asvs$SampleID, levels=unique(total_vst_asvs$SampleID[order(total_vst_asvs$ASV_Total)]), ordered=TRUE)
 
 ggplot(data=total_vst_asvs, aes(x=SampleID, y=ASV_Total,fill=Sample_Type)) +
   geom_bar(stat="identity",colour="black")+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
