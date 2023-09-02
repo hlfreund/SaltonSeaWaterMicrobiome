@@ -73,7 +73,7 @@ dev.off()
 
 # Good's coverage is defined as 1 - (F1/N) where F1 is the number of singleton OTUs and N is the sum of counts for all OTUs.
 # If a sample has a Good's coverage == . 98, this means that 2% of reads in that sample are from OTUs that appear only once in that sample.
-
+# NOTE: Good's Coverage is not the best estimate of coverage because DADA2 removes singletons during process - so we are basing this on singeltons that remain (??)
 bac.ASV.melt<-melt(bac.ASV_table,by="SampleID")
 colnames(bac.ASV.melt)[which(colnames(bac.ASV.melt) == "variable")] <- "ASV_ID"
 colnames(bac.ASV.melt)[which(colnames(bac.ASV.melt) == "value")] <- "Count"
@@ -92,9 +92,8 @@ good.df<-merge(good.cov,totseq,by="SampleID")
 
 ggplot(good.df, aes(x=TotalSeqs,y=GoodsCov))+geom_point()+xlab("Total Seqs per Sample")+ylab("Good's Coverage (%)")
 
-#### Different Transformations for Alpha Div Comparisons ####
 
-# Rarefaction of Raw Counts first
+#### Rarefaction of Raw Counts ####
 # in vegan ROWS need to be SITES/samples; COLUMNS are SPECIES (OTUs, ASVs)
 min.rar<-min(rowSums(bac.ASV_table[,-1])) ## seeing min sum of OTUs so we can see what min is for rarefaction
 min.rar
@@ -102,7 +101,7 @@ min.rar
 bac.ASV.rar<-rrarefy(bac.ASV_table[,-1],min.rar) ## be cognizant of min for rarefaction
 bac.ASV.rar[1:4,1:4]
 
-# VST transform ASV counts
+#### Variance Stabilizing Transformation VST of Raw (?) counts ####
 #Prepare Contig Feature Count Data for Normalization w/ DESeq2
 # make sure count data & mgm_meta are in the same order
 bac.ASV_table[1:5,1:5]
@@ -150,7 +149,7 @@ assay(b_vst1) #see output of VST
 
 b.vst<-assay(b_vst1)
 
-# Calculate ASVs per Sample
+#### Compare Transformed ASVs vs Raw Counts ####
 total_asvs<-data.frame(ASV_Total=rowSums(bac.ASV_table[,-1]),metadata)
 
 ggplot(data=total_asvs, aes(x=SampleID, y=ASV_Total,fill=Sample_Type)) +
