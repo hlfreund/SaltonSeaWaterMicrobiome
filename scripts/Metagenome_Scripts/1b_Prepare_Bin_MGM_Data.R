@@ -462,6 +462,21 @@ bin.clr[1:4,1:4]
 # check rownames of CLR transformed ASV data & metadata
 rownames(bin.clr) %in% rownames(bin_meta)
 
+#### Robust Centered Log Ratio Transformation - Gene in Contigs ####
+bin.ko.cov.sum_table[1:4,1:4]
+# ^ table contains gene coverage, Sample IDs as rows & genes as columns
+
+# df must have rownames are SampleIDs, columns are ASV IDs for vegan functions below\
+bin.Rclr<-decostand(bin.ko.cov.sum_table[,-c(1:2)],method = "rclr") #CLR transformation
+bin.Rclr[1:4,1:4]
+# NOTE: Robust CLR just excludes 0s and performs CLR transformation without pseudocount
+# robust clr ("rclr") is similar to regular clr (see above) but allows data that contains zeroes.
+# This method does not use pseudocounts, unlike the standard clr. Robust clr divides the values by geometric mean of the observed features; zero values are kept as zeroes, and not taken into account.
+#In high dimensional data, the geometric mean of rclr is a good approximation of the true geometric mean
+
+# check rownames of CLR transformed ASV data & metadata
+rownames(bin.Rclr) %in% rownames(bin_meta)
+
 #### Copies Per Million Transformation - Gene Counts in MAGs ####
 bin.ko.cov.sum_table[1:4,1:4] # sanity check
 bin_fxn.sum.cov_t.table<-as.data.frame(t(as.data.frame(bin.ko.cov.sum_table[,-c(1:2)])))
@@ -480,6 +495,41 @@ bin_fxn.binary<-counts_to_binary(bin.ko.cov.sum_table[,-c(1:2)]) # custom functi
 # sanity check that function worked below
 bin_fxn.binary[1:5,1:5]
 bin.ko.cov.sum_table[,-c(1:2)][1:5,1:5]
+
+#### Create CLR-transformed Coveraged Table w/ NAs for Absent Functions ####
+
+# are NA table and bin.clr in the same order?
+rownames(bin_fxn.binary)
+rownames(bin.clr)
+
+colnames(bin_fxn.binary)
+colnames(bin.clr)
+colnames(bin_fxn.binary)[which(colnames(bin_fxn.binary) %in% colnames(bin.clr) == FALSE)] # bin_fxn.binary does not have SampleID column
+colnames(bin.clr)[which(colnames(bin.clr) %in% colnames(bin_fxn.binary) == FALSE)] # bin.clr does not have SampleID column
+
+identical(bin.clr,bin_fxn.binary) # SampleID columns are in different places in these two data frames...
+
+# then create logical table saying which functions are NA in this ko.cov.na table AND have a negative coverage value in bin.clr
+# TRUE means they are absent, FALSE means they are present
+NA.fxns <- (bin_fxn.binary==0)
+
+# create data frame that will be CLR transformed sum coverages + NA values
+bin.clr.na<-bin.clr
+bin.clr.na[NA.fxns] <- NA
+#bin.clr.na[NA.fxns == TRUE]<- NA
+
+# did this work?
+bin.clr[1:4,1:4]
+bin.clr.na[1:4,1:4]
+bin_fxn.binary[1:4,1:4]
+
+# create sample ID column
+bin.clr.na$Bin_ID<-rownames(bin.clr.na)
+# * use bin.clr.na for heatmaps of functions and coverage!
+# to get rid of sampleID column later for bin.clr.na, use the following code
+## bin.clr.na[,!names(bin.clr.na) %in% c("SampleID")]
+
+
 
 ### Pull out traits of interest ####
 # create unique list of KO ID and functions
