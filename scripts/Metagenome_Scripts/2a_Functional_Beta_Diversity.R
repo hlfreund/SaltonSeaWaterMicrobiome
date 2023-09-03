@@ -836,7 +836,7 @@ soxa.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxA; L-cysteine S-thio
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(soxa.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/SoxA_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(soxa.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/SoxA_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `soxB; S-sulfosulfanyl-L-cysteine sulfohydrolase [EC:3.1.6.20]`
 soxb.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxB; S-sulfosulfanyl-L-cysteine sulfohydrolase [EC:3.1.6.20]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -846,7 +846,7 @@ soxb.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxB; S-sulfosulfanyl-L
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(soxb.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/SoxB_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(soxb.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/SoxB_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `soxX; L-cystein S-thiosulfotransferase`
 soxx.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxX; L-cysteine S-thiosulfotransferase [EC:2.8.5.2]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -856,7 +856,7 @@ soxx.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxX; L-cysteine S-thio
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(soxx.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/SoxX_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(soxx.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/SoxX_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `soxY; sulfur-oxidizing protein SoxY`
 soxy.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxY; sulfur-oxidizing protein SoxY`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -866,7 +866,7 @@ soxy.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxY; sulfur-oxidizing 
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(soxy.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/SoxY_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(soxy.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/SoxY_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 #`soxZ; sulfur-oxidizing protein SoxZ`
 soxz.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxZ; sulfur-oxidizing protein SoxZ`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -876,7 +876,7 @@ soxz.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxZ; sulfur-oxidizing 
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(soxz.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/SoxZ_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(soxz.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/SoxZ_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 #`soxD; S-disulfanyl-L-cysteine oxidoreductase SoxD [EC:1.8.2.6]`
 soxd.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxD; S-disulfanyl-L-cysteine oxidoreductase SoxD [EC:1.8.2.6]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -886,7 +886,7 @@ soxd.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxD; S-disulfanyl-L-cy
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(soxd.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/SoxD_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(soxd.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/SoxD_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 #`soxC; sulfane dehydrogenase subunit SoxC`
 soxc.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxC; sulfane dehydrogenase subunit SoxC`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -896,7 +896,7 @@ soxc.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soxC; sulfane dehydroge
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(soxc.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/SoxC_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(soxc.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/SoxC_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 #### SO3 Oxidation genes
 # `soeA; sulfite dehydrogenase (quinone) subunit SoeA [EC:1.8.5.6]`
@@ -907,7 +907,7 @@ soeA.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`soeA; sulfite dehydroge
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(soeA.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/soeA_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(soeA.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/soeA_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 #### H2S --> S oxidation genes
 # `sqr; sulfide:quinone oxidoreductase [EC:1.8.5.4]`
@@ -918,7 +918,7 @@ sqr.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`sqr; sulfide:quinone oxi
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(sqr.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/sqr_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(sqr.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/sqr_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `fccB; sulfide dehydrogenase [flavocytochrome c] flavoprotein chain [EC:1.8.2.3]`
 fccB.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`fccB; sulfide dehydrogenase [flavocytochrome c] flavoprotein chain [EC:1.8.2.3]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -928,7 +928,7 @@ fccB.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`fccB; sulfide dehydroge
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(fccB.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/fccB_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(fccB.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/fccB_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 #### Dissimilatory SO4 RedOx genes
 # `aprA; adenylylsulfate reductase, subunit A [EC:1.8.99.2]`
@@ -939,7 +939,7 @@ aprA.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`aprA; adenylylsulfate r
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(aprA.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/aprA_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(aprA.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/aprA_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `dsrB; dissimilatory sulfite reductase beta subunit [EC:1.8.99.5]`
 dsrB.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`dsrB; dissimilatory sulfite reductase beta subunit [EC:1.8.99.5]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -949,7 +949,7 @@ dsrB.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`dsrB; dissimilatory sul
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(dsrB.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/dsrB_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(dsrB.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/dsrB_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `dsrA; dissimilatory sulfite reductase alpha subunit [EC:1.8.99.5]`
 dsrA.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`dsrA; dissimilatory sulfite reductase alpha subunit [EC:1.8.99.5]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -959,7 +959,7 @@ dsrA.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`dsrA; dissimilatory sul
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(dsrA.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/dsrA_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(dsrA.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/dsrA_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `aprB; adenylylsulfate reductase, subunit B [EC:1.8.99.2]`
 aprB.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`aprB; adenylylsulfate reductase, subunit B [EC:1.8.99.2]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -969,7 +969,7 @@ aprB.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`aprB; adenylylsulfate r
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(aprB.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/aprB_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(aprB.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/aprB_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 #### Assimilatory SO4 Reduction
 
@@ -981,7 +981,7 @@ sir.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`sir; sulfite reductase (
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(sir.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/sir_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(sir.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/sir_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `cysNC; bifunctional enzyme CysN/CysC [EC:2.7.7.4 2.7.1.25]`
 cysNC.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysNC; bifunctional enzyme CysN/CysC [EC:2.7.7.4 2.7.1.25]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -991,7 +991,7 @@ cysNC.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysNC; bifunctional en
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(cysNC.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/CysNC_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(cysNC.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/CysNC_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `cysN; sulfate adenylyltransferase subunit 1 [EC:2.7.7.4]`
 CysN.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysN; sulfate adenylyltransferase subunit 1 [EC:2.7.7.4]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -1001,7 +1001,7 @@ CysN.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysN; sulfate adenylylt
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(CysN.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/CysN_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(CysN.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/CysN_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `cysH; phosphoadenosine phosphosulfate reductase [EC:1.8.4.8 1.8.4.10]`
 cysH.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysH; phosphoadenosine phosphosulfate reductase [EC:1.8.4.8 1.8.4.10]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -1011,7 +1011,7 @@ cysH.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysH; phosphoadenosine 
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(cysH.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/CysH_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(cysH.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/CysH_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `cysC; adenylylsulfate kinase [EC:2.7.1.25]`
 cysC.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysC; adenylylsulfate kinase [EC:2.7.1.25]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -1021,7 +1021,7 @@ cysC.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysC; adenylylsulfate k
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(cysC.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/CysC_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(cysC.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/CysC_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 #`cysI; sulfite reductase (NADPH) hemoprotein beta-component [EC:1.8.1.2]`
 cysI.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysI; sulfite reductase (NADPH) hemoprotein beta-component [EC:1.8.1.2]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -1031,7 +1031,7 @@ cysI.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysI; sulfite reductase
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(cysI.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/CysI_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(cysI.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/CysI_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `cysD; sulfate adenylyltransferase subunit 2 [EC:2.7.7.4]`
 cysD.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysD; sulfate adenylyltransferase subunit 2 [EC:2.7.7.4]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -1041,7 +1041,7 @@ cysD.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysD; sulfate adenylylt
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(cysD.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/CysD_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(cysD.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/CysD_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `sir; sulfite reductase (ferredoxin) [EC:1.8.7.1]`
 sir.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`sir; sulfite reductase (ferredoxin) [EC:1.8.7.1]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -1051,7 +1051,7 @@ sir.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`sir; sulfite reductase (
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(sir.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/sir_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(sir.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/sir_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 #### S Disproportionation
 
@@ -1063,7 +1063,7 @@ phsA.psrA.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`phsA,psrA; thiosul
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(phsA.psrA.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/phsA.psrA_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(phsA.psrA.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/phsA.psrA_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 #### Genes in Multiple S Pathways
 
@@ -1075,7 +1075,7 @@ sat.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`sat, met3; sulfate adeny
   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("SampleID") + ylab("CLR-Transformed Coverage")
 
-ggsave(sat.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/sat_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(sat.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/sat_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 #### Pull out Sulfur Metabolic Fxns from Binary Data ####
 
