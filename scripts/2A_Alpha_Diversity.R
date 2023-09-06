@@ -35,6 +35,8 @@ suppressPackageStartupMessages({ # load packages quietly
   library(microbiome)
   library(pairwiseAdonis)
   library(corrplot)
+  library(lmtest)
+  #library(car) # car is imported w/ rstatix so you do not need to load library individually?
 })
 
 #### Load Global Env to Import Count/ASV Tables ####
@@ -98,8 +100,32 @@ ggplot(good.df, aes(x=TotalSeqs,y=GoodsCov))+geom_point()+xlab("Total Seqs per S
 min.rar<-min(rowSums(bac.ASV_table[,-1])) ## seeing min sum of OTUs so we can see what min is for rarefaction
 min.rar
 
-bac.ASV.rar<-rrarefy(bac.ASV_table[,-1],min.rar) ## be cognizant of min for rarefaction
-bac.ASV.rar[1:4,1:4]
+bac.ASV.rar1<-rarefy(bac.ASV_table[,-1],min.rar) ## be cognizant of min for rarefaction
+bac.ASV.rar1 # rarefy gives the expected species richness in random subsamples of size sample from the community
+
+bac.ASV.rar<-rrarefy(bac.ASV_table[,-1],min.rar)
+# rrarefy generates one randomly rarefied community data frame or vector of given sample size
+# The random rarefaction is made without replacement so that the variance of rarefied communities is rather related to rarefaction proportion than to the size of the sample
+
+# Calculating Average Shannon Diversity w/ repeated rarefaction with rrarefy()
+sdiv.rarefy<-function(df,min){
+  # rownames must be samples, ASVs must by columns
+  # min = min(rowSums(ASV table)) aka minimum sum of ASVs in each sample
+  rare<-rrarefy(df,min)
+  s.ent<-vegan::diversity(rare, index="shannon")
+  sdiv<- exp(s.ent) # Shannon Diversity aka Hill number 1
+  return(sdiv)
+}
+
+ave.sdiv <- data.frame(AveShanDiv=rowMeans(data.frame(lapply(as.list(1:100), function(x) sdiv.rarefy(bac.ASV_table[,-1], min.rar)))))
+# ^ contains average Shannon Diversity calculations after rarefaction and Shan div calculations 100 times
+# sdiv.rarefy function --> Rrarefy ASV table with given min, calculate Shannon diversity
+# lapply(as.list(1:100), function(x) sdiv.rarefy(bac.ASV_table[,-1], min.rar))) --> create list by repeating function 100 times
+# data.frame(lapply(...)) --> saves lapply() output as data frame, not list
+# rowMeans(df(lapply(...))) --> get rowMeans aka sample means of Shannon diversity after 100 calculations of Shan div.
+
+bac.ASV.probs<-drarefy(bac.ASV_table[,-1],min.rar)
+# drarefy returns probabilities that species occur in a rarefied community of size sample
 
 #### Variance Stabilizing Transformation VST of Raw (?) counts ####
 #Prepare Contig Feature Count Data for Normalization w/ DESeq2
@@ -241,7 +267,7 @@ save.image("data/SSeawater_AlphaDiv_Data_Rarefied.Rdata")
 
 #### Using Shapiro-Wilk test for Normality - Rarefied Data ####
 shapiro.test(bac.div.metadat.rar$Bac_Shannon_Diversity) # what is the p-value?
-# p-value = 0.8612
+# p-value = 0.7112
 # p > 0.05 states distribution of data are not significantly different from normal distribution
 # p < 0.05 means that data is significantly different from a normal distribution
 hist(bac.div.metadat.rar$Bac_Shannon_Diversity, col="blue") # with outliars
@@ -255,7 +281,7 @@ qqnorm(bac.div.metadat.rar$Bac_Shannon_Diversity, pch = 1, frame = FALSE)
 qqline(bac.div.metadat.rar$Bac_Shannon_Diversity, col = "red", lwd = 2)
 
 shapiro.test(bac.div.metadat.rar$Bac_Species_Richness) # what is the p-value?
-# p-value = 0.009533
+# p-value = 0.009454
 # p > 0.05 states distribution of data are not significantly different from normal distribution
 # p < 0.05 means that data is significantly different from a normal distribution
 hist(bac.div.metadat.rar$Bac_Species_Richness, col="blue")
@@ -311,11 +337,24 @@ bac.a.div.rar<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Shannon_Diversi
   labs(title = "Bacterial Shannon Diversity by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   geom_pwc(method = "t_test", label = "p.adj.format",p.adjust.method = "bonferroni")
 
-ggsave(bac.a.div.rar,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_16S_rarefied_alpha_diversity_sampledate_depth_boxplot.png", width=13, height=10, dpi=600)
+ggsave(bac.a.div.rar,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_16S_rarefied_alpha_diversity_sampledate_depth_pvals_boxplot.png", width=13, height=10, dpi=600)
+
+bac.a.div.rarB<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
+  scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
+  geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
+  labs(title = "Bacterial Shannon Diversity by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
+
+ggsave(bac.a.div.rarB,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_16S_rarefied_alpha_diversity_sampledate_depth_boxplot.png", width=13, height=10, dpi=600)
 
 bac.div.metadat.rar$Depth_m=as.numeric(levels(bac.div.metadat.rar$Depth_m))[bac.div.metadat.rar$Depth_m]
 # ^ note: cannot turn numbers that are factors in R into numeric values...
 ## have to convert factor levels into numeric, then use the numeric "levels" to pull out numbers from Depth_m column in df to make sure the Depth_m columns is now numeric, not a factor
+
+ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
+  scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
+  geom_violin(fill=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
+  labs(title = "Bacterial Shannon Diversity by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  geom_pwc(method = "t_test", label = "p.adj.format",p.adjust.method = "bonferroni")
 
 # bac.a.div.rar2<-ggplot(bac.div.metadat.rar, aes(x=as.factor(Depth_m), y=Bac_Shannon_Diversity)) +geom_boxplot(aes(fill=Depth_m),color="black")+
 #   labs(title = "Bacterial Shannon Diversity by Sampling Depth", x="Depth (m)", y="Shannon Diversity", fill="Depth (m)")+
@@ -337,9 +376,22 @@ bac.a.sr.rar<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Species_Richness
   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
   labs(title = "Bacterial Species Richness by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Species Richness", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  stat_compare_means(method="anova")
+  geom_pwc(method = "wilcox_test", label = "p.adj.format",p.adjust.method = "bonferroni")
 
-ggsave(bac.a.sr.rar,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_Bacterial_rarefied_species_richness_samplemonth_depth_boxplot.png", width=13, height=10, dpi=600)
+ggsave(bac.a.sr.rar,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_Bacterial_rarefied_species_richness_samplemonth_depth_pvals_boxplot.png", width=13, height=10, dpi=600)
+
+bac.a.sr.rarB<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Species_Richness)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
+  scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
+  geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
+  labs(title = "Bacterial Species Richness by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Species Richness", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
+
+ggsave(bac.a.sr.rarB,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_Bacterial_rarefied_species_richness_samplemonth_depth_boxplot.png", width=13, height=10, dpi=600)
+
+ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Species_Richness)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
+  scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
+  geom_violin(fill=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
+  labs(title = "Bacterial Species Richness by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  geom_pwc(method = "t_test", label = "p.adj.format",p.adjust.method = "bonferroni")
 
 # bac.a.sr.rar2<-ggplot(bac.div.metadat.rar, aes(x=as.factor(Depth_m), y=Bac_Species_Richness,fill=bac.div.metadat.rar$Depth_m)) +geom_boxplot(aes(fill=as.numeric(bac.div.metadat.rar$Depth_m)),color="black")+
 #   labs(title = "Bacterial Species Richness by Sampling Depth", x="Depth (m)", y="Species Richness", fill="Depth (m)")+
@@ -356,9 +408,85 @@ ggsave(bac.a.sr.rar,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_Bacter
 #
 # ggsave(bac.a.sr.rar3,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_Bacterial_rarefied_species_richness_depth_boxplot_v2.png", width=13, height=10, dpi=600)
 
+#### Compare Variance w/ Shannon Diversity ####
+# shannon diversity is normally distributed; used rarefied counts to calculate ShanDiv
+# use the following statisitcal tests for variance comparisons
+## ANOVA: are variances significantly different between groups
+## Tukey test: which groups' variances are significant different from one another
+## Levene's test: is variance homogenous aka equal across samples?
 
+fit1<-aov(Bac_Shannon_Diversity ~ SampDate, data=bac.div.metadat.rar)
+# ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/
+#pairwise.adonis(bac.div.metadat.rar$Bac_Shannon_Diversity, bac.div.metadat.rar$SampDate, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
 
-#### Linear Regression/ANOVA Comparisons - Shannon Diversity ####
+summary(fit1)
+#Df           Sum Sq Mean Sq    F value   Pr(>F)
+#SampDate     2   3648  1824.0   6.677 0.0057 **
+# Residuals   21   5737   273.2
+
+p.adjust(summary(fit1)[[1]][["Pr(>F)"]][1],method="bonferroni")
+
+# Tukey test - tells us which groups are significantly different from each other (more here: https://www.r-bloggers.com/2013/06/anova-and-tukeys-test-on-r/)
+Tuk1<-TukeyHSD(fit1)
+Tuk1$SampDate
+#                             diff        lwr      upr      p adj
+# December.2021-August.2021 25.076433   4.245680 45.90719 0.016639615 *
+# April.2022-August.2021    27.111615   6.280862 47.94237 0.009571804 **
+# April.2022-December.2021   2.035182 -18.795571 22.86593 0.967173383
+
+# fit.0<-aov(DustComplexity ~ as.factor(Elevation), data=bac.div.metadat.rar)
+# summary(fit.0)
+# TukeyHSD(fit.0)
+
+# Levene's test - test for homogeneity of variance
+## Levene’s test is an inferential statistic used to check if the variances of a variable obtained for two or more groups are equal or not when data comes from a non-normal distribution
+## Null hypothesis: all populations variances are equal; Alt Hypothesis: at least 1 sample has different variance (aka variances are NOT equal across samples)
+## t test assumes that variances are the same, so Levene's test needs to be non significant
+car::leveneTest(Bac_Shannon_Diversity ~ SampDate, data = bac.div.metadat.rar, center=mean)
+# Levene's Test for Homogeneity of Variance (center = mean)
+#       Df F value Pr(>F)
+# group  2  1.3552 0.2795
+#       21
+# ^ p value is > 0.05 so we cannot reject the Null hypothesis -- variances are equal
+
+## The Fligner-Killeen test is a non-parametric test for homogeneity of group variances based on ranks. It is useful when the data are non-normally distributed or when problems related to outliers in the dataset cannot be resolved.
+### Fligner's test is a Levene's test for data that are not normally distributed
+### It is also one of the many tests for homogeneity of variances which is most robust against departures from normality.
+## Null hypothesis: all populations variances are equal; Alt Hypothesis: at least 1 sample has different variance (aka variances are NOT equal across samples)
+# fligner.test(Bac_Shannon_Diversity ~ SampDate, data = bac.div.metadat.rar)
+# Fligner-Killeen:med chi-squared = 1.9504, df = 2, p-value = 0.3771
+# Which shows that the data do not deviate significantly from homogeneity.
+
+compare_means(Bac_Shannon_Diversity ~ SampDate, data=bac.div.metadat.rar, method="anova",p.adjust.method = "bonferroni") # won't take as.factor(Elevation) as input
+
+#### Compare Variance w/ Species Richness ####
+# species richness is NOT normally distributed; used rarefied counts to calculate SR
+# use the following statisitcal tests for variance comparisons
+## Kruskal: are variances significantly different between groups
+## Dunn test: which groups' variances are significant different from one another
+## Fligner test: is variance homogenous aka equal across samples?
+
+# Kruskal-Wallis test is an ANOVA for non-normal data
+fit2<-kruskal.test(Bac_Species_Richness ~ SampDate, data=bac.div.metadat.rar)
+
+fit2
+
+# Instead of using Tukey test, we can use Dunn's test to see which groups significantly vary if Kruskal-Wallis test is significant
+# ANOVA + Tukey for normally distributed data, Kruskal-Wallis + Dunn's test for non-normal data
+rstatix::dunn_test(bac.div.metadat.rar, Bac_Species_Richness ~ SampDate, p.adjust.method = "bonferroni", detailed = TRUE)
+
+## The Fligner-Killeen test is a non-parametric test for homogeneity of group variances based on ranks. It is useful when the data are non-normally distributed or when problems related to outliers in the dataset cannot be resolved.
+### Fligner's test is a Levene's test for data that are not normally distributed
+### It is also one of the many tests for homogeneity of variances which is most robust against departures from normality.
+## Null hypothesis: all populations variances are equal; Alt Hypothesis: at least 1 sample has different variance (aka variances are NOT equal across samples)
+## more here: https://www.geeksforgeeks.org/fligner-killeen-test-in-r-programming/
+fligner.test(Bac_Species_Richness ~ SampDate, data = bac.div.metadat.rar)
+# Fligner-Killeen:med chi-squared = 6.1181, df = 2, p-value = 0.04693
+# Which shows that the data DO deviate significantly from homogeneity.
+
+compare_means(Bac_Species_Richness ~ SampDate, data=bac.div.metadat.rar, method="anova",p.adjust.method = "bonferroni")
+
+#### Linear Regression - Shannon Diversity ####
 ## here the focus is comparing env variables of interest to see if they can predict diversity and richness
 head(bac.div.metadat.rar)
 
@@ -372,11 +500,13 @@ summary(step1)
 # Temp_DegC       -21.212      4.471  -4.744 0.000124 ***
 #   Sulfate_milliM  -10.994      3.886  -2.829 0.010374 *
 
+# Run GLM w/ all env variables of interest
 div.glm.all<-glm(formula = Bac_Shannon_Diversity ~ ., data=bac.div.metadat.rar[,c(3,11,13:14,18:20)])
 summary(div.glm.all)
 
 div.glm.p<-coef(summary(div.glm.all))[,4] # p-values
 Div.GLM.Pval<-data.frame(Div.GLM.AdjPval=p.adjust(div.glm.p, method="bonferroni",n=length(div.glm.p)),Div.GLM.Pval=div.glm.p)
+Div.GLM.Pval
 #                               Div.GLM.AdjPval Div.GLM.Pval
 # (Intercept)                    8.353610e-15 1.193373e-15
 # DO_Percent_Local               1.000000e+00 6.614790e-01
@@ -428,65 +558,64 @@ plot(Bac_Shannon_Diversity ~ Sulfide_microM, data=bac.div.metadat.rar,col=SampDa
 # Shan Div ~ Depth
 plot(Bac_Shannon_Diversity ~ Depth.num, data=bac.div.metadat.rar,col=SampDate_Color)
 
-fit1<-aov(Bac_Shannon_Diversity ~ SampDate, data=bac.div.metadat.rar)
-# ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/
-#pairwise.adonis(bac.div.metadat.rar$Bac_Shannon_Diversity, bac.div.metadat.rar$SampDate, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
+#### Linear Regression - Species Richness ####
+# do env variables predict species richness?
+# NOTES: species richness (using rarefied counts) is NOT normally distributed [but shannon div is...]
+# need to decide if we should use the following models (designed for non-normal discrete count data): Poisson, quasi-Poisson, or Negative Binomial
+# below we run these three models, calculate their residuals, and compare the dispersion aka variance of their residuals after each model
+# we can also run a likelihood ratio test that will compare the goodness to fit of two models
+# reminder: A goodness-of-fit is a statistical test that tries to determine whether a set of observed values match those expected under the applicable model [aka do our observations reflect what we would expect to see?]
+## Goodness of Fit of a linear regression model attempts to get at how well a model fits a given set of data, or how well it will predict a future set of observations.
+head(bac.div.metadat.rar)
 
-summary(fit1)
-#Df           Sum Sq Mean Sq    F value   Pr(>F)
-#SampDate     2   3648  1824.0   6.677 0.0057 **
-# Residuals   21   5737   273.2
+# Generate poisson, quasiposson, and negative binomial (NB) regressions to see which env variables can predict species richness
+sr.pois.all<-glm(formula = Bac_Species_Richness ~ ., family=poisson,data=bac.div.metadat.rar[,c(4,11,13:14,18:20)])
+sr.qpois.all<-glm(formula = Bac_Species_Richness ~ ., family=quasipoisson,data=bac.div.metadat.rar[,c(4,11,13:14,18:20)])
+sr.NB.all<-glm.nb(formula = Bac_Species_Richness ~ ., data=bac.div.metadat.rar[,c(4,11,13:14,18:20)])
 
-p.adjust(summary(fit1)[[1]][["Pr(>F)"]][1],method="bonferroni")
+# Likeliehood ratio test between Poisson model and NB model
+# Null H: both models fit data equally well; alt H: one model fits data better than other model
+lrtest(sr.pois.all, sr.NB.all) # p < 2.2e-16 -> indicates that NB model has much better fit than Poisson model
+lrtest(sr.qpois.all, sr.NB.all) # no p value, not quite sure why?
+lrtest(sr.qpois.all, sr.pois.all) # no p value
 
-# Tukey test - tells us which groups are significantly different from each other (more here: https://www.r-bloggers.com/2013/06/anova-and-tukeys-test-on-r/)
-Tuk1<-TukeyHSD(fit1)
-Tuk1$SampDate
-#                             diff        lwr      upr      p adj
-# December.2021-August.2021 25.076433   4.245680 45.90719 0.016639615 *
-# April.2022-August.2021    27.111615   6.280862 47.94237 0.009571804 **
-# April.2022-December.2021   2.035182 -18.795571 22.86593 0.967173383
+# We can also plot the residuals for each model and see their dispersion/spread
+#Residual plot for Poisson regression
+p_res <- resid(sr.pois.all) # Poisson residuals
+qp_res <- resid(sr.qpois.all) #Quasipoisson Residuals
+nb_res <- resid(sr.NB.all) # Negative Binomial Residuals
 
-# fit.0<-aov(DustComplexity ~ as.factor(Elevation), data=bac.div.metadat.rar)
-# summary(fit.0)
-# TukeyHSD(fit.0)
-# Levene's test with one independent variable
-## Levene's tests whether variances of 2 samples are equal
-## we want variances to be the same -- want NON SIGNIFICANCE!
-## t test assumes that variances are the same, so Levene's test needs to be non significant
-## Fligner's test is a Levene's test for data that are not normally distributed
-## more here: https://www.geeksforgeeks.org/fligner-killeen-test-in-r-programming/
-fligner.test(Bac_Shannon_Diversity ~ SampDate, data = bac.div.metadat.rar)
-# Fligner-Killeen:med chi-squared = 1.9504, df = 2, p-value = 0.3771
-# Which shows that the data do not deviate significantly from homogeneity.
-compare_means(Bac_Shannon_Diversity ~ SampDate, data=bac.div.metadat.rar, method="anova",p.adjust.method = "bonferroni") # won't take as.factor(Elevation) as input
+par(mfrow = c(1, 3))
 
-#### Linear Regression/ANOVA Comparisons - Species Richness ####
-## here the focus is comparing dust complexity to alpha diversity, species richness, & elevation
-head(bac.div.metadat.rar) # bac.div.metadat.rar - excludes outliar with very high Shannon diversity
+#Residual plot for poisson regression
+plot(fitted(sr.pois.all), p_res, col='blue', pch=16,
+     xlab='Predicted Offers', ylab='Standardized Residuals', main='Poisson')
+abline(0,0)
 
-# just look at everything at once in step-wise fashion
-step2<-step(glm(formula = Bac_Species_Richness ~ ., data=bac.div.metadat.rar[,c(4,11,13:14,18:20)]))
-summary(step2)
-#                               Estimate Std. Error t value Pr(>|t|)
-# (Intercept)      720.46      19.00  37.928   <2e-16 ***
-# ORP_mV          -234.80      95.83  -2.450   0.0236 *
-# Sulfate_milliM   -33.65      19.91  -1.690   0.1066
-# Sulfide_microM  -222.28      96.33  -2.307   0.0319 *
+#Residual plot for quasipoisson regression
+plot(fitted(sr.qpois.all), qp_res, col='blue', pch=16,
+     xlab='Predicted Offers', ylab='Standardized Residuals', main='Quasi-Poisson')
+abline(0,0)
 
-sr.glm.all<-glm(formula = Bac_Species_Richness ~ ., data=bac.div.metadat.rar[,c(4,11,13:14,18:20)])
-summary(sr.glm.all)
+#Residual plot for negative binomial regression
+plot(fitted(sr.NB.all), nb_res, col='blue', pch=16,
+     xlab='Predicted Offers', ylab='Standardized Residuals', main='Negative Binomial')
+abline(0,0)
+# NB shows least amount of spread in residuals, suggests this is the better fitting model
 
-sr.glm.p<-coef(summary(sr.glm.all))[,4] # p-values
-SR.GLM.Pval<-data.frame(SR.GLM.AdjPval=p.adjust(sr.glm.p, method="bonferroni",n=length(sr.glm.p)),SR.GLM.Pval=sr.glm.p)
-#                               SR.GLM.AdjPval  SR.GLM.Pval
-# (Intercept)                   9.032213e-17 1.290316e-17
-# DO_Percent_Local              1.000000e+00 6.008282e-01
-# ORP_mV                        4.753271e-01 6.790388e-02
-# Temp_DegC                     1.000000e+00 3.950656e-01
-# Dissolved_OrganicMatter_RFU   1.000000e+00 3.652658e-01
-# Sulfate_milliM                5.244600e-01 7.492285e-02
-# Sulfide_microM                8.091316e-01 1.155902e-01
+summary(sr.NB.all)
+
+sr.NB.p<-coef(summary(sr.NB.all))[,4] # p-values
+SR.NB.Pval<-data.frame(SR.NB.AdjPval=p.adjust(sr.NB.p, method="bonferroni",n=length(sr.NB.p)),SR.NB.Pval=sr.NB.p)
+SR.NB.Pval
+#                            SR.NB.AdjPval SR.NB.Pval
+# (Intercept)                     0.0000000 0.00000000
+# DO_Percent_Local                1.0000000 0.54606633
+# ORP_mV                          0.2310918 0.03301311
+# Temp_DegC                       1.0000000 0.35482885
+# Dissolved_OrganicMatter_RFU     1.0000000 0.32657918
+# Sulfate_milliM                  0.3101118 0.04430168
+# Sulfide_microM                  0.4688277 0.06697538
 
 # Species Richness ~ DO%
 
@@ -515,35 +644,6 @@ plot(Bac_Species_Richness ~ Sulfide_microM, data=bac.div.metadat.rar,col=SampDat
 # Species Richness ~ Depth
 
 plot(Bac_Species_Richness ~ Depth.num, data=bac.div.metadat.rar,col=SampDate_Color)
-
-fit2<-aov(Bac_Species_Richness ~ SampDate, data=bac.div.metadat.rar)
-# ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/
-#pairwise.adonis(bac.div.metadat.rar$Bac_Species_Richness, bac.div.metadat.rar$Depth_m, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
-
-summary(fit2)
-#Df           Sum Sq Mean Sq    F value   Pr(>F)
-# SampDate     2   1783     891   0.077  0.926
-# Residuals   21 242367   11541
-p.adjust(summary(fit2)[[1]][["Pr(>F)"]][1],method="bonferroni")
-
-# Tukey test - tells us which groups are significantly different from each other (more here: https://www.r-bloggers.com/2013/06/anova-and-tukeys-test-on-r/)
-Tuk2<-TukeyHSD(fit2)
-Tuk2$SampDate
-#                               diff       lwr       upr       p adj
-# December.2021-August.2021 -18.875 -154.268 116.518 0.9344133
-# April.2022-August.2021    -17.625 -153.018 117.768 0.9425413
-# April.2022-December.2021    1.250 -134.143 136.643 0.9997015
-
-# Levene's test with one independent variable
-## Levene's tests whether variances of 2 samples are equal
-## we want variances to be the same -- want NON SIGNIFICANCE!
-## t test assumes that variances are the same, so Levene's test needs to be non significant
-## Fligner's test is a Levene's test for data that are not normally distributed
-## more here: https://www.geeksforgeeks.org/fligner-killeen-test-in-r-programming/
-fligner.test(Bac_Species_Richness ~ SampDate, data = bac.div.metadat.rar)
-# Fligner-Killeen:med chi-squared = 6.1181, df = 2, p-value = 0.04693
-# Which shows that the data DO deviate significantly from homogeneity.
-compare_means(Bac_Species_Richness ~ SampDate, data=bac.div.metadat.rar, method="anova",p.adjust.method = "bonferroni")
 
 #### Prep Data for Linear Regressions within Timepoints ####
 ## here the focus is comparing dust complexity to alpha diversity, species richness, & elevation
