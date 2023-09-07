@@ -1345,6 +1345,11 @@ clr.nitro.all$PathShort<-factor(clr.nitro.all$PathShort,levels=c("A. NO3 Red","D
 
 head(clr.nitro.all)
 
+# For heatmap color gradient
+max(clr.nitro.all$CLR_SumCovPerKO, na.rm=TRUE)
+max(clr.nitro.all$CLR_SumCovPerKO, na.rm=TRUE)/2
+min(clr.nitro.all$CLR_SumCovPerKO, na.rm=TRUE)
+
 # Figures below
 # by SampleID
 
@@ -1744,6 +1749,11 @@ clr.carb.all$KO_Function.KEGG = factor(clr.carb.all$KO_Function.KEGG, levels=uni
 
 head(clr.carb.all)
 
+# For heatmap color gradient
+max(clr.carb.all$CLR_SumCovPerKO, na.rm=TRUE)
+max(clr.carb.all$CLR_SumCovPerKO, na.rm=TRUE)/2
+min(clr.carb.all$CLR_SumCovPerKO, na.rm=TRUE)
+
 # Figures below
 # by SampleID
 
@@ -2138,6 +2148,11 @@ clr.photo.all$Phototrophy<-factor(clr.photo.all$Phototrophy,levels=c("Hetero","A
 clr.photo.all$KO_Function.KEGG = factor(clr.photo.all$KO_Function.KEGG, levels=unique(clr.photo.all$KO_Function.KEGG[order(clr.photo.all$Phototrophy)]), ordered=TRUE)
 
 head(clr.photo.all)
+
+# For heatmap color gradient
+max(clr.photo.all$CLR_SumCovPerKO, na.rm=TRUE)
+max(clr.photo.all$CLR_SumCovPerKO, na.rm=TRUE)/2
+min(clr.photo.all$CLR_SumCovPerKO, na.rm=TRUE)
 
 # Figures below
 # by SampleID
@@ -2553,6 +2568,11 @@ clr.aero.all$EnzShort<-factor(clr.aero.all$EnzShort,levels=c("Cox","F-ATPase","N
 clr.aero.all$KO_Function.KEGG = factor(clr.aero.all$KO_Function.KEGG, levels=unique(clr.aero.all$KO_Function.KEGG[order(clr.aero.all$Enzyme)]), ordered=TRUE)
 
 head(clr.aero.all)
+
+# For heatmap color gradient
+max(clr.aero.all$CLR_SumCovPerKO, na.rm=TRUE)
+max(clr.aero.all$CLR_SumCovPerKO, na.rm=TRUE)/2
+min(clr.aero.all$CLR_SumCovPerKO, na.rm=TRUE)
 
 # Figures below
 # by SampleID
@@ -3079,6 +3099,11 @@ clr.ars.all$SampDate<-gsub("\\."," ",clr.ars.all$SampDate)
 clr.ars.all$SampDate = factor(clr.ars.all$SampDate, levels=c("August 2021","December 2021", "April 2022"))
 clr.ars.all$PlotID = factor(clr.ars.all$PlotID, levels=unique(clr.ars.all$PlotID[order(clr.ars.all$SampDate,clr.ars.all$Depth_m)]), ordered=TRUE)
 
+# For heatmap color gradient
+max(clr.ars.all$CLR_SumCovPerKO, na.rm=TRUE)
+max(clr.ars.all$CLR_SumCovPerKO, na.rm=TRUE)/2
+min(clr.ars.all$CLR_SumCovPerKO, na.rm=TRUE)
+
 ars.hm1<-ggplot(clr.ars.all, aes(PlotID, KO_Function, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8") + labs(title="Arsenic Functions in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
@@ -3133,6 +3158,11 @@ clr.sel.all$SampDate<-gsub("\\."," ",clr.sel.all$SampDate)
 clr.sel.all$SampDate = factor(clr.sel.all$SampDate, levels=c("August 2021","December 2021", "April 2022"))
 clr.sel.all$PlotID = factor(clr.sel.all$PlotID, levels=unique(clr.sel.all$PlotID[order(clr.sel.all$SampDate,clr.sel.all$Depth_m)]), ordered=TRUE)
 
+# For heatmap color gradient
+max(clr.sel.all$CLR_SumCovPerKO, na.rm=TRUE)
+max(clr.sel.all$CLR_SumCovPerKO, na.rm=TRUE)/2
+min(clr.sel.all$CLR_SumCovPerKO, na.rm=TRUE)
+
 sel.hm1<-ggplot(clr.sel.all, aes(PlotID, KO_Function, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8") + labs(title="Selenium Functions in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
@@ -3186,6 +3216,11 @@ clr.osmo.all<-merge(clr.osmo.ko,meta_scaled,by="SampleID")
 clr.osmo.all$SampDate<-gsub("\\."," ",clr.osmo.all$SampDate)
 clr.osmo.all$SampDate = factor(clr.osmo.all$SampDate, levels=c("August 2021","December 2021", "April 2022"))
 clr.osmo.all$PlotID = factor(clr.osmo.all$PlotID, levels=unique(clr.osmo.all$PlotID[order(clr.osmo.all$SampDate,clr.osmo.all$Depth_m)]), ordered=TRUE)
+
+# For heatmap color gradient
+max(clr.osmo.all$CLR_SumCovPerKO, na.rm=TRUE)
+max(clr.osmo.all$CLR_SumCovPerKO, na.rm=TRUE)/2
+min(clr.osmo.all$CLR_SumCovPerKO, na.rm=TRUE)
 
 osmo.hm1<-ggplot(clr.osmo.all, aes(PlotID, KO_Function, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
