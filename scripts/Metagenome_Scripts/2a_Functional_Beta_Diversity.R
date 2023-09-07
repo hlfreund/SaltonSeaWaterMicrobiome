@@ -553,7 +553,8 @@ sox.ko.cov<-clr.cov.sum.sulf.ko[,-1][,colnames(clr.cov.sum.sulf.ko[,-1]) %in% so
 #### Sulfur Heat Maps ####
 # see max & mean of summed
 max(clr.cov.sum.sulf.ko[,-1])
-mean(as.matrix(clr.cov.sum.sulf.ko[,-1]))
+min(clr.cov.sum.sulf.ko[,-1])
+max(clr.cov.sum.sulf.ko[,-1])/2
 
 # first heat map of sulfur KOs
 heatmap(as.matrix(clr.cov.sum.sulf.ko[,-1]), scale = "none")
@@ -596,12 +597,17 @@ clr.sulf.all$KO_Function.KEGG = factor(clr.sulf.all$KO_Function.KEGG, levels=uni
 
 head(clr.sulf.all)
 
+# For heatmap color gradient
+max(clr.sulf.all$CLR_SumCovPerKO, na.rm=TRUE)
+max(clr.sulf.all$CLR_SumCovPerKO, na.rm=TRUE)/2
+min(clr.sulf.all$CLR_SumCovPerKO, na.rm=TRUE)
+
 # Figures below
 # by SampleID
 
 sulf.hm1a<-ggplot(clr.sulf.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -611,7 +617,7 @@ ggsave(sulf.hm1a,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_S
 
 sulf.hm1a2<-ggplot(clr.sulf.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -621,7 +627,7 @@ ggsave(sulf.hm1a2,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 
 sulf.hm1a3<-ggplot(clr.sulf.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
@@ -631,7 +637,7 @@ ggsave(sulf.hm1a3,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 
 sulf.hm1a4<-ggplot(clr.sulf.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -641,7 +647,7 @@ ggsave(sulf.hm1a4,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 
 sulf.hm1a5<-ggplot(clr.sulf.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -651,7 +657,7 @@ ggsave(sulf.hm1a5,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 
 sulf.hm1a6<-ggplot(clr.sulf.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -661,7 +667,7 @@ ggsave(sulf.hm1a6,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 
 sulf.hm1a7<-ggplot(clr.sulf.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -671,7 +677,7 @@ ggsave(sulf.hm1a7,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 
 sulf.hm1a8<-ggplot(clr.sulf.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -682,7 +688,7 @@ ggsave(sulf.hm1a8,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 
 # sulf.hm1c<-ggplot(clr.sulf.all, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -692,7 +698,7 @@ ggsave(sulf.hm1a8,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 #
 # sulf.hm1c2<-ggplot(clr.sulf.all, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -703,7 +709,7 @@ ggsave(sulf.hm1a8,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 # by Depth
 sulf.hm1b<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -713,7 +719,7 @@ ggsave(sulf.hm1b,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_D
 
 sulf.hm1b2<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -723,7 +729,7 @@ ggsave(sulf.hm1b2,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 
 sulf.hm1b3<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
@@ -733,7 +739,7 @@ ggsave(sulf.hm1b3,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 
 sulf.hm1b4<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -743,7 +749,7 @@ ggsave(sulf.hm1b4,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 
 sulf.hm1b5<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -753,7 +759,7 @@ ggsave(sulf.hm1b5,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 
 sulf.hm1b6<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -763,7 +769,7 @@ ggsave(sulf.hm1b6,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 
 sulf.hm1b7<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -773,7 +779,7 @@ ggsave(sulf.hm1b7,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 
 sulf.hm1b8<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -783,7 +789,7 @@ ggsave(sulf.hm1b8,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 
 # sulf.hm1e<-ggplot(clr.sulf.all[clr.sulf.all$Depth_m==0,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
@@ -793,7 +799,7 @@ ggsave(sulf.hm1b8,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 #
 # sulf.hm1f<-ggplot(clr.sulf.all[clr.sulf.all$Depth_m==5,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -803,7 +809,7 @@ ggsave(sulf.hm1b8,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_
 #
 # sulf.hm1g<-ggplot(clr.sulf.all[clr.sulf.all$Depth_m==10,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(title="Sulfur Metabolism in Salton Seawater Metagenomes - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -994,14 +1000,14 @@ cysNC.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysNC; bifunctional en
 ggsave(cysNC.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/CysNC_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `cysN; sulfate adenylyltransferase subunit 1 [EC:2.7.7.4]`
-CysN.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysN; sulfate adenylyltransferase subunit 1 [EC:2.7.7.4]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
-  labs(title="CysN Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
-  guides(shape = guide_legend(override.aes = list(size = 5)))+
-  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("SampleID") + ylab("CLR-Transformed Coverage")
-
-ggsave(CysN.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/CysN_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+# CysN.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysN; sulfate adenylyltransferase subunit 1 [EC:2.7.7.4]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+#   labs(title="CysN Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+#   guides(shape = guide_legend(override.aes = list(size = 5)))+
+#   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+#   xlab("SampleID") + ylab("CLR-Transformed Coverage")
+#
+# ggsave(CysN.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/CysN_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `cysH; phosphoadenosine phosphosulfate reductase [EC:1.8.4.8 1.8.4.10]`
 cysH.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysH; phosphoadenosine phosphosulfate reductase [EC:1.8.4.8 1.8.4.10]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -1014,14 +1020,14 @@ cysH.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysH; phosphoadenosine 
 ggsave(cysH.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/CysH_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 # `cysC; adenylylsulfate kinase [EC:2.7.1.25]`
-cysC.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysC; adenylylsulfate kinase [EC:2.7.1.25]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
-  labs(title="CysC Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
-  guides(shape = guide_legend(override.aes = list(size = 5)))+
-  scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("SampleID") + ylab("CLR-Transformed Coverage")
-
-ggsave(cysC.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/CysC_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+# cysC.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysC; adenylylsulfate kinase [EC:2.7.1.25]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+#   labs(title="CysC Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+#   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+#   guides(shape = guide_legend(override.aes = list(size = 5)))+
+#   scale_color_manual(name ="Sample Date",values=unique(clr.sulf.trait.table$SampDate_Color[order(clr.sulf.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+#   xlab("SampleID") + ylab("CLR-Transformed Coverage")
+#
+# ggsave(cysC.scat,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Fxn_Scatterplots/CysC_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
 
 #`cysI; sulfite reductase (NADPH) hemoprotein beta-component [EC:1.8.1.2]`
 cysI.scat<-ggplot(clr.sulf.trait.table, aes(x=PlotID, y=`cysI; sulfite reductase (NADPH) hemoprotein beta-component [EC:1.8.1.2]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
@@ -1344,7 +1350,7 @@ head(clr.nitro.all)
 
 nitro.hm1a<-ggplot(clr.nitro.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.4","0.5","-0.4"),breaks=c(1.4,0.5,-0.4)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -1354,7 +1360,7 @@ ggsave(nitro.hm1a,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/Nitrogen_KOFxns_M
 
 nitro.hm1a2<-ggplot(clr.nitro.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.4","0.5","-0.4"),breaks=c(1.4,0.5,-0.4)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -1364,7 +1370,7 @@ ggsave(nitro.hm1a2,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/Nitrogen_KOFxns_
 
 nitro.hm1a3<-ggplot(clr.nitro.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.4","0.5","-0.4"),breaks=c(1.4,0.5,-0.4)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
@@ -1374,7 +1380,7 @@ ggsave(nitro.hm1a3,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/Nitrogen_KOFxns_
 
 nitro.hm1a4<-ggplot(clr.nitro.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.4","0.5","-0.4"),breaks=c(1.4,0.5,-0.4)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -1384,7 +1390,7 @@ ggsave(nitro.hm1a4,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/Nitrogen_KOFxns_
 
 nitro.hm1a5<-ggplot(clr.nitro.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.4","0.5","-0.4"),breaks=c(1.4,0.5,-0.4)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -1394,7 +1400,7 @@ ggsave(nitro.hm1a5,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/Nitrogen_KOFxns_
 
 nitro.hm1a6<-ggplot(clr.nitro.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.4","0.5","-0.4"),breaks=c(1.4,0.5,-0.4)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -1405,7 +1411,7 @@ ggsave(nitro.hm1a6,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/Nitrogen_KOFxns_
 # by Depth
 nitro.hm1b<-ggplot(clr.nitro.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.4","0.5","-0.4"),breaks=c(1.4,0.5,-0.4)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -1415,7 +1421,7 @@ ggsave(nitro.hm1b,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/Nitrogen_KOFxns_M
 
 nitro.hm1b2<-ggplot(clr.nitro.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.4","0.5","-0.4"),breaks=c(1.4,0.5,-0.4)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -1425,7 +1431,7 @@ ggsave(nitro.hm1b2,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/Nitrogen_KOFxns_
 
 nitro.hm1b3<-ggplot(clr.nitro.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.4","0.5","-0.4"),breaks=c(1.4,0.5,-0.4)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
@@ -1435,7 +1441,7 @@ ggsave(nitro.hm1b3,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/Nitrogen_KOFxns_
 
 nitro.hm1b4<-ggplot(clr.nitro.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.4","0.5","-0.4"),breaks=c(1.4,0.5,-0.4)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -1445,7 +1451,7 @@ ggsave(nitro.hm1b4,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/Nitrogen_KOFxns_
 
 nitro.hm1b5<-ggplot(clr.nitro.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.4","0.5","-0.4"),breaks=c(1.4,0.5,-0.4)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -1455,7 +1461,7 @@ ggsave(nitro.hm1b5,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/Nitrogen_KOFxns_
 
 nitro.hm1b6<-ggplot(clr.nitro.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.4","0.5","-0.4"),breaks=c(1.4,0.5,-0.4)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -1465,7 +1471,7 @@ ggsave(nitro.hm1b6,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/Nitrogen_KOFxns_
 
 # nitro.hm1e<-ggplot(clr.nitro.all[clr.nitro.all$Depth_m==0,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.4","0.5","-0.4"),breaks=c(1.4,0.5,-0.4)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
@@ -1475,7 +1481,7 @@ ggsave(nitro.hm1b6,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/Nitrogen_KOFxns_
 #
 # nitro.hm1f<-ggplot(clr.nitro.all[clr.nitro.all$Depth_m==5,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.4","0.5","-0.4"),breaks=c(1.4,0.5,-0.4)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -1485,7 +1491,7 @@ ggsave(nitro.hm1b6,filename = "figures/MGM_Figs/FxnDiv/Nitrogen/Nitrogen_KOFxns_
 #
 # nitro.hm1g<-ggplot(clr.nitro.all[clr.nitro.all$Depth_m==10,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.4","0.5","-0.4"),breaks=c(1.4,0.5,-0.4)) + labs(title="Nitrogen Metabolism in Salton Seawater Metagenomes - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -1743,7 +1749,7 @@ head(clr.carb.all)
 
 carb.hm1a<-ggplot(clr.carb.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.8","0.7","-0.4"),breaks=c(1.8,0.7,-0.4)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -1753,7 +1759,7 @@ ggsave(carb.hm1a,filename = "figures/MGM_Figs/FxnDiv/Carbon/Carbon_KOFxns_MGMs_S
 
 carb.hm1a2<-ggplot(clr.carb.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.8","0.7","-0.4"),breaks=c(1.8,0.7,-0.4)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -1763,7 +1769,7 @@ ggsave(carb.hm1a2,filename = "figures/MGM_Figs/FxnDiv/Carbon/Carbon_KOFxns_MGMs_
 
 carb.hm1a3<-ggplot(clr.carb.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.8","0.7","-0.4"),breaks=c(1.8,0.7,-0.4)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
@@ -1773,7 +1779,7 @@ ggsave(carb.hm1a3,filename = "figures/MGM_Figs/FxnDiv/Carbon/Carbon_KOFxns_MGMs_
 
 carb.hm1a4<-ggplot(clr.carb.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.8","0.7","-0.4"),breaks=c(1.8,0.7,-0.4)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -1783,7 +1789,7 @@ ggsave(carb.hm1a4,filename = "figures/MGM_Figs/FxnDiv/Carbon/Carbon_KOFxns_MGMs_
 
 carb.hm1a5<-ggplot(clr.carb.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.8","0.7","-0.4"),breaks=c(1.8,0.7,-0.4)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -1793,7 +1799,7 @@ ggsave(carb.hm1a5,filename = "figures/MGM_Figs/FxnDiv/Carbon/Carbon_KOFxns_MGMs_
 
 carb.hm1a6<-ggplot(clr.carb.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.8","0.7","-0.4"),breaks=c(1.8,0.7,-0.4)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -1804,7 +1810,7 @@ ggsave(carb.hm1a6,filename = "figures/MGM_Figs/FxnDiv/Carbon/Carbon_KOFxns_MGMs_
 # by Depth
 carb.hm1b<-ggplot(clr.carb.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.8","0.7","-0.4"),breaks=c(1.8,0.7,-0.4)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -1814,7 +1820,7 @@ ggsave(carb.hm1b,filename = "figures/MGM_Figs/FxnDiv/Carbon/Carbon_KOFxns_MGMs_D
 
 carb.hm1b2<-ggplot(clr.carb.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.8","0.7","-0.4"),breaks=c(1.8,0.7,-0.4)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -1824,7 +1830,7 @@ ggsave(carb.hm1b2,filename = "figures/MGM_Figs/FxnDiv/Carbon/Carbon_KOFxns_MGMs_
 
 carb.hm1b3<-ggplot(clr.carb.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.8","0.7","-0.4"),breaks=c(1.8,0.7,-0.4)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
@@ -1834,7 +1840,7 @@ ggsave(carb.hm1b3,filename = "figures/MGM_Figs/FxnDiv/Carbon/Carbon_KOFxns_MGMs_
 
 carb.hm1b4<-ggplot(clr.carb.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.8","0.7","-0.4"),breaks=c(1.8,0.7,-0.4)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -1844,7 +1850,7 @@ ggsave(carb.hm1b4,filename = "figures/MGM_Figs/FxnDiv/Carbon/Carbon_KOFxns_MGMs_
 
 carb.hm1b5<-ggplot(clr.carb.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.8","0.7","-0.4"),breaks=c(1.8,0.7,-0.4)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -1854,7 +1860,7 @@ ggsave(carb.hm1b5,filename = "figures/MGM_Figs/FxnDiv/Carbon/Carbon_KOFxns_MGMs_
 
 carb.hm1b6<-ggplot(clr.carb.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.8","0.7","-0.4"),breaks=c(1.8,0.7,-0.4)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -1864,7 +1870,7 @@ ggsave(carb.hm1b6,filename = "figures/MGM_Figs/FxnDiv/Carbon/Carbon_KOFxns_MGMs_
 
 # carb.hm1e<-ggplot(clr.carb.all[clr.carb.all$Depth_m==0,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.8","0.7","-0.4"),breaks=c(1.8,0.7,-0.4)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
@@ -1874,7 +1880,7 @@ ggsave(carb.hm1b6,filename = "figures/MGM_Figs/FxnDiv/Carbon/Carbon_KOFxns_MGMs_
 #
 # carb.hm1f<-ggplot(clr.carb.all[clr.carb.all$Depth_m==5,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.8","0.7","-0.4"),breaks=c(1.8,0.7,-0.4)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -1884,7 +1890,7 @@ ggsave(carb.hm1b6,filename = "figures/MGM_Figs/FxnDiv/Carbon/Carbon_KOFxns_MGMs_
 #
 # carb.hm1g<-ggplot(clr.carb.all[clr.carb.all$Depth_m==10,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.5","-0.5"),breaks=c(1.5,0.5,-0.5)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.8","0.7","-0.4"),breaks=c(1.8,0.7,-0.4)) + labs(title="Carbon Metabolism in Salton Seawater Metagenomes - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -2089,7 +2095,6 @@ clr.cov.sum.photo.ko.na<-as.data.frame(dcast(clr.photo.ko.na, SampleID~KO_Functi
 rownames(clr.cov.sum.photo.ko.na)<-clr.cov.sum.photo.ko.na$SampleID
 clr.cov.sum.photo.ko.na[1:4,1:4]
 
-
 ### Phototrophy Heat Maps ####
 # see max & mean of summed
 max(clr.cov.sum.photo.ko[,-1])
@@ -2139,7 +2144,7 @@ head(clr.photo.all)
 
 photo.hm1a<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -2149,7 +2154,7 @@ ggsave(photo.hm1a,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KO
 
 photo.hm1b<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -2159,7 +2164,7 @@ ggsave(photo.hm1b,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KO
 
 photo.hm1c<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
@@ -2169,7 +2174,7 @@ ggsave(photo.hm1c,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KO
 
 photo.hm1d<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -2179,7 +2184,7 @@ ggsave(photo.hm1d,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KO
 
 photo.hm1e<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -2189,7 +2194,7 @@ ggsave(photo.hm1e,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KO
 
 photo.hm1f<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -2199,7 +2204,7 @@ ggsave(photo.hm1f,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KO
 
 photo.hm1g<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -2210,7 +2215,7 @@ ggsave(photo.hm1g,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KO
 # by Depth
 # photo.hm1b<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -2220,7 +2225,7 @@ ggsave(photo.hm1g,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KO
 
 photo.hm1b2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -2230,7 +2235,7 @@ ggsave(photo.hm1b2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_K
 
 photo.hm1c2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
@@ -2240,7 +2245,7 @@ ggsave(photo.hm1c2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_K
 
 photo.hm1d2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -2250,7 +2255,7 @@ ggsave(photo.hm1d2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_K
 
 photo.hm1e2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -2260,7 +2265,7 @@ ggsave(photo.hm1e2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_K
 
 photo.hm1f2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -2270,7 +2275,7 @@ ggsave(photo.hm1f2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_K
 
 photo.hm1e2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1","0.5","0","-0.5"),breaks=c(1,0.5,0,-0.5)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
