@@ -462,7 +462,7 @@ bin.clr[1:4,1:4]
 # check rownames of CLR transformed ASV data & metadata
 rownames(bin.clr) %in% rownames(bin_meta)
 
-#### Robust Centered Log Ratio Transformation - Gene in Contigs ####
+#### Robust Centered Log Ratio Transformation - Gene in MAGs ####
 bin.ko.cov.sum_table[1:4,1:4]
 # ^ table contains gene coverage, Sample IDs as rows & genes as columns
 
