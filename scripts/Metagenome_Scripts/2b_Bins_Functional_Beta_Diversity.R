@@ -1014,50 +1014,50 @@ ggsave(sulf.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/Presence
 # ggsave(sulf.bi.hm1e6,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Sulfur/PresenceAbsence/Sulfur_KOFxns_Bins_Pathways_Binary_10m_heatmap.png", width=18, height=18, dpi=600)
 
 
-#### Pull Out Nitrogen Metabolic Fxns from CLR data ####
+#### Pull Out Nitrogen Metabolic Fxns from CLR data - with NAs ####
 ## heatmaps of traits of interest
 
-bin.clr[1:4,1:4]
+bin.clr.na[1:4,1:4]
 
 # pull out nitro functions from CLR transformed, summed coverages (summed coverage per KO)
-nitro.ko.bin<-bin.clr[,which(colnames(bin.clr) %in% nitro.fxns.bins$KO_ID)] # merge CLR data w/ S fxns found in contigs from KOFamScan
-nitro.ko.bin$Bin_ID<-rownames(nitro.ko.bin)
-nitro.ko.bin.melt<-melt(nitro.ko.bin, by="Bin_ID")
-colnames(nitro.ko.bin.melt)[which(names(nitro.ko.bin.melt) == "variable")] <- "KO_ID"
-colnames(nitro.ko.bin.melt)[which(names(nitro.ko.bin.melt) == "value")] <- "CLR_SumCovPerKO"
-head(nitro.ko.bin.melt) #sanity check
+nitro.ko.na.bin<-bin.clr.na[,which(colnames(bin.clr.na) %in% nitro.fxns.bins$KO_ID)] # merge CLR data w/ S fxns found in contigs from KOFamScan
+dim(nitro.ko.na.bin) # 35 total bins, 3 columns aka functions
+nitro.ko.na.bin<-nitro.ko.na.bin[rowSums(is.na(nitro.ko.na.bin)) != ncol(nitro.ko.na.bin), ] # drop all rows that contain ONLY NAs
+dim(nitro.ko.na.bin) # only 4 bins have these functions...
+# is.na() tells us which elements are NA (TRUE) or not NA (FALSE)
+# rowSums(is.na(df)) tells us how many columns have NAs; in this df, there are a total of 14 columns
+# if rowSums(is.na(df)) != total # of rows, aka if the total columns per row with NAs is LESS than the total # of columns per row, then keep the row
+# ^ if the row contains only NAs, and rowSums(is.na(df)) is NOT 14 (total # of columns), then we keep it
 
-clr.nitro.ko.bin<-merge(nitro.ko.bin.melt,nitro.kegg,by.x=c("KO_ID"),by.y=c("KO_ID")) # merge data w/ KO assignments from KEGG db
-head(clr.nitro.ko.bin)
-colnames(clr.nitro.ko.bin)[which(names(clr.nitro.ko.bin) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
-clr.cov.sum.nitro.ko.bin<-as.data.frame(dcast(clr.nitro.ko.bin, Bin_ID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###just dcast, nothing is being added here!
-rownames(clr.cov.sum.nitro.ko.bin)<-clr.cov.sum.nitro.ko.bin$Bin_ID
-clr.cov.sum.nitro.ko.bin[1:4,]
+nitro.ko.na.bin$Bin_ID<-rownames(nitro.ko.na.bin)
+nitro.ko.na.bin.melt<-melt(nitro.ko.na.bin, by="Bin_ID")
+colnames(nitro.ko.na.bin.melt)[which(names(nitro.ko.na.bin.melt) == "variable")] <- "KO_ID"
+colnames(nitro.ko.na.bin.melt)[which(names(nitro.ko.na.bin.melt) == "value")] <- "CLR_SumCovPerKO"
+head(nitro.ko.na.bin.melt) #sanity check
+
+clr.nitro.ko.na.bin<-merge(nitro.ko.na.bin.melt,nitro.kegg,by.x=c("KO_ID"),by.y=c("KO_ID")) # merge data w/ KO assignments from KEGG db
+head(clr.nitro.ko.na.bin)
+colnames(clr.nitro.ko.na.bin)[which(names(clr.nitro.ko.na.bin) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
+clr.cov.sum.nitro.ko.na.bin<-as.data.frame(dcast(clr.nitro.ko.na.bin, Bin_ID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###just dcast, nothing is being added here!
+rownames(clr.cov.sum.nitro.ko.na.bin)<-clr.cov.sum.nitro.ko.na.bin$Bin_ID
+clr.cov.sum.nitro.ko.na.bin[1:4,]
 
 # sanity check
-clr.cov.sum.nitro.ko.bin$`nirK; nitrite reductase (NO-forming) [EC:1.7.2.1]`[1:4]
-head(clr.nitro.ko.bin)
+clr.cov.sum.nitro.ko.na.bin$`nirK; nitrite reductase (NO-forming) [EC:1.7.2.1]`[1:4]
+head(clr.nitro.ko.na.bin)
 
 #### Nitrogen Heat Maps ####
 # see max & mean of summed
-max(clr.cov.sum.nitro.ko.bin[,-1])
-mean(as.matrix(clr.cov.sum.nitro.ko.bin[,-1]))
-
-# first heat map of nitro KOs
-heatmap(as.matrix(clr.cov.sum.nitro.ko.bin[,-1]), scale = "none")
-
-colSums(clr.cov.sum.nitro.ko.bin[,-1])
-#clr.cov.sum.nitro.ko.bin2 <- clr.cov.sum.nitro.ko.bin[,which(colSums(clr.cov.sum.nitro.ko.bin[,-1])>10)]
-
-heatmap(as.matrix(clr.cov.sum.nitro.ko.bin[,-1]), scale = "none")
+max(clr.nitro.ko.na.bin$CLR_SumCovPerKO,na.rm=TRUE)
+mean(clr.nitro.ko.na.bin$CLR_SumCovPerKO,na.rm=TRUE)
 
 # prep for ggplot2 heatmap
-clr.nitro.ko.bin[1:4,]
+clr.nitro.ko.na.bin[1:4,]
 
-clr.nitro.all.bin1<-merge(clr.nitro.ko.bin,bin_meta_scaled,by="Bin_ID")
+clr.nitro.all.bin1<-merge(clr.nitro.ko.na.bin,bin_meta_scaled,by="Bin_ID")
 clr.nitro.all.bin<-merge(clr.nitro.all.bin1,mag_tax,by=c("Bin_ID","PlotBin"))
 
-head(clr.sulf.all.bin)
+head(clr.nitro.all.bin)
 clr.nitro.all.bin$PlotBin = factor(clr.nitro.all.bin$PlotBin, levels=unique(clr.nitro.all.bin$PlotBin[order(clr.nitro.all.bin$SampDate,clr.nitro.all.bin$Depth_m)]), ordered=TRUE)
 clr.nitro.all.bin$SampDate<-gsub("\\."," ",clr.nitro.all.bin$SampDate)
 clr.nitro.all.bin$SampDate<-factor(clr.nitro.all.bin$SampDate, levels=c("August 2021","December 2021","April 2022"))
@@ -1076,14 +1076,14 @@ clr.nitro.all.bin$PathShort<-factor(clr.nitro.all.bin$PathShort,levels=c("A. NO3
 head(clr.nitro.all.bin)
 
 # for heatmap color gradient
-max(clr.nitro.all.bin$CLR_SumCovPerKO)
-max(clr.nitro.all.bin$CLR_SumCovPerKO)/2
-min(clr.nitro.all.bin$CLR_SumCovPerKO)
+max(clr.nitro.all.bin$CLR_SumCovPerKO,na.rm=TRUE)
+max(clr.nitro.all.bin$CLR_SumCovPerKO,na.rm=TRUE)/2
+min(clr.nitro.all.bin$CLR_SumCovPerKO,na.rm=TRUE)
 
 # Figures
 nitro.hm1a<-ggplot(clr.nitro.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.2","0.1"),breaks=c(0.4,0.2,0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -1093,7 +1093,7 @@ ggsave(nitro.hm1a,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 
 nitro.hm1b<-ggplot(clr.nitro.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.2","0.1"),breaks=c(0.4,0.2,0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -1103,7 +1103,7 @@ ggsave(nitro.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 
 # nitro.hm1c<-ggplot(clr.nitro.all.bin, aes(interaction(SampDate,Depth_m), KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.2","0.1"),breaks=c(0.4,0.2,0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -1113,7 +1113,7 @@ ggsave(nitro.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 
 nitro.hm1d<-ggplot(clr.nitro.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.2","0.1"),breaks=c(0.4,0.2,0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
@@ -1123,7 +1123,7 @@ ggsave(nitro.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 
 nitro.hm1e<-ggplot(clr.nitro.all.bin, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.2","0.1"),breaks=c(0.4,0.2,0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -1133,7 +1133,7 @@ ggsave(nitro.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 #
 # nitro.hm1f<-ggplot(clr.nitro.all.bin, aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.2","0.1"),breaks=c(0.4,0.2,0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
@@ -1143,7 +1143,7 @@ ggsave(nitro.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 #
 # nitro.hm1g<-ggplot(clr.nitro.all.bin, aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.2","0.1"),breaks=c(0.4,0.2,0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
@@ -1153,7 +1153,7 @@ ggsave(nitro.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 
 nitro.hm1e<-ggplot(clr.nitro.all.bin[clr.nitro.all.bin$Depth_m==0,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.2","0.1"),breaks=c(0.4,0.2,0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
@@ -1163,7 +1163,7 @@ ggsave(nitro.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 
 nitro.hm1f<-ggplot(clr.nitro.all.bin[clr.nitro.all.bin$Depth_m==5,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.2","0.1"),breaks=c(0.4,0.2,0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -1173,7 +1173,7 @@ ggsave(nitro.hm1f,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Nitrogen
 
 nitro.hm1g<-ggplot(clr.nitro.all.bin[clr.nitro.all.bin$Depth_m==10,], aes(PathShort, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.15","-0.1"),breaks=c(0.4,0.15,-0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.4","0.2","0.1"),breaks=c(0.4,0.2,0.1)) + labs(title="Nitrogen Metabolism in Salton Seawater MAGs - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -1350,45 +1350,48 @@ ggsave(nitro.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Prese
 # ggsave(nitro.bi.hm1e6,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/PresenceAbsence/Nitrogen_KOFxns_Bins_Pathways_Binary_10m_heatmap.png", width=18, height=18, dpi=600)
 
 
-#### Pull Out Carbon Metabolic Fxns from CLR data ####
+#### Pull Out Carbon Metabolic Fxns from CLR data - with NAs ####
 ## heatmaps of traits of interest
 
-bin.clr[1:4,1:4]
+bin.clr.na[1:4,1:4]
 
 # pull out Carbon metabolism functions from CLR transformed, summed coverages (summed coverage per KO)
-carb.ko.bin<-bin.clr[,which(colnames(bin.clr) %in% carb.fxns.bins$KO_ID)] # merge CLR data w/ carbon-related fxns found in contigs from KOFamScan
-carb.ko.bin$Bin_ID<-rownames(carb.ko.bin)
-carb.ko.bin.melt<-melt(carb.ko.bin, by="Bin_ID")
-colnames(carb.ko.bin.melt)[which(names(carb.ko.bin.melt) == "variable")] <- "KO_ID"
-colnames(carb.ko.bin.melt)[which(names(carb.ko.bin.melt) == "value")] <- "CLR_SumCovPerKO"
-head(carb.ko.bin.melt) #sanity check
+carb.ko.na.bin<-bin.clr.na[,which(colnames(bin.clr) %in% carb.fxns.bins$KO_ID)] # merge CLR data w/ carbon-related fxns found in contigs from KOFamScan
+dim(carb.ko.na.bin) # 35 total bins, 14 columns aka functions
+carb.ko.na.bin<-carb.ko.na.bin[rowSums(is.na(carb.ko.na.bin)) != ncol(carb.ko.na.bin), ] # drop all rows that contain ONLY NAs
+dim(carb.ko.na.bin) # 31 bins have the 43 functions
+# is.na() tells us which elements are NA (TRUE) or not NA (FALSE)
+# rowSums(is.na(df)) tells us how many columns have NAs; in this df, there are a total of 14 columns
+# if rowSums(is.na(df)) != total # of rows, aka if the total columns per row with NAs is LESS than the total # of columns per row, then keep the row
+# ^ if the row contains only NAs, and rowSums(is.na(df)) is NOT 14 (total # of columns), then we keep it
 
-clr.carb.ko.bin<-merge(carb.ko.bin.melt,carb.kegg,by.x=c("KO_ID"),by.y=c("KO_ID"))
-head(clr.carb.ko.bin)
-colnames(clr.carb.ko.bin)[which(names(clr.carb.ko.bin) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
-clr.cov.sum.carb.ko.bin<-as.data.frame(dcast(clr.carb.ko.bin, Bin_ID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
-rownames(clr.cov.sum.carb.ko.bin)<-clr.cov.sum.carb.ko.bin$Bin_ID
-clr.cov.sum.carb.ko.bin[1:4,1:4]
+carb.ko.na.bin$Bin_ID<-rownames(carb.ko.na.bin)
+carb.ko.na.bin.melt<-melt(carb.ko.na.bin, by="Bin_ID")
+colnames(carb.ko.na.bin.melt)[which(names(carb.ko.na.bin.melt) == "variable")] <- "KO_ID"
+colnames(carb.ko.na.bin.melt)[which(names(carb.ko.na.bin.melt) == "value")] <- "CLR_SumCovPerKO"
+head(carb.ko.na.bin.melt) #sanity check
+
+clr.carb.ko.na.bin<-merge(carb.ko.na.bin.melt,carb.kegg,by.x=c("KO_ID"),by.y=c("KO_ID"))
+head(clr.carb.ko.na.bin)
+colnames(clr.carb.ko.na.bin)[which(names(clr.carb.ko.na.bin) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
+clr.cov.sum.carb.ko.na.bin<-as.data.frame(dcast(clr.carb.ko.na.bin, Bin_ID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
+rownames(clr.cov.sum.carb.ko.na.bin)<-clr.cov.sum.carb.ko.na.bin$Bin_ID
+clr.cov.sum.carb.ko.na.bin[1:4,1:4]
 
 # sanity check
-clr.cov.sum.carb.ko.bin$`accB, bccP; acetyl-CoA carboxylase biotin carboxyl carrier protein`[1:4]
-head(clr.cov.sum.carb.ko.bin)
+clr.cov.sum.carb.ko.na.bin$`accB, bccP; acetyl-CoA carboxylase biotin carboxyl carrier protein`[1:4]
+head(clr.cov.sum.carb.ko.na.bin)
 
 #### Carbon Heat Maps ####
 # see max & mean of summed
-max(clr.cov.sum.carb.ko.bin[,-1])
-mean(as.matrix(clr.cov.sum.carb.ko.bin[,-1]))
+max(clr.cov.sum.carb.ko.na.bin[,-1],na.rm = TRUE)
+mean(as.matrix(clr.cov.sum.carb.ko.na.bin[,-1]),na.rm = TRUE)
 
-# first heat map of sulfur KOs
-heatmap(as.matrix(clr.cov.sum.carb.ko.bin[,-1]), scale = "none")
-
-colSums(clr.cov.sum.carb.ko.bin[,-1])
-
-heatmap(as.matrix(clr.cov.sum.carb.ko.bin[,-1]), scale = "none")
+colSums(clr.cov.sum.carb.ko.na.bin[,-1],,na.rm = TRUE)
 
 # prep for ggplot2 heatmap
-clr.carb.ko.bin[1:4,]
-clr.carb.all.bin1<-merge(clr.carb.ko.bin,bin_meta_scaled,by="Bin_ID")
+clr.carb.ko.na.bin[1:4,]
+clr.carb.all.bin1<-merge(clr.carb.ko.na.bin,bin_meta_scaled,by="Bin_ID")
 clr.carb.all.bin<-merge(clr.carb.all.bin1,mag_tax,by=c("Bin_ID","PlotBin"))
 
 head(clr.carb.all.bin)
@@ -1416,14 +1419,14 @@ clr.carb.all.bin$KO_Function.KEGG = factor(clr.carb.all.bin$KO_Function.KEGG, le
 head(clr.carb.all.bin)
 
 # For heatmap color gradient
-max(clr.carb.all.bin$CLR_SumCovPerKO)
-max(clr.carb.all.bin$CLR_SumCovPerKO)/2
-min(clr.carb.all.bin$CLR_SumCovPerKO)
+max(clr.carb.all.bin$CLR_SumCovPerKO,na.rm = TRUE)
+max(clr.carb.all.bin$CLR_SumCovPerKO,na.rm = TRUE)/2
+min(clr.carb.all.bin$CLR_SumCovPerKO,na.rm = TRUE)
 
 # Figures
 carb.hm1a<-ggplot(clr.carb.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.8","0.45","0.1"),breaks=c(0.8,0.45,0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -1433,7 +1436,7 @@ ggsave(carb.hm1a,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFx
 
 carb.hm1b<-ggplot(clr.carb.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.8","0.45","0.1"),breaks=c(0.8,0.45,0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -1443,7 +1446,7 @@ ggsave(carb.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFx
 
 carb.hm1b1<-ggplot(clr.carb.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs by Genus",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.8","0.45","0.1"),breaks=c(0.8,0.45,0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs by Genus",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -1453,7 +1456,7 @@ ggsave(carb.hm1b1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOF
 
 carb.hm1d<-ggplot(clr.carb.all.bin, aes(Bin_ID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.8","0.45","0.1"),breaks=c(0.8,0.45,0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -1463,7 +1466,7 @@ ggsave(carb.hm1d,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFx
 
 carb.hm1e<-ggplot(clr.carb.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs by Genus",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.8","0.45","0.1"),breaks=c(0.8,0.45,0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs by Genus",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -1473,7 +1476,7 @@ ggsave(carb.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFx
 
 # carb.hm1f<-ggplot(clr.carb.all.bin, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.8","0.45","0.1"),breaks=c(0.8,0.45,0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11,face="bold")) +
@@ -1483,7 +1486,7 @@ ggsave(carb.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFx
 #
 # carb.hm1g<-ggplot(clr.carb.all.bin, aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.8","0.45","0.1"),breaks=c(0.8,0.45,0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
@@ -1493,7 +1496,7 @@ ggsave(carb.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFx
 
 carb.hm1e<-ggplot(clr.carb.all.bin[clr.carb.all.bin$Depth_m==0,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.8","0.45","0.1"),breaks=c(0.8,0.45,0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
@@ -1503,7 +1506,7 @@ ggsave(carb.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFx
 
 carb.hm1f<-ggplot(clr.carb.all.bin[clr.carb.all.bin$Depth_m==5,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.8","0.45","0.1"),breaks=c(0.8,0.45,0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -1513,7 +1516,7 @@ ggsave(carb.hm1f,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFx
 
 carb.hm1g<-ggplot(clr.carb.all.bin[clr.carb.all.bin$Depth_m==10,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.4","-0.1"),breaks=c(0.85,0.4,-0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.8","0.45","0.1"),breaks=c(0.8,0.45,0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -1674,28 +1677,29 @@ ggsave(carb.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Presence
 #### Pull Out Phototrophy Fxns from CLR data ####
 ## heatmaps of traits of interest
 
-bin.clr[1:4,1:4]
+bin.clr.na[1:4,1:4]
 
 # pull out Phototrophy functions from CLR transformed, summed coverages (summed coverage per KO)
-#photo.ko.bin<-bin.clr[,which(colnames(bin.clr) %in% photo.fxn.bins$KO_ID)] # merge CLR data w/ photoon-related fxns found in contigs from KOFamScan
-photo.ko.bin<-data.frame(Bin_ID=rownames(bin.clr),KO4643=bin.clr$K04643)
-#photo.ko.bin$BinID<-rownames(photo.ko.bin)
-photo.ko.bin.melt<-melt(photo.ko.bin, by="Bin_ID")
-colnames(photo.ko.bin.melt)[which(names(photo.ko.bin.melt) == "variable")] <- "KO_ID"
-colnames(photo.ko.bin.melt)[which(names(photo.ko.bin.melt) == "value")] <- "CLR_SumCovPerKO"
-head(photo.ko.bin.melt) #sanity check
+#photo.ko.na.bin<-bin.clr[,which(colnames(bin.clr) %in% photo.fxn.bins$KO_ID)] # merge CLR data w/ photo-related fxns found in contigs from KOFamScan
+photo.ko.na.bin<-data.frame(Bin_ID=rownames(bin.clr.na),KO4643=bin.clr.na$K04643)
+#photo.ko.na.bin$BinID<-rownames(photo.ko.na.bin)
+
+photo.ko.na.bin.melt<-melt(photo.ko.na.bin, by="Bin_ID")
+colnames(photo.ko.na.bin.melt)[which(names(photo.ko.na.bin.melt) == "variable")] <- "KO_ID"
+colnames(photo.ko.na.bin.melt)[which(names(photo.ko.na.bin.melt) == "value")] <- "CLR_SumCovPerKO"
+head(photo.ko.na.bin.melt) #sanity check
 photo.kegg[photo.kegg$KO_ID=="K04643",]
 
-clr.photo.ko.bin<-photo.ko.bin.melt
-clr.photo.ko.bin$KO_Function<-"sop; sensory rhodopsin"
-clr.photo.ko.bin$Pathway<-"Proteorhodopsin"
-clr.photo.ko.bin$Phototrophy<-"Hetero"
-#clr.photo.ko.bin<-merge(photo.ko.bin.melt,photo.kegg[photo.kegg$KO_ID=="K04643",],by.y=c("KO_ID"))
-head(clr.photo.ko.bin)
-colnames(clr.photo.ko.bin)[which(names(clr.photo.ko.bin) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
-clr.cov.sum.photo.ko.bin<-as.data.frame(dcast(clr.photo.ko.bin, Bin_ID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
-rownames(clr.cov.sum.photo.ko.bin)<-clr.cov.sum.photo.ko.bin$Bin_ID
-clr.cov.sum.photo.ko.bin[1:4,1:2]
+clr.photo.ko.na.bin<-photo.ko.na.bin.melt
+clr.photo.ko.na.bin$KO_Function<-"sop; sensory rhodopsin"
+clr.photo.ko.na.bin$Pathway<-"Proteorhodopsin"
+clr.photo.ko.na.bin$Phototrophy<-"Hetero"
+#clr.photo.ko.na.bin<-merge(photo.ko.na.bin.melt,photo.kegg[photo.kegg$KO_ID=="K04643",],by.y=c("KO_ID"))
+head(clr.photo.ko.na.bin)
+colnames(clr.photo.ko.na.bin)[which(names(clr.photo.ko.na.bin) == "KO_Function")] <- "KO_Function.KEGG" # so we know they are KO assignments from KEGG db website
+clr.cov.sum.photo.ko.na.bin<-as.data.frame(dcast(clr.photo.ko.na.bin, Bin_ID~KO_Function.KEGG, value.var="CLR_SumCovPerKO", fun.aggregate=sum)) ###
+rownames(clr.cov.sum.photo.ko.na.bin)<-clr.cov.sum.photo.ko.na.bin$Bin_ID
+clr.cov.sum.photo.ko.na.bin[1:4,1:2]
 
 # ## Phototrophy Heat Maps ####
 # # see max & mean of summed
