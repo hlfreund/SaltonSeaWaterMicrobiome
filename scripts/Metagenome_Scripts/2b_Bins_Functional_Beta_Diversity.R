@@ -234,16 +234,16 @@ clr.sulf.all.bin$Pathway<-factor(clr.sulf.all.bin$Pathway,levels=c("Assimilatory
 clr.sulf.all.bin$PathShort<-factor(clr.sulf.all.bin$PathShort,levels=c("A.SO4 Red","D.SO4 RedOx","Multi Paths","SOX","S Disprop."))
 
 clr.sulf.all.bin$PathSpecShort<-clr.sulf.all.bin$PathwaySpecific
-clr.sulf.all.bin$PathSpecShort[(clr.sulf.all.bin$PathSpecShort) == "Dissimilatory Sulfate Redox"] <- "1"
-clr.sulf.all.bin$PathSpecShort[(clr.sulf.all.bin$PathSpecShort) == "Assimilatory Sulfate Reduction"] <- "2"
-clr.sulf.all.bin$PathSpecShort[(clr.sulf.all.bin$PathSpecShort) == "Multiple Pathways"] <- "3"
-clr.sulf.all.bin$PathSpecShort[(clr.sulf.all.bin$PathSpecShort) == "Sulfur Disproportionation"] <- "4"
-clr.sulf.all.bin$PathSpecShort[(clr.sulf.all.bin$PathSpecShort) == "Sulfide Oxidation"] <- "5"
-clr.sulf.all.bin$PathSpecShort[(clr.sulf.all.bin$PathSpecShort) == "Sulfite Oxidation"] <- "6"
-clr.sulf.all.bin$PathSpecShort[(clr.sulf.all.bin$PathSpecShort) == "Thiosulfate Oxidation"] <- "7"
+clr.sulf.all.bin$PathSpecShort[(clr.sulf.all.bin$PathSpecShort) == "Dissimilatory Sulfate Redox"] <- "D.SO4 RedOx"
+clr.sulf.all.bin$PathSpecShort[(clr.sulf.all.bin$PathSpecShort) == "Assimilatory Sulfate Reduction"] <- "A.SO4 Red"
+clr.sulf.all.bin$PathSpecShort[(clr.sulf.all.bin$PathSpecShort) == "Multiple Pathways"] <- "MultiPaths"
+clr.sulf.all.bin$PathSpecShort[(clr.sulf.all.bin$PathSpecShort) == "Sulfur Disproportionation"] <- "S Disprop."
+clr.sulf.all.bin$PathSpecShort[(clr.sulf.all.bin$PathSpecShort) == "Sulfide Oxidation"] <- "H2S Ox"
+clr.sulf.all.bin$PathSpecShort[(clr.sulf.all.bin$PathSpecShort) == "Sulfite Oxidation"] <- "SO3 Ox"
+clr.sulf.all.bin$PathSpecShort[(clr.sulf.all.bin$PathSpecShort) == "Thiosulfate Oxidation"] <- "S2O3 Ox"
 
 clr.sulf.all.bin$PathwaySpecific<-factor(clr.sulf.all.bin$PathwaySpecific,levels=c("Assimilatory Sulfate Reduction","Dissimilatory Sulfate Redox","Multiple Pathways","SOX","S Disproportionation","Sulfide Oxidation","Sulfite Oxidation","Thiosulfate Oxidation"))
-clr.sulf.all.bin$PathSpecShort<-factor(clr.sulf.all.bin$PathSpecShort,levels=c("1","2","3","4","5","6","7"))
+clr.sulf.all.bin$PathSpecShort<-factor(clr.sulf.all.bin$PathSpecShort,levels=c("A.SO4 Red","D.SO4 RedOx","MultiPaths","S Disprop.","H2S Ox","SO3 Ox","S2O3 Ox"))
 
 head(clr.sulf.all.bin)
 
