@@ -225,7 +225,7 @@ summary(env.pca)$importance # percentage of variation explained for pca below
 
 # create pca ggplot fig
 pca1<-ggplot(env.pca.meta, aes(x=PC1, y=PC2)) +geom_point(aes(color=factor(SampDate)), size=4)+theme_bw()+
-  labs(title="PCA: Environmental Variables in Salton Seawater",subtitle="Using Log Transformed Data",color="Sample Type")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  labs(title="PCA: Environmental Variables in Salton Seawater",subtitle="Using Log-Transformed Data",color="Sample Type")+theme_classic()+ theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Type",values=unique(env.pca.meta$SampDate_Color[order(env.pca.meta$SampDate)]),labels=c("June.2021"="June 2021","August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [64.74%]") + ylab("PC2 [19.73%]")
@@ -235,7 +235,7 @@ ggsave(pca1,filename = "figures/EnvVariablesOnly/SSW_LogEnvOnly_PCA_SampDate.png
 # sample month shape, depth color
 pca2<-ggplot(env.pca.meta, aes(x=PC1, y=PC2)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampleMonth), size=5)+theme_bw()+
-  labs(title="PCA: Environmental Variables in Salton Seawater",subtitle="Using Log Transformed Data",color="Depth (m)")+
+  labs(title="PCA: Environmental Variables in Salton Seawater",subtitle="Using Log-Transformed Data",color="Depth (m)")+
   theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
   scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("PC1 [64.74%]") + ylab("PC2 [19.73%]")
@@ -740,7 +740,7 @@ plot(x=April.2022$Sulfide_microM, y=April.2022$Depth.num, col=April.2022$Depth_m
 #### Plots of Env Variables ####
 
 # Compare all variables across Depths
-dep.dom<-ggplot(metadata, aes(x=Depth_m, y=Dissolved_OrganicMatter_RFU,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+dep.dom<-ggplot(metadata, aes(x=Depth_m, y=Dissolved_OrganicMatter_RFU,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Dissolved Organic Matter (DOM) by Depth & Sample Date",subtitle="Using Raw DOM RFU Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -749,7 +749,7 @@ dep.dom<-ggplot(metadata, aes(x=Depth_m, y=Dissolved_OrganicMatter_RFU,color=Sam
 
 ggsave(dep.dom,filename = "figures/EnvVariablesOnly/SSW_DOM_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.orp<-ggplot(metadata, aes(x=Depth_m, y=ORP_mV,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+dep.orp<-ggplot(metadata, aes(x=Depth_m, y=ORP_mV,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Oxidative-Reduction Potential by Depth & Sample Date",subtitle="Using Raw ORP (mV) Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -758,7 +758,7 @@ dep.orp<-ggplot(metadata, aes(x=Depth_m, y=ORP_mV,color=SampDate,group=SampDate)
 
 ggsave(dep.orp,filename = "figures/EnvVariablesOnly/SSW_ORP_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.sulf<-ggplot(metadata, aes(x=Depth_m, y=Sulfate_milliM,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+dep.sulf<-ggplot(metadata, aes(x=Depth_m, y=Sulfate_milliM,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Sulfate by Depth & Sample Date",subtitle="Using Raw Sulfate (milliM) Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -767,7 +767,7 @@ dep.sulf<-ggplot(metadata, aes(x=Depth_m, y=Sulfate_milliM,color=SampDate,group=
 
 ggsave(dep.sulf,filename = "figures/EnvVariablesOnly/SSW_Sulfate_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.pdo<-ggplot(metadata, aes(x=Depth_m, y=DO_Percent_Local,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+dep.pdo<-ggplot(metadata, aes(x=Depth_m, y=DO_Percent_Local,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Dissolved Oxygen by Depth & Sample Date",subtitle="Using Raw DO (%) Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -776,7 +776,7 @@ dep.pdo<-ggplot(metadata, aes(x=Depth_m, y=DO_Percent_Local,color=SampDate,group
 
 ggsave(dep.pdo,filename = "figures/EnvVariablesOnly/SSW_PercentDO_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.do<-ggplot(metadata, aes(x=Depth_m, y=Dissolved_Oxygen_mgL,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+dep.do<-ggplot(metadata, aes(x=Depth_m, y=Dissolved_Oxygen_mgL,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Dissolved Oxygen by Depth & Sample Date",subtitle="Using Raw DO (mg/L) Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -785,7 +785,7 @@ dep.do<-ggplot(metadata, aes(x=Depth_m, y=Dissolved_Oxygen_mgL,color=SampDate,gr
 
 ggsave(dep.do,filename = "figures/EnvVariablesOnly/SSW_DO_mgL_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.hs<-ggplot(metadata, aes(x=Depth_m, y=Sulfide_microM,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+dep.hs<-ggplot(metadata, aes(x=Depth_m, y=Sulfide_microM,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Sulfide by Depth & Sample Date",subtitle="Using Raw Sulfide (microM) Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -794,7 +794,7 @@ dep.hs<-ggplot(metadata, aes(x=Depth_m, y=Sulfide_microM,color=SampDate,group=Sa
 
 ggsave(dep.hs,filename = "figures/EnvVariablesOnly/SSW_Sulfide_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.chlr<-ggplot(metadata, aes(x=Depth_m, y=Chlorophyll_RFU,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+dep.chlr<-ggplot(metadata, aes(x=Depth_m, y=Chlorophyll_RFU,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Chlorophyll by Depth & Sample Date",subtitle="Using Raw Chlorophyll (RFU) Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -803,7 +803,7 @@ dep.chlr<-ggplot(metadata, aes(x=Depth_m, y=Chlorophyll_RFU,color=SampDate,group
 
 ggsave(dep.chlr,filename = "figures/EnvVariablesOnly/SSW_Chlorophyll_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.temp<-ggplot(metadata, aes(x=Depth_m, y=Temp_DegC,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+dep.temp<-ggplot(metadata, aes(x=Depth_m, y=Temp_DegC,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Temperature by Depth & Sample Date",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -812,7 +812,7 @@ dep.temp<-ggplot(metadata, aes(x=Depth_m, y=Temp_DegC,color=SampDate,group=SampD
 
 ggsave(dep.temp,filename = "figures/EnvVariablesOnly/SSW_Temp_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.turb<-ggplot(metadata, aes(x=Depth_m, y=Turbidity_FNU,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+dep.turb<-ggplot(metadata, aes(x=Depth_m, y=Turbidity_FNU,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Turbidity by Depth & Sample Date",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -821,7 +821,7 @@ dep.turb<-ggplot(metadata, aes(x=Depth_m, y=Turbidity_FNU,color=SampDate,group=S
 
 ggsave(dep.turb,filename = "figures/EnvVariablesOnly/SSW_Turbidity_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.chloro<-ggplot(metadata, aes(x=Depth_m, y=Chlorophyll_RFU,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+dep.chloro<-ggplot(metadata, aes(x=Depth_m, y=Chlorophyll_RFU,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Chlorophyll by Depth & Sample Date",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -831,7 +831,7 @@ dep.chloro<-ggplot(metadata, aes(x=Depth_m, y=Chlorophyll_RFU,color=SampDate,gro
 ggsave(dep.chloro,filename = "figures/EnvVariablesOnly/SSW_Chlorophyll_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
 # Compare variables to each other
-dom.hs<-ggplot(metadata, aes(x=Dissolved_OrganicMatter_RFU, y=Sulfide_microM,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+dom.hs<-ggplot(metadata, aes(x=Dissolved_OrganicMatter_RFU, y=Sulfide_microM,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Sulfide ~ DOM",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -840,7 +840,7 @@ dom.hs<-ggplot(metadata, aes(x=Dissolved_OrganicMatter_RFU, y=Sulfide_microM,col
 
 ggsave(dom.hs,filename = "figures/EnvVariablesOnly/SSW_Sulfide_DOM_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dom.so4<-ggplot(metadata, aes(x=Dissolved_OrganicMatter_RFU, y=Sulfate_milliM,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+dom.so4<-ggplot(metadata, aes(x=Dissolved_OrganicMatter_RFU, y=Sulfate_milliM,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Sulfate ~ DOM",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -849,7 +849,7 @@ dom.so4<-ggplot(metadata, aes(x=Dissolved_OrganicMatter_RFU, y=Sulfate_milliM,co
 
 ggsave(dom.so4,filename = "figures/EnvVariablesOnly/SSW_Sulfate_DOM_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-do.hs<-ggplot(metadata, aes(x=DO_Percent_Local, y=Sulfide_microM,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+do.hs<-ggplot(metadata, aes(x=DO_Percent_Local, y=Sulfide_microM,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Sulfide ~ DO%",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -858,7 +858,7 @@ do.hs<-ggplot(metadata, aes(x=DO_Percent_Local, y=Sulfide_microM,color=SampDate,
 
 ggsave(do.hs,filename = "figures/EnvVariablesOnly/SSW_Sulfide_DO.Percent_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-do.so4<-ggplot(metadata, aes(x=DO_Percent_Local, y=Sulfate_milliM,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+do.so4<-ggplot(metadata, aes(x=DO_Percent_Local, y=Sulfate_milliM,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Sulfate ~ DO%",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -867,7 +867,7 @@ do.so4<-ggplot(metadata, aes(x=DO_Percent_Local, y=Sulfate_milliM,color=SampDate
 
 ggsave(do.so4,filename = "figures/EnvVariablesOnly/SSW_Sulfate_DO.Percent_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-orp.hs<-ggplot(metadata, aes(x=ORP_mV, y=Sulfide_microM,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+orp.hs<-ggplot(metadata, aes(x=ORP_mV, y=Sulfide_microM,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Sulfide ~ ORP (mV)",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -876,7 +876,7 @@ orp.hs<-ggplot(metadata, aes(x=ORP_mV, y=Sulfide_microM,color=SampDate,group=Sam
 
 ggsave(orp.hs,filename = "figures/EnvVariablesOnly/SSW_Sulfide_ORP_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-orp.dom<-ggplot(metadata, aes(x=ORP_mV, y=Dissolved_OrganicMatter_RFU,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+orp.dom<-ggplot(metadata, aes(x=ORP_mV, y=Dissolved_OrganicMatter_RFU,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="DOM (RFU) ~ ORP (mV)",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -885,7 +885,7 @@ orp.dom<-ggplot(metadata, aes(x=ORP_mV, y=Dissolved_OrganicMatter_RFU,color=Samp
 
 ggsave(orp.dom,filename = "figures/EnvVariablesOnly/SSW_DOM_ORP_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-orp.do<-ggplot(metadata, aes(x=ORP_mV, y=DO_Percent_Local,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+orp.do<-ggplot(metadata, aes(x=ORP_mV, y=DO_Percent_Local,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="DO% ~ ORP (mV)",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -894,7 +894,7 @@ orp.do<-ggplot(metadata, aes(x=ORP_mV, y=DO_Percent_Local,color=SampDate,group=S
 
 ggsave(orp.do,filename = "figures/EnvVariablesOnly/SSW_DO.Percent_ORP_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-temp.do<-ggplot(metadata, aes(x=Temp_DegC, y=DO_Percent_Local,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+temp.do<-ggplot(metadata, aes(x=Temp_DegC, y=DO_Percent_Local,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="DO% ~ Temperature (C)",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -903,7 +903,7 @@ temp.do<-ggplot(metadata, aes(x=Temp_DegC, y=DO_Percent_Local,color=SampDate,gro
 
 ggsave(temp.do,filename = "figures/EnvVariablesOnly/SSW_DO.Percent_Temp_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-temp.dom<-ggplot(metadata, aes(x=Temp_DegC, y=Dissolved_OrganicMatter_RFU,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+temp.dom<-ggplot(metadata, aes(x=Temp_DegC, y=Dissolved_OrganicMatter_RFU,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="DOM (RFU) ~ Temperature (C)",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -915,35 +915,35 @@ ggsave(temp.dom,filename = "figures/EnvVariablesOnly/SSW_DOM_ORP_bySampleDate_sc
 #### Plot Correlations by Sample Date to Check Correlations Above ####
 
 # August
-aug1<-ggplot(August.2021, aes(x=Temp_DegC, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+aug1<-ggplot(August.2021, aes(x=Temp_DegC, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=5) + theme_bw()+
   labs(title="Temperature & DO% - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("Temp (C)") + ylab("DO (%)")
 ggsave(aug1,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_DO.Percent_Temp_August2021_scatterplot.png", width=12, height=10, dpi=600)
 
-aug2<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+aug2<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=5) + theme_bw()+
   labs(title="DOM & DO% - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("DOM (RFU)") + ylab("DO (%)")
 ggsave(aug2,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_DO.Percent_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
 
-aug3<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=ORP_mV,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+aug3<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=ORP_mV,color=Depth_m)) + geom_point(size=5) + theme_bw()+
   labs(title="DOM & ORP - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("DOM (RFU)") + ylab("ORP (mV)")
 ggsave(aug3,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_ORP_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
 
-aug4<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=Sulfide_microM,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+aug4<-ggplot(August.2021, aes(x=Dissolved_OrganicMatter_RFU, y=Sulfide_microM,color=Depth_m)) + geom_point(size=5) + theme_bw()+
   labs(title="DOM & Sulfide - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("DOM (RFU)") + ylab("Sulfide (microM)")
 ggsave(aug4,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_H2S_DOM_August2021_scatterplot.png", width=12, height=10, dpi=600)
 
-aug5<-ggplot(August.2021, aes(x=ORP_mV, y=Sulfide_microM,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+aug5<-ggplot(August.2021, aes(x=ORP_mV, y=Sulfide_microM,color=Depth_m)) + geom_point(size=5) + theme_bw()+
   labs(title="ORP & Sulfide - August 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -951,7 +951,7 @@ aug5<-ggplot(August.2021, aes(x=ORP_mV, y=Sulfide_microM,color=Depth_m)) + geom_
 ggsave(aug5,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_H2S_ORP_August2021_scatterplot.png", width=12, height=10, dpi=600)
 
 ## December
-dec1<-ggplot(December.2021, aes(x=Temp_DegC, y=ORP_mV,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+dec1<-ggplot(December.2021, aes(x=Temp_DegC, y=ORP_mV,color=Depth_m)) + geom_point(size=5) + theme_bw()+
   labs(title="Temperature & ORP - December 2021",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
@@ -959,42 +959,42 @@ dec1<-ggplot(December.2021, aes(x=Temp_DegC, y=ORP_mV,color=Depth_m)) + geom_poi
 ggsave(dec1,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_ORP_Temp_December2021_scatterplot.png", width=12, height=10, dpi=600)
 
 ## April
-apr1<-ggplot(April.2022, aes(x=Temp_DegC, y=ORP_mV,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+apr1<-ggplot(April.2022, aes(x=Temp_DegC, y=ORP_mV,color=Depth_m)) + geom_point(size=5) + theme_bw()+
   labs(title="Temperature & ORP - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("Temp (C)") + ylab("ORP (mV)")
 ggsave(apr1,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_ORP_Temp_April2022_scatterplot.png", width=12, height=10, dpi=600)
 
-apr2<-ggplot(April.2022, aes(x=Temp_DegC, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+apr2<-ggplot(April.2022, aes(x=Temp_DegC, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=5) + theme_bw()+
   labs(title="Temperature & DO - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("Temp (C)") + ylab("DO%")
 ggsave(apr2,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_DO_Temp_April2022_scatterplot.png", width=12, height=10, dpi=600)
 
-apr3<-ggplot(April.2022, aes(x=Temp_DegC, y=Dissolved_OrganicMatter_RFU,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+apr3<-ggplot(April.2022, aes(x=Temp_DegC, y=Dissolved_OrganicMatter_RFU,color=Depth_m)) + geom_point(size=5) + theme_bw()+
   labs(title="Temperature & DOM - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("Temp (C)") + ylab("DOM (RFU)")
 ggsave(apr3,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_DOM_Temp_April2022_scatterplot.png", width=12, height=10, dpi=600)
 
-apr4<-ggplot(April.2022, aes(x=DO_Percent_Local, y=Dissolved_OrganicMatter_RFU,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+apr4<-ggplot(April.2022, aes(x=DO_Percent_Local, y=Dissolved_OrganicMatter_RFU,color=Depth_m)) + geom_point(size=5) + theme_bw()+
   labs(title="DO & DOM - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("DO%") + ylab("DOM (RFU)")
 ggsave(apr4,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_DOM_DO_April2022_scatterplot.png", width=12, height=10, dpi=600)
 
-apr5<-ggplot(April.2022, aes(x=ORP_mV, y=Dissolved_OrganicMatter_RFU,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+apr5<-ggplot(April.2022, aes(x=ORP_mV, y=Dissolved_OrganicMatter_RFU,color=Depth_m)) + geom_point(size=5) + theme_bw()+
   labs(title="DOM & ORP - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("DOM") + ylab("ORP (mV)")
 ggsave(apr5,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_DOM_ORP_April2022_scatterplot.png", width=12, height=10, dpi=600)
 
-apr6<-ggplot(April.2022, aes(x=ORP_mV, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=3) + theme_bw()+
+apr6<-ggplot(April.2022, aes(x=ORP_mV, y=DO_Percent_Local,color=Depth_m)) + geom_point(size=5) + theme_bw()+
   labs(title="DO & ORP - April 2022",subtitle="Using Centered & Scaled Data",color="Depth (m)")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
