@@ -1008,6 +1008,7 @@ plot(rda.all.part,
      cex = 1.5)
 dev.off()
 
+# Prep dataframe for plotting RDAs
 rda.sum.all<-summary(rda.all)
 rda.sum.all$sites[,1:2]
 rda.sum.all$cont #cumulative proportion of variance per axis
@@ -1022,7 +1023,7 @@ rda.axes.all<-data.frame(RDA1=rda.sum.all$sites[,1], RDA2=rda.sum.all$sites[,2],
 arrows.all<-data.frame(RDA1=rda.sum.all$biplot[,1], RDA2=rda.sum.all$biplot[,2], Label=rownames(rda.sum.all$biplot))
 #arrows.all$Label[(arrows.all$Label) == "ORP_mV"] <- "ORP (mV)"
 arrows.all$Label[(arrows.all$Label) == "Dissolved_OrganicMatter_RFU"] <- "DOM (RFU)"
-arrows.all$Label[(arrows.all$Label) == "DO_Percent_Local"] <- "DO %"
+arrows.all$Label[(arrows.all$Label) == "DO_Percent_Local"] <- "%DO"
 arrows.all$Label[(arrows.all$Label) == "Temp_DegC"] <- "Temp (C)"
 
 rda.sum.all$cont #cumulative proportion of variance per axis
@@ -1054,20 +1055,35 @@ rda.plot2<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=
 ggsave(rda.plot2,filename = "figures/EnvDrivers/SSW_16S_RDA_AllData.png", width=10, height=10, dpi=600)
 
 
-rda.plot3<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate),size=5) +
-  geom_segment(data = arrows.all,mapping = aes(x = 0, y = 0, xend = RDA1*6, yend = RDA2*6),lineend = "round", # See available arrow types in example above
+rda.plot3<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate),size=7) +
+  geom_segment(data = arrows.all,mapping = aes(x = 0, y = 0, xend = RDA1*6.5, yend = RDA2*6.5),lineend = "round", # See available arrow types in example above
                linejoin = "round",
                size = 1,
                arrow = arrow(length = unit(0.15, "inches")),
                colour = "black") +
-  geom_label(data = arrows.all,aes(label = Label, x = RDA1*8, y = RDA2*8, fontface="bold"), size=5)+
-  coord_fixed(ratio = 1, xlim = c(-10,10), ylim = c(-10,10)) + theme_classic() + scale_color_continuous(low="blue3",high="red",trans = 'reverse') +
+  geom_label(data = arrows.all,aes(label = Label, x = RDA1*8, y = RDA2*8, fontface="bold"), size=7)+
+  coord_fixed(ratio = 1, xlim = c(-9,9), ylim = c(-8,8)) + theme_classic() + scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) +
   scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1)) +
+  theme(axis.title.x = element_text(size=16),axis.title.y = element_text(size=16),axis.text = element_text(size=14),axis.text.x = element_text(vjust=1),legend.title.align=0.5, legend.title = element_text(size=16),legend.text = element_text(size=14),plot.title = element_text(size=20)) +
   labs(title="RDA: Bacteria/Archaea Composition in Salton Seawater",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
   xlab("RDA1 [30.80%]") + ylab("RDA2 [23.65%]")
 
 ggsave(rda.plot3,filename = "figures/EnvDrivers/SSW_16S_RDA_AllData_bigger.png", width=15, height=15, dpi=600)
+
+rda.plot4<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate),size=7) +
+  geom_segment(data = arrows.all,mapping = aes(x = 0, y = 0, xend = RDA1*6.5, yend = RDA2*6.5),lineend = "round", # See available arrow types in example above
+               linejoin = "round",
+               size = 1,
+               arrow = arrow(length = unit(0.15, "inches")),
+               colour = "black") +
+  geom_label(data = arrows.all,aes(label = Label, x = RDA1*8, y = RDA2*8, fontface="bold"), size=9)+
+  coord_fixed(ratio = 1, xlim = c(-9,9), ylim = c(-8,8)) + theme_classic() + scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) +
+  scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),axis.text = element_text(size=16),axis.text.x = element_text(vjust=1),legend.title.align=0.5, legend.title = element_text(size=16),legend.text = element_text(size=14)) +
+  labs(color="Depth (m)") +
+  xlab("RDA1 [30.80%]") + ylab("RDA2 [23.65%]")
+
+ggsave(rda.plot4,filename = "figures/EnvDrivers/SSW_16S_RDA_AllData_poster.png", width=15, height=15, dpi=600)
 
 # #### Plot RDA - Aug 2021 ####
 # #plot(rda.aug2021) # depending on how many species you have, this step may take a while

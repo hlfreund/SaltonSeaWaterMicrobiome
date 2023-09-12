@@ -159,7 +159,7 @@ head(b.phy.dep_m) ## relative abundance based on sum of counts by Phylum!
 # Taxonomic Summary by Depth
 tp1<-ggplot(b.phy.dep_m, aes(Phylum, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
-  scale_colour_gradient2(low="red",high="blue3",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
+  scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Phyla", y="Relative Abundance", title="Microbial Phyla & Depth",color="Depth (m)")
@@ -168,7 +168,7 @@ ggsave(tp1,filename = "figures/RelativeAbundance/Phylum/SSW_16S_Phyla.RA_depth_t
 
 tp1a<-ggplot(b.phy.dep_m[b.phy.dep_m$Count>0.05,], aes(Phylum, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
-  scale_colour_gradient2(low="red",high="blue3",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
+  scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Phyla", y="Relative Abundance", title="Microbial Phyla & Depth",color="Depth (m)")
@@ -385,7 +385,7 @@ ggsave(cd2,filename = "figures/RelativeAbundance/Class/SSW_16S_class.RA_depth_ta
 
 cd2a<-ggplot(b.cls.dep_m[b.cls.dep_m$Count>0.05,], aes(Class, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
-  scale_colour_gradient2(low="red",high="blue3",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
+  scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Class", y="Relative Abundance", title="Microbial Class & Depth",color="Depth (m)")
@@ -610,7 +610,7 @@ ggsave(od2,filename = "figures/RelativeAbundance/Order/SSW_16S_order.RA_depth_ta
 
 od2a<-ggplot(b.ord.dep_m[b.ord.dep_m$Count>0.05,], aes(Order, Count)) +
   geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
-  scale_colour_gradient2(low="red",high="blue3",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
+  scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Order", y="Relative Abundance", title="Microbial Order & Depth",color="Depth (m)")
@@ -842,7 +842,7 @@ bac.dat.all.f[1:4,1:4]
 #
 # fd2a<-ggplot(b.fam.dep_m[b.fam.dep_m$Count>0.05,], aes(Family, Count)) +
 #   geom_jitter(aes(color=as.numeric(Depth_m)), size=2, width=0.15, height=0) +
-#   scale_colour_gradient2(low="red",high="blue3",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
+#   scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) +
 #   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() +
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
 #   labs(x="Microbial Family", y="Relative Abundance", title="Microbial Families & Depth",color="Depth (m)")
@@ -981,7 +981,7 @@ ggsave(f.sd.d.h2,filename = "figures/RelativeAbundance/Family/16S_Families.RA_he
 # Taxonomic Summaries
 f.sd.d.hm.1<-ggplot(b.fam.date.dep_m2[b.fam.date.dep_m2$Count>0.01,], aes(Family, Count)) +
   geom_jitter(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate), size=3, width=0.15, height=0) +
-  scale_colour_gradient2(low="red",high="blue3",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
+  scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Families", y="Relative Abundance", title="Microbial Families by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 1%",color="Depth (m)", shape="Sample Date")
@@ -991,7 +991,7 @@ ggsave(f.sd.d.hm.1,filename = "figures/RelativeAbundance/Family/SSW_16S_Families
 
 f.sd.d.hm.2<-ggplot(b.fam.date.dep_m2[b.fam.date.dep_m2$Count>0.025,], aes(Family, Count)) +
   geom_jitter(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate), size=3, width=0.15, height=0) +
-  scale_colour_gradient2(low="red",high="blue3",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
+  scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Families", y="Relative Abundance", title="Microbial Families by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 2.5%",color="Depth (m)", shape="Sample Date")
@@ -1000,7 +1000,7 @@ ggsave(f.sd.d.hm.2,filename = "figures/RelativeAbundance/Family/SSW_16S_Families
 
 f.sd.d.hm.3<-ggplot(b.fam.date.dep_m2[b.fam.date.dep_m2$Count>0.05,], aes(Family, Count)) +
   geom_jitter(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate), size=3, width=0.15, height=0) +
-  scale_colour_gradient2(low="red",high="blue3",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
+  scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Families", y="Relative Abundance", title="Microbial Families by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 5%",color="Depth (m)", shape="Sample Date")
@@ -1309,7 +1309,7 @@ ggsave(g.sd.d.h2,filename = "figures/RelativeAbundance/Genus/16S_Genera.RA_heatm
 # Taxonomic Summaries
 g.sd.d.hm.1<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.01,], aes(Genus, Count)) +
   geom_jitter(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate), size=3, width=0.15, height=0) +
-  scale_colour_gradient2(low="red",high="blue3",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
+  scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 1%",color="Depth (m)", shape="Sample Date")
@@ -1319,16 +1319,25 @@ ggsave(g.sd.d.hm.1,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.RA
 
 g.sd.d.hm.2<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.025,], aes(Genus, Count)) +
   geom_jitter(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate), size=3, width=0.15, height=0) +
-  scale_colour_gradient2(low="red",high="blue3",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
+  scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 2.5%",color="Depth (m)", shape="Sample Date")
 
 ggsave(g.sd.d.hm.2,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.RA_date_depth_taxasum_2.5perc.png", width=18, height=10, dpi=600)
 
+g.sd.d.hm.2a<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.025,], aes(Genus, Count)) +
+  geom_jitter(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate), size=6, width=0.15, height=0) +
+  scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) +
+  geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),axis.text = element_text(size=16),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01,face="bold"),legend.title.align=0.5, legend.title = element_text(size=16),legend.text = element_text(size=14)) +
+  labs(x="Microbial Genera", y="Relative Abundance",color="Depth (m)", shape="Sample Date")
+
+ggsave(g.sd.d.hm.2a,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.RA_date_depth_taxasum_2.5perc_poster.png", width=18, height=10, dpi=600)
+
 g.sd.d.hm.3<-ggplot(b.gen.date.dep_m2[b.gen.date.dep_m2$Count>0.05,], aes(Genus, Count)) +
   geom_jitter(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate), size=3, width=0.15, height=0) +
-  scale_colour_gradient2(low="red",high="blue3",midpoint=5.5,guide = guide_colourbar(reverse = TRUE)) +
+  scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA) + theme_classic() + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=40, vjust=.93, hjust=1.01),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   labs(x="Microbial Genera", y="Relative Abundance", title="Microbial Genera by Sample Date & Depth",subtitle="Includes taxa with Relative Abundance > 5%",color="Depth (m)", shape="Sample Date")

@@ -584,14 +584,14 @@ clr.sulf.all$PathShort<-factor(clr.sulf.all$PathShort,levels=c("A.SO4 Red","D.SO
 clr.sulf.all$PathSpecShort<-clr.sulf.all$PathwaySpecific
 clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Dissimilatory Sulfate Redox"] <- "D.SO4 RedOx"
 clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Assimilatory Sulfate Reduction"] <- "A.SO4 Red"
-clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Multiple Pathways"] <- "MultiPaths"
-clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Sulfur Disproportionation"] <- "S Disprop."
+clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Multiple Pathways"] <- "Multi"
+clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Sulfur Disproportionation"] <- "Dispro"
 clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Sulfide Oxidation"] <- "H2S Ox"
 clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Sulfite Oxidation"] <- "SO3 Ox"
 clr.sulf.all$PathSpecShort[(clr.sulf.all$PathSpecShort) == "Thiosulfate Oxidation"] <- "S2O3 Ox"
 
 clr.sulf.all$PathwaySpecific<-factor(clr.sulf.all$PathwaySpecific,levels=c("Assimilatory Sulfate Reduction","Dissimilatory Sulfate Redox","Multiple Pathways","SOX","Sulfur Disproportionation","Sulfide Oxidation","Sulfite Oxidation","Thiosulfate Oxidation"))
-clr.sulf.all$PathSpecShort<-factor(clr.sulf.all$PathSpecShort,levels=c("A.SO4 Red","D.SO4 RedOx","MultiPaths","S Disprop.","H2S Ox","SO3 Ox","S2O3 Ox"))
+clr.sulf.all$PathSpecShort<-factor(clr.sulf.all$PathSpecShort,levels=c("A.SO4 Red","D.SO4 RedOx","Multi","Dispro","H2S Ox","SO3 Ox","S2O3 Ox"))
 
 clr.sulf.all$KO_Function.KEGG = factor(clr.sulf.all$KO_Function.KEGG, levels=unique(clr.sulf.all$KO_Function.KEGG[order(clr.sulf.all$Pathway)]), ordered=TRUE)
 
@@ -653,7 +653,7 @@ sulf.hm1a5<-ggplot(clr.sulf.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPe
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1a5,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_SampleID_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=15, dpi=600)
+ggsave(sulf.hm1a5,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_SampleID_by_Function_SampDate_Pathway_heatmap.png", width=20, height=15, dpi=600)
 
 sulf.hm1a6<-ggplot(clr.sulf.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -735,7 +735,7 @@ sulf.hm1b3<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovP
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(~SampDate,scales="free_x", space = "free")
 
-ggsave(sulf.hm1b3,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_best_heatmap.png", width=20, height=13, dpi=600)
+ggsave(sulf.hm1b3,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_heatmap.png", width=20, height=13, dpi=600)
 
 sulf.hm1b4<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
@@ -755,7 +755,7 @@ sulf.hm1b5<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovP
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(Pathway~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1b5,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=15, dpi=600)
+ggsave(sulf.hm1b5,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_heatmap.png", width=20, height=15, dpi=600)
 
 sulf.hm1b6<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -765,7 +765,7 @@ sulf.hm1b6<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovP
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathShort~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1b6,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap2.png", width=20, height=15, dpi=600)
+ggsave(sulf.hm1b6,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_Pathway_best_heatmap.png", width=20, height=15, dpi=600)
 
 sulf.hm1b7<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -775,7 +775,7 @@ sulf.hm1b7<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovP
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathwaySpecific~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1b7,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap.png", width=20, height=20, dpi=600)
+ggsave(sulf.hm1b7,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_PathwaySpecific_heatmap.png", width=20, height=20, dpi=600)
 
 sulf.hm1b8<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
@@ -785,7 +785,17 @@ sulf.hm1b8<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovP
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathSpecShort~SampDate, scales="free", space = "free")
 
-ggsave(sulf.hm1b8,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap2.png", width=20, height=20, dpi=600)
+ggsave(sulf.hm1b8,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap.png", width=20, height=20, dpi=600)
+
+sulf.hm1b8a<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+  geom_tile(colour="white",size=0.25) +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(fill="CLR Coverage Per KO") +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
+        axis.text = element_text(size=26,face="bold"),legend.text = element_text(size=15),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),strip.text = element_text(size = 12,face="bold"),strip.text.y=element_text(face="bold",size = 17.5),strip.text.x = element_text(size = 25)) +
+  xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathSpecShort~SampDate, scales="free", space = "free")
+
+ggsave(sulf.hm1b8a,filename = "figures/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap_poster.png", width=25, height=25, dpi=600)
 
 # sulf.hm1e<-ggplot(clr.sulf.all[clr.sulf.all$Depth_m==0,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
