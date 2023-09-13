@@ -1029,6 +1029,8 @@ arrows.all$Label[(arrows.all$Label) == "Temp_DegC"] <- "Temp (C)"
 rda.sum.all$cont #cumulative proportion of variance per axis
 # RDA1=30.8%, RDA2=23.65%
 
+# Plot RDAs
+
 rda.plot1<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(size=2) +
   geom_segment(data = arrows.all,mapping = aes(x = 0, y = 0, xend = RDA1, yend = RDA2),lineend = "round", # See available arrow types in example above
                linejoin = "round",
@@ -1054,8 +1056,7 @@ rda.plot2<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=
 
 ggsave(rda.plot2,filename = "figures/EnvDrivers/SSW_16S_RDA_AllData.png", width=10, height=10, dpi=600)
 
-
-rda.plot3<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate),size=7) +
+rda.plot3<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=as.numeric(as.character(Depth_m)),shape=SampDate),size=5) +
   geom_segment(data = arrows.all,mapping = aes(x = 0, y = 0, xend = RDA1*6.5, yend = RDA2*6.5),lineend = "round", # See available arrow types in example above
                linejoin = "round",
                size = 1,
@@ -1064,7 +1065,7 @@ rda.plot3<-ggplot(rda.axes.all, aes(x = RDA1, y = RDA2)) + geom_point(aes(color=
   geom_label(data = arrows.all,aes(label = Label, x = RDA1*8, y = RDA2*8, fontface="bold"), size=7)+
   coord_fixed(ratio = 1, xlim = c(-9,9), ylim = c(-8,8)) + theme_classic() + scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) +
   scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
-  theme(axis.title.x = element_text(size=16),axis.title.y = element_text(size=16),axis.text = element_text(size=14),axis.text.x = element_text(vjust=1),legend.title.align=0.5, legend.title = element_text(size=16),legend.text = element_text(size=14),plot.title = element_text(size=20)) +
+  theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),axis.text = element_text(size=14),axis.text.x = element_text(vjust=1),legend.title.align=0.5, legend.title = element_text(size=15),legend.text = element_text(size=14),plot.title = element_text(size=20)) +
   labs(title="RDA: Bacteria/Archaea Composition in Salton Seawater",subtitle="Using Centered-Log Ratio Data",color="Depth (m)") +
   xlab("RDA1 [30.80%]") + ylab("RDA2 [23.65%]")
 

@@ -116,10 +116,19 @@ pcoa2<-ggplot(b.pcoa.meta, aes(x=Axis.1, y=Axis.2)) +
   geom_point(aes(color=as.numeric(as.character(Depth_m)),shape=SampleMonth), size=5)+theme_bw()+
   labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using Centered-Log Ratio Data",color="Depth (m)")+
   theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=12),axis.text.x = element_text(vjust=1),legend.text = element_text(size=12),plot.title = element_text(size=17))+
-  scale_color_continuous(low="blue3",high="red",trans = 'reverse') + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
+  scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
   xlab("PC1 [31.99%]") + ylab("PC2 [27.38%]")
 
 ggsave(pcoa2,filename = "figures/BetaDiversity/SSW_16S_pcoa_CLR_depth_sampdate.png", width=12, height=10, dpi=600)
+
+pcoa3<-ggplot(b.pcoa.meta, aes(x=Axis.1, y=Axis.2)) +
+  geom_point(aes(color=as.numeric(as.character(Depth_m)),shape=SampleMonth), size=5)+theme_bw()+
+  labs(title="PCoA: Bacteria/Archaea in Salton Seawater",subtitle="Using Centered-Log Ratio Data",color="Depth (m)")+
+  theme_classic()+ theme(axis.title.x = element_text(size=15),axis.title.y = element_text(size=15),legend.title.align=0.5, legend.title = element_text(size=15),axis.text = element_text(size=14),axis.text.x = element_text(vjust=1),legend.text = element_text(size=14),plot.title = element_text(size=17))+
+  scale_colour_gradient2(low="red",mid="hotpink",high="blue",midpoint=5.25,guide = guide_colourbar(reverse = TRUE)) + scale_shape_discrete(labels=c("August 2021","December 2021","April 2022"),name="Sample Date") +
+  xlab("PC1 [31.99%]") + ylab("PC2 [27.38%]")
+
+ggsave(pcoa3,filename = "figures/BetaDiversity/SSW_16S_pcoa_CLR_depth_sampdate_poster.png", width=12, height=10, dpi=600)
 
 #### Homogeneity of Variance & PERMANOVA tests - Composition by Groups ####
 ## betadisper to look at homogeneity of group dispersions (aka variance) when considering multiple variables
