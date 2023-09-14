@@ -1356,14 +1356,14 @@ ggsave(nitro.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Nitrogen/Prese
 bin.clr.na[1:4,1:4]
 
 # pull out Carbon metabolism functions from CLR transformed, summed coverages (summed coverage per KO)
-carb.ko.na.bin<-bin.clr.na[,which(colnames(bin.clr) %in% carb.fxns.bins$KO_ID)] # merge CLR data w/ carbon-related fxns found in contigs from KOFamScan
-dim(carb.ko.na.bin) # 35 total bins, 14 columns aka functions
+carb.ko.na.bin<-bin.clr.na[,which(colnames(bin.clr.na) %in% carb.fxns.bins$KO_ID)] # merge CLR data w/ carbon-related fxns found in contigs from KOFamScan
+dim(carb.ko.na.bin) # 35 total bins, 43 columns aka functions
 carb.ko.na.bin<-carb.ko.na.bin[rowSums(is.na(carb.ko.na.bin)) != ncol(carb.ko.na.bin), ] # drop all rows that contain ONLY NAs
 dim(carb.ko.na.bin) # 31 bins have the 43 functions
 # is.na() tells us which elements are NA (TRUE) or not NA (FALSE)
-# rowSums(is.na(df)) tells us how many columns have NAs; in this df, there are a total of 14 columns
+# rowSums(is.na(df)) tells us how many columns have NAs; in this df, there are a total of 43 columns
 # if rowSums(is.na(df)) != total # of rows, aka if the total columns per row with NAs is LESS than the total # of columns per row, then keep the row
-# ^ if the row contains only NAs, and rowSums(is.na(df)) is NOT 14 (total # of columns), then we keep it
+# ^ if the row contains only NAs, and rowSums(is.na(df)) is NOT 43 (total # of columns), then we keep it
 
 carb.ko.na.bin$Bin_ID<-rownames(carb.ko.na.bin)
 carb.ko.na.bin.melt<-melt(carb.ko.na.bin, by="Bin_ID")
@@ -1395,7 +1395,7 @@ clr.carb.all.bin1<-merge(clr.carb.ko.na.bin,bin_meta_scaled,by="Bin_ID")
 clr.carb.all.bin<-merge(clr.carb.all.bin1,mag_tax,by=c("Bin_ID","PlotBin"))
 
 head(clr.carb.all.bin)
-clr.carb.all.bin$PlotBin = factor(clr.carb.all.bin$PlotBin, levels=unique(clr.carb.all.bin$PlotBin[order(clr.carb.all.bin$SampDate,clr.carb.all.bin$Depth_m)]), ordered=TRUE)
+#clr.carb.all.bin$PlotBin = factor(clr.carb.all.bin$PlotBin, levels=unique(clr.carb.all.bin$PlotBin[order(clr.carb.all.bin$SampDate,clr.carb.all.bin$Depth_m)]), ordered=TRUE)
 clr.carb.all.bin$SampDate<-gsub("\\."," ",clr.carb.all.bin$SampDate)
 clr.carb.all.bin$SampDate<-factor(clr.carb.all.bin$SampDate, levels=c("August 2021","December 2021","April 2022"))
 
@@ -1414,7 +1414,8 @@ clr.carb.all.bin$PathShort[(clr.carb.all.bin$PathShort) == "Calvin Cycle"] <- "C
 clr.carb.all.bin$Pathway<-factor(clr.carb.all.bin$Pathway,levels=c("3-Hydroxypropionate Bi-cycle","Reductive Citrate Cycle","Phosphate acetyltransferase-acetate kinase Pathway","Reductive acetyl-CoA Pathway","Calvin Cycle"))
 clr.carb.all.bin$PathShort<-factor(clr.carb.all.bin$PathShort,levels=c("3HOP-BC","rTCA","PAAK","R.a-CoA","Calvin"))
 
-clr.carb.all.bin$KO_Function.KEGG = factor(clr.carb.all.bin$KO_Function.KEGG, levels=unique(clr.carb.all.bin$KO_Function.KEGG[order(clr.carb.all.bin$Pathway)]), ordered=TRUE)
+#clr.carb.all.bin$KO_Function.KEGG = factor(clr.carb.all.bin$KO_Function.KEGG, levels=unique(clr.carb.all.bin$KO_Function.KEGG[order(clr.carb.all.bin$Pathway)]), ordered=TRUE)
+clr.carb.all.bin$PlotBin = factor(clr.carb.all.bin$PlotBin, levels=unique(clr.carb.all.bin$PlotBin[order(clr.carb.all.bin$SampDate,clr.carb.all.bin$Depth_m)]), ordered=TRUE)
 
 head(clr.carb.all.bin)
 
@@ -1454,7 +1455,7 @@ carb.hm1b1<-ggplot(clr.carb.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCo
 
 ggsave(carb.hm1b1,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Carbon_KOFxns_MGMs_Bins_Genus_by_Function_Pathway_heatmap.png", width=22, height=20, dpi=600)
 
-carb.hm1d<-ggplot(clr.carb.all.bin, aes(Bin_ID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
+carb.hm1d<-ggplot(clr.carb.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.8","0.45","0.1"),breaks=c(0.8,0.45,0.1)) + labs(title="Carbon Fixation in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
