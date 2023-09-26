@@ -1379,12 +1379,12 @@ b.genus_RA_meta2$Gen_Color <- as.character(b.genus_RA_meta2$Gen_Color)
 ## \\1- == replacing last period with a -, keeping first pattern described in parentheses in tact with \\1
 ## turns 4.13.22.0m --> 4.13.22-0m
 
-gsd1<-ggplot(b.genus_RA_meta2, aes(x=PlotID, y=Count, fill=Genus))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
+ten.gen<-ggplot(b.genus_RA_meta2, aes(x=PlotID, y=Count, fill=Genus))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
   labs(title = "Microbial Genus Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes Ten Most Relatively Abundant Genera",fill="Genus")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
   guides(fill=guide_legend(ncol=1))+scale_fill_manual(name ="Genus",values=unique(b.genus_RA_meta2$Gen_Color[order(b.genus_RA_meta2$Genus)]),labels=c(unique(b.genus_RA_meta2$Genus[order(b.genus_RA_meta2$Genus)])))
 
-ggsave(b.gen_RA0,filename = "figures/RelativeAbundance/Genus/SSW_16S_TenMostAbundant_Genera_barplot.png", width=12, height=10, dpi=600)
+ggsave(ten.gen,filename = "figures/RelativeAbundance/Genus/SSW_16S_TenMostAbundant_Genera_barplot.png", width=12, height=10, dpi=600)
 
 #### Genus Relative Abundance - August ####
 # use dcast to count up ASVs within each Genus across aug of the samples
