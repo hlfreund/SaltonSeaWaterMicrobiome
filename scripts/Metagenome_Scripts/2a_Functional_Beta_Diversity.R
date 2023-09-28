@@ -1747,14 +1747,13 @@ unique(clr.carb.all$Pathway)
 clr.carb.all<-subset(clr.carb.all, clr.carb.all$Pathway!="Multiple Pathways")
 "Multiple Pathways" %in% clr.carb.all$Pathway
 clr.carb.all$PathShort<-clr.carb.all$Pathway
-clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Reductive Citrate Cycle"] <- "rTCA"
-clr.carb.all$PathShort[(clr.carb.all$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3HOP-BC"
-clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Phosphate acetyltransferase-acetate kinase Pathway"] <- "PAAK"
-clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Reductive acetyl-CoA Pathway"] <- "R.a-CoA"
-clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Calvin Cycle"] <- "Calvin"
+clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Reductive Tricarboxylic Acid Cycle"] <- "rTCA"
+clr.carb.all$PathShort[(clr.carb.all$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3HP"
+clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Reductive acetyl-CoA Pathway"] <- "RAcCoa"
+clr.carb.all$PathShort[(clr.carb.all$PathShort) == "Calvin Cycle"] <- "CBB"
 
-clr.carb.all$Pathway<-factor(clr.carb.all$Pathway,levels=c("3-Hydroxypropionate Bi-cycle","Reductive Citrate Cycle","Phosphate acetyltransferase-acetate kinase Pathway","Reductive acetyl-CoA Pathway","Calvin Cycle"))
-clr.carb.all$PathShort<-factor(clr.carb.all$PathShort,levels=c("3HOP-BC","rTCA","PAAK","R.a-CoA","Calvin"))
+clr.carb.all$Pathway<-factor(clr.carb.all$Pathway,levels=c("3-Hydroxypropionate Bi-cycle","Reductive Tricarboxylic Acid Cycle","Reductive acetyl-CoA Pathway","Calvin Cycle"))
+clr.carb.all$PathShort<-factor(clr.carb.all$PathShort,levels=c("3HP","rTCA","RAcCoa","CBB"))
 
 clr.carb.all$KO_Function.KEGG = factor(clr.carb.all$KO_Function.KEGG, levels=unique(clr.carb.all$KO_Function.KEGG[order(clr.carb.all$Pathway)]), ordered=TRUE)
 
@@ -1952,14 +1951,13 @@ unique(clr.carb.all.bi$Pathway)
 clr.carb.all.bi<-subset(clr.carb.all.bi, clr.carb.all.bi$Pathway!="Multiple Pathways")
 "Multiple Pathways" %in% clr.carb.all.bi$Pathway
 clr.carb.all.bi$PathShort<-clr.carb.all.bi$Pathway
-clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "Reductive Citrate Cycle"] <- "rTCA"
-clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3HOP-BC"
-clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "Phosphate acetyltransferase-acetate kinase Pathway"] <- "PAAK"
-clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "Reductive acetyl-CoA Pathway"] <- "R.a-CoA"
-clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "Calvin Cycle"] <- "Calvin"
+clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "Reductive Tricarboxylic Acid Cycle"] <- "rTCA"
+clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3HP"
+clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "Reductive acetyl-CoA Pathway"] <- "RAcCoa"
+clr.carb.all.bi$PathShort[(clr.carb.all.bi$PathShort) == "Calvin Cycle"] <- "CBB"
 
-clr.carb.all.bi$Pathway<-factor(clr.carb.all.bi$Pathway,levels=c("3-Hydroxypropionate Bi-cycle","Reductive Citrate Cycle","Phosphate acetyltransferase-acetate kinase Pathway","Reductive acetyl-CoA Pathway","Calvin Cycle"))
-clr.carb.all.bi$PathShort<-factor(clr.carb.all.bi$PathShort,levels=c("3HOP-BC","rTCA","PAAK","R.a-CoA","Calvin"))
+clr.carb.all.bi$Pathway<-factor(clr.carb.all.bi$Pathway,levels=c("3-Hydroxypropionate Bi-cycle","Reductive Tricarboxylic Acid Cycle","Reductive acetyl-CoA Pathway","Calvin Cycle"))
+clr.carb.all.bi$PathShort<-factor(clr.carb.all.bi$PathShort,levels=c("3HP","rTCA","RAcCoa","CBB"))
 
 clr.carb.all.bi$KO_Function.KEGG = factor(clr.carb.all.bi$KO_Function.KEGG, levels=unique(clr.carb.all.bi$KO_Function.KEGG[order(clr.carb.all.bi$Pathway)]), ordered=TRUE)
 
@@ -2136,22 +2134,26 @@ clr.photo.all$PlotID = factor(clr.photo.all$PlotID, levels=unique(clr.photo.all$
 clr.photo.all$SampDate<-gsub("\\."," ",clr.photo.all$SampDate)
 clr.photo.all$SampDate<-factor(clr.photo.all$SampDate, levels=c("August 2021","December 2021","April 2022"))
 
+unique(clr.photo.all$Pathway)
 clr.photo.all$PathShort<-clr.photo.all$Pathway
 clr.photo.all$PathShort[(clr.photo.all$PathShort) == "Proteorhodopsin"] <- "PR"
+#clr.photo.all$PathShort[(clr.photo.all$PathShort) == "Bacteriorhodopsin"] <- "BR"
+clr.photo.all$PathShort[(clr.photo.all$PathShort) == "Sensory Rhodopsin"] <- "SR"
+#clr.photo.all$PathShort[(clr.photo.all$PathShort) == "Halorhodopsin"] <- "HR"
 clr.photo.all$PathShort[(clr.photo.all$PathShort) == "Photosystem II"] <- "PS II"
 clr.photo.all$PathShort[(clr.photo.all$PathShort) == "Photosystem I"] <- "PS I"
 clr.photo.all$PathShort[(clr.photo.all$PathShort) == "Anoxygenic Photosystem II"] <- "AnOx PS"
 
-clr.photo.all$Pathway<-factor(clr.photo.all$Pathway,levels=c("Proteorhodopsin","Photosystem II","Photosystem I","Anoxygenic Photosystem II"))
-clr.photo.all$PathShort<-factor(clr.photo.all$PathShort,levels=c("PR","PS II","PS I","AnOx PS"))
+clr.photo.all$Pathway<-factor(clr.photo.all$Pathway,levels=c("Proteorhodopsin","Sensory Rhodopsin","Photosystem II","Photosystem I","Anoxygenic Photosystem II"))
+clr.photo.all$PathShort<-factor(clr.photo.all$PathShort,levels=c("PR","SR","PS II","PS I","AnOx PS"))
 
 clr.photo.all$MethShort<-clr.photo.all$Method
-clr.photo.all$MethShort[(clr.photo.all$MethShort) == "Proteorhodopsin"] <- "PR"
+clr.photo.all$MethShort[(clr.photo.all$MethShort) == "Bacterial Rhodopsin"] <- "Bac Rhod"
 clr.photo.all$MethShort[(clr.photo.all$MethShort) == "Anoxygenic Photosynthesis"] <- "AnOx PS"
 clr.photo.all$MethShort[(clr.photo.all$MethShort) == "Oxygenic Photosynthesis"] <- "Ox PS"
 
-clr.photo.all$Method<-factor(clr.photo.all$Method,levels=c("Proteorhodopsin","Oxygenic Photosynthesis","Anoxygenic Photosynthesis"))
-clr.photo.all$MethShort<-factor(clr.photo.all$MethShort,levels=c("PR","Ox PS","AnOx PS"))
+clr.photo.all$Method<-factor(clr.photo.all$Method,levels=c("Bacterial Rhodopsin","Oxygenic Photosynthesis","Anoxygenic Photosynthesis"))
+clr.photo.all$MethShort<-factor(clr.photo.all$MethShort,levels=c("Bac Rhod","Ox PS","AnOx PS"))
 
 unique(clr.photo.all$Phototrophy)
 clr.photo.all$Phototrophy<-factor(clr.photo.all$Phototrophy,levels=c("Hetero","Auto"))
@@ -2162,7 +2164,7 @@ head(clr.photo.all)
 
 # For heatmap color gradient
 max(clr.photo.all$CLR_SumCovPerKO, na.rm=TRUE)
-max(clr.photo.all$CLR_SumCovPerKO, na.rm=TRUE)/2
+median(clr.photo.all$CLR_SumCovPerKO, na.rm=TRUE)
 min(clr.photo.all$CLR_SumCovPerKO, na.rm=TRUE)
 
 # Figures below
@@ -2170,7 +2172,7 @@ min(clr.photo.all$CLR_SumCovPerKO, na.rm=TRUE)
 
 photo.hm1a<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.25","0.5","-0.3"),breaks=c(1.25,0.5,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -2180,7 +2182,7 @@ ggsave(photo.hm1a,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KO
 
 photo.hm1b<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.25","0.5","-0.3"),breaks=c(1.25,0.5,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -2190,7 +2192,7 @@ ggsave(photo.hm1b,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KO
 
 photo.hm1c<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.25","0.5","-0.3"),breaks=c(1.25,0.5,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
@@ -2200,7 +2202,7 @@ ggsave(photo.hm1c,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KO
 
 photo.hm1d<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.25","0.5","-0.3"),breaks=c(1.25,0.5,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -2210,7 +2212,7 @@ ggsave(photo.hm1d,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KO
 
 photo.hm1e<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.25","0.5","-0.3"),breaks=c(1.25,0.5,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -2220,7 +2222,7 @@ ggsave(photo.hm1e,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KO
 
 photo.hm1f<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.25","0.5","-0.3"),breaks=c(1.25,0.5,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -2230,7 +2232,7 @@ ggsave(photo.hm1f,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KO
 
 photo.hm1g<-ggplot(clr.photo.all, aes(PlotID, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.25","0.5","-0.3"),breaks=c(1.25,0.5,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -2241,7 +2243,7 @@ ggsave(photo.hm1g,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KO
 # by Depth
 # photo.hm1b<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
-#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+#   scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.25","0.5","-0.3"),breaks=c(1.25,0.5,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
 #   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
 #         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
 #         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -2251,7 +2253,7 @@ ggsave(photo.hm1g,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KO
 
 photo.hm1b2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.25","0.5","-0.3"),breaks=c(1.25,0.5,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -2261,7 +2263,7 @@ ggsave(photo.hm1b2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_K
 
 photo.hm1c2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.25","0.5","-0.3"),breaks=c(1.25,0.5,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
@@ -2271,7 +2273,7 @@ ggsave(photo.hm1c2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_K
 
 photo.hm1d2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.25","0.5","-0.3"),breaks=c(1.25,0.5,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -2281,7 +2283,7 @@ ggsave(photo.hm1d2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_K
 
 photo.hm1e2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.25","0.5","-0.3"),breaks=c(1.25,0.5,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -2291,7 +2293,7 @@ ggsave(photo.hm1e2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_K
 
 photo.hm1f2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.25","0.5","-0.3"),breaks=c(1.25,0.5,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -2301,7 +2303,7 @@ ggsave(photo.hm1f2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_K
 
 photo.hm1e2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.85","0.25","-0.3"),breaks=c(0.85,0.25,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("1.25","0.5","-0.3"),breaks=c(1.25,0.5,-0.3)) + labs(title="Phototrophy Metabolism in Salton Seawater Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -2338,22 +2340,26 @@ clr.photo.all.bi$PlotID = factor(clr.photo.all.bi$PlotID, levels=unique(clr.phot
 clr.photo.all.bi$SampDate<-gsub("\\."," ",clr.photo.all.bi$SampDate)
 clr.photo.all.bi$SampDate<-factor(clr.photo.all.bi$SampDate, levels=c("August 2021","December 2021","April 2022"))
 
+unique(clr.photo.all.bi$Pathway)
 clr.photo.all.bi$PathShort<-clr.photo.all.bi$Pathway
 clr.photo.all.bi$PathShort[(clr.photo.all.bi$PathShort) == "Proteorhodopsin"] <- "PR"
+#clr.photo.all.bi$PathShort[(clr.photo.all.bi$PathShort) == "Bacteriorhodopsin"] <- "BR"
+clr.photo.all.bi$PathShort[(clr.photo.all.bi$PathShort) == "Sensory Rhodopsin"] <- "SR"
+#clr.photo.all.bi$PathShort[(clr.photo.all.bi$PathShort) == "Halorhodopsin"] <- "HR"
 clr.photo.all.bi$PathShort[(clr.photo.all.bi$PathShort) == "Photosystem II"] <- "PS II"
 clr.photo.all.bi$PathShort[(clr.photo.all.bi$PathShort) == "Photosystem I"] <- "PS I"
 clr.photo.all.bi$PathShort[(clr.photo.all.bi$PathShort) == "Anoxygenic Photosystem II"] <- "AnOx PS"
 
-clr.photo.all.bi$Pathway<-factor(clr.photo.all.bi$Pathway,levels=c("Proteorhodopsin","Photosystem II","Photosystem I","Anoxygenic Photosystem II"))
-clr.photo.all.bi$PathShort<-factor(clr.photo.all.bi$PathShort,levels=c("PR","PS II","PS I","AnOx PS"))
+clr.photo.all.bi$Pathway<-factor(clr.photo.all.bi$Pathway,levels=c("Proteorhodopsin","Sensory Rhodopsin","Photosystem II","Photosystem I","Anoxygenic Photosystem II"))
+clr.photo.all.bi$PathShort<-factor(clr.photo.all.bi$PathShort,levels=c("PR","SR","PS II","PS I","AnOx PS"))
 
 clr.photo.all.bi$MethShort<-clr.photo.all.bi$Method
-clr.photo.all.bi$MethShort[(clr.photo.all.bi$MethShort) == "Proteorhodopsin"] <- "PR"
+clr.photo.all.bi$MethShort[(clr.photo.all.bi$MethShort) == "Bacterial Rhodopsin"] <- "Bac Rhod"
 clr.photo.all.bi$MethShort[(clr.photo.all.bi$MethShort) == "Anoxygenic Photosynthesis"] <- "AnOx PS"
 clr.photo.all.bi$MethShort[(clr.photo.all.bi$MethShort) == "Oxygenic Photosynthesis"] <- "Ox PS"
 
-clr.photo.all.bi$Method<-factor(clr.photo.all.bi$Method,levels=c("Proteorhodopsin","Oxygenic Photosynthesis","Anoxygenic Photosynthesis"))
-clr.photo.all.bi$MethShort<-factor(clr.photo.all.bi$MethShort,levels=c("PR","Ox PS","AnOx PS"))
+clr.photo.all.bi$Method<-factor(clr.photo.all.bi$Method,levels=c("Bacterial Rhodopsin","Oxygenic Photosynthesis","Anoxygenic Photosynthesis"))
+clr.photo.all.bi$MethShort<-factor(clr.photo.all.bi$MethShort,levels=c("Bac Rhod","Ox PS","AnOx PS"))
 
 clr.photo.all.bi$Phototrophy<-factor(clr.photo.all.bi$Phototrophy,levels=c("Hetero","Auto"))
 
@@ -2985,8 +2991,8 @@ clr.All_GOI.all$PathShort<-clr.All_GOI.all$Pathway
 # vvv can only do this type of renaming if variables are characters, not factors
 clr.All_GOI.all$PathShort[(clr.All_GOI.all$PathShort) == "Assimilatory Sulfate Reduction"] <- "A.SO4 Red"
 clr.All_GOI.all$PathShort[(clr.All_GOI.all$PathShort) == "Dissimilatory Sulfate Redox"] <- "D.SO4 Redox"
-clr.All_GOI.all$PathShort[(clr.All_GOI.all$PathShort) == "Calvin Cycle"] <- "Calvin"
-clr.All_GOI.all$PathShort[(clr.All_GOI.all$PathShort) == "Reductive Citrate Cycle"] <- "rTCA"
+clr.All_GOI.all$PathShort[(clr.All_GOI.all$PathShort) == "Calvin Cycle"] <- "CBB"
+clr.All_GOI.all$PathShort[(clr.All_GOI.all$PathShort) == "Reductive Tricarboxylic Acid Cycle"] <- "rTCA"
 clr.All_GOI.all$PathShort[(clr.All_GOI.all$PathShort) == "3-Hydroxypropionate Bi-cycle"] <- "3-H BC"
 clr.All_GOI.all$PathShort[(clr.All_GOI.all$PathShort) == "Phosphate acetyltransferase-acetate kinase Pathway"] <- "P.A.A.K."
 clr.All_GOI.all$PathShort[(clr.All_GOI.all$PathShort) == "Assimilatory Nitrate Reduction"] <- "A.NO3 Red"
@@ -2996,12 +3002,12 @@ clr.All_GOI.all$PathShort[(clr.All_GOI.all$PathShort) == "Denitrification"] <- "
 
 unique(clr.All_GOI.all$Pathway)
 clr.All_GOI.all$Pathway<-factor(clr.All_GOI.all$Pathway,levels=c("Assimilatory Sulfate Reduction","Dissimilatory Sulfate Redox","SOX",
-                                                         "Reductive Citrate Cycle","3-Hydroxypropionate Bi-cycle","Methanogenesis","Phosphate acetyltransferase-acetate kinase Pathway",
+                                                         "Reductive Tricarboxylic Acid Cycle","3-Hydroxypropionate Bi-cycle","Methanogenesis",
                                                          "Calvin Cycle","Denitrification","Assimilatory Nitrate Reduction","Anammox","Photoheterotrophy"))
 
 unique(clr.All_GOI.all$PathShort)
 clr.All_GOI.all$PathShort<-factor(clr.All_GOI.all$PathShort,levels=c("A.SO4 Red","D.SO4 Redox","SOX",
-                                                             "rTCA","3-H BC","MethGen","P.A.A.K.","Calvin",
+                                                             "rTCA","3-H BC","MethGen","P.A.A.K.","CBB",
                                                              "DeNit","A.NO3 Red","Anammox","PhotoHet"))
 clr.All_GOI.all$KO_Function.KEGG = factor(clr.All_GOI.all$KO_Function.KEGG, levels=unique(clr.All_GOI.all$KO_Function.KEGG[order(clr.All_GOI.all$Cycle,clr.All_GOI.all$Pathway)]), ordered=TRUE)
 
