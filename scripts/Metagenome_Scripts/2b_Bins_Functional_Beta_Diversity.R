@@ -1679,7 +1679,7 @@ ggsave(carb.bi.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Carbon/Presence
 bin.clr.na[1:4,1:4]
 
 # pull out Phototrophy functions from CLR transformed, summed coverages (summed coverage per KO)
-photo.ko.na.bin<-bin.clr[,which(colnames(bin.clr) %in% photo.fxn.bins$KO_ID)] # merge CLR data w/ photo-related fxns found in contigs from KOFamScan
+photo.ko.na.bin<-bin.clr.na[,which(colnames(bin.clr.na) %in% photo.fxn.bins$KO_ID)] # merge CLR data w/ photo-related fxns found in contigs from KOFamScan
 photo.ko.na.bin$Bin_ID<-rownames(photo.ko.na.bin)
 
 photo.ko.na.bin.melt<-melt(photo.ko.na.bin, by="Bin_ID")
@@ -1745,7 +1745,7 @@ min(clr.photo.all.bin$CLR_SumCovPerKO, na.rm=TRUE)
 
 photo.hm1a<-ggplot(clr.photo.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.2","0.02","-0.14"),breaks=c(0.2,0.02,-0.14)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.23","0.22","0.21"),breaks=c(0.23,0.22,0.21)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -1755,7 +1755,7 @@ ggsave(photo.hm1a,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Phototrophy/Photo
 
 photo.hm1a2<-ggplot(clr.photo.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.2","0.02","-0.14"),breaks=c(0.2,0.02,-0.14)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.23","0.22","0.21"),breaks=c(0.23,0.22,0.21)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -1765,7 +1765,7 @@ ggsave(photo.hm1a2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Phototrophy/Phot
 
 photo.hm1a3<-ggplot(clr.photo.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.2","0.02","-0.14"),breaks=c(0.2,0.02,-0.14)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.23","0.22","0.21"),breaks=c(0.23,0.22,0.21)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
@@ -1775,7 +1775,7 @@ ggsave(photo.hm1a3,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Phototrophy/Phot
 
 photo.hm1a4<-ggplot(clr.photo.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.2","0.02","-0.14"),breaks=c(0.2,0.02,-0.14)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.23","0.22","0.21"),breaks=c(0.23,0.22,0.21)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -1785,7 +1785,7 @@ ggsave(photo.hm1a4,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Phototrophy/Phot
 
 photo.hm1a5<-ggplot(clr.photo.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.2","0.02","-0.14"),breaks=c(0.2,0.02,-0.14)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.23","0.22","0.21"),breaks=c(0.23,0.22,0.21)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -1795,7 +1795,7 @@ ggsave(photo.hm1a5,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Phototrophy/Phot
 
 photo.hm1a6<-ggplot(clr.photo.all.bin, aes(PlotBin, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.2","0.02","-0.14"),breaks=c(0.2,0.02,-0.14)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.23","0.22","0.21"),breaks=c(0.23,0.22,0.21)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -1806,7 +1806,7 @@ ggsave(photo.hm1a6,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Phototrophy/Phot
 # by Genus
 photo.hm1b<-ggplot(clr.photo.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.2","0.02","-0.14"),breaks=c(0.2,0.02,-0.14)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.23","0.22","0.21"),breaks=c(0.23,0.22,0.21)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -1816,7 +1816,7 @@ ggsave(photo.hm1b,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Phototrophy/Photo
 
 photo.hm1b2<-ggplot(clr.photo.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.2","0.02","-0.14"),breaks=c(0.2,0.02,-0.14)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.23","0.22","0.21"),breaks=c(0.23,0.22,0.21)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -1826,7 +1826,7 @@ ggsave(photo.hm1b2,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Phototrophy/Phot
 
 photo.hm1b3<-ggplot(clr.photo.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.2","0.02","-0.14"),breaks=c(0.2,0.02,-0.14)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.23","0.22","0.21"),breaks=c(0.23,0.22,0.21)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11)) +
@@ -1836,7 +1836,7 @@ ggsave(photo.hm1b3,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Phototrophy/Phot
 
 photo.hm1b4<-ggplot(clr.photo.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.15) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.2","0.02","-0.14"),breaks=c(0.2,0.02,-0.14)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.23","0.22","0.21"),breaks=c(0.23,0.22,0.21)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.y = element_text(size = 11,face="bold")) +
@@ -1846,7 +1846,7 @@ ggsave(photo.hm1b4,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Phototrophy/Phot
 
 photo.hm1b5<-ggplot(clr.photo.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.2","0.02","-0.14"),breaks=c(0.2,0.02,-0.14)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.23","0.22","0.21"),breaks=c(0.23,0.22,0.21)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -1856,7 +1856,7 @@ ggsave(photo.hm1b5,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Phototrophy/Phot
 
 photo.hm1b6<-ggplot(clr.photo.all.bin, aes(Genus, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.2","0.02","-0.14"),breaks=c(0.2,0.02,-0.14)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.23","0.22","0.21"),breaks=c(0.23,0.22,0.21)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text = element_text(size = 11),strip.text.y=element_text(face="bold")) +
@@ -1866,7 +1866,7 @@ ggsave(photo.hm1b6,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Phototrophy/Phot
 
 photo.hm1e<-ggplot(clr.photo.all.bin[clr.photo.all.bin$Genus==0,], aes(Phototrophy, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.2","0.02","-0.14"),breaks=c(0.2,0.02,-0.14)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.23","0.22","0.21"),breaks=c(0.23,0.22,0.21)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs - 0m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14),strip.text.x = element_text(size = 11,face="bold")) +
@@ -1876,7 +1876,7 @@ ggsave(photo.hm1e,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Phototrophy/Photo
 
 photo.hm1f<-ggplot(clr.photo.all.bin[clr.photo.all.bin$Genus==5,], aes(Phototrophy, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.2","0.02","-0.14"),breaks=c(0.2,0.02,-0.14)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.23","0.22","0.21"),breaks=c(0.23,0.22,0.21)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs - 5m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +
@@ -1886,7 +1886,7 @@ ggsave(photo.hm1f,filename = "figures/MGM_Figs/BinsOnly/FxnDiv/Phototrophy/Photo
 
 photo.hm1g<-ggplot(clr.photo.all.bin[clr.photo.all.bin$Genus==10,], aes(Phototrophy, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
-  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.2","0.02","-0.14"),breaks=c(0.2,0.02,-0.14)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
+  scale_fill_gradient(low="#ffaf43", high="#5f03f8",labels=c("0.23","0.22","0.21"),breaks=c(0.23,0.22,0.21)) + labs(title="Phototrophy Metabolism in Salton Seawater MAGs - 10m",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",fill="CLR Coverage Per KO") +
   theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
         axis.text = element_text(size=15),axis.text.x = element_text(hjust=1,angle=45),legend.text = element_text(size=15),plot.title = element_text(size=22),
         axis.ticks=element_line(size=0.4),panel.grid = element_blank(),plot.subtitle=element_text(size=14)) +

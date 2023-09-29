@@ -2311,6 +2311,52 @@ photo.hm1e2<-ggplot(clr.photo.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCo
 
 ggsave(photo.hm1e2,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Phototrophy_KOFxns_MGMs_Depth_by_Function_SampDate_Phototrophy_Method_best_heatmap.png", width=20, height=15, dpi=600)
 
+
+#### Look at Specific Phototrophy Genes ####
+# Note: Must run section "Pull Out photour Metabolic Fxns from CLR data" before running this section
+head(clr.cov.sum.photo.ko.na) # columns are genes in this df
+
+# merge with scaled metadata and prep for scatterplots of traits across samples
+clr.photo.trait.table<-merge(clr.cov.sum.photo.ko.na,meta_scaled,by="SampleID")
+head(clr.photo.trait.table)
+clr.photo.trait.table$PlotID = factor(clr.photo.trait.table$PlotID, levels=unique(clr.photo.trait.table$PlotID[order(clr.photo.trait.table$SampDate,clr.photo.trait.table$Depth_m)]), ordered=TRUE)
+clr.photo.trait.table$SampDate<-gsub("\\."," ",clr.photo.trait.table$SampDate)
+clr.photo.trait.table$SampDate<-factor(clr.photo.trait.table$SampDate, levels=c("August 2021","December 2021","April 2022"))
+
+head(clr.photo.trait.table)
+
+# Note: not looking at every S cycling gene included in this project but looking at ones that appear to have noticeable trends in heat maps
+
+# `blh; beta-carotene 15,15'-dioxygenase [EC:1.13.11.63]`
+blh.scat<-ggplot(clr.photo.trait.table, aes(x=PlotID, y=`blh; beta-carotene 15,15'-dioxygenase [EC:1.13.11.63]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="Blh Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.photo.trait.table$SampDate_Color[order(clr.photo.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("SampleID") + ylab("CLR-Transformed Coverage")
+
+ggsave(blh.scat,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Fxn_Scatterplots/Blh_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+
+# `sop; sensory rhodopsin`
+sop.scat<-ggplot(clr.photo.trait.table, aes(x=PlotID, y=`sop; sensory rhodopsin`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="Sop Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.photo.trait.table$SampDate_Color[order(clr.photo.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("SampleID") + ylab("CLR-Transformed Coverage")
+
+ggsave(sop.scat,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Fxn_Scatterplots/Sop_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+
+# `psbA; photosystem II P680 reaction center D1 protein [EC:1.10.3.9]`
+psbA.scat<-ggplot(clr.photo.trait.table, aes(x=PlotID, y=`psbA; photosystem II P680 reaction center D1 protein [EC:1.10.3.9]`,color=SampDate,group=SampDate)) + geom_point(size=4) + geom_line() + theme_bw()+
+  labs(title="PsbA Depth of Coverage in Metagenomes",subtitle="Using CLR-Transformed, Gene Coverage Summed by KO",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45, hjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(clr.photo.trait.table$SampDate_Color[order(clr.photo.trait.table$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("SampleID") + ylab("CLR-Transformed Coverage")
+
+ggsave(psbA.scat,filename = "figures/MGM_Figs/FxnDiv/Phototrophy/Fxn_Scatterplots/PsbA_CLR_Coverage_SampleID_scatterplot.png", width=12, height=10, dpi=600)
+
 #### Pull out Phototrophy Metabolic Fxns from Binary Data ####
 photo.ko.bi<-mgm_fxn.binary[,which(colnames(mgm_fxn.binary) %in% photo.fxn$KO_ID)] # merge CLR data w/ N fxns found in contigs from KOFamScan
 photo.ko.bi$SampleID<-rownames(photo.ko.bi)
