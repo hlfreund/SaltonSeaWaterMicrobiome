@@ -96,6 +96,8 @@ ggplot(good.df, aes(x=TotalSeqs,y=GoodsCov))+geom_point()+xlab("Total Seqs per S
 
 
 #### Rarefaction of Raw Counts ####
+# this section explores different ways of utilizing rarefaction and rarefaction functions in vegan
+
 # in vegan ROWS need to be SITES/samples; COLUMNS are SPECIES (OTUs, ASVs)
 min.rar<-min(rowSums(bac.ASV_table[,-1])) ## seeing min sum of OTUs so we can see what min is for rarefaction
 min.rar
