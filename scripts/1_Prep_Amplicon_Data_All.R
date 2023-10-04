@@ -38,7 +38,7 @@ suppressPackageStartupMessages({ # load packages quietly
 #### Import and Prepare Data for Analyses ####
 
 ## Import ALL env plate bacterial ASV count data
-bac.ASV_counts<-data.frame(readRDS("data/SaltonSeawater_16S.V3V4_ASVs_CountsMeta_Robject.rds", refhook = NULL))
+bac.ASV_counts<-data.frame(readRDS("data/DADA2_Results_9.14.22/16S.V3V4_ASVs_Counts_dada2_Robject_copy.rds", refhook = NULL))
 dim(bac.ASV_counts)
 bac.ASV_counts[,1:4]
 
@@ -58,7 +58,7 @@ dim(bac.ASV_counts)
 #dim(bac.ASV_counts)
 
 ## Import ASV taxonomic data
-bac.ASV_tax<-data.frame(readRDS("data/EnvMiSeq_W23_16S.V3V4_ASVs_Taxonomy_dada2_Robject.rds", refhook = NULL))
+bac.ASV_tax<-data.frame(readRDS("data/DADA2_Results_9.14.22/16S.V3V4_ASVs_Taxonomy_dada2_Robject_copy.rds", refhook = NULL))
 head(bac.ASV_tax)
 
 bac.ASV_tax[is.na(bac.ASV_tax)]<- "Unknown" # turn all NAs into "Unkowns"
@@ -71,7 +71,7 @@ head(bac.ASV_tax)
 #### Import metadata ####
 
 # Import all metadata
-metadata<-as.data.frame(read_excel("data/Metadata_EnvMiSeqPlate_Winter23.xlsx", sheet="Metadata"), header=TRUE)
+metadata<-as.data.frame(read_excel("data/DADA2_Results_9.14.22/all_env_data.xlsx", sheet="AllOriginal_Env_Data"), header=TRUE)
 head(metadata)
 metadata$SampleID<-gsub("_",".", metadata$SampleID)
 
@@ -85,16 +85,16 @@ head(metadata)
 
 
 #### Identify & Remove Contaminants ####
-ControlDF<-metadata[metadata$SampleType=="Control",] # pull out samples that are controls
+ControlDF<-metadata[metadata$Sample_Type=="Control",] # pull out samples that are controls
 
-vector_for_decontam<-metadata$Sample_or_Control # use for decontam package
+vector_for_decontam<-metadata$SampleOrControl # use for decontam package
 # ^ tells us which are controls aka TRUE vs which are not aka FALSE
 
 bac.ASV_counts[,-length(bac.ASV_counts)] <- as.data.frame(sapply(bac.ASV_counts[,-length(bac.ASV_counts)], as.numeric)) #convert data frame to numeric
 bac.ASV_c2<-t(bac.ASV_counts[,-length(bac.ASV_counts)]) # transpose so that rows are Samples and columns are ASVs
 contam_df <- isContaminant(bac.ASV_c2, neg=vector_for_decontam)
 
-table(contam_df$contaminant) # identify contaminants aka TRUE: 2156
+table(contam_df$contaminant) # identify contaminants aka TRUE: 1420
 
 contam_asvs <- (contam_df[contam_df$contaminant == TRUE, ]) # pull out ASV IDs for contaminating ASVs
 
@@ -131,14 +131,14 @@ colnames(bac.ASV_counts_CLEAN) # check for control sample IDs
 
 ## and now writing them out to files
 #write(asv_fasta_no_contam, "ASVs-no-contam.fa")
-write.table(bac.ASV_counts_CLEAN, "data/EnvMiSeq_W23_16S.V3V4_ASVs_Counts_NoContam.tsv",
+write.table(bac.ASV_counts_CLEAN, "data/EnvMiSeq_F22_16S.V3V4_ASVs_Counts_NoContam.tsv",
             sep="\t", quote=F, col.names=NA)
-saveRDS(bac.ASV_counts_CLEAN, file = "data/EnvMiSeq_W23_16S.V3V4_ASVs_Counts_NoContam_Robject.rds", ascii = FALSE, version = NULL,
+saveRDS(bac.ASV_counts_CLEAN, file = "data/EnvMiSeq_F22_16S.V3V4_ASVs_Counts_NoContam_Robject.rds", ascii = FALSE, version = NULL,
         compress = TRUE, refhook = NULL)
 
-write.table(bac.ASV_taxa_CLEAN, "data/EnvMiSeq_W23_16S.V3V4_ASVs_Taxa_NoContam.tsv",
+write.table(bac.ASV_taxa_CLEAN, "data/EnvMiSeq_F22_16S.V3V4_ASVs_Taxa_NoContam.tsv",
             sep="\t", quote=F, col.names=NA)
-saveRDS(bac.ASV_taxa_CLEAN, file = "data/EnvMiSeq_W23_16S.V3V4_ASVs_Taxa_NoContam_Robject.rds", ascii = FALSE, version = NULL,
+saveRDS(bac.ASV_taxa_CLEAN, file = "data/EnvMiSeq_F22_16S.V3V4_ASVs_Taxa_NoContam_Robject.rds", ascii = FALSE, version = NULL,
         compress = TRUE, refhook = NULL)
 
 #### Separate Sequences by Project ####
@@ -163,15 +163,15 @@ colnames(lung_b.ASV) %in% row.names(DustDF) # sanity check that this worked
 #### Update Metadata ####
 # create color variable(s) to identify variables by colors
 ## color for sample type
-unique(metadata$Sample_Type)
-metadata$Sample_Type<-factor(metadata$Sample_Type, levels=c("Seawater", "Soil", "Dust","Playa","Fecal", "Lung","Control"))
-
-#colorset1 = melt(c(Seawater="#1f547b",Soil="#c44536",Dust="#432818",Playa="#d00000",Fecal="#66615f",Lung="#47126b",Control="#b13d1e"))
-colorset1 = melt(c(Dust="#432818",Fecal="#66615f",Lung="#47126b",Control="#b13d1e"))
-
-colorset1$Sample_Type<-rownames(colorset1)
-colnames(colorset1)[which(names(colorset1) == "value")] <- "Sample_Color"
-colorset1
+# unique(metadata$Sample_Type)
+# metadata$Sample_Type<-factor(metadata$Sample_Type, levels=c("Seawater", "Soil", "Dust","Playa","Fecal", "Lung","Control"))
+#
+# #colorset1 = melt(c(Seawater="#1f547b",Soil="#c44536",Dust="#432818",Playa="#d00000",Fecal="#66615f",Lung="#47126b",Control="#b13d1e"))
+# colorset1 = melt(c(Dust="#432818",Fecal="#66615f",Lung="#47126b",Control="#b13d1e"))
+#
+# colorset1$Sample_Type<-rownames(colorset1)
+# colnames(colorset1)[which(names(colorset1) == "value")] <- "Sample_Color"
+# colorset1
 
 metadata<-merge(metadata, colorset1, by="Sample_Type")
 head(metadata)
@@ -180,16 +180,16 @@ rownames(metadata)<-metadata$SampleID
 head(metadata)
 metadata$Depth_m<-factor(metadata$Depth_m, levels=c("0","2","3","4","5","7","8","9","10","11"))
 
-unique(metadata$SampleMonth)
-metadata$SampleMonth<-factor(metadata$SampleMonth, levels=c("Januarhy","February","March","April","May","June","August","September", "October","November","December","NA"))
-
-cold2warm1<-get_palette(paste0("#",c("252A52", "66ADE5", "FFC465","BF1B0B")),k=10)
-names(cold2warm1) <- levels(metadata$Depth_m)
-
-fair_cols <- paste0("#",c("252A52", "66ADE5", "FFC465","BF1B0B"))
-names(fair_cols) <- letters[1:4]
-fair_ramp <- scales::colour_ramp(fair_cols)
-fair_sat <- saturation(fair_ramp, 1)
+# unique(metadata$SampleMonth)
+# metadata$SampleMonth<-factor(metadata$SampleMonth, levels=c("Januarhy","February","March","April","May","June","August","September", "October","November","December","NA"))
+#
+# cold2warm1<-get_palette(paste0("#",c("252A52", "66ADE5", "FFC465","BF1B0B")),k=10)
+# names(cold2warm1) <- levels(metadata$Depth_m)
+#
+# fair_cols <- paste0("#",c("252A52", "66ADE5", "FFC465","BF1B0B"))
+# names(fair_cols) <- letters[1:4]
+# fair_ramp <- scales::colour_ramp(fair_cols)
+# fair_sat <- saturation(fair_ramp, 1)
 
 ### Transform Data ####
 # first we merge the ASV count object and the ASV taxonomy object together by column called "ASV_ID"

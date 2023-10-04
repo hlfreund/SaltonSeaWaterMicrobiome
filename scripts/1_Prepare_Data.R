@@ -35,7 +35,6 @@ suppressPackageStartupMessages({ # load packages quietly
 #save.image("data/SSW_analysis.Rdata") # save global env to Rdata file
 
 #### Import and Prepare Data for Analyses ####
-#### Import and Prepare Data for Analyses ####
 
 ## NOTES ABOUT DATA:
 # eukaryotic counts have been removed; contaminant counts removed with decontam(); all non-Lyons-samples excluded from data set before importing into this script
@@ -66,6 +65,8 @@ bac.ASV_table <- as.data.frame(dcast(bac.ASV_all, SampleID~ASV_ID, value.var="Co
 bac.ASV_table[,1:4] # counts by asvs per sample
 rownames(bac.ASV_table)<-bac.ASV_table$SampleID
 bac.ASV_table[1:4,1:4]
+
+rowSums(bac.ASV_table[,-1]) # total ASVs post decontamination
 
 # Create taxa table
 bac.ASV_taxa<-as.data.frame(unique(subset(bac.ASV_all, select=c(ASV_ID,Kingdom, Phylum, Class, Order, Family, Genus, Species))))
