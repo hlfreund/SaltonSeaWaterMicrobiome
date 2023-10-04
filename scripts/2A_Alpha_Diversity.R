@@ -178,17 +178,20 @@ assay(b_vst1) #see output of VST
 b.vst<-assay(b_vst1)
 
 #### Compare Transformed ASVs vs Raw Counts ####
-total_asvs<-data.frame(ASV_Total=rowSums(bac.ASV_table[,-1]),metadata)
-total_asvs$SampleID = factor(total_asvs$SampleID, levels=unique(total_asvs$SampleID[order(total_asvs$ASV_Total)]), ordered=TRUE)
 
-ggplot(data=total_asvs, aes(x=SampleID, y=ASV_Total,fill=Sample_Type)) +
-  geom_bar(stat="identity",colour="black")+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+bac.ASV_table$SampleID = factor(bac.ASV_table$SampleID, levels=unique(bac.ASV_table$SampleID[order(rowSums(bac.ASV_table[,-1]))]), ordered=TRUE)
+
+raw.tot.counts<-ggplot(data=bac.ASV_table, aes(x=bac.ASV_table$SampleID, y=rowSums(bac.ASV_table[,-1]))) +
+  geom_bar(stat="identity",colour="black",fill="dodgerblue")+theme(axis.text.x = element_text(angle = 45, hjust=1)) +
+  labs(title="Total ASVs per Sample",subtitle="Based on Raw ASV Counts")+ylab("Total ASVs")+xlab("SampleID")
+
+ggsave(raw.tot.counts,filename = "figures/AlphaDiversity/SSW_16S_Total_ASVs_per_Sample_barplot.png", width=13, height=10, dpi=600)
 
 # Calculate rarefied ASVs per Sample
-total_rar_asvs<-data.frame(ASV_Total=rowSums(bac.ASV.rar),metadata)
 
-ggplot(data=total_rar_asvs, aes(x=SampleID, y=ASV_Total,fill=Sample_Type)) +
-  geom_bar(stat="identity",colour="black")+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+ggplot(data=as.data.frame(bac.ASV.rar), aes(x=rownames(bac.ASV.rar), y=rowSums(bac.ASV.rar))) +
+  geom_bar(stat="identity",colour="black",fill="dodgerblue")+theme(axis.text.x = element_text(angle = 45, hjust=1)) +
+  labs(title="Total Rarefied ASVs per Sample",subtitle="Based on Rarefied ASV Counts")+ylab("Total Rarefied ASVs")+xlab("SampleID")
 
 # Calculate VST ASVs per Sample
 total_vst_asvs<-data.frame(ASV_Total=colSums(b.vst),metadata)
@@ -331,6 +334,58 @@ hist(bac.div.metadat.rar$Sulfide_microM, col="blue")
 qqnorm(bac.div.metadat.rar$Sulfide_microM, pch = 1, frame = FALSE) # with outliars
 qqline(bac.div.metadat.rar$Sulfide_microM, col = "red", lwd = 2)
 
+#### Compare Means of Shannon Diversity - Rarefied Data ####
+head(bac.div.metadat.rar)
+aug.divmeta<-bac.div.metadat.rar[bac.div.metadat.rar$SampDate=="August.2021",]
+dec.divmeta<-bac.div.metadat.rar[bac.div.metadat.rar$SampDate=="December.2021",]
+apr.divmeta<-bac.div.metadat.rar[bac.div.metadat.rar$SampDate=="April.2022",]
+
+# First run individual t-tests by time point
+# Aug 2021 vs Dec 2021
+t.test.a21.d21<-t.test(aug.divmeta$Bac_Shannon_Diversity,dec.divmeta$Bac_Shannon_Diversity)
+t.test.a21.d21$p.value
+
+# Aug 2021 vs Apr 2022
+t.test.a21.a22<-t.test(aug.divmeta$Bac_Shannon_Diversity,apr.divmeta$Bac_Shannon_Diversity)
+t.test.a21.a22$p.value
+
+# Dec 2021 vs Apr 2022
+t.test.d21.a22<-t.test(dec.divmeta$Bac_Shannon_Diversity,apr.divmeta$Bac_Shannon_Diversity)
+t.test.d21.a22$p.value
+
+# Combine the p-values
+ttest.Div.pvals<-c(t.test.a21.d21$p.value, t.test.a21.a22$p.value, t.test.d21.a22$p.value)
+
+# Adjust the p-values based on the # of comparisons you did
+p.adjust(ttest.Div.pvals, method="bonferroni",n=3)
+# ^ matches findings on the figure, which uses the t_test function from the rstatix package (see geom_pwc())
+
+#### Compare Means of Species Richness - Rarefied Data ####
+head(bac.div.metadat.rar)
+#aug.divmeta<-bac.div.metadat.rar[bac.div.metadat.rar$SampDate=="August.2021",]
+#dec.divmeta<-bac.div.metadat.rar[bac.div.metadat.rar$SampDate=="December.2021",]
+#apr.divmeta<-bac.div.metadat.rar[bac.div.metadat.rar$SampDate=="April.2022",]
+
+# First run individual wilcox-tests by time point
+# Aug 2021 vs Dec 2021
+w.test.a21.d21<-wilcox.test(aug.divmeta$Bac_Species_Richness,dec.divmeta$Bac_Species_Richness)
+w.test.a21.d21$p.value
+
+# Aug 2021 vs Apr 2022
+w.test.a21.a22<-wilcox.test(aug.divmeta$Bac_Species_Richness,apr.divmeta$Bac_Species_Richness)
+w.test.a21.a22$p.value
+
+# Dec 2021 vs Apr 2022
+w.test.d21.a22<-wilcox.test(dec.divmeta$Bac_Species_Richness,apr.divmeta$Bac_Species_Richness)
+w.test.d21.a22$p.value
+
+# Combine the p-values
+wilc.SR.pvals<-c(w.test.a21.d21$p.value, w.test.a21.a22$p.value, w.test.d21.a22$p.value)
+
+# Adjust the p-values based on the # of comparisons you did
+p.adjust(wilc.SR.pvals, method="bonferroni",n=3)
+# ^ matches findings on the figure, which uses the wilcox_test function from the rstatix package (see geom_pwc())
+
 #### Visualize Alpha Diversity & Species Richness - from Rarefied Data ####
 ## Shannon Diversity by Sample Month & Depth
 bac.a.div.rar<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
@@ -354,7 +409,7 @@ bac.div.metadat.rar$Depth_m=as.numeric(levels(bac.div.metadat.rar$Depth_m))[bac.
 
 ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
-  geom_violin(fill=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
+  geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
   labs(title = "Bacterial Shannon Diversity by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   geom_pwc(method = "t_test", label = "p.adj.format",p.adjust.method = "bonferroni")
 
@@ -372,6 +427,16 @@ ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitt
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
 #
 # ggsave(bac.a.div3,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_Bacterial_rarefied_alpha_diversity_depth_boxplot_v2.png", width=13, height=10, dpi=600)
+
+
+div.depth<-ggplot(bac.div.metadat.rar, aes(x=Depth_m, y=Bac_Shannon_Diversity,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
+  labs(title="Alpha Diversity by Depth & Time Point",subtitle="Used Rarefied Count Data",color="Time Point")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Time Point",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Depth (m)") + ylab("Shannon Diversity")+coord_flip()+ scale_x_discrete(limits=rev)
+
+ggsave(div.depth,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_AlphaDiv_by_Depth_SampDate_scatterplot.png", width=12, height=10, dpi=600)
 
 ## Species Richness by Sample Type
 bac.a.sr.rar<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Species_Richness)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
@@ -393,7 +458,7 @@ ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Species_Richness)) +geom_jitte
   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_violin(fill=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
   labs(title = "Bacterial Species Richness by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  geom_pwc(method = "t_test", label = "p.adj.format",p.adjust.method = "bonferroni")
+  geom_pwc(method = "wilcox_test", label = "p.adj.format",p.adjust.method = "bonferroni")
 
 # bac.a.sr.rar2<-ggplot(bac.div.metadat.rar, aes(x=as.factor(Depth_m), y=Bac_Species_Richness,fill=bac.div.metadat.rar$Depth_m)) +geom_boxplot(aes(fill=as.numeric(bac.div.metadat.rar$Depth_m)),color="black")+
 #   labs(title = "Bacterial Species Richness by Sampling Depth", x="Depth (m)", y="Species Richness", fill="Depth (m)")+
@@ -409,6 +474,15 @@ ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Species_Richness)) +geom_jitte
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
 #
 # ggsave(bac.a.sr.rar3,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_Bacterial_rarefied_species_richness_depth_boxplot_v2.png", width=13, height=10, dpi=600)
+
+sr.depth<-ggplot(bac.div.metadat.rar, aes(x=Depth_m, y=Bac_Species_Richness,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
+  labs(title="Species Richness by Depth & Time Point",subtitle="Used Rarefied Count Data",color="Time Point")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Time Point",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Depth (m)") + ylab("Species Richness")+coord_flip()+ scale_x_discrete(limits=rev)
+
+ggsave(sr.depth,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_SpecRich_by_Depth_SampDate_scatterplot.png", width=12, height=10, dpi=600)
 
 #### Compare Variance w/ Shannon Diversity ####
 # shannon diversity is normally distributed; used rarefied counts to calculate ShanDiv
@@ -506,6 +580,16 @@ summary(step1)
 div.glm.all<-glm(formula = Bac_Shannon_Diversity ~ ., data=bac.div.metadat.rar[,c(3,11,13:14,18:20)])
 summary(div.glm.all)
 
+# NOTE: GLMs use maximum likelihood and not ordinary least squares, so R^2 is not provided... (more here https://stats.stackexchange.com/questions/232471/why-does-the-glm-function-does-not-return-an-r2-value#:~:text=Since%20the%20coefficient%20of%20determination,reason%20to%20display%20this%20measure.)
+# BUT we can use McFadden's R-squared, which uses the following formula..
+## 1 - (log likelihood of current model / log likelihood null model)
+## null model is a model with only the intercept, whereas the current model is the one you are fitting
+## more here: https://www.statology.org/glm-r-squared/
+
+# McFadden's R-squared
+with(summary(div.glm.all), 1 - div.glm.all$deviance/div.glm.all$null.deviance)
+# 0.5734642 --> model explains a lot of variance in data
+
 div.glm.p<-coef(summary(div.glm.all))[,4] # p-values
 Div.GLM.Pval<-data.frame(Div.GLM.AdjPval=p.adjust(div.glm.p, method="bonferroni",n=length(div.glm.p)),Div.GLM.Pval=div.glm.p)
 Div.GLM.Pval
@@ -515,7 +599,7 @@ Div.GLM.Pval
 # ORP_mV                         1.000000e+00 3.249102e-01
 # Temp_DegC                      4.793721e-02 6.848173e-03 *
 # Dissolved_OrganicMatter_RFU    1.000000e+00 6.835361e-01
-# Sulfate_milliM                 2.762433e-01 3.946333e-02
+# Sulfate_milliM                 2.762433e-01 3.946333e-02 *
 # Sulfide_microM                 1.000000e+00 6.239275e-01
 
 # [Example Code for Different Models]
@@ -603,9 +687,19 @@ abline(0,0)
 plot(fitted(sr.NB.all), nb_res, col='blue', pch=16,
      xlab='Predicted Offers', ylab='Standardized Residuals', main='Negative Binomial')
 abline(0,0)
-# NB shows least amount of spread in residuals, suggests this is the better fitting model
+
+# NB shows least amount of spread in residuals, suggests this is the better fitting model!
 
 summary(sr.NB.all)
+
+# NOTE: GLMs use maximum likelihood and not ordinary least squares, so R^2 is not provided... (more here https://stats.stackexchange.com/questions/232471/why-does-the-glm-function-does-not-return-an-r2-value#:~:text=Since%20the%20coefficient%20of%20determination,reason%20to%20display%20this%20measure.)
+# BUT we can use McFadden's R-squared, which uses the following formula..
+## 1 - (log likelihood of current model / log likelihood null model)
+## null model is a model with only the intercept, whereas the current model is the one you are fitting
+## more here: https://www.statology.org/glm-r-squared/
+
+# McFadden's R-squared
+with(summary(sr.NB.all), 1 - sr.NB.all$deviance/sr.NB.all$null.deviance)
 
 sr.NB.p<-coef(summary(sr.NB.all))[,4] # p-values
 SR.NB.Pval<-data.frame(SR.NB.AdjPval=p.adjust(sr.NB.p, method="bonferroni",n=length(sr.NB.p)),SR.NB.Pval=sr.NB.p)
@@ -613,10 +707,10 @@ SR.NB.Pval
 #                            SR.NB.AdjPval SR.NB.Pval
 # (Intercept)                     0.0000000 0.00000000
 # DO_Percent_Local                1.0000000 0.54606633
-# ORP_mV                          0.2310918 0.03301311
+# ORP_mV                          0.2310918 0.03301311 *
 # Temp_DegC                       1.0000000 0.35482885
 # Dissolved_OrganicMatter_RFU     1.0000000 0.32657918
-# Sulfate_milliM                  0.3101118 0.04430168
+# Sulfate_milliM                  0.3101118 0.04430168 *
 # Sulfide_microM                  0.4688277 0.06697538
 
 # Species Richness ~ DO%
@@ -1208,9 +1302,6 @@ fligner.test(Bac_Species_Richness ~ Depth_m, data = apr22.div)
 # Fligner-Killeen:med chi-squared = 4.091, df = 7, p-value = 0.7692
 # Which shows that the data do not deviate significantly from homogeneity.
 compare_means(Bac_Species_Richness ~ Depth_m, data=apr22.div, method="anova",p.adjust.method = "bonferroni") # won't take as.factor(Elevation) as input
-
-
-
 
 #### Visualize Richness, Diversity vs Env Variables ####
 
