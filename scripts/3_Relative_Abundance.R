@@ -33,6 +33,7 @@ suppressPackageStartupMessages({ # load packages quietly
   library(decontam)
   library(pairwiseAdonis)
   library(ggfortify)
+  library(MoMAColors)
 })
 
 #### Load Global Env to Import Count/ASV Tables ####
@@ -1349,6 +1350,8 @@ ggsave(g.sd.d.hm.3,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.RA
 # top 10 bacterial genera overall:
 # DS001, Litoricola, Truepera, Synechococcus.CC9902, GKS98.freshwater.group unknown, CL500.3 unknown, Clade.Ia unknown, Candidatus.Aquiluna unknown, Brumimicrobium unknown, Fluviicola unknown
 
+display.all.moma(10)
+
 gen.col = melt(c(DS001="#a4133c",Litoricola="#3a86ff",Truepera="#8338ec",Synechococcus.CC9902="#55a630",GKS98.freshwater.group="#ff6d00", CL500.3="violet", Clade.Ia="#4cc9f0",
                  Candidatus.Aquiluna="#ff006e",Brumimicrobium="#006d77",Fluviicola="#ffc300"))
 
@@ -1385,6 +1388,34 @@ ten.gen<-ggplot(b.genus_RA_meta2, aes(x=PlotID, y=Count, fill=Genus))+geom_bar(s
   guides(fill=guide_legend(ncol=1))+scale_fill_manual(name ="Genus",values=unique(b.genus_RA_meta2$Gen_Color[order(b.genus_RA_meta2$Genus)]),labels=c(unique(b.genus_RA_meta2$Genus[order(b.genus_RA_meta2$Genus)])))
 
 ggsave(ten.gen,filename = "figures/RelativeAbundance/Genus/SSW_16S_TenMostAbundant_Genera_barplot.png", width=12, height=10, dpi=600)
+
+# break up top 10 genera by time point, then combine into one figure:
+ten.aug<-ggplot(b.genus_RA_meta2[b.genus_RA_meta2$SampDate=="August.2021",], aes(x=PlotID, y=Count, fill=Genus))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
+  labs(x=" ", y=" ",fill="Genus")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
+  guides(fill=guide_legend(ncol=1))+scale_fill_manual(name ="Genus",values=moma.colors("Lupi", 10),labels=c(unique(b.genus_RA_meta2$Genus[order(b.genus_RA_meta2$Genus)]))) +
+  coord_cartesian(ylim = c(0, 0.8))
+
+ten.dec<-ggplot(b.genus_RA_meta2[b.genus_RA_meta2$SampDate=="December.2021",], aes(x=PlotID, y=Count, fill=Genus))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
+  labs(x=" ", y=" ", fill="Genus")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
+  guides(fill=guide_legend(ncol=1))+scale_fill_manual(name ="Genus",values=moma.colors("Lupi", 10),labels=c(unique(b.genus_RA_meta2$Genus[order(b.genus_RA_meta2$Genus)])))+
+  coord_cartesian(ylim = c(0, 0.8))
+
+ten.apr<-ggplot(b.genus_RA_meta2[b.genus_RA_meta2$SampDate=="April.2022",], aes(x=PlotID, y=Count, fill=Genus))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
+  labs(x=" ", y=" ",fill="Genus")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
+  guides(fill=guide_legend(ncol=1))+scale_fill_manual(name ="Genus",values=moma.colors("Lupi", 10),labels=c(unique(b.genus_RA_meta2$Genus[order(b.genus_RA_meta2$Genus)])))+
+  coord_cartesian(ylim = c(0, 0.8))
+
+ten.by.date<-ggarrange(ten.aug, ten.dec, ten.apr,ncol = 3, nrow = 1,legend="right",common.legend = TRUE,labels=c("A","B","C"))
+
+ten.by.date<-annotate_figure(ten.by.date,
+                top = text_grob("Top 10 Bacterial Genera by Time Point", color = "black", face = "bold", size = 14),
+                bottom = text_grob("SampleID", color="black"),
+                left = text_grob("Relative Abundance", color = "black", rot = 90)
+)
+ggsave(ten.by.date,filename = "figures/RelativeAbundance/Genus/16S_MonthComparison_Top10Genera.RA_barplot.png", width=25, height=10, dpi=600,bg="white")
 
 #### Genus Relative Abundance - August ####
 # use dcast to count up ASVs within each Genus across aug of the samples
