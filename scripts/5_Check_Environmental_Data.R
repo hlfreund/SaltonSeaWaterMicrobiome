@@ -52,6 +52,8 @@ head(meta_scaled) # centered & Raw metadata
 metadata$Depth.num<-as.numeric(as.character(metadata$Depth_m)) # for env PCA w/ log -transformed variables
 meta_scaled$Depth.num<-as.numeric(as.character(meta_scaled$Depth_m))
 
+meta_salinity<-metadata # save metadata with salinity data to just graph salinity data later
+
 # drop salinity from metadata & meta_scaled --> excluding this env variable
 metadata<-subset(metadata, select=-c(Salinity_ppt))
 head(metadata)
@@ -829,6 +831,15 @@ dep.chloro<-ggplot(metadata, aes(x=Depth_m, y=Chlorophyll_RFU,color=SampDate,gro
   xlab("Depth (m)") + ylab("Chlorophyll (RNU)")+coord_flip()+ scale_x_discrete(limits=rev)
 
 ggsave(dep.chloro,filename = "figures/EnvVariablesOnly/SSW_Chlorophyll_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
+
+dep.sal<-ggplot(meta_salinity, aes(x=Depth_m, y=Salinity_ppt,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
+  labs(title="Salinity by Depth & Sample Date",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Depth (m)") + ylab("Salinity (ppt)")+coord_flip()+ scale_x_discrete(limits=rev)
+
+ggsave(dep.sal,filename = "figures/EnvVariablesOnly/SSW_Salinity_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
 # Compare variables to each other
 dom.hs<-ggplot(metadata, aes(x=Dissolved_OrganicMatter_RFU, y=Sulfide_microM,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
