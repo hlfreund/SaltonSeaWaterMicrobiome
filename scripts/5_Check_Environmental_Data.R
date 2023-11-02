@@ -274,9 +274,9 @@ pairwise.wilcox.test(meta_scaled$Dissolved_OrganicMatter_RFU, meta_scaled$SampDa
 # December.2021 0.0027      -
 # April.2022    0.0028      0.0027
 
-kruskal.test(Sulfate_milliM ~ SampDate, data = meta_scaled)
+#kruskal.test(Sulfate_milliM ~ SampDate, data = meta_scaled)
 #Kruskal-Wallis chi-squared = 15.605, df = 2, p-value = 0.0004087
-pairwise.wilcox.test(meta_scaled$Sulfate_milliM, meta_scaled$SampDate, p.adjust.method = "bonf") # returns p values
+#pairwise.wilcox.test(meta_scaled$Sulfate_milliM, meta_scaled$SampDate, p.adjust.method = "bonf") # returns p values
 #               August.2021 December.2021
 # December.2021 0.00047     -
 # April.2022    1.00000     0.00047
