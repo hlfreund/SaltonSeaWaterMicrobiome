@@ -61,7 +61,37 @@ head(metadata)
 meta_scaled<-subset(meta_scaled, select=-c(Salinity_ppt))
 head(meta_scaled)
 
-#### Separate All Data by Timepoints ####
+#### Averages of Env Variables by Time point ####
+# getting means from raw env variables
+
+head(metadata)
+
+# Sulfide
+mean(metadata[metadata$SampleMonth=="August",]$Sulfide_microM) # 23.30029 microM
+mean(metadata[metadata$SampleMonth=="December",]$Sulfide_microM) # 2.702893
+mean(metadata[metadata$SampleMonth=="April",]$Sulfide_microM) # 3.314982
+
+# Sulfate
+mean(metadata[metadata$SampleMonth=="August",]$Sulfate_milliM) # 182.1442 milliM
+mean(metadata[metadata$SampleMonth=="December",]$Sulfate_milliM) # 195.4495
+mean(metadata[metadata$SampleMonth=="April",]$Sulfate_milliM) # 181.5684
+
+# DO (mg/L)
+mean(metadata[metadata$SampleMonth=="August",]$Dissolved_Oxygen_mgL) # 1.08125
+mean(metadata[metadata$SampleMonth=="December",]$Dissolved_Oxygen_mgL) # 5.805
+mean(metadata[metadata$SampleMonth=="April",]$Dissolved_Oxygen_mgL) # 3.63
+
+# DOM
+mean(metadata[metadata$SampleMonth=="August",]$Dissolved_OrganicMatter_RFU) # 30.4025
+mean(metadata[metadata$SampleMonth=="December",]$Dissolved_OrganicMatter_RFU) # 28.815
+mean(metadata[metadata$SampleMonth=="April",]$Dissolved_OrganicMatter_RFU) # 27.9
+
+# Chlorophyll
+mean(metadata[metadata$SampleMonth=="August",]$Chlorophyll_RFU) # 2.63
+mean(metadata[metadata$SampleMonth=="December",]$Chlorophyll_RFU) # 5.58375
+mean(metadata[metadata$SampleMonth=="April",]$Chlorophyll_RFU) # 3.18
+
+#### Separate All Data by Time points ####
 # create metadata df that will contain scaled chemical data
 head(metadata)
 head(meta_scaled)
