@@ -1063,6 +1063,13 @@ apr.gen[order(apr.gen$Count,decreasing=TRUE),]
 
 # Barplot by PlotID
 
+b.gen_RAall<-ggplot(b.genus_RA_meta, aes(x=PlotID, y=Count, fill=Genus))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
+  labs(title = "Microbial Genus Relative Abundance", x="SampleID", y="Relative Abundance",fill="Genus")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
+  guides(fill=guide_legend(ncol=9))
+
+ggsave(b.gen_RAall,filename = "figures/RelativeAbundance/Genus/SSW_16S_Genera.RA_barplot.png", width=35, height=10, dpi=600)
+
 b.gen_RA0<-ggplot(b.genus_RA_meta[b.genus_RA_meta$Count>0.01,], aes(x=PlotID, y=Count, fill=Genus))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
   labs(title = "Microbial Genus Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes Taxa with Relative Abundance > 1%",fill="Genus")+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
@@ -1395,7 +1402,16 @@ max(b.gsp_RA_meta$Count)
 b.gsp_RA_meta$PlotID = gsub("^SSW.","",b.gsp_RA_meta$SampleID)
 b.gsp_RA_meta$PlotID = factor(b.gsp_RA_meta$PlotID, levels=unique(b.gsp_RA_meta$PlotID[order(b.gsp_RA_meta$SampDate,b.gsp_RA_meta$Depth_m)]), ordered=TRUE)
 
+saveRDS(b.gsp_RA_meta[,1:5], file = "data/SSW_GenusSpecies_RelativeAbundance_Robject.rds", ascii = FALSE, version = NULL,
+        compress = TRUE, refhook = NULL)
+
 # Barplot by SampleID
+b.gen_RAall<-ggplot(b.gsp_RA_meta, aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
+  labs(title = "Microbial Species Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes Taxa with Relative Abundance > 1%",fill="Genus")+
+  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(hjust=1,angle=45),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))+
+  guides(fill=guide_legend(ncol=9))
+
+ggsave(b.gen_RAall,filename = "figures/RelativeAbundance/GenusSpecies/SSW_16S_Genera.Spec.RA.png", width=45, height=10, dpi=600)
 
 b.gen_RA0<-ggplot(b.gsp_RA_meta[b.gsp_RA_meta$Count>0.01,], aes(x=PlotID, y=Count, fill=Genus_species))+geom_bar(stat="identity",colour="black")+scale_x_discrete()+theme_classic()+
   labs(title = "Microbial Species Relative Abundance", x="SampleID", y="Relative Abundance", subtitle="Includes Taxa with Relative Abundance > 1%",fill="Genus")+
