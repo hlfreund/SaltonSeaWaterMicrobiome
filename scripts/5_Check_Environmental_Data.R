@@ -772,102 +772,102 @@ plot(x=April.2022$Sulfide_microM, y=April.2022$Depth.num, col=April.2022$Depth_m
 #### Plots of Env Variables ####
 
 # Compare all variables across Depths
-dep.dom<-ggplot(metadata, aes(x=Depth_m, y=Dissolved_OrganicMatter_RFU,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
+dep.dom<-ggplot(metadata, aes(x=Depth.num, y=Dissolved_OrganicMatter_RFU,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Dissolved Organic Matter (DOM) by Depth & Sample Date",subtitle="Using Raw DOM RFU Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("Depth (m)") + ylab("DOM (RFU)")+coord_flip()+ scale_x_discrete(limits=rev)
+  xlab("Depth (m)") + ylab("DOM (RFU)")+ scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
 
 ggsave(dep.dom,filename = "figures/EnvVariablesOnly/SSW_DOM_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.orp<-ggplot(metadata, aes(x=Depth_m, y=ORP_mV,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
+dep.orp<-ggplot(metadata, aes(x=Depth.num, y=ORP_mV,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Oxidative-Reduction Potential by Depth & Sample Date",subtitle="Using Raw ORP (mV) Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("Depth (m)") + ylab("ORP (mV)")+coord_flip()+ scale_x_discrete(limits=rev)
+  xlab("Depth (m)") + ylab("ORP (mV)")+scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
 
 ggsave(dep.orp,filename = "figures/EnvVariablesOnly/SSW_ORP_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.sulf<-ggplot(metadata, aes(x=Depth_m, y=Sulfate_milliM,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
+dep.sulf<-ggplot(metadata, aes(x=Depth.num, y=Sulfate_milliM,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Sulfate by Depth & Sample Date",subtitle="Using Raw Sulfate (milliM) Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("Depth (m)") + ylab("Sulfate (milliM)")+coord_flip()+ scale_x_discrete(limits=rev)
+  xlab("Depth (m)") + ylab("Sulfate (milliM)")+scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
 
 ggsave(dep.sulf,filename = "figures/EnvVariablesOnly/SSW_Sulfate_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.pdo<-ggplot(metadata, aes(x=Depth_m, y=DO_Percent_Local,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
+dep.pdo<-ggplot(metadata, aes(x=Depth.num, y=DO_Percent_Local,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Dissolved Oxygen by Depth & Sample Date",subtitle="Using Raw DO (%) Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("Depth (m)") + ylab("DO (%)")+coord_flip()+ scale_x_discrete(limits=rev)
+  xlab("Depth (m)") + ylab("DO (%)")+scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
 
 ggsave(dep.pdo,filename = "figures/EnvVariablesOnly/SSW_PercentDO_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.do<-ggplot(metadata, aes(x=Depth_m, y=Dissolved_Oxygen_mgL,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
+dep.do<-ggplot(metadata, aes(x=Depth.num, y=Dissolved_Oxygen_mgL,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Dissolved Oxygen by Depth & Sample Date",subtitle="Using Raw DO (mg/L) Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("Depth (m)") + ylab("DO (mg/L)")+coord_flip()+ scale_x_discrete(limits=rev)
+  xlab("Depth (m)") + ylab("DO (mg/L)")+scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
 
 ggsave(dep.do,filename = "figures/EnvVariablesOnly/SSW_DO_mgL_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.hs<-ggplot(metadata, aes(x=Depth_m, y=Sulfide_microM,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
+dep.hs<-ggplot(metadata, aes(x=Depth.num, y=Sulfide_microM,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Sulfide by Depth & Sample Date",subtitle="Using Raw Sulfide (microM) Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("Depth (m)") + ylab("Sulfide (microM)")+coord_flip()+ scale_x_discrete(limits=rev)
+  xlab("Depth (m)") + ylab("Sulfide (microM)")+scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
 
 ggsave(dep.hs,filename = "figures/EnvVariablesOnly/SSW_Sulfide_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.chlr<-ggplot(metadata, aes(x=Depth_m, y=Chlorophyll_RFU,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
+dep.chlr<-ggplot(metadata, aes(x=Depth.num, y=Chlorophyll_RFU,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Chlorophyll by Depth & Sample Date",subtitle="Using Raw Chlorophyll (RFU) Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("Depth (m)") + ylab("Chlorophyll (RFU)")+coord_flip()+ scale_x_discrete(limits=rev)
+  xlab("Depth (m)") + ylab("Chlorophyll (RFU)")+scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
 
 ggsave(dep.chlr,filename = "figures/EnvVariablesOnly/SSW_Chlorophyll_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.temp<-ggplot(metadata, aes(x=Depth_m, y=Temp_DegC,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
+dep.temp<-ggplot(metadata, aes(x=Depth.num, y=Temp_DegC,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Temperature by Depth & Sample Date",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("Depth (m)") + ylab("Temperature (C)")+coord_flip()+ scale_x_discrete(limits=rev)
+  xlab("Depth (m)") + ylab("Temperature (C)")+scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
 
 ggsave(dep.temp,filename = "figures/EnvVariablesOnly/SSW_Temp_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.turb<-ggplot(metadata, aes(x=Depth_m, y=Turbidity_FNU,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
+dep.turb<-ggplot(metadata, aes(x=Depth.num, y=Turbidity_FNU,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Turbidity by Depth & Sample Date",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("Depth (m)") + ylab("Turbidity (FNU)")+coord_flip()+ scale_x_discrete(limits=rev)
+  xlab("Depth (m)") + ylab("Turbidity (FNU)")+scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
 
 ggsave(dep.turb,filename = "figures/EnvVariablesOnly/SSW_Turbidity_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.chloro<-ggplot(metadata, aes(x=Depth_m, y=Chlorophyll_RFU,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
+dep.chloro<-ggplot(metadata, aes(x=Depth.num, y=Chlorophyll_RFU,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Chlorophyll by Depth & Sample Date",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("Depth (m)") + ylab("Chlorophyll (RNU)")+coord_flip()+ scale_x_discrete(limits=rev)
+  xlab("Depth (m)") + ylab("Chlorophyll (RNU)")+scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
 
 ggsave(dep.chloro,filename = "figures/EnvVariablesOnly/SSW_Chlorophyll_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
-dep.sal<-ggplot(meta_salinity, aes(x=Depth_m, y=Salinity_ppt,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
+dep.sal<-ggplot(meta_salinity, aes(x=Depth.num, y=Salinity_ppt,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Salinity by Depth & Sample Date",subtitle="Using Raw Data",color="Sample Date")+theme_classic()+
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("Depth (m)") + ylab("Salinity (ppt)")+coord_flip()+ scale_x_discrete(limits=rev)
+  xlab("Depth (m)") + ylab("Salinity (ppt)")+scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
 
 ggsave(dep.sal,filename = "figures/EnvVariablesOnly/SSW_Salinity_Depth_bySampleDate_scatterplot.png", width=12, height=10, dpi=600)
 
@@ -1041,4 +1041,59 @@ apr6<-ggplot(April.2022, aes(x=ORP_mV, y=DO_Percent_Local,color=Depth_m)) + geom
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   xlab("DO%") + ylab("ORP (mV)")
 ggsave(apr6,filename = "figures/EnvVariablesOnly/Within_SampDates/SSW_DOM_ORP_April2022_scatterplot.png", width=12, height=10, dpi=600)
+
+
+#### Plots for Manuscript ####
+
+# Compare all variables across Depths
+
+dep.pdo1<-ggplot(metadata, aes(x=Depth.num, y=DO_Percent_Local,color=SampDate,group=SampDate)) +   geom_point(size=6) + geom_line(linewidth=1) + theme_bw()+
+  labs(color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=16),axis.title.y = element_text(size=16),legend.title.align=0.5, legend.title = element_text(size=16),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Depth (m)") + ylab("DO (%)")+scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
+
+dep.dom1<-ggplot(metadata, aes(x=Depth.num, y=Dissolved_OrganicMatter_RFU,color=SampDate,group=SampDate)) +   geom_point(size=6) + geom_line(linewidth=1) + theme_bw()+
+  labs(color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=16),axis.title.y = element_text(size=16),legend.title.align=0.5, legend.title = element_text(size=16),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Depth (m)") + ylab("DOM (RFU)")+ scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
+
+dep.orp1<-ggplot(metadata, aes(x=Depth.num, y=ORP_mV,color=SampDate,group=SampDate)) +   geom_point(size=6) + geom_line(linewidth=1) + theme_bw()+
+  labs(color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=16),axis.title.y = element_text(size=16),legend.title.align=0.5, legend.title = element_text(size=16),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Depth (m)") + ylab("ORP (mV)")+scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
+
+dep.temp1<-ggplot(metadata, aes(x=Depth.num, y=Temp_DegC,color=SampDate,group=SampDate)) +   geom_point(size=6) + geom_line(linewidth=1) + theme_bw()+
+  labs(color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=16),axis.title.y = element_text(size=16),legend.title.align=0.5, legend.title = element_text(size=16),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Depth (m)") + ylab("Temperature (C)")+scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
+
+dep.sulf1<-ggplot(metadata, aes(x=Depth.num, y=Sulfate_milliM,color=SampDate,group=SampDate)) +   geom_point(size=6) + geom_line(linewidth=1) + theme_bw()+
+  labs(color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=16),axis.title.y = element_text(size=16),legend.title.align=0.5, legend.title = element_text(size=16),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Depth (m)") + ylab("Sulfate (milliM)")+scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
+
+dep.hs1<-ggplot(metadata, aes(x=Depth.num, y=Sulfide_microM,color=SampDate,group=SampDate)) +   geom_point(size=6) + geom_line(linewidth=1) + theme_bw()+
+  labs(color="Sample Date")+theme_classic()+
+  theme(axis.title.x = element_text(size=16),axis.title.y = element_text(size=16),legend.title.align=0.5, legend.title = element_text(size=16),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(name ="Sample Date",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
+  xlab("Depth (m)") + ylab("Sulfide (microM)")+scale_x_continuous(trans="reverse",breaks=unique(metadata$Depth.num))+coord_flip() + scale_y_continuous(position = "right")
+
+
+combo.env.plot<-ggarrange(dep.pdo1,dep.dom1,dep.orp1,dep.temp1,dep.sulf1,dep.hs1,
+                          ncol = 3, nrow = 2,legend="right",common.legend = TRUE)
+
+ggsave(combo.env.plot,filename = "figures/EnvVariablesOnly/SSW_EnvVars_Depth_Combined_scatterplot.png", width=35, height=30, dpi=600)
+
+
 
