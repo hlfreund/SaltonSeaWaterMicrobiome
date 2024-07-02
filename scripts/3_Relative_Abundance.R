@@ -1402,7 +1402,7 @@ max(b.gsp_RA_meta$Count)
 b.gsp_RA_meta$PlotID = gsub("^SSW.","",b.gsp_RA_meta$SampleID)
 b.gsp_RA_meta$PlotID = factor(b.gsp_RA_meta$PlotID, levels=unique(b.gsp_RA_meta$PlotID[order(b.gsp_RA_meta$SampDate,b.gsp_RA_meta$Depth_m)]), ordered=TRUE)
 
-saveRDS(b.gsp_RA_meta[,1:5], file = "data/SSW_GenusSpecies_RelativeAbundance_Robject.rds", ascii = FALSE, version = NULL,
+saveRDS(b.gsp_RA_meta, file = "data/SSW_GenusSpecies_RelativeAbundance_Robject.rds", ascii = FALSE, version = NULL,
         compress = TRUE, refhook = NULL)
 
 # Barplot by SampleID
