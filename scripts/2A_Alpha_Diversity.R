@@ -586,21 +586,21 @@ summary(div.glm.all)
 ## null model is a model with only the intercept, whereas the current model is the one you are fitting
 ## more here: https://www.statology.org/glm-r-squared/
 
-# McFadden's R-squared
-with(summary(div.glm.all), 1 - div.glm.all$deviance/div.glm.all$null.deviance)
-# 0.5734642 --> model explains a lot of variance in data
+## what's the best GLM...?
+summary(glm(formula = Bac_Shannon_Diversity ~ Temp_DegC + Sulfate_milliM, data = bac.div.metadat.rar))
+summary(lm(formula = Bac_Shannon_Diversity ~ Temp_DegC + Sulfate_milliM, data = bac.div.metadat.rar))
+# (Intercept)      86.926      3.143  27.657   <2e-16 ***
+#   Temp_DegC       -16.600      3.950  -4.202   0.0004 ***
+#   Sulfate_milliM   -8.866      3.950  -2.245   0.0357 *
+#   ---
+#   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#
+# Residual standard error: 15.4 on 21 degrees of freedom
+# Multiple R-squared:  0.4577,	Adjusted R-squared:  0.406
+# F-statistic: 8.861 on 2 and 21 DF,  p-value: 0.001621
 
-div.glm.p<-coef(summary(div.glm.all))[,4] # p-values
-Div.GLM.Pval<-data.frame(Div.GLM.AdjPval=p.adjust(div.glm.p, method="bonferroni",n=length(div.glm.p)),Div.GLM.Pval=div.glm.p)
-Div.GLM.Pval
-#                               Div.GLM.AdjPval Div.GLM.Pval
-# (Intercept)                    8.353610e-15 1.193373e-15
-# DO_Percent_Local               1.000000e+00 6.614790e-01
-# ORP_mV                         1.000000e+00 3.249102e-01
-# Temp_DegC                      4.793721e-02 6.848173e-03 *
-# Dissolved_OrganicMatter_RFU    1.000000e+00 6.835361e-01
-# Sulfate_milliM                 2.762433e-01 3.946333e-02 *
-# Sulfide_microM                 1.000000e+00 6.239275e-01
+# div.glm.p<-coef(summary(div.glm.all))[,4] # p-values
+# Div.GLM.Pval<-data.frame(Div.GLM.AdjPval=p.adjust(div.glm.p, method="bonferroni",n=length(div.glm.p)),Div.GLM.Pval=div.glm.p)
 
 # [Example Code for Different Models]
 
@@ -656,8 +656,13 @@ head(bac.div.metadat.rar)
 
 # Generate poisson, quasiposson, and negative binomial (NB) regressions to see which env variables can predict species richness
 sr.pois.all<-glm(formula = Bac_Species_Richness ~ ., family=poisson,data=bac.div.metadat.rar[,c(4,11,13:14,18:20)])
+summary(sr.pois.all)
+
 sr.qpois.all<-glm(formula = Bac_Species_Richness ~ ., family=quasipoisson,data=bac.div.metadat.rar[,c(4,11,13:14,18:20)])
+summary(sr.qpois.all)
+
 sr.NB.all<-glm.nb(formula = Bac_Species_Richness ~ ., data=bac.div.metadat.rar[,c(4,11,13:14,18:20)])
+summary(sr.NB.all)
 
 # Likeliehood ratio test between Poisson model and NB model
 # Null H: both models fit data equally well; alt H: one model fits data better than other model
@@ -692,26 +697,39 @@ abline(0,0)
 
 summary(sr.NB.all)
 
+summary(glm.nb(formula = Bac_Species_Richness ~ ORP_mV*Sulfide_microM, data=bac.div.metadat.rar))
+
 # NOTE: GLMs use maximum likelihood and not ordinary least squares, so R^2 is not provided... (more here https://stats.stackexchange.com/questions/232471/why-does-the-glm-function-does-not-return-an-r2-value#:~:text=Since%20the%20coefficient%20of%20determination,reason%20to%20display%20this%20measure.)
 # BUT we can use McFadden's R-squared, which uses the following formula..
 ## 1 - (log likelihood of current model / log likelihood null model)
 ## null model is a model with only the intercept, whereas the current model is the one you are fitting
 ## more here: https://www.statology.org/glm-r-squared/
 
-# McFadden's R-squared
-with(summary(sr.NB.all), 1 - sr.NB.all$deviance/sr.NB.all$null.deviance)
+sr.glm.nb1<-glm.nb(formula = Bac_Species_Richness ~ ORP_mV*Sulfide_microM, data=bac.div.metadat.rar)
+sr.glm.nb2<-glm.nb(formula = Bac_Species_Richness ~ ORP_mV+Sulfide_microM, data=bac.div.metadat.rar)
 
-sr.NB.p<-coef(summary(sr.NB.all))[,4] # p-values
-SR.NB.Pval<-data.frame(SR.NB.AdjPval=p.adjust(sr.NB.p, method="bonferroni",n=length(sr.NB.p)),SR.NB.Pval=sr.NB.p)
-SR.NB.Pval
-#                            SR.NB.AdjPval SR.NB.Pval
-# (Intercept)                     0.0000000 0.00000000
-# DO_Percent_Local                1.0000000 0.54606633
-# ORP_mV                          0.2310918 0.03301311 *
-# Temp_DegC                       1.0000000 0.35482885
-# Dissolved_OrganicMatter_RFU     1.0000000 0.32657918
-# Sulfate_milliM                  0.3101118 0.04430168 *
-# Sulfide_microM                  0.4688277 0.06697538
+lrtest(sr.glm.nb1,sr.glm.nb2)
+anova(sr.glm.nb1,sr.glm.nb2)
+AIC(sr.glm.nb1,sr.glm.nb2)
+
+# all results suggest that sr.glm.nb1 is the better model
+
+sr.glm.nb<-glm.nb(formula = Bac_Species_Richness ~ ORP_mV*Sulfide_microM, data=bac.div.metadat.rar)
+summary(sr.glm.nb)
+# McFadden's R-squared
+with(summary(sr.glm.nb), 1 - sr.glm.nb$deviance/sr.glm.nb$null.deviance)
+
+# sr.NB.p<-coef(summary(sr.NB.all))[,4] # p-values
+# SR.NB.Pval<-data.frame(SR.NB.AdjPval=p.adjust(sr.NB.p, method="bonferroni",n=length(sr.NB.p)),SR.NB.Pval=sr.NB.p)
+# SR.NB.Pval
+# #                            SR.NB.AdjPval SR.NB.Pval
+# # (Intercept)                     0.0000000 0.00000000
+# # DO_Percent_Local                1.0000000 0.54606633
+# # ORP_mV                          0.2310918 0.03301311 *
+# # Temp_DegC                       1.0000000 0.35482885
+# # Dissolved_OrganicMatter_RFU     1.0000000 0.32657918
+# # Sulfate_milliM                  0.3101118 0.04430168 *
+# # Sulfide_microM                  0.4688277 0.06697538
 
 # Species Richness ~ DO%
 
