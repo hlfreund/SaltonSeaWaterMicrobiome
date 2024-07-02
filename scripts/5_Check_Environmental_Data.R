@@ -1,6 +1,5 @@
 #### Set WD & Load Libraries ####
 getwd() # use setwd("path/to/files") if you are not in the right directory
-setwd("/Volumes/HLF_SSD/Aronson_Lab_Data/Salton_Sea/SaltonSeaWater")
 suppressPackageStartupMessages({ # load packages quietly
   library(devtools)
   library(phyloseq)
@@ -35,6 +34,9 @@ suppressPackageStartupMessages({ # load packages quietly
   library(microbiome)
   library(pairwiseAdonis)
   library(corrplot)
+  library(RColorBrewer)
+  library(ggcorrplot)
+  library(ggpmisc)
 })
 
 #### Load Global Env to Import Count/ASV Tables ####
@@ -352,11 +354,52 @@ dev.off()
 cor(meta_scaled[,c(8,10:11,14:16)],method='pearson')
 cor.all.mat = cor.mtest(meta_scaled[,c(8,10:11,14:16)],method='pearson', conf.level = 0.95)
 
-# Visualize with a corrplot
-cor_mat.env1 <- cor(meta_scaled[,c(8,10:11,14:16)], method='pearson')
+# Visualize with a corrplot - ALL climate variables together
+cor_mat.env1 <- cor(meta_scaled[,c(8:11,14:16)], method='pearson')
 cor_mat.env1
 
+write.table(cor_mat.env1,file="figures/EnvVar_Correlations_r_values.tsv",sep="\t",row.names=TRUE,
+            col.names=TRUE)
+
 symnum(cor_mat.env1)
+
+p.env <- cor_pmat(meta_scaled[,c(8:11,14:16)])
+p.env
+
+write.table(p.env,file="figures/EnvVar_Correlations_p_values.tsv",sep="\t",row.names=TRUE,
+            col.names=TRUE)
+
+symnum(cor_mat.env1)
+
+ggcorrplot(cor_mat.env1,method="square",lab = T,p.mat=p.env,
+           hc.order=TRUE,outline.color="white",type = "lower")
+
+# png('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_CorrPlot.png',width = 1100, height = 1100)
+# ggcorrplot(cor_mat.env1,p.mat=p.env,hc.order=TRUE,
+#            method="square",outline.color="white",type = "lower")
+#
+# # env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
+# dev.off()
+
+# png('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_CorrPlot_labeled.png',width = 1100, height = 1100)
+# ggcorrplot(cor_mat.env1,method="square",lab = T,p.mat=p.env,sig.level = 0.05,insig="blank",
+#            hc.order=TRUE,outline.color="white",type = "lower")
+#
+# # env variables with a correlation of <|0.7| is a good threshold for determining if predictors correlate
+# dev.off()
+
+# # save corrplots into 1 plot
+# env.corrplot1<-ggcorrplot(cor_mat.env1,p.mat=p.env,hc.order=TRUE,
+#                           method="square",outline.color="white",type = "lower")
+#
+# env.corrplot2<-ggcorrplot(cor_mat.env1,method="square",lab = T,p.mat=p.env,sig.level = 0.05,insig="blank",
+#                           hc.order=TRUE,outline.color="white",type = "lower")
+#
+# env.corrplot.together<-ggarrange(env.corrplot1,env.corrplot2, ncol = 1, nrow = 2,common.legend=TRUE)
+#
+# ggsave(env.corrplot.together,filename = "figures/EnvVariablesOnly/SSD_ScaledCentered_EnvVarOnly_CorrPlot_Combined.png", width=25, height=35, dpi=600,create.dir = TRUE) # i will be the unique identifier. and change the extension from .png to whatever you like (eps, pdf etc).
+#
+# symnum(cor_mat.env1)
 
 tiff('figures/EnvVariablesOnly/SSW_ScaledCentered_EnvVarOnly_AllData_CorrPlot.tiff', width = 7, height = 7, units = 'in', res = 300)
 corrplot.mixed(cor_mat.env1, p.mat=cor.all.mat$p, tl.pos='lt', tl.cex=0.7, sig.level = 0.05, order="alphabet",insig='blank',number.cex=0.8,
@@ -369,6 +412,7 @@ corrplot(cor_mat.env1, p.mat = cor.all.mat$p, method = 'square', type = 'lower',
          addCoef.col ='white', number.cex = 0.7, order = 'alphabet', diag=FALSE, tl.cex=0.5,COL2(diverging = c("RdYlBu"), n = 200),
          title="All Timepoints",mar=c(0,0,1,0))
 dev.off()
+
 
 ## August Corrplot
 # Calculate correlations for corr coefficient & p values
@@ -436,15 +480,26 @@ corrplot(cor_mat.env.apr, p.mat = cor.apr22.mat$p, method = 'square', type = 'lo
 dev.off()
 
 #### Do Env Variables Correlate Across Time Points ####
+head(meta_scaled)
+head(meta_scaled[,c(8:11,14:16)])
+
+# check for colinearity among env variables themselves
+heatmap(abs(cor(meta_scaled[,c(8:11,14:16)])),
+        # Compute pearson correlation (note they are absolute values)
+        col = rev(heat.colors(6)),
+        Colv = NA, Rowv = NA)
+legend("topleft",
+       title = "Absolute Pearson R",
+       legend =  round(seq(0,1, length.out = 6),1),
+       bty = "n",
+       fill = rev(heat.colors(6)))
+dev.off()
+
+# subset corr and p value results
+cor.envs.df<-as.data.frame(cor_mat.env1)
+p.env.df<-as.data.frame(p.env)
+
 # DO %
-cor.test(meta_scaled$DO_Percent_Local, meta_scaled$ORP_mV, method="pearson") # ***
-# r = 0.5619567, p = 0.000161 --> medium corr, & it's significant
-cor.test(meta_scaled$DO_Percent_Local, meta_scaled$Temp_DegC, method="pearson") # ***
-# r = -0.7973317, p-value = 7.386e-10 --> strong negative correlation, significant
-cor.test(meta_scaled$DO_Percent_Local, meta_scaled$Dissolved_OrganicMatter_RFU, method="pearson") # ***
-# r = -0.6131097, p-value = 2.6e-05 --> medium correlation & significant
-cor.test(meta_scaled$DO_Percent_Local, meta_scaled$Depth.num, method="pearson") #
-# r = -0.3850655 , p = 0.01414 --> not strong negative correlation,significant
 
 plot(x=meta_scaled$DO_Percent_Local, y=meta_scaled$Dissolved_OrganicMatter_RFU, col=meta_scaled$SampDate_Color)
 plot(x=meta_scaled$DO_Percent_Local, y=meta_scaled$ORP_mV, col=meta_scaled$SampDate_Color)
@@ -452,39 +507,17 @@ plot(x=meta_scaled$DO_Percent_Local, y=meta_scaled$Temp_DegC, col=meta_scaled$Sa
 plot(x=meta_scaled$DO_Percent_Local, y=meta_scaled$Depth.num, col=meta_scaled$SampDate_Color)
 
 # ORP
-cor.test(meta_scaled$ORP_mV, meta_scaled$Temp_DegC, method="pearson") # ***
-# r = -0.513023, p-value = 0.0007117 --> medium negative correlation & significant
-cor.test(meta_scaled$ORP_mV, meta_scaled$Dissolved_OrganicMatter_RFU, method="pearson") # ***
-# r = -0.380499, p-value = 0.00833 --> lame negative correlation, it's significant
-cor.test(meta_scaled$ORP_mV, meta_scaled$Depth.num, method="pearson")
-# r = -0.2568054, p-value =  0.1097 --> not sig, not strong corr
 
 plot(x=meta_scaled$ORP_mV, y=meta_scaled$Dissolved_OrganicMatter_RFU, col=meta_scaled$SampDate_Color)
 plot(x=meta_scaled$ORP_mV, y=meta_scaled$Temp_DegC, col=meta_scaled$SampDate_Color)
 plot(x=meta_scaled$ORP_mV, y=meta_scaled$Depth.num, col=meta_scaled$SampDate_Color)
 
 # Dissolved Organic Matter
-cor.test(meta_scaled$Dissolved_OrganicMatter_RFU, meta_scaled$Temp_DegC, method="pearson") # ***
-# r = 0.4585448, p-value = 0.002923 # medium corr, significant
-cor.test(meta_scaled$Dissolved_OrganicMatter_RFU, meta_scaled$Depth.num, method="pearson")
-# r = 0.3099062 , p = 0.05165 # not sig, lame corr
 
 plot(x=meta_scaled$Dissolved_OrganicMatter_RFU, y=meta_scaled$Temp_DegC, col=meta_scaled$SampDate_Color)
 plot(x=meta_scaled$Dissolved_OrganicMatter_RFU, y=meta_scaled$Depth.num, col=meta_scaled$SampDate_Color)
 
 # Sulfate (milliM)
-cor.test(meta_scaled$Sulfate_milliM, meta_scaled$ORP_mV, method="pearson")
-# r = 0.1102182, p = 0.4984 --> not a strong correlation & it's significant
-cor.test(meta_scaled$Sulfate_milliM, meta_scaled$Temp_DegC, method="pearson") # ***
-# r = -0.5614189, p = 0.0001639 --> strong negative correlation, significant
-cor.test(meta_scaled$Sulfate_milliM, meta_scaled$DO_Percent_Local, method="pearson") # ****
-# r = 0.6452846, p = 6.944e-06 --> strong correlation & significant
-cor.test(meta_scaled$Sulfate_milliM, meta_scaled$Dissolved_OrganicMatter_RFU, method="pearson")
-# r = -0.03455734 , p = 0.8323 --> no corr, not sig
-cor.test(meta_scaled$Sulfate_milliM, meta_scaled$Sulfide_microM, method="pearson")
-# r = -0.1571489 , p = 0.3328 --> no corr, not sig
-cor.test(meta_scaled$Sulfate_milliM, meta_scaled$Depth.num, method="pearson")
-# r = -0.1800819, p-value = 0.2662
 
 plot(x=meta_scaled$Sulfate_milliM, y=meta_scaled$DO_Percent_Local, col=meta_scaled$SampDate_Color)
 plot(x=meta_scaled$Sulfate_milliM, y=meta_scaled$Dissolved_OrganicMatter_RFU, col=meta_scaled$SampDate_Color)
@@ -493,16 +526,6 @@ plot(x=meta_scaled$Sulfate_milliM, y=meta_scaled$Temp_DegC, col=meta_scaled$Samp
 plot(x=meta_scaled$Sulfate_milliM, y=meta_scaled$Depth.num, col=meta_scaled$SampDate_Color)
 
 # Sulfide (microM)
-cor.test(meta_scaled$Sulfide_microM, meta_scaled$ORP_mV, method="pearson") # ******
-# r = -0.979198, p < 2.2e-16 --> STRONG & significant negative correlation
-cor.test(meta_scaled$Sulfide_microM, meta_scaled$Temp_DegC, method="pearson") # ***
-# r = 0.5532523 , p = 0.0002134 --> medium correlation, significant
-cor.test(meta_scaled$Sulfide_microM, meta_scaled$DO_Percent_Local, method="pearson") # ****
-# r = -0.6286855, p = 1.398e-05 --> medium-strong negative correlation & significant
-cor.test(meta_scaled$Sulfide_microM, meta_scaled$Dissolved_OrganicMatter_RFU, method="pearson") # ****
-# r = 0.621356 , p = 1.88e-05 --> medium to strong correlation, significant
-cor.test(meta_scaled$Sulfide_microM, meta_scaled$Depth.num, method="pearson")
-# r = 0.2837005 , p-value = 0.07606 # not sig, no corr
 
 plot(x=meta_scaled$Sulfide_microM, y=meta_scaled$DO_Percent_Local, col=meta_scaled$SampDate_Color)
 plot(x=meta_scaled$Sulfide_microM, y=meta_scaled$Dissolved_OrganicMatter_RFU, col=meta_scaled$SampDate_Color)
@@ -514,6 +537,7 @@ plot(x=meta_scaled$Sulfide_microM, y=meta_scaled$Depth.num, col=meta_scaled$Samp
 #cor.test(meta_scaled$Chlorophyll_RFU, meta_scaled$Dissolved_OrganicMatter_RFU, method="pearson") # ****
 # r = -0.70582, p-value = 3.002e-08 --> strong correlation & significant
 #cor.test(meta_scaled$Chlorophyll_RFU, meta_scaled$Temp_DegC, method="pearson")
+
 
 #### Do Env Variables Correlate within August 2021 ####
 head(August.2021)
