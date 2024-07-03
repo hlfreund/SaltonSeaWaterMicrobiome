@@ -58,6 +58,8 @@ head(meta_scaled)
 
 # Species Accumulation Curve
 sc2<-specaccum(bac.ASV_table[,-1],"random")
+par(mar = c(1,1,1,1)) # Set the margin on all sides to 1
+
 plot(sc2, ci.type="poly", col="darkgreen", lwd=2, ci.lty=0, ci.col="lightgreen")
 boxplot(sc2, col="yellow", add=TRUE, pch=20)
 
@@ -129,54 +131,54 @@ ave.sdiv <- data.frame(AveShanDiv=rowMeans(data.frame(lapply(as.list(1:100), fun
 bac.ASV.probs<-drarefy(bac.ASV_table[,-1],min.rar)
 # drarefy returns probabilities that species occur in a rarefied community of size sample
 
-#### Variance Stabilizing Transformation VST of Raw (?) counts ####
-#Prepare Contig Feature Count Data for Normalization w/ DESeq2
-# make sure count data & mgm_meta are in the same order
-bac.ASV_table[1:5,1:5]
-
-#bac.ASV_matrix<-as.matrix(bac.ASV_table[,!names(bac.ASV_table) %in% c("SampleID")]) # convert count table into matrix & exclude column called SampleID
-bac.ASV_matrix2<-t(as.matrix(bac.ASV_table[,-1])) # transpose matrix so ASVs are rows, samples are columns
-# ^ will be used in DESeq2 functions
-rownames(meta_scaled) %in% colnames(bac.ASV_matrix2) # check if rownames in metadata (SampleID) match column names in count data
-dim(meta_scaled)
-dim(bac.ASV_matrix2)
-
-# Reorder matrix to match order of metadata
-bac.ASV_matrix2=bac.ASV_matrix2[,rownames(meta_scaled)] ## reorder ASV matrix by column name to match order of rownames in meta_scaled
-colnames(bac.ASV_matrix2) # sanity check that this reordering worked
-rownames(meta_scaled)
-
-# create the DESeq DataSet object for DGE analysis
-# DESeq2 needs whole # data, so need raw read counts, NOT coverage for these tables...questionable
-# b_dds has the scaled coverage that was calculated by dividing reads from featureCounts by gene lengths
-b_dds<-DESeqDataSetFromMatrix(countData=round(bac.ASV_matrix2), colData = meta_scaled, design = ~ 1)
-
-# design = ~ 1 means no design
-head(counts(b_dds))
-colSums(counts(b_dds)) %>% barplot
-
-# Estimate size factor - aka normalization factor, divide all read counts by each size factor per sample
-b_dds <- estimateSizeFactors(b_dds,type="ratio")
-## To calculate size factor in DESeq2:
-# calculates geometric mean of each gene in each sample and uses this as a pseudoreference
-# calculates ratio of each sample by dividing each gene count by it's pseudoreference in each sample
-# The median value of all ratios for a given sample is taken as the normalization factor (size factor)
-# The differentially expressed genes should not affect the median value
-# median of ratios method makes the assumption that not ALL genes are differentially expressed; therefore, the normalization factors should account for sequencing depth and RNA composition of the sample
-## (large outlier genes will not represent the median ratio values)
-# more here: https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html
-
-sizeFactors(b_dds)
-
-plot(sizeFactors(b_dds), colSums(counts(b_dds)))
-
-### Variance Stabilizing Transformation
-# you should be able to use matrix or DESeq2 object for this next function, but matrix was not working?
-b_vst1 <- varianceStabilizingTransformation(b_dds) # add pseudocount
-assay(b_vst1) #see output of VST
-
-b.vst<-assay(b_vst1)
-
+# #### Variance Stabilizing Transformation VST of Raw (?) counts ####
+# #Prepare Contig Feature Count Data for Normalization w/ DESeq2
+# # make sure count data & mgm_meta are in the same order
+# bac.ASV_table[1:5,1:5]
+#
+# #bac.ASV_matrix<-as.matrix(bac.ASV_table[,!names(bac.ASV_table) %in% c("SampleID")]) # convert count table into matrix & exclude column called SampleID
+# bac.ASV_matrix2<-t(as.matrix(bac.ASV_table[,-1])) # transpose matrix so ASVs are rows, samples are columns
+# # ^ will be used in DESeq2 functions
+# rownames(meta_scaled) %in% colnames(bac.ASV_matrix2) # check if rownames in metadata (SampleID) match column names in count data
+# dim(meta_scaled)
+# dim(bac.ASV_matrix2)
+#
+# # Reorder matrix to match order of metadata
+# bac.ASV_matrix2=bac.ASV_matrix2[,rownames(meta_scaled)] ## reorder ASV matrix by column name to match order of rownames in meta_scaled
+# colnames(bac.ASV_matrix2) # sanity check that this reordering worked
+# rownames(meta_scaled)
+#
+# # create the DESeq DataSet object for DGE analysis
+# # DESeq2 needs whole # data, so need raw read counts, NOT coverage for these tables...questionable
+# # b_dds has the scaled coverage that was calculated by dividing reads from featureCounts by gene lengths
+# b_dds<-DESeqDataSetFromMatrix(countData=round(bac.ASV_matrix2), colData = meta_scaled, design = ~ 1)
+#
+# # design = ~ 1 means no design
+# head(counts(b_dds))
+# colSums(counts(b_dds)) %>% barplot
+#
+# # Estimate size factor - aka normalization factor, divide all read counts by each size factor per sample
+# b_dds <- estimateSizeFactors(b_dds,type="ratio")
+# ## To calculate size factor in DESeq2:
+# # calculates geometric mean of each gene in each sample and uses this as a pseudoreference
+# # calculates ratio of each sample by dividing each gene count by it's pseudoreference in each sample
+# # The median value of all ratios for a given sample is taken as the normalization factor (size factor)
+# # The differentially expressed genes should not affect the median value
+# # median of ratios method makes the assumption that not ALL genes are differentially expressed; therefore, the normalization factors should account for sequencing depth and RNA composition of the sample
+# ## (large outlier genes will not represent the median ratio values)
+# # more here: https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html
+#
+# sizeFactors(b_dds)
+#
+# plot(sizeFactors(b_dds), colSums(counts(b_dds)))
+#
+# ### Variance Stabilizing Transformation
+# # you should be able to use matrix or DESeq2 object for this next function, but matrix was not working?
+# b_vst1 <- varianceStabilizingTransformation(b_dds) # add pseudocount
+# assay(b_vst1) #see output of VST
+#
+# b.vst<-assay(b_vst1)
+#
 #### Compare Transformed ASVs vs Raw Counts ####
 
 bac.ASV_table$SampleID = factor(bac.ASV_table$SampleID, levels=unique(bac.ASV_table$SampleID[order(rowSums(bac.ASV_table[,-1]))]), ordered=TRUE)
@@ -193,12 +195,12 @@ ggplot(data=as.data.frame(bac.ASV.rar), aes(x=rownames(bac.ASV.rar), y=rowSums(b
   geom_bar(stat="identity",colour="black",fill="dodgerblue")+theme(axis.text.x = element_text(angle = 45, hjust=1)) +
   labs(title="Total Rarefied ASVs per Sample",subtitle="Based on Rarefied ASV Counts")+ylab("Total Rarefied ASVs")+xlab("SampleID")
 
-# Calculate VST ASVs per Sample
-total_vst_asvs<-data.frame(ASV_Total=colSums(b.vst),metadata)
-total_vst_asvs$SampleID = factor(total_vst_asvs$SampleID, levels=unique(total_vst_asvs$SampleID[order(total_vst_asvs$ASV_Total)]), ordered=TRUE)
-
-ggplot(data=total_vst_asvs, aes(x=SampleID, y=ASV_Total,fill=Sample_Type)) +
-  geom_bar(stat="identity",colour="black")+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+# # Calculate VST ASVs per Sample
+# total_vst_asvs<-data.frame(ASV_Total=colSums(b.vst),metadata)
+# total_vst_asvs$SampleID = factor(total_vst_asvs$SampleID, levels=unique(total_vst_asvs$SampleID[order(total_vst_asvs$ASV_Total)]), ordered=TRUE)
+#
+# ggplot(data=total_vst_asvs, aes(x=SampleID, y=ASV_Total,fill=Sample_Type)) +
+#   geom_bar(stat="identity",colour="black")+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 ## average ASV per sample month & depth
 aggregate(bac.ASV_all$Count, list(bac.ASV_all$SampleMonth), FUN=mean)
@@ -275,6 +277,7 @@ shapiro.test(bac.div.metadat.rar$Bac_Shannon_Diversity) # what is the p-value?
 # p-value = 0.7112
 # p > 0.05 states distribution of data are not significantly different from normal distribution
 # p < 0.05 means that data is significantly different from a normal distribution
+par(mar = c(1,1,1,1)) # Set the margin on all sides to 1
 hist(bac.div.metadat.rar$Bac_Shannon_Diversity, col="blue") # with outliars
 
 # visualize Q-Q plot for alpha div
@@ -289,6 +292,7 @@ shapiro.test(bac.div.metadat.rar$Bac_Species_Richness) # what is the p-value?
 # p-value = 0.009454
 # p > 0.05 states distribution of data are not significantly different from normal distribution
 # p < 0.05 means that data is significantly different from a normal distribution
+par(mar = c(1,1,1,1)) # Set the margin on all sides to 1
 hist(bac.div.metadat.rar$Bac_Species_Richness, col="blue")
 
 # visualize Q-Q plot for species richness
@@ -299,36 +303,42 @@ qqnorm(bac.div.metadat.rar$Bac_Species_Richness, pch = 1, frame = FALSE) # witho
 qqline(bac.div.metadat.rar$Bac_Species_Richness, col = "red", lwd = 2)
 
 shapiro.test(bac.div.metadat.rar$DO_Percent_Local) # p-value = 0.02586
+par(mar = c(1,1,1,1)) # Set the margin on all sides to 1
 hist(bac.div.metadat.rar$DO_Percent_Local, col="blue")
 # visualize Q-Q plot for species richness
 qqnorm(bac.div.metadat.rar$DO_Percent_Local, pch = 1, frame = FALSE) # with outliars
 qqline(bac.div.metadat.rar$DO_Percent_Local, col = "red", lwd = 2)
 
 shapiro.test(bac.div.metadat.rar$ORP_mV) # p-value = 1.731e-08
+par(mar = c(1,1,1,1)) # Set the margin on all sides to 1
 hist(bac.div.metadat.rar$ORP_mV, col="blue")
 # visualize Q-Q plot for species richness
 qqnorm(bac.div.metadat.rar$ORP_mV, pch = 1, frame = FALSE) # with outliars
 qqline(bac.div.metadat.rar$ORP_mV, col = "red", lwd = 2)
 
 shapiro.test(bac.div.metadat.rar$Temp_DegC) # p-value = 0.0002829
+par(mar = c(1,1,1,1)) # Set the margin on all sides to 1
 hist(bac.div.metadat.rar$Temp_DegC, col="blue")
 # visualize Q-Q plot for species richness
 qqnorm(bac.div.metadat.rar$Temp_DegC, pch = 1, frame = FALSE) # with outliars
 qqline(bac.div.metadat.rar$Temp_DegC, col = "red", lwd = 2)
 
 shapiro.test(bac.div.metadat.rar$Dissolved_OrganicMatter_RFU) #  p-value = 0.05411
+par(mar = c(1,1,1,1)) # Set the margin on all sides to 1
 hist(bac.div.metadat.rar$Dissolved_OrganicMatter_RFU, col="blue")
 # visualize Q-Q plot for species richness
 qqnorm(bac.div.metadat.rar$Dissolved_OrganicMatter_RFU, pch = 1, frame = FALSE) # with outliars
 qqline(bac.div.metadat.rar$Dissolved_OrganicMatter_RFU, col = "red", lwd = 2)
 
 shapiro.test(bac.div.metadat.rar$Sulfate_milliM) # p-value = 0.1912
+par(mar = c(1,1,1,1)) # Set the margin on all sides to 1
 hist(bac.div.metadat.rar$Sulfate_milliM, col="blue")
 # visualize Q-Q plot for species richness
 qqnorm(bac.div.metadat.rar$Sulfate_milliM, pch = 1, frame = FALSE) # with outliars
 qqline(bac.div.metadat.rar$Sulfate_milliM, col = "red", lwd = 2)
 
 shapiro.test(bac.div.metadat.rar$Sulfide_microM) # p-value = 3.813e-08
+par(mar = c(1,1,1,1)) # Set the margin on all sides to 1
 hist(bac.div.metadat.rar$Sulfide_microM, col="blue")
 # visualize Q-Q plot for species richness
 qqnorm(bac.div.metadat.rar$Sulfide_microM, pch = 1, frame = FALSE) # with outliars
@@ -388,7 +398,7 @@ p.adjust(wilc.SR.pvals, method="bonferroni",n=3)
 
 #### Visualize Alpha Diversity & Species Richness - from Rarefied Data ####
 ## Shannon Diversity by Sample Month & Depth
-bac.a.div.rar<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
+bac.a.div.rar<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=4, width=0.15, height=0) +
   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
   labs(title = "Bacterial Shannon Diversity by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
@@ -439,7 +449,7 @@ div.depth<-ggplot(bac.div.metadat.rar, aes(x=Depth_m, y=Bac_Shannon_Diversity,co
 ggsave(div.depth,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_AlphaDiv_by_Depth_SampDate_scatterplot.png", width=12, height=10, dpi=600)
 
 ## Species Richness by Sample Type
-bac.a.sr.rar<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Species_Richness)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
+bac.a.sr.rar<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Species_Richness)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=4, width=0.15, height=0) +
   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
   labs(title = "Bacterial Species Richness by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Species Richness", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
@@ -484,6 +494,11 @@ sr.depth<-ggplot(bac.div.metadat.rar, aes(x=Depth_m, y=Bac_Species_Richness,colo
 
 ggsave(sr.depth,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_SpecRich_by_Depth_SampDate_scatterplot.png", width=12, height=10, dpi=600)
 
+
+## create combined figure
+div.sr.combo<-ggarrange(bac.a.div.rar,bac.a.sr.rar,legend="right",common.legend = TRUE,nrow=1,ncol=2)
+ggsave(div.sr.combo,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_Div_SR_Combined_boxplot.png", width=20, height=15, dpi=600)
+
 #### Compare Variance w/ Shannon Diversity ####
 # shannon diversity is normally distributed; used rarefied counts to calculate ShanDiv
 # use the following statisitcal tests for variance comparisons
@@ -497,8 +512,8 @@ fit1<-aov(Bac_Shannon_Diversity ~ SampDate, data=bac.div.metadat.rar)
 
 summary(fit1)
 #Df           Sum Sq Mean Sq    F value   Pr(>F)
-#SampDate     2   3648  1824.0   6.677 0.0057 **
-# Residuals   21   5737   273.2
+#SampDate     2   3140  1570.1    5.65 0.0109 *
+#Residuals   21   5836   277.9
 
 p.adjust(summary(fit1)[[1]][["Pr(>F)"]][1],method="bonferroni")
 
@@ -506,9 +521,9 @@ p.adjust(summary(fit1)[[1]][["Pr(>F)"]][1],method="bonferroni")
 Tuk1<-TukeyHSD(fit1)
 Tuk1$SampDate
 #                             diff        lwr      upr      p adj
-# December.2021-August.2021 25.076433   4.245680 45.90719 0.016639615 *
-# April.2022-August.2021    27.111615   6.280862 47.94237 0.009571804 **
-# April.2022-December.2021   2.035182 -18.795571 22.86593 0.967173383
+# December.2021-August.2021 23.498197   2.488479 44.50791 0.02664950
+# April.2022-August.2021    24.965288   3.955571 45.97501 0.01814644
+# April.2022-December.2021   1.467092 -19.542626 22.47681 0.98308008
 
 # fit.0<-aov(DustComplexity ~ as.factor(Elevation), data=bac.div.metadat.rar)
 # summary(fit.0)

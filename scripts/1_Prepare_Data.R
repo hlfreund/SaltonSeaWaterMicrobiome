@@ -154,6 +154,14 @@ bac.dat.all<-subset(bac.dat.all, select=-c(Exposure_Duration, Exposure_Type, Dep
 head(bac.dat.all)
 dim(bac.dat.all)
 
+#### Compare Counts by Sample ####
+
+raw.tot.counts<-ggplot(data=bac.ASV_table, aes(x=bac.ASV_table$SampleID, y=rowSums(bac.ASV_table[,-1]))) +
+  geom_bar(stat="identity",colour="black",fill="dodgerblue")+theme_classic()+theme(axis.text.x = element_text(angle = 45, hjust=1)) +
+  labs(title="Total ASVs per Sample",subtitle="Based on Raw ASV Counts")+ylab("Total ASVs")+xlab("SampleID")
+
+ggsave(raw.tot.counts,filename = "figures/SSW_16S_Total_ASVs_per_Sample_barplot.png", width=15, height=12, dpi=600)
+
 ### Export Global Env for Other Scripts ####
 save.image("data/SSeawater_Data_Ready.Rdata")
 # ^ includes all data combined in object bac.dat.all, ASV table (samples are rows, ASVs are columns), metadata, and an ASV count table (where ASVs are rows, not columns)
