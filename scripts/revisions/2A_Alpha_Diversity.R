@@ -401,8 +401,9 @@ p.adjust(wilc.SR.pvals, method="bonferroni",n=3)
 bac.a.div.rar<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=4, width=0.15, height=0) +
   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
-  labs(title = "Bacterial Shannon Diversity by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  geom_pwc(method = "t_test", label = "p.adj.format",p.adjust.method = "bonferroni")
+  labs(title = "Bacterial Shannon Diversity by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+
+  theme(axis.title.x = element_text(size=24),axis.title.y = element_text(size=24),axis.text = element_text(size=20),axis.text.x = element_text(vjust=1),legend.title.align=0.5, legend.title = element_text(size=24),legend.text = element_text(size=20),plot.title = element_text(size=30)) +
+  geom_pwc(method = "t_test", label = "p.adj.format",p.adjust.method = "bonferroni",label.size=5)
 
 ggsave(bac.a.div.rar,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_16S_rarefied_alpha_diversity_sampledate_depth_pvals_boxplot.png", width=13, height=10, dpi=600)
 
@@ -441,7 +442,7 @@ ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitt
 
 div.depth<-ggplot(bac.div.metadat.rar, aes(x=Depth_m, y=Bac_Shannon_Diversity,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Alpha Diversity by Depth & Time Point",subtitle="Used Rarefied Count Data",color="Time Point")+theme_classic()+
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  theme(axis.title.x = element_text(size=24),axis.title.y = element_text(size=24),axis.text = element_text(size=20),axis.text.x = element_text(vjust=1),legend.title.align=0.5, legend.title = element_text(size=24),legend.text = element_text(size=20),plot.title = element_text(size=30)) +
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Time Point",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("Depth (m)") + ylab("Shannon Diversity")+coord_flip()+ scale_x_discrete(limits=rev)
@@ -452,8 +453,9 @@ ggsave(div.depth,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_AlphaDiv_
 bac.a.sr.rar<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Species_Richness)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=4, width=0.15, height=0) +
   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
-  labs(title = "Bacterial Species Richness by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Species Richness", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
-  geom_pwc(method = "wilcox_test", label = "p.adj.format",p.adjust.method = "bonferroni")
+  labs(title = "Bacterial Species Richness by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Species Richness", color="Depth (m)")+
+  theme(axis.title.x = element_text(size=24),axis.title.y = element_text(size=24),axis.text = element_text(size=20),axis.text.x = element_text(vjust=1),legend.title.align=0.5, legend.title = element_text(size=24),legend.text = element_text(size=20),plot.title = element_text(size=30)) +
+  geom_pwc(method = "wilcox_test", label = "p.adj.format",p.adjust.method = "bonferroni",label.size=5)
 
 ggsave(bac.a.sr.rar,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_Bacterial_rarefied_species_richness_samplemonth_depth_pvals_boxplot.png", width=13, height=10, dpi=600)
 
@@ -487,7 +489,7 @@ ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Species_Richness)) +geom_jitte
 
 sr.depth<-ggplot(bac.div.metadat.rar, aes(x=Depth_m, y=Bac_Species_Richness,color=SampDate,group=SampDate)) +   geom_point(size=5) + geom_line(linewidth=1) + theme_bw()+
   labs(title="Species Richness by Depth & Time Point",subtitle="Used Rarefied Count Data",color="Time Point")+theme_classic()+
-  theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))+
+  theme(axis.title.x = element_text(size=24),axis.title.y = element_text(size=24),axis.text = element_text(size=20),axis.text.x = element_text(vjust=1),legend.title.align=0.5, legend.title = element_text(size=24),legend.text = element_text(size=20),plot.title = element_text(size=30)) +
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Time Point",values=unique(metadata$SampDate_Color[order(metadata$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("Depth (m)") + ylab("Species Richness")+coord_flip()+ scale_x_discrete(limits=rev)
@@ -497,7 +499,7 @@ ggsave(sr.depth,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_SpecRich_b
 
 ## create combined figure
 div.sr.combo<-ggarrange(bac.a.div.rar,bac.a.sr.rar,legend="right",common.legend = TRUE,nrow=1,ncol=2)
-ggsave(div.sr.combo,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_Div_SR_Combined_boxplot.png", width=20, height=15, dpi=600)
+ggsave(div.sr.combo,filename = "figures/Revised/AlphaDiversity/RarefiedCounts/SSW_Div_SR_Combined_boxplot.png", width=20, height=15, dpi=600,create.dir=TRUE)
 
 #### Compare Variance w/ Shannon Diversity ####
 # shannon diversity is normally distributed; used rarefied counts to calculate ShanDiv
