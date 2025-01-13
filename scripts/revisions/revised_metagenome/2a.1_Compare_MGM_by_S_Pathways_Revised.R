@@ -44,7 +44,6 @@ load("data/Metagenomes/Analysis/SSW_mgm_analysis.Rdata") # load Rdata to global 
 head(mgm_meta)
 arsen.fxns[1:4,]
 ko.cov.sum_table[1:4,1:4] # contains the sum of coverages per gene per KO -- featureCounts was normalized by gene length across samples first to get coverage, then summed up per KO ID
-head(sulf.path.clr.ars)
 
 # ABOUT THE DATA:
 # Before transformations (i.e., VST, CLR, etc) were done, the following was performed:
@@ -192,7 +191,7 @@ ggplot(s.path.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +geom_point(aes(color=fact
   scale_color_manual(name ="Sample Date",values=unique(s.path.pcoa.clr.meta$SampDate_Color[order(s.path.pcoa.clr.meta$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("PC1 [90.02%]") + ylab("PC2 [7.28%]")
 
-ggsave(pcoa5,filename = "figures/Revised/MGM_Figs/FxnDiv/PCoAs/CenterLogRatioTransformation/SSW_MGM_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600,create.dir=TRUE)
+#ggsave(pcoa5,filename = "figures/Revised/MGM_Figs/FxnDiv/PCoAs/CenterLogRatioTransformation/SSW_MGM_pcoa_CLR_SummedCoverage_Per_KO_sampdate.png", width=12, height=10, dpi=600,create.dir=TRUE)
 
 # sample month shape, depth color
 ggplot(s.path.pcoa.clr.meta, aes(x=Axis.1, y=Axis.2)) +
@@ -236,7 +235,7 @@ qqline(sulf.path.clr$`Dissimilatory Sulfate Redox`, col = "red", lwd = 2)
 
 #### Merge S Pathway & Metadata ####
 s.path.meta<-merge(sulf.path.clr,mgm_meta,by="SampleID")
-head(s.path.meta)
+head(s.path.meta) # for all variance comparisons below!!!
 
 # subset CLR-transformed S pathway coverages by date
 aug.spath<-s.path.meta[s.path.meta$SampDate=="August.2021",]
@@ -264,6 +263,7 @@ p.adjust(wiltest.Div.pvals, method="bonferroni",n=3)
 
 #### Compare Variance - SOX Pathway ####
 # use the following statisitcal tests for variance comparisons
+head(s.path.meta)
 
 fit1<-kruskal.test(SOX ~ SampDate, data=s.path.meta)
 # ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/
@@ -297,11 +297,7 @@ ggplot(s.path.meta, aes(x=SampDate, y=SOX)) +geom_jitter(aes(color=as.numeric(as
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(angle=45,hjust=1),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
 
 #### Compare Variance - Dissimilatory Sulfate Redox Pathway ####
-# shannon diversity is normally distributed; used rarefied counts to calculate ShanDiv
-# use the following statisitcal tests for variance comparisons
-## ANOVA: are variances significantly different between groups
-## Tukey test: which groups' variances are significant different from one another
-## Levene's test: is variance homogenous aka equal across samples?
+head(s.path.meta)
 
 fit2<-kruskal.test(`Dissimilatory Sulfate Redox` ~ SampDate, data=s.path.meta)
 # ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/
@@ -339,6 +335,36 @@ ggplot(s.path.meta, aes(x=SampDate, y=`Dissimilatory Sulfate Redox`)) +geom_jitt
 ## ANOVA: are variances significantly different between groups
 ## Tukey test: which groups' variances are significant different from one another
 ## Levene's test: is variance homogenous aka equal across samples?
+
+fit3<-kruskal.test(`Assimilatory Sulfate Reduction` ~ SampDate, data=s.path.meta)
+# ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/
+#pairwise.adonis(sulf.path.clr$`Assimilatory Sulfate Reduction`, sulf.path.clr$SampDate, p.adjust.m='bonferroni') # shows us variation for each sample to see which ones are different
+fit3
+
+p.adjust(summary(fit1)[[1]][["Pr(>F)"]][1],method="bonferroni")
+
+# Instead of using Tukey test, we can use Dunn's test to see which groups significantly vary if Kruskal-Wallis test is significant
+# ANOVA + Tukey for normally distributed data, Kruskal-Wallis + Dunn's test for non-normal data
+rstatix::dunn_test(s.path.meta, `Assimilatory Sulfate Reduction` ~ SampDate, p.adjust.method = "bonferroni", detailed = TRUE)
+
+## The Fligner-Killeen test is a non-parametric test for homogeneity of group variances based on ranks. It is useful when the data are non-normally distributed or when problems related to outliers in the dataset cannot be resolved.
+### Fligner's test is a Levene's test for data that are not normally distributed
+### It is also one of the many tests for homogeneity of variances which is most robust against departures from normality.
+## Null hypothesis: all populations variances are equal; Alt Hypothesis: at least 1 sample has different variance (aka variances are NOT equal across samples)
+## more here: https://www.geeksforgeeks.org/fligner-killeen-test-in-r-programming/
+fligner.test(`Assimilatory Sulfate Reduction` ~ SampDate, data = s.path.meta)
+# Fligner-Killeen:med chi-squared = 1.7395, df = 2, p-value = 0.4191
+# Which shows that the data DO NOT deviate significantly from homogeneity.
+
+compare_means(`Assimilatory Sulfate Reduction` ~ SampDate, data=s.path.meta, method="kruskal.test",p.adjust.method = "bonferroni") #
+
+compare_means(`Assimilatory Sulfate Reduction` ~ SampDate, data=s.path.meta, method="wilcox.test",p.adjust.method = "bonferroni") #
+compare_means(`Assimilatory Sulfate Reduction` ~ SampDate, data=s.path.meta, method="t.test",p.adjust.method = "bonferroni") #
+
+
+
+#### Compare Variance - Assimilatory Sulfate Reduction Pathway ####
+head(s.path.meta)
 
 fit3<-kruskal.test(`Assimilatory Sulfate Reduction` ~ SampDate, data=s.path.meta)
 # ANOVA is basically a regression but w/ categorical variables more info here https://www.statology.org/anova-vs-regression/

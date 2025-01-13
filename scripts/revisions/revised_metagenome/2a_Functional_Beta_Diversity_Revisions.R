@@ -793,13 +793,13 @@ ggsave(sulf.hm1b8,filename = "figures/Revised/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFx
 sulf.hm1b8a<-ggplot(clr.sulf.all, aes(Depth_m, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
   geom_tile(colour="white",size=0.25) +
   scale_fill_gradient(low="#5f03f8", high="#ffaf43",labels=c("1.5","0.6","-0.3"),breaks=c(1.5,0.6,-0.3)) + labs(fill="CLR Coverage Per KO") +
-  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20),legend.title.align=0.5, legend.title = element_text(size=18),
-        axis.text = element_text(size=26,face="bold"),legend.text = element_text(size=15),
-        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),strip.text = element_text(size = 12,face="bold"),strip.text.y=element_text(face="bold",size = 17.5),strip.text.x = element_text(size = 25)) +
+  theme(axis.title.x = element_text(size=30),axis.title.y = element_text(size=30),legend.title.align=0.5, legend.title = element_text(size=30),
+        axis.text = element_text(size=30),legend.text = element_text(size=30),legend.key.size = unit(1, 'cm'),
+        axis.ticks=element_line(size=0.4),panel.grid = element_blank(),strip.text = element_text(size = 25),strip.text.y=element_text(size = 25,face="bold"),strip.text.x = element_text(size = 25)) +
   xlab("") + ylab("") + scale_y_discrete(expand=c(0, 0))+scale_x_discrete(expand=c(0, 0))+ facet_grid(PathSpecShort~SampDate, scales="free", space = "free")
 
 ggsave(sulf.hm1b8a,filename = "figures/Revised/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap_poster.png", width=25, height=25, dpi=600,create.dir=TRUE)
-ggsave(sulf.hm1b8a,filename = "figures/Revised/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap_poster2.png", width=30, height=25, dpi=600,create.dir=TRUE)
+ggsave(sulf.hm1b8a,filename = "figures/Revised/MGM_Figs/FxnDiv/Sulfur/Sulfur_KOFxns_MGMs_Depth_by_Function_SampDate_PathwaySpecific_best_heatmap_paper.png", width=35, height=35, dpi=600,create.dir=TRUE)
 
 # sulf.hm1e<-ggplot(clr.sulf.all[clr.sulf.all$Depth_m==0,], aes(Pathway, KO_Function.KEGG, fill=CLR_SumCovPerKO)) +
 #   geom_tile(colour="white",size=0.25) +
