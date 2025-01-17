@@ -57,7 +57,7 @@ unique(bac.ASV_all$SampleID)
 bac.ASV_all$SampleID<-gsub("m\\..*","m",bac.ASV_all$SampleID)
 bac.ASV_all$SampleID<-gsub("11m","10.5m",bac.ASV_all$SampleID)
 
-# Fix depth measurements
+# Fix depth measurements because of my error
 bac.ASV_all$Depth_m<-gsub("11","10.5",bac.ASV_all$Depth_m)
 
 # Create ASV table
@@ -155,12 +155,17 @@ head(bac.dat.all)
 dim(bac.dat.all)
 
 #### Compare Counts by Sample ####
+# creating this dataframe purely to create this plot - do not want to chang
+bac.ASV_table2<-bac.ASV_table
+bac.ASV_table2$SampleID<-gsub("SSW\\.","",bac.ASV_table2$SampleID)
+bac.ASV_table2$SampleID<-gsub("^(.*\\..*\\..*)\\.","\\1-",bac.ASV_table2$SampleID)
+bac.ASV_table2$SampleID<-gsub("\\.10-5m","-10\\.5m",bac.ASV_table2$SampleID)
 
-raw.tot.counts<-ggplot(data=bac.ASV_table, aes(x=bac.ASV_table$SampleID, y=rowSums(bac.ASV_table[,-1]))) +
+raw.tot.counts<-ggplot(data=bac.ASV_table2, aes(x=reorder(SampleID,rowSums(bac.ASV_table[,-1])), y=rowSums(bac.ASV_table[,-1]))) +
   geom_bar(stat="identity",colour="black",fill="dodgerblue")+theme_classic()+theme(axis.text.x = element_text(angle = 45, hjust=1)) +
   labs(title="Total ASVs per Sample",subtitle="Based on Raw ASV Counts")+ylab("Total ASVs")+xlab("SampleID")
 
-ggsave(raw.tot.counts,filename = "figures/SSW_16S_Total_ASVs_per_Sample_barplot.png", width=15, height=12, dpi=600)
+ggsave(raw.tot.counts,filename = "figures/Revised/SSW_16S_Total_ASVs_per_Sample_barplot.png", width=15, height=12, dpi=600)
 
 ### Export Global Env for Other Scripts ####
 save.image("data/SSeawater_Data_Ready.Rdata")
