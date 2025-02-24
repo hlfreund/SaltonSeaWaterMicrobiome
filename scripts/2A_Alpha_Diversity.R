@@ -111,18 +111,18 @@ bac.ASV.rar<-rrarefy(bac.ASV_table[,-1],min.rar)
 # rrarefy generates one randomly rarefied community data frame or vector of given sample size
 # The random rarefaction is made without replacement so that the variance of rarefied communities is rather related to rarefaction proportion than to the size of the sample
 
-# Calculating Average Shannon Diversity w/ repeated rarefaction with rrarefy()
+# Calculating Average Shannon-Weiner Diversity w/ repeated rarefaction with rrarefy()
 sdiv.rarefy<-function(df,min){
   # rownames must be samples, ASVs must by columns
   # min = min(rowSums(ASV table)) aka minimum sum of ASVs in each sample
   rare<-rrarefy(df,min)
   s.ent<-vegan::diversity(rare, index="shannon")
-  sdiv<- exp(s.ent) # Shannon Diversity aka Hill number 1
+  sdiv<- exp(s.ent) # Shannon-Weiner Diversity aka Hill number 1
   return(sdiv)
 }
 
 ave.sdiv <- data.frame(AveShanDiv=rowMeans(data.frame(lapply(as.list(1:100), function(x) sdiv.rarefy(bac.ASV_table[,-1], min.rar)))))
-# ^ contains average Shannon Diversity calculations after rarefaction and Shan div calculations 100 times
+# ^ contains average Shannon-Weiner Diversity calculations after rarefaction and Shan div calculations 100 times
 # sdiv.rarefy function --> Rrarefy ASV table with given min, calculate Shannon diversity
 # lapply(as.list(1:100), function(x) sdiv.rarefy(bac.ASV_table[,-1], min.rar))) --> create list by repeating function 100 times
 # data.frame(lapply(...)) --> saves lapply() output as data frame, not list
@@ -206,12 +206,12 @@ ggplot(data=as.data.frame(bac.ASV.rar), aes(x=rownames(bac.ASV.rar), y=rowSums(b
 aggregate(bac.ASV_all$Count, list(bac.ASV_all$SampleMonth), FUN=mean)
 aggregate(bac.ASV_all$Count, list(bac.ASV_all$Depth_m), FUN=mean)
 
-#### Shannon Diversity & Species Richness - Rarefied Data ####
+#### Shannon-Weiner Diversity & Species Richness - Rarefied Data ####
 
-## Calculate Shannon Diversity (abundance + richness considered in diversity calculation)
+## Calculate Shannon-Weiner Diversity (abundance + richness considered in diversity calculation)
 # if you have another package loaded that has a diversity function, you can specify that you want to use vegan's diversity function as shown below
 Shan_ent.16s.rar<-vegan::diversity(bac.ASV.rar, index="shannon") # Shannon entropy
-Shan_div.16s.rar<- exp(Shan_ent.16s.rar) # Shannon Diversity aka Hill number 1
+Shan_div.16s.rar<- exp(Shan_ent.16s.rar) # Shannon-Weiner Diversity aka Hill number 1
 
 # create data frame with Shannon entropy and Shannon diversity values
 div_16s.rar<-data.frame(Bac_Shannon_Entropy=Shan_ent.16s.rar,Bac_Shannon_Diversity=Shan_div.16s.rar)
@@ -344,7 +344,7 @@ hist(bac.div.metadat.rar$Sulfide_microM, col="blue")
 qqnorm(bac.div.metadat.rar$Sulfide_microM, pch = 1, frame = FALSE) # with outliars
 qqline(bac.div.metadat.rar$Sulfide_microM, col = "red", lwd = 2)
 
-#### Compare Means of Shannon Diversity - Rarefied Data ####
+#### Compare Means of Shannon-Weiner Diversity - Rarefied Data ####
 head(bac.div.metadat.rar)
 aug.divmeta<-bac.div.metadat.rar[bac.div.metadat.rar$SampDate=="August.2021",]
 dec.divmeta<-bac.div.metadat.rar[bac.div.metadat.rar$SampDate=="December.2021",]
@@ -396,36 +396,36 @@ wilc.SR.pvals<-c(w.test.a21.d21$p.value, w.test.a21.a22$p.value, w.test.d21.a22$
 p.adjust(wilc.SR.pvals, method="bonferroni",n=3)
 # ^ matches findings on the figure, which uses the wilcox_test function from the rstatix package (see geom_pwc())
 
-#### Visualize Shannon Diversity & Species Richness - from Rarefied Data ####
-## Shannon Diversity by Sample Month & Depth
+#### Visualize Shannon-Weiner Diversity & Species Richness - from Rarefied Data ####
+## Shannon-Weiner Diversity by Sample Month & Depth
 bac.a.div.rar<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=4, width=0.15, height=0) +
   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
-  labs(title = "Bacterial Shannon Diversity by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+
+  labs(x="Sample Date", y="Shannon-Weiner Diversity", color="Depth (m)")+
   theme(axis.title.x = element_text(size=24),axis.title.y = element_text(size=24),axis.text = element_text(size=20),axis.text.x = element_text(vjust=1),legend.title.align=0.5, legend.title = element_text(size=24),legend.text = element_text(size=20),plot.title = element_text(size=30)) +
   geom_pwc(method = "t_test", label = "p.adj.format",p.adjust.method = "bonferroni",label.size=5)
 
-ggsave(bac.a.div.rar,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_16S_rarefied_alpha_diversity_sampledate_depth_pvals_boxplot.png", width=13, height=10, dpi=600)
+ggsave(bac.a.div.rar,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_16S_rarefied_alpha_diversity_sampledate_depth_pvals_boxplot.png", width=13, height=12, dpi=600)
 
 bac.a.div.rarB<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
-  labs(title = "Bacterial Shannon Diversity by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
+  labs(x="Sample Date", y="Shannon-Weiner Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
 
-ggsave(bac.a.div.rarB,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_16S_rarefied_alpha_diversity_sampledate_depth_boxplot.png", width=13, height=10, dpi=600)
+ggsave(bac.a.div.rarB,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_16S_rarefied_alpha_diversity_sampledate_depth_boxplot.png", width=13, height=12, dpi=600)
 
-bac.div.metadat.rar$Depth_m=as.numeric(levels(bac.div.metadat.rar$Depth_m))[bac.div.metadat.rar$Depth_m]
+bac.div.metadat.rar$Depth_num=as.numeric(levels(bac.div.metadat.rar$Depth_m))[bac.div.metadat.rar$Depth_m]
 # ^ note: cannot turn numbers that are factors in R into numeric values...
 ## have to convert factor levels into numeric, then use the numeric "levels" to pull out numbers from Depth_m column in df to make sure the Depth_m columns is now numeric, not a factor
 
 ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
-  labs(title = "Bacterial Shannon Diversity by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  labs(x="Sample Date", y="Shannon-Weiner Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   geom_pwc(method = "t_test", label = "p.adj.format",p.adjust.method = "bonferroni")
 
 # bac.a.div.rar2<-ggplot(bac.div.metadat.rar, aes(x=as.factor(Depth_m), y=Bac_Shannon_Diversity)) +geom_boxplot(aes(fill=Depth_m),color="black")+
-#   labs(title = "Bacterial Shannon Diversity by Sampling Depth", x="Depth (m)", y="Shannon Diversity", fill="Depth (m)")+
+#   labs(title = "Bacterial Shannon-Weiner Diversity by Sampling Depth", x="Depth (m)", y="Shannon-Weiner Diversity", fill="Depth (m)")+
 #   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
 #   coord_flip() + scale_x_discrete(limits=rev)
@@ -433,7 +433,7 @@ ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Shannon_Diversity)) +geom_jitt
 # ggsave(bac.a.div2,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_Bacterial_rarefied_alpha_diversity_depth_boxplot_v1.png", width=13, height=10, dpi=600)
 #
 # bac.a.div3<-ggplot(bac.div.metadat.rar, aes(x=as.factor(Depth_m), y=Bac_Shannon_Diversity)) +geom_boxplot(aes(fill=Depth_m),color="black")+
-#   labs(title = "Bacterial Shannon Diversity by Sampling Depth", x="Depth (m)", y="Shannon Diversity", fill="Depth (m)")+
+#   labs(title = "Bacterial Shannon-Weiner Diversity by Sampling Depth", x="Depth (m)", y="Shannon-Weiner Diversity", fill="Depth (m)")+
 #   scale_fill_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) + theme_classic() +
 #   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
 #
@@ -444,31 +444,31 @@ div.depth<-ggplot(bac.div.metadat.rar, aes(x=Depth.num, y=Bac_Shannon_Diversity,
   theme(axis.title.x = element_text(size=30),axis.title.y = element_text(size=30),legend.title.align=0.5, legend.title = element_text(size=28),axis.text = element_text(size=28),axis.text.x = element_text(vjust=1),legend.text = element_text(size=30))+
   guides(shape = guide_legend(override.aes = list(size = 5)))+
   scale_color_manual(name ="Sample Date",values=unique(bac.div.metadat.rar$SampDate_Color[order(bac.div.metadat.rar$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
-  xlab("Depth (m)") + ylab("Shannon Diversity")+scale_x_continuous(trans="reverse",breaks=unique(bac.div.metadat.rar$Depth.num))+coord_flip()
+  xlab("Depth (m)") + ylab("Shannon-Weiner Diversity")+scale_x_continuous(trans="reverse",breaks=unique(bac.div.metadat.rar$Depth.num))+coord_flip()
 
-ggsave(div.depth,filename = "figures/Revised/AlphaDiversity/RarefiedCounts/SSW_AlphaDiv_by_Depth_SampDate_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(div.depth,filename = "figures/Revised/AlphaDiversity/RarefiedCounts/SSW_AlphaDiv_by_Depth_SampDate_scatterplot.png", width=13, height=12, dpi=600)
 
 ## Species Richness by Sample Type
 bac.a.sr.rar<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Species_Richness)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=4, width=0.15, height=0) +
   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
-  labs(title = "Bacterial Species Richness by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Species Richness", color="Depth (m)")+
+  labs(x="Sample Date", y="Species Richness", color="Depth (m)")+
   theme(axis.title.x = element_text(size=24),axis.title.y = element_text(size=24),axis.text = element_text(size=20),axis.text.x = element_text(vjust=1),legend.title.align=0.5, legend.title = element_text(size=24),legend.text = element_text(size=20),plot.title = element_text(size=30)) +
   geom_pwc(method = "wilcox_test", label = "p.adj.format",p.adjust.method = "bonferroni",label.size=5)
 
-ggsave(bac.a.sr.rar,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_Bacterial_rarefied_species_richness_samplemonth_depth_pvals_boxplot.png", width=13, height=10, dpi=600)
+ggsave(bac.a.sr.rar,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_Bacterial_rarefied_species_richness_samplemonth_depth_pvals_boxplot.png", width=13, height=12, dpi=600)
 
 bac.a.sr.rarB<-ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Species_Richness)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_boxplot(fill=NA, outlier.color=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
-  labs(title = "Bacterial Species Richness by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Species Richness", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
+  labs(x="Sample Date", y="Species Richness", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15))
 
 ggsave(bac.a.sr.rarB,filename = "figures/AlphaDiversity/RarefiedCounts/SSW_Bacterial_rarefied_species_richness_samplemonth_depth_boxplot.png", width=13, height=10, dpi=600)
 
 ggplot(bac.div.metadat.rar, aes(x=SampDate, y=Bac_Species_Richness)) +geom_jitter(aes(color=as.numeric(as.character(Depth_m))), size=3, width=0.15, height=0) +
   scale_colour_gradient2(low="red",high="blue3",midpoint=5,guide = guide_colourbar(reverse = TRUE)) +
   geom_violin(fill=NA)+scale_x_discrete(labels=c("August 2021","December 2021","April 2022"))+theme_bw()+theme_classic()+
-  labs(title = "Bacterial Species Richness by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Shannon Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
+  labs(title = "Bacterial Species Richness by Sample Date & Depth", subtitle="Using Rarefied Counts", x="Sample Date", y="Shannon-Weiner Diversity", color="Depth (m)")+theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1,size=10),legend.title.align=0.5, legend.title = element_text(size=13),legend.text = element_text(size=11),plot.title = element_text(size=15)) +
   geom_pwc(method = "wilcox_test", label = "p.adj.format",p.adjust.method = "bonferroni")
 
 # bac.a.sr.rar2<-ggplot(bac.div.metadat.rar, aes(x=as.factor(Depth_m), y=Bac_Species_Richness,fill=bac.div.metadat.rar$Depth_m)) +geom_boxplot(aes(fill=as.numeric(bac.div.metadat.rar$Depth_m)),color="black")+
@@ -493,18 +493,18 @@ sr.depth<-ggplot(bac.div.metadat.rar, aes(x=Depth.num, y=Bac_Species_Richness,co
   scale_color_manual(name ="Sample Date",values=unique(bac.div.metadat.rar$SampDate_Color[order(bac.div.metadat.rar$SampDate)]),labels=c("August.2021"="August 2021","December.2021"="December 2021","April.2022"="April 2022")) +
   xlab("Depth (m)") + ylab("Species Richness")+scale_x_continuous(trans="reverse",breaks=unique(bac.div.metadat.rar$Depth.num))+coord_flip()
 
-ggsave(sr.depth,filename = "figures/Revised/AlphaDiversity/RarefiedCounts/SSW_SpecRich_by_Depth_SampDate_scatterplot.png", width=12, height=10, dpi=600)
+ggsave(sr.depth,filename = "figures/Revised/AlphaDiversity/RarefiedCounts/SSW_SpecRich_by_Depth_SampDate_scatterplot.png", width=13, height=12, dpi=600)
 
 
 ## create combined figure
 div.sr.combo<-ggarrange(bac.a.div.rar,bac.a.sr.rar,legend="right",common.legend = TRUE,nrow=1,ncol=2)
-ggsave(div.sr.combo,filename = "figures/Revised/AlphaDiversity/RarefiedCounts/SSW_Div_SR_Combined_boxplot.png", width=20, height=15, dpi=600,create.dir=TRUE)
+ggsave(div.sr.combo,filename = "figures/Revised/AlphaDiversity/RarefiedCounts/SSW_Div_SR_Combined_boxplot.png", width=25, height=20, dpi=600,create.dir=TRUE)
 
 ## create combined figure with depth profile by time point
 div.sr.prof.combo<-ggarrange(div.depth,sr.depth,legend="right",common.legend = TRUE,nrow=1,ncol=2) + bgcolor("white")
-ggsave(div.sr.prof.combo,filename = "figures/Revised/AlphaDiversity/RarefiedCounts/SSW_Div_SR_Combined_Depth_scatterplot.png", width=25, height=15, dpi=600,create.dir=TRUE)
+ggsave(div.sr.prof.combo,filename = "figures/Revised/AlphaDiversity/RarefiedCounts/SSW_Div_SR_Combined_Depth_scatterplot.png", width=30, height=20, dpi=600,create.dir=TRUE)
 
-#### Compare Variance w/ Shannon Diversity ####
+#### Compare Variance w/ Shannon-Weiner Diversity ####
 # shannon diversity is normally distributed; used rarefied counts to calculate ShanDiv
 # use the following statisitcal tests for variance comparisons
 ## ANOVA: are variances significantly different between groups
@@ -582,7 +582,7 @@ fligner.test(Bac_Species_Richness ~ SampDate, data = bac.div.metadat.rar)
 
 compare_means(Bac_Species_Richness ~ SampDate, data=bac.div.metadat.rar, method="anova",p.adjust.method = "bonferroni")
 
-#### Linear Regression - Shannon Diversity ####
+#### Linear Regression - Shannon-Weiner Diversity ####
 ## here the focus is comparing env variables of interest to see if they can predict diversity and richness
 head(bac.div.metadat.rar)
 
@@ -788,7 +788,7 @@ aug21.div<-subset(bac.div.metadat.rar, bac.div.metadat.rar$SampDate=="August.202
 dec21.div<-subset(bac.div.metadat.rar, bac.div.metadat.rar$SampDate=="December.2021")
 apr22.div<-subset(bac.div.metadat.rar, bac.div.metadat.rar$SampDate=="April.2022")
 
-#### August - Shannon Diversity ####
+#### August - Shannon-Weiner Diversity ####
 # August 2021
 aug21.div.glm.fit1<-glm(formula = Bac_Shannon_Diversity ~ DO_Percent_Local, data=aug21.div)%>%
   adjust_pvalue(method="bonferroni")
@@ -972,7 +972,7 @@ fligner.test(Bac_Species_Richness ~ Depth_m, data = aug21.div)
 compare_means(Bac_Species_Richness ~ Depth_m, data=aug21.div, method="anova",p.adjust.method = "bonferroni") # won't take as.factor(Elevation) as input
 
 
-#### December - Shannon Diversity ####
+#### December - Shannon-Weiner Diversity ####
 # December 2021
 dec21.div.glm.fit1<-glm(formula = Bac_Shannon_Diversity ~ DO_Percent_Local, data=dec21.div)%>%
   adjust_pvalue(method="bonferroni")
@@ -1157,7 +1157,7 @@ compare_means(Bac_Species_Richness ~ Depth_m, data=dec21.div, method="anova",p.a
 
 
 
-#### April - Shannon Diversity ####
+#### April - Shannon-Weiner Diversity ####
 # April 2022
 apr22.div.glm.fit1<-glm(formula = Bac_Shannon_Diversity ~ DO_Percent_Local, data=apr22.div)%>%
   adjust_pvalue(method="bonferroni")
@@ -1343,12 +1343,12 @@ compare_means(Bac_Species_Richness ~ Depth_m, data=apr22.div, method="anova",p.a
 
 #### Visualize Richness, Diversity vs Env Variables ####
 
-## Shannon Diversity & Environmental Variables
+## Shannon-Weiner Diversity & Environmental Variables
 # note: R (correlation coefficient) vs R^2 (coefficient of determination): https://towardsdatascience.com/r%C2%B2-or-r%C2%B2-when-to-use-what-4968eee68ed3
 
 ggplot(bac.div.metadat.rar, aes(x = DO_Percent_Local, y = Bac_Shannon_Diversity)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() +
-  stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(title="Dissolved Oxygen x 16S Shannon Diversity", color="Depth (m)")+ylab("Shannon Diversity")+xlab("Dissolved Oxygen (%)")+
+  stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(title="Dissolved Oxygen x 16S Shannon-Weiner Diversity", color="Depth (m)")+ylab("Shannon-Weiner Diversity")+xlab("Dissolved Oxygen (%)")+
   scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
   scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
@@ -1357,14 +1357,14 @@ ggplot(bac.div.metadat.rar, aes(x = DO_Percent_Local, y = Bac_Shannon_Diversity)
 
 ggplot(bac.div.metadat.rar, aes(x = DO_Percent_Local, y = Bac_Shannon_Diversity)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() +
-  labs(title="Dissolved Oxygen x 16S Shannon Diversity", color="Depth (m)")+ylab("Shannon Diversity")+xlab("Dissolved Oxygen (%)")+
+  labs(title="Dissolved Oxygen x 16S Shannon-Weiner Diversity", color="Depth (m)")+ylab("Shannon-Weiner Diversity")+xlab("Dissolved Oxygen (%)")+
   scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
   scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))
 
 ggplot(bac.div.metadat.rar, aes(x = ORP_mV, y = Bac_Shannon_Diversity)) +
   geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() +
-  stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(title="Oxidation-Reduction Potential x 16S Shannon Diversity", color="Depth (m)")+ylab("Shannon Diversity")+xlab("Redox Potential (mV)")+
+  stat_smooth(method = "glm", col = "black", se=FALSE, size=1)+ labs(title="Oxidation-Reduction Potential x 16S Shannon-Weiner Diversity", color="Depth (m)")+ylab("Shannon-Weiner Diversity")+xlab("Redox Potential (mV)")+
   scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
   scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11)) +
@@ -1372,7 +1372,7 @@ ggplot(bac.div.metadat.rar, aes(x = ORP_mV, y = Bac_Shannon_Diversity)) +
   stat_regline_equation(aes(label=paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")),label.y = 3.2,label.x=1)
 
 ggplot(bac.div.metadat.rar, aes(x = Temp_DegC, y = Bac_Shannon_Diversity)) +
-  geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() + labs(title="Temperature x 16S Shannon Diversity", color="Depth (m)")+ylab("16S Shannon Diversity")+xlab("Temperature (C)")+
+  geom_point(aes(color=as.numeric(Depth_m),shape=SampDate), size=3) + theme_classic() + labs(title="Temperature x 16S Shannon-Weiner Diversity", color="Depth (m)")+ylab("16S Shannon-Weiner Diversity")+xlab("Temperature (C)")+
   scale_colour_gradient(low="red",high="blue",guide = guide_colourbar(reverse = TRUE)) +
   scale_shape_discrete(labels=c("June 2021","August 2021","December 2021","April 2022"),name="Sample Date") +
   theme(axis.title.x = element_text(size=13),axis.title.y = element_text(size=13),legend.title.align=0.5, legend.title = element_text(size=13),axis.text = element_text(size=11),axis.text.x = element_text(vjust=1),legend.text = element_text(size=11))
