@@ -4,3 +4,5 @@ This GitHub repo contains the variety of scripts used to analyze data for the pu
 These scripts are a culmination of years of work on this project, which served as the second chapter of my dissertation (if you're interested, you can view that [here](https://escholarship.org/uc/item/21w0w6t9)). If you have any questions about the scripts, accessing the data, or anything at all, please feel free to email me at lintonfreund@gmail.com. 
 
 To all those who made this work possible, thank you!
+
+To better understand the urgent public health crises experienced by those living near the Salton Sea, please view the [Unidas Por Salud page on childhood asthma and the Salton Sea](https://www.unidasporsalud.com/childhood-asthma-and-the-salton-sea) and the [Salton Sea Forum website](https://saltonseaforum.ucr.edu/).
